@@ -15,9 +15,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-            User::create(['username' => '31123019',
-            'password' => Hash::make('hello'),
-            'level' => 3,
+    
+
+         User::create(['username' => '31123010',
+            'password' => Hash::make('hello12346'),
+            'level' => 1,
             'firstlogin' => Carbon::now(),
             'lastlogin' => Carbon::now(),
             'aksesnilai' => 0,
