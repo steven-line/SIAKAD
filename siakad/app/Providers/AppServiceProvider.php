@@ -25,5 +25,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin', function(User $user){
             return $user->level === 1 ? Response::allow() : Response::denyAsNotFound();
         }); 
+        Gate::define('mahasiswa', function(User $user){
+            return $user->level === 3 ? Response::allow() : Response::denyAsNotFound();
+        });
     }
 }
