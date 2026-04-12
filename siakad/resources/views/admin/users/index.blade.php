@@ -17,6 +17,7 @@
         <th>Pataum</th>
         <th>Aktif</th>
         <th>Detail</th>
+        <th>Aksi</th>
       </tr>
     </thead>
     <tbody>
@@ -34,7 +35,14 @@
             <th>{{$user->aksesnilai}}</th>
             <th>{{$user->pataum}}</th>
             <th>{{$user->aktif}}</th>
-            <th><a href="">Detail</a></th>
+            <th><a href=''>Detail</a></th>
+            
+            <th><form action="/admin/kelola-user/{{ $user->username }}" method='POST'>
+            @csrf  
+            @method('DELETE')
+
+              <button class="btn  btn-error">Delete</button>
+            </form></th>
         </tr>
       @endforeach
     </tbody>
