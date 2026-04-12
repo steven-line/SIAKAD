@@ -30,7 +30,7 @@ class LoginController extends Controller
         
         if (Auth::attempt($validated)) {
             $request->session()->regenerate();
-            return redirect('/home');
+            return redirect('/admin');
         }
 
         return back()->withErrors([
