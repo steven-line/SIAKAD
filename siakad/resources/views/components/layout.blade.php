@@ -33,11 +33,12 @@
         <div>
           
           <ul class="space-y-4 flex-1">
-            <li><a href="/home">Home</a></li>
-
+            
             @can('admin')
+                <li><a href="/admin">Home</a></li>
                 <li><a href="/admin/kelola-user">Kelola User</a></li>
             @endcan
+          
           
      
             
