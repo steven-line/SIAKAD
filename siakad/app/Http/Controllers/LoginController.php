@@ -30,7 +30,14 @@ class LoginController extends Controller
         
         if (Auth::attempt($validated)) {
             $request->session()->regenerate();
-            return redirect('/admin');
+            if (Auth::user()->level === 1) {
+                return redirect('/admin');
+            
+            }
+            if (Auth::user()->level === 3) {
+                return redirect('/mahasiswa');
+            }
+        
         }
 
         return back()->withErrors([
