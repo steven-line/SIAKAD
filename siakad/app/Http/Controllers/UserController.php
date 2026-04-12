@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -20,13 +22,15 @@ class UserController extends Controller
         return view('admin.users.index', [
             'users' => $users,
         ]);
-    }
+    }   
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
+   
+        
         return view('admin.users.create');
     }
 
@@ -35,8 +39,24 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+            $request->validate([
+                'username' => ['required', 'string', 'max:255', 'unique:users'],
+                'password' => ['required', Password::default()],
+                'level' => ['required'],
+                'sks' => ['required'],
+            ]);
+            User::create([
+                'username' => $request->username,
+                'password' => $request->password, 
+                'level' => $request->level,
+                'sks' =>  $request->sks,
+                'firstlogin' => Carbon::now(),
+                'lastlogin' => Carbon::now(),
+                
+            ]);
+
+            return redirect('/admin/kelola-user');
+    }   
 
     /**
      * Display the specified resource.
@@ -67,6 +87,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $user->delete();
+         return redirect('/admin/kelola-user')->with('success', 'User dihapus');
         //
     }
 }
