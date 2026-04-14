@@ -28,6 +28,7 @@ class UserSeeder extends Seeder
             'sks' => 110,
             'validasi' => 1,
             'pataum' => 'o',]);
+            
     }
     
 }
