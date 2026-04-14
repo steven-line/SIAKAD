@@ -42,6 +42,10 @@
                 <li><a href="/mahasiswa/penawaran">Penawaran</a></li>
                 <li><a href="/mahasiswa/view_krs">KRS</a></li>
             @endcan
+            @can('kaprodi')
+                <li><a href="/kaprodi">Dashboard Kaprodi</a></li>
+                <li><a href="/kaprodi/jadwal">KRS</a></li>
+            @endcan
      
             
               @auth
