@@ -16,8 +16,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
     
-
-            
+        
          User::create(['username' => '31123003',
             'password' => Hash::make('hello12346'),
             'level' => 3,
@@ -28,7 +27,11 @@ class UserSeeder extends Seeder
             'sks' => 110,
             'validasi' => 1,
             'pataum' => 'o',]);
+
+            
+
             
     }
+    
     
 }

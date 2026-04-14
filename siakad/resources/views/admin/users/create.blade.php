@@ -1,12 +1,12 @@
 <x-layout>
       <a class="join-item btn btn-primary" href="/admin/kelola-user">⮜ Previous page</a>
-    <form class="flex h-screen"action="/login" method="POST">
+    <form class="flex h-screen"action="/admin/kelola-user/create" method="POST">
     @csrf
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs h-64 sborder p-4 mx-auto">
 
         <label class="label font-bold" for="username">Username</label>
         <input type="text" class="input" name="username" placeholder="Username/NRP" />
-
+        <x-forms.error name='username'/>
         <label class="label font-bold" for="password">Password</label>
         <input type="password" class="input" name="password" placeholder="Password" />
         <label class="label font-bold" for="level">Level</label>

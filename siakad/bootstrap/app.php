@@ -1,8 +1,10 @@
 <?php
 
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,7 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectUsersTo('/home');
+        $middleware->redirectUsersTo(function (Request $request){
+            if ($request->user()->level === 1) {
+                return '/admin';
+            }
+        });
+       
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
