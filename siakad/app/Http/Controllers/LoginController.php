@@ -22,28 +22,32 @@ class LoginController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'username' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string', Password::default()]
-        ]);       
-        
-        if (Auth::attempt($validated)) {
-            $request->session()->regenerate();
-            if (Auth::user()->level === 1) {
-                return redirect('/admin');
-            
-            }
-            if (Auth::user()->level === 3) {
-                return redirect('/mahasiswa');
-            }
-        
+{
+    $validated = $request->validate([
+        'username' => ['required', 'string', 'max:255'],
+        'password' => ['required', 'string', Password::default()]
+    ]);       
+    
+    if (Auth::attempt($validated)) {
+        $request->session()->regenerate();
+
+        if (Auth::user()->level === 1) {
+            return redirect('/admin');
         }
 
-        return back()->withErrors([
-            'username' => 'The Provided Credentials do not match our records'
-        ]);
+        if (Auth::user()->level === 2) {
+            return redirect('/kaprodi');
+        }
+
+        if (Auth::user()->level === 3) {
+            return redirect('/mahasiswa');
+        }
     }
+
+    return back()->withErrors([
+        'username' => 'The Provided Credentials do not match our records'
+    ]);
+}
 
 
     /**
