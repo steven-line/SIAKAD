@@ -3,6 +3,7 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Kaprodi\JadwalController;
 
 // ✅ ROOT → SELALU KE LOGIN
 Route::get('/', function () {
@@ -34,19 +35,21 @@ Route::middleware('auth')->group(function(){
         return view('kaprodi.dashboard');
     });
 
-    Route::get('/kaprodi/kelola_jadwal', function () {
-        return view('kaprodi.kelola_jadwal.index');
-    })->name('kaprodi.jadwal');
+    // =========================
+    // KAPRODI - JADWAL
+    // =========================
 
-    Route::get('/mahasiswa', function(){
-        return view('mahasiswa.dashboard');
-    });
+    Route::get('/kaprodi/kelola_jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 
-    Route::get('/mahasiswa/penawaran', function(){
-        return view('mahasiswa.penawaran.index', [
-            'jadwals' => \App\Models\Jadwal::all()
-        ]);
-    });
+    Route::get('/kaprodi/kelola_jadwal/buat', [JadwalController::class, 'create'])->name('jadwal.buat');
+
+    Route::post('/kaprodi/kelola_jadwal/store', [JadwalController::class, 'store'])->name('jadwal.store');
+    
+    Route::get('/kaprodi/kelola_jadwal/edit/{id}', [JadwalController::class, 'edit']);
+
+    Route::post('/kaprodi/kelola_jadwal/update/{id}', [JadwalController::class, 'update']);
+
+    Route::delete('/kaprodi/kelola_jadwal/delete/{id}', [JadwalController::class, 'destroy']);
 
     Route::get('/mahasiswa/view_krs', function(){
         return view('mahasiswa.kartu_KRS.index');

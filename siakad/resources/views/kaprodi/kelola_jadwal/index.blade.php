@@ -21,47 +21,61 @@
 
             <tbody class="bg-gray-900">
 
-                <!-- SESI 1 -->
-                <tr>
-                    <td class="p-3 border border-gray-700 font-semibold">
-                        Sesi 1 <br>
-                        <span class="text-gray-400 text-sm">08:00 - 11:00</span>
-                    </td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                </tr>
+            @foreach([
+                1 => '08:00 - 11:00',
+                2 => '11:00 - 14:00',
+                3 => '14:00 - 16:30'
+            ] as $sesi => $jam)
 
-                <!-- SESI 2 -->
-                <tr>
-                    <td class="p-3 border border-gray-700 font-semibold">
-                        Sesi 2 <br>
-                        <span class="text-gray-400 text-sm">11:00 - 14:00</span>
-                    </td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                </tr>
+            <tr>
+                <td class="p-3 border border-gray-700 font-semibold">
+                    Sesi {{ $sesi }} <br>
+                    <span class="text-gray-400 text-sm">{{ $jam }}</span>
+                </td>
 
-                <!-- SESI 3 -->
-                <tr>
-                    <td class="p-3 border border-gray-700 font-semibold">
-                        Sesi 3 <br>
-                        <span class="text-gray-400 text-sm">14:00 - 16:30</span>
+                @foreach(['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'] as $hari)
+
+                    @php
+                        $jadwal = $jadwals->firstWhere('hari', $hari)
+                                        ? $jadwals->where('hari', $hari)->where('sesi', $sesi)->first()
+                                        : null;
+                    @endphp
+
+                    <td class="border border-gray-700">
+
+                        @if($jadwal)
+                            <!-- ✅ kalau ada jadwal -->
+                            <div class="p-2 text-sm">
+                                <div class="font-bold">{{ $jadwal->nama_mk }}</div>
+                                <div class="text-gray-400">{{ $jadwal->kodemk }}</div>
+                                <div class="text-xs">{{ $jadwal->sks }} SKS</div>
+
+                                <div class="mt-2 flex justify-center gap-2">
+                                    <a href="/kaprodi/kelola_jadwal/edit/{{ $jadwal->id }}"
+                                    class="text-yellow-400 text-xs">Edit</a>
+
+                                    <form action="/kaprodi/kelola_jadwal/delete/{{ $jadwal->id }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="text-red-400 text-xs">Hapus</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        @else
+                            <!-- ➕ kalau kosong -->
+                            <a href="/kaprodi/kelola_jadwal/buat?hari={{ $hari }}&sesi={{ $sesi }}"
+                            class="block w-full h-full p-6 text-center hover:bg-gray-700 text-gray-400">
+                                +
+                            </a>
+                        @endif
+
                     </td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                    <td class="border border-gray-700"></td>
-                </tr>
+
+                @endforeach
+            </tr>
+
+            @endforeach
 
             </tbody>
         </table>
