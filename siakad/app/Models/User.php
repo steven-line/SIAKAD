@@ -62,4 +62,16 @@ class User extends Authenticatable
     public function isAdmin() {
         return $this->level === 1;
     }
+    public function isKaprodi() {
+        return $this->level === 2;
+    }
+
+
+    public function isMahasiswa() {
+        return $this->level === 3;
+    }
+    public function isDosen() {
+        return $this->level === 4;
+    }
+
 }
