@@ -71,7 +71,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+     return view('admin.users.edit', ['user' => $user]);   
     }
 
     /**
@@ -79,7 +79,15 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user->update([
+            'username' => request('username'),
+            'level' => request('level'),
+            'sks' => request('sks')
+            
+        ]);
+
+        return redirect('/admin/kelola-user');
+
     }
 
     /**
