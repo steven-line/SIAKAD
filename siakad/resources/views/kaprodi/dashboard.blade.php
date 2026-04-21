@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard Kaprodi</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
-
-<div class="p-6">
-    
-    <!-- Title -->
-    <h1 class="text-2xl font-bold mb-6">Dashboard Kaprodi</h1>
+<x-layout>
+        <h1 class="text-2xl font-bold mb-6">Dashboard Kaprodi</h1>
 
     <!-- Statistik -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -55,5 +45,5 @@
 
 </div>
 
-</body>
-</html>
+</x-layout>
+    <!-- Title -->
