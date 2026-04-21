@@ -10,7 +10,7 @@
      @vite('resources/css/app.css')
   </head>
 </head>
-<body class="flex">
+<body class="flex min-h-screen">
   <nav class="bg-white shadow-md border-r border-gray-200 h-screen  top-0 left-0 min-w-[250px] py-6 px-4 overflow-auto dark:bg-black">
       <div class="relative flex flex-col h-full">
 
@@ -33,14 +33,19 @@
         <div>
           
           <ul class="space-y-4 flex-1">
+            @can('dosen_wali')
+              <li><a href="/dosen">Dashboard</a></li>
+              <li><a href="/dosen/perwalian">Perwalian</a></li>
+            @endcan
             @can('admin')
-                <li><a href="/admin">Dashboard Admin</a></li>
+                <li><a href="/admin">Dashboard</a></li>
                 <li><a href="/admin/kelola-user">Kelola User</a></li>
             @endcan
            @can('mahasiswa')
-                <li><a href="/mahasiswa">Dashboard Mahasiswa</a></li>
+                <li><a href="/mahasiswa">Dashboard</a></li>
                 <li><a href="/mahasiswa/penawaran">Penawaran</a></li>
                 <li><a href="/mahasiswa/view_krs">KRS</a></li>
+                <li><a href="/mahasiswa/ubah-password">Ubah Password</a></li>
             @endcan
      
             
