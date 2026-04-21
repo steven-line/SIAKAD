@@ -63,10 +63,6 @@
     </div>
 
 </div>
-<<<<<<< HEAD
 
 </x-layout>
     <!-- Title -->
-=======
-</x-layout>     
->>>>>>> 5801e2cf1bb2996a8542a69e2cce7114f9236356
