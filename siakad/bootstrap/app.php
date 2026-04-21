@@ -14,8 +14,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectUsersTo(function (Request $request){
-            if ($request->user()->level === 1) {
+            if ($request->user()->isAdmin()) {
                 return '/admin';
+            } elseif ($request->user()->isKaprodi()) {
+                return '/kaprodi';
+            } elseif ($request->user()->isMahasiswa()) {
+                return '/mahasiswa';
+            } elseif ($request->user()->isDosen()){
+                return '/dosen';
             }
         });
        
