@@ -23,10 +23,20 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('admin', function(User $user){
-            return $user->level === 1 ? Response::allow() : Response::denyAsNotFound();
+            return $user->isAdmin() ? Response::allow() : Response::denyAsNotFound();
         }); 
-        Gate::define('mahasiswa', function(User $user){
-            return $user->level === 3 ? Response::allow() : Response::denyAsNotFound();
+        Gate::define('kaprodi', function(User $user){
+            return $user->isKaprodi() ? Response::allow() : Response::denyAsNotFound();
         });
+
+        Gate::define('mahasiswa', function(User $user){
+            return $user->isMahasiswa() ? Response::allow() : Response::denyAsNotFound();
+        });
+
+
+        Gate::define('dosen_wali', function(User $user){
+            return $user->isDosen() ? Response::allow() : Response::denyAsNotFound();
+        });
+        
     }
 }
