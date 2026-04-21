@@ -15,6 +15,7 @@
                 <option value="1">1 (Admin)</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
+                <option value="4">4</option>
         </select>
         <label class="label font-bold" for="sks">SKS</label>
         <input type="number" class="input" name="sks" placeholder="Contoh: 20" />
