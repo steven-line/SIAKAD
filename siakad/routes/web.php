@@ -7,20 +7,12 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Kaprodi\JadwalController;
 
-// ✅ ROOT → SELALU KE LOGIN
 Route::get('/', function () {
     return redirect('/login');
 });
 
-// 🔒 AUTH
-Route::middleware('auth')->group(function(){
 
-    // ✅ FIX: redirect sesuai role (INI KUNCI UTAMA)
-    Route::get('/dashboard', function () {
-        if (auth()->user()->level === 1) return redirect('/admin');
-        if (auth()->user()->level === 2) return redirect('/kaprodi');
-        if (auth()->user()->level === 3) return redirect('/mahasiswa');
-    })->name('dashboard');
+Route::middleware('auth')->group(function(){
 
     Route::delete('/logout', [LoginController::class, 'destroy']);
 
