@@ -38,6 +38,20 @@ Route::middleware('auth')->group(function(){
         return view('mahasiswa.kartu_KRS.index', [
         ]);
     });
+    Route::get('/mahasiswa/KHS', function(){
+        return view('mahasiswa.KHS.index', [
+        ]);
+    });
+
+    Route::get('/mahasiswa/Nilai_KRS', function(){
+        return view('mahasiswa.Nilai_KRS.index', [
+        ]);
+    });
+
+    Route::get('/mahasiswa/Transkrip_nilai', function(){
+        return view('mahasiswa.Transkrip_nilai.index', [
+        ]);
+    });
 });
 
 Route::middleware('guest')->group(function(){

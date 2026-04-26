@@ -1,4 +1,4 @@
-<x-layout title="KRS Mahasiswa">
+<x-layout title="KRS UWIkA">
     @php
         // Data dummy mata kuliah (KRS)
         $krsItems = [

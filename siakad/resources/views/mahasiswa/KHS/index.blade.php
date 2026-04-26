@@ -1,4 +1,3 @@
 <x-layout title="KRS UWIKA">
-    <h1>Hello</h1>
-    <p>Mahasiswa</p>
+  <h1>KHS Mahasiswa</h1>
 </x-layout>

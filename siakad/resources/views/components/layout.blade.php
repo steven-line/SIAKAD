@@ -41,6 +41,9 @@
                 <li><a href="/mahasiswa">Dashboard Mahasiswa</a></li>
                 <li><a href="/mahasiswa/penawaran">Penawaran</a></li>
                 <li><a href="/mahasiswa/view_krs">KRS</a></li>
+                <li><a href="/mahasiswa/Nilai_KRS">Nilai KRS</a></li>
+                <li><a href="/mahasiswa/KHS">KHS</a></li>
+                <li><a href="/mahasiswa/Transkrip_nilai">Transkrip Nilai</a></li>
             @endcan
      
             
