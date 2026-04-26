@@ -16,7 +16,7 @@
         <th>Akses Nilai</th>
         <th>Pataum</th>
         <th>Aktif</th>
-        <th>Detail</th>
+        <th colspan="3">Aksi</th>
       </tr>
     </thead>
     <tbody>
@@ -34,10 +34,35 @@
             <th>{{$user->aksesnilai}}</th>
             <th>{{$user->pataum}}</th>
             <th>{{$user->aktif}}</th>
-            <th><a href="">Detail</a></th>
+            <th><a href='' class="btn btn-soft btn-primary">Detail</a></th>
+            <th><a class="btn btn-soft btn-warning" href="/admin/kelola-user/{{$user->username}}/edit">Edit</a></th>
+            <th>
+              <button class="btn btn-soft btn-error" onclick="deleteBox_{{$user->username}}.showModal()">Delete</button>
+              <dialog id="deleteBox_{{$user->username}}" class="modal modal-bottom sm:modal-middle">
+                <div class="modal-box">
+                  <h3 class="text-lg font-bold">Peringatan Penghapusan</h3>
+                  <p class="py-4">Apa anda yakin ingin menghapus?</p>
+                  <div class="modal-action">
+                    <form method="dialog">
+                      <!-- if there is a button in form, it will close the modal -->
+                      <button class="btn btn-primary" form="delete-user-form-{{$user->username}}">Ya</button>
+                      <button class="btn btn-neutral">Tidak</button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
+            </th>
         </tr>
+
+        <form id="delete-user-form-{{$user->username}}" action="/admin/kelola-user/{{ $user->username }}" method='POST'>
+            @csrf  
+            @method('DELETE')
+       </form>
       @endforeach
     </tbody>
   </table>
+  <!-- Open the modal using ID.showModal() method -->
+ 
+
 </div>
 </x-layout>

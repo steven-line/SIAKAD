@@ -23,7 +23,10 @@ class User extends Authenticatable
         'username',
         'level',
         'sks',
+
         'validasi',
+        'firstlogin',
+        'lastlogin',
         'pataum',
         'aksesnilai',
         'aktif',
@@ -40,6 +43,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    public $incrementing = false;       // Jika username bukan angka (string)
+    protected $keyType = 'string'; 
     public $timestamps = false;
     /**
      * Get the attributes that should be cast.
@@ -53,4 +58,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isAdmin() {
+        return $this->level === 1;
+    }
+    public function isKaprodi() {
+        return $this->level === 2;
+    }
+
+
+    public function isMahasiswa() {
+        return $this->level === 3;
+    }
+    public function isDosen() {
+        return $this->level === 4;
+    }
+
 }
