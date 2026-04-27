@@ -47,11 +47,14 @@ Route::middleware('auth')->group(function(){
 
     Route::delete('/kaprodi/kelola_jadwal/delete/{id}', [JadwalController::class, 'destroy']);
 
+    Route::get('/mahasiswa', function(){
+        return view("mahasiswa.dashboard");
+    });
     Route::get('/mahasiswa/view_krs', function(){
         return view('mahasiswa.kartu_KRS.index');
     });
-    Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'edit']);
-    Route::patch('/mahasiswa/ubah-password/{user}', [UbahPasswordController::class, 'update']);
+    Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'create']);
+    Route::patch('/mahasiswa/ubah-password', [UbahPasswordController::class, 'store']);
     
 
 
