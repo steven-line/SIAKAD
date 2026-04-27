@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -21,15 +22,18 @@ class UbahPasswordController extends Controller
     {
         
     
-         return view('mahasiswa.ubah_password.edit', ['user' => $user]);
+        
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
-    {
-        $user = User::where('user', $user)->firstOrFail();
+    public function create() {
+        return view('mahasiswa.ubah_password.create');
+    }
+    public function store(Request $request) {
+        $user = Auth::user()->username;
+        $user = User::findOrFail($user);
 
         $validated = $request->validate([
             'password_lama' => ['required', 'string', 'current_password'],
@@ -38,7 +42,12 @@ class UbahPasswordController extends Controller
 
             ]);
 
-        $user->update(['password' => $validated['[password_baru']]);
+        $user->update(['password' => $validated['password_baru']]);
+
+    }
+    public function update(Request $request, User $user)
+    {
+  
         //
     }
 
