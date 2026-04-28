@@ -6,6 +6,9 @@ use App\Http\Controllers\UbahPasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Kaprodi\JadwalController;
+use App\Http\Controllers\Mahasiswa\MataKuliahController;
+use App\Http\Controllers\Mahasiswa\PenawaranController;
+
 
 Route::get('/', function () {
     return redirect('/login');
@@ -47,9 +50,27 @@ Route::middleware('auth')->group(function(){
 
     Route::delete('/kaprodi/kelola_jadwal/delete/{id}', [JadwalController::class, 'destroy']);
 
+
+    //Mahasiswa
+    Route::get('/mahasiswa', function(){
+        return view('mahasiswa.dashboard');
+    });
+    
+    Route::get('/mahasiswa/penawaran', [PenawaranController::class, 'index']);
     Route::get('/mahasiswa/view_krs', function(){
         return view('mahasiswa.kartu_KRS.index');
     });
+    Route::get('/mahasiswa/nilai_krs', function(){
+        return view('mahasiswa.nilai_krs.index');
+    });
+    Route::get('/mahasiswa/KHS', function(){
+        return view('mahasiswa.KHS.index');
+    });
+    Route::get('/mahasiswa/Transkrip_Nilai', function(){
+        return view('mahasiswa.Transkrip_Nilai.index');
+    });
+
+    Route::get('/mahasiswa/mata-kuliah/{id}', [MataKuliahController::class, 'show'])->name('mata-kuliah.show');
     Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'edit']);
     Route::patch('/mahasiswa/ubah-password/{user}', [UbahPasswordController::class, 'update']);
     

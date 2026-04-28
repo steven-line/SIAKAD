@@ -1,6 +1,6 @@
 <x-layout>
     
-    <a class="join-item btn btn-primary" href="/admin/kelola-user">⮜ Previous page</a>
+    <a class="join-item btn btn-primary" href="/mahasiswa">⮜ Previous page</a>
         <form class="flex"action="/mahasiswa/ubah-password/{{$user}}" method="POST">
         @csrf
         @method('PATCH')

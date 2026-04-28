@@ -45,6 +45,10 @@
                 <li><a href="/mahasiswa">Dashboard</a></li>
                 <li><a href="/mahasiswa/penawaran">Penawaran</a></li>
                 <li><a href="/mahasiswa/view_krs">KRS</a></li>
+                <li><a href="/mahasiswa/nilai_krs">Nilai KRS</a></li>
+                <li><a href="/mahasiswa/KHS">KHS</a></li>
+                <li><a href="/mahasiswa/Transkrip_Nilai">Transkrip Nilai</a></li>
+
                 <li><a href="/mahasiswa/ubah-password">Ubah Password</a></li>
             @endcan
             @can('kaprodi')

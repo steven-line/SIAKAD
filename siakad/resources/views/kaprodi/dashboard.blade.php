@@ -1,5 +1,4 @@
 <x-layout>
-<<<<<<< HEAD
         <h1 class="text-2xl font-bold mb-6">Dashboard Kaprodi</h1>
 
     <!-- Statistik -->
@@ -8,14 +7,12 @@
         <div class="bg-white shadow rounded-xl p-5">
             <h2 class="text-gray-500 text-sm">Total Mahasiswa</h2>
             <p class="text-2xl font-bold mt-2">120</p>
-=======
 <div class="flex flex-col h-full justify-between bg-gray-900 p-4">
 
     <!-- ATAS -->
     <div>
         <div class="mb-6 text-white font-bold text-lg">
             Kaprodi Menu
->>>>>>> 5801e2cf1bb2996a8542a69e2cce7114f9236356
         </div>
 
         <ul class="space-y-3">

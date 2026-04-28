@@ -1,7 +1,6 @@
-<x-layout title="index">
+<x-layout title="KRS UWIKA">
  <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
   <table class="table">
-    <!-- head -->
     <thead class="bg-blue-500 text-white">
       <tr>
         <th>Id</th>
@@ -14,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($jadwals as $jadwal)
+      @forelse ($jadwals as $jadwal)
         <tr>
           <td>{{ $jadwal->id }}</td>
           <td>{{ $jadwal->kode_mk }}</td>
@@ -24,7 +23,11 @@
           <td>{{ $jadwal->jam_mulai }}</td>
           <td>{{ $jadwal->jam_selesai }}</td>
         </tr>
-        @endforeach
+      @empty
+        <tr>
+          <td colspan="7" class="text-center py-4">Tidak ada data mata kuliah</td>
+        </tr>
+      @endforelse
     </tbody>
   </table>
 </div>

@@ -1,8 +1,9 @@
-<x-layout title="KRS Mahasiswa">
+<x-layout title="KRS UWIKA">
     @php
-        // Data dummy mata kuliah (KRS)
+        // Data dummy mata kuliah (KRS) dengan id
         $krsItems = [
             (object) [
+                'id' => 1,
                 'kode' => 'KM5001',
                 'nama_mk' => 'KULIAH KERJA NYATA',
                 'status' => 'BARU',
@@ -12,6 +13,7 @@
                 'sks' => 3,
             ],
             (object) [
+                'id' => 2,
                 'kode' => 'TF9705',
                 'nama_mk' => 'PROPOSAL TUGAS AKHIR',
                 'status' => 'BARU',
@@ -21,6 +23,7 @@
                 'sks' => 4,
             ],
             (object) [
+                'id' => 3,
                 'kode' => 'TF9708',
                 'nama_mk' => 'MAGANG',
                 'status' => 'BARU',
@@ -30,6 +33,7 @@
                 'sks' => 4,
             ],
             (object) [
+                'id' => 4,
                 'kode' => 'TF8603',
                 'nama_mk' => 'PENGOLAHAN CITRA DIGITAL',
                 'status' => 'BARU',
@@ -39,6 +43,7 @@
                 'sks' => 3,
             ],
             (object) [
+                'id' => 5,
                 'kode' => 'TF6604',
                 'nama_mk' => 'PENGAMANAN SISTEM KOMPUTER',
                 'status' => 'BARU',
@@ -48,6 +53,7 @@
                 'sks' => 3,
             ],
             (object) [
+                'id' => 6,
                 'kode' => 'KM1004',
                 'nama_mk' => 'PENGANTAR ENTERPRENEURSHIP',
                 'status' => 'BARU',
@@ -57,6 +63,7 @@
                 'sks' => 3,
             ],
             (object) [
+                'id' => 7,
                 'kode' => 'TF5605',
                 'nama_mk' => 'E-BUSINESS',
                 'status' => 'BARU',
@@ -93,7 +100,7 @@
             anda masing-masing.
         </div>
 
-         <!-- Status Validasi dan Cetak KRS -->
+        <!-- Status Validasi dan Cetak KRS -->
         <div class="flex flex-wrap justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg">
             <div class="flex items-center space-x-2">
                 <span class="text-green-700 font-semibold">Status:</span>
@@ -119,10 +126,14 @@
                 </thead>
                 <tbody>
                     @foreach ($krsItems as $index => $item)
-                        <tr class="border-b hover:cursor-pointer hover:bg-black/100">
+                        <tr class="border-b hover:cursor-pointer hover:bg-black/5">
                             <td class="px-4 py-2">{{ $index + 1 }}</td>
                             <td class="px-4 py-2">{{ $item->kode }}</td>
-                            <td class="px-4 py-2">{{ $item->nama_mk }}</td>
+                            <td class="px-4 py-2">
+                                <a href="{{ route('mata-kuliah.show', $item->id) }}" class="text-white">
+                                    {{ $item->nama_mk }}
+                                </a>
+                            </td>
                             <td class="px-4 py-2">
                                 <span class="badge badge-success text-white bg-green-500 px-2 py-1 rounded">{{ $item->status }}</span>
                             </td>

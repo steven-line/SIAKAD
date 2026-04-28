@@ -1,4 +1,4 @@
-<x-layout title="Nilai KRS">
+<x-layout title="KRS UWIKA">
     <h1>Nilai KRS Mahasiswa</h1>
     <h2>Daftar Nilai KRS</h2>
     <table>

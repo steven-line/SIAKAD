@@ -15,7 +15,7 @@
         </div>
 
         <!-- Info Semester/SKS, Periode, Kuota, Keterangan -->
-        <div class="mb-6 p-4 border rounded-lg bg-white shadow-sm">
+        <div class="mb-6 p-4 border rounded-lg bg-blue-100 shadow-sm">
             <p><strong>Semester / SKS :</strong> {{ $mataKuliah->semester }} / {{ $mataKuliah->sks }} SKS</p>
             <p><strong>Periode :</strong> {{ $mataKuliah->periode ?? 'GENAP / 2025-2026' }}</p>
             <p><strong>Kuota Kelas :</strong> {{ $mataKuliah->kuota ?? '-' }}</p>
