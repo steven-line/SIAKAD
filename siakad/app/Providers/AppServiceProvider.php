@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Schema::defaultStringLength(191); // 🔥 FIX ERROR MYSQL
         Gate::define('admin', function(User $user){
             return $user->isAdmin() ? Response::allow() : Response::denyAsNotFound();
         }); 

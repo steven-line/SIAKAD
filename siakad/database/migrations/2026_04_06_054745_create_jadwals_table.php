@@ -13,12 +13,16 @@ return new class extends Migration
     {
         Schema::create('jadwals', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_mk');
-            $table->string('nama_mk');
-            $table->string('kelas');
-            $table->string('hari');
+
+            $table->string('hari'); // Senin, Selasa, dll
+            $table->integer('sesi'); // 1, 2, 3
+
+            // 🔥 RELASI KE PENAWARAN
+            $table->foreignId('penawaran_id')->constrained()->onDelete('cascade');
+
             $table->time('jam_mulai');
             $table->time('jam_selesai');
+
             $table->timestamps();
         });
     }

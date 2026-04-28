@@ -28,7 +28,17 @@ class UserSeeder extends Seeder
             'validasi' => 1,
             'pataum' => 'o',]);
 
-            
+            User::create(['username' => '31123019',
+            'password' => Hash::make('hello12346'),
+            'level' => 2,
+            'firstlogin' => Carbon::now(),
+            'lastlogin' => Carbon::now(),
+            'aksesnilai' => 0,
+            'aktif' => 1,
+            'sks' => 110,
+            'validasi' => 1,
+            'pataum' => 'o',]);
+
 
             
     }

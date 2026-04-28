@@ -17,11 +17,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'username' => '31123019',
-            'password' => 'hello12345',
-            'level' => '1',
+        //User::factory()->create([
+            //'username' => '31123019',
+            //'password' => 'hello12345',
+            //'level' => '1',
             
+        //]);
+        // ✅ TAMBAHAN (Seeder lain biar kepanggil)
+        $this->call([
+            UserSeeder::class,
+            KaprodiSeeder::class,
         ]);
     }
 }
