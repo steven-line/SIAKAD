@@ -7,39 +7,60 @@
 
     <div class="bg-gray-800 p-6 rounded-lg shadow">
 
+        {{-- ERROR --}}
+        @if ($errors->any())
+            <div class="bg-red-500 p-3 mb-4 rounded">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('kaprodi.penawaran.store') }}">
             @csrf
 
             <div class="grid grid-cols-2 gap-4">
 
-                <!-- KODE MK -->
+                <!-- MATA KULIAH -->
                 <div>
-                    <label class="text-sm text-gray-400">Kode MK</label>
-                    <input type="text" name="kodemk"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded focus:ring-2 focus:ring-blue-500">
+                    <label class="text-sm text-gray-400">Mata Kuliah</label>
+                    <select name="kodemk" class="w-full p-2 mt-1 bg-gray-700 rounded">
+                        @foreach($matkuls as $mk)
+                            <option value="{{ $mk->kodemk }}">
+                                {{ $mk->kodemk }} - {{ $mk->nama }} ({{ $mk->sks }} SKS)
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
-                <!-- NAMA MK -->
+                <!-- DOSEN -->
                 <div>
-                    <label class="text-sm text-gray-400">Nama Mata Kuliah</label>
-                    <input type="text" name="nama_mk"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded">
+                    <label class="text-sm text-gray-400">Dosen</label>
+                    <select name="dosen" class="w-full p-2 mt-1 bg-gray-700 rounded">
+                        @foreach($dosens as $dsn)
+                            <option value="{{ $dsn->nama }}">
+                                {{ $dsn->nama }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <!-- SEMESTER -->
                 <div>
                     <label class="text-sm text-gray-400">Semester</label>
-                    <select name="semester"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded">
-                        <option>Ganjil</option>
-                        <option>Genap</option>
+                    <select name="semester" class="w-full p-2 mt-1 bg-gray-700 rounded">
+                        @for($i=1; $i<=8; $i++)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
                     </select>
                 </div>
 
-                <!-- TAHUN -->
+                <!-- PERIODE -->
                 <div>
-                    <label class="text-sm text-gray-400">Tahun Ajaran</label>
-                    <input type="text" name="tahun"
+                    <label class="text-sm text-gray-400">Periode</label>
+                    <input type="text" name="periode"
                         placeholder="2025/2026"
                         class="w-full p-2 mt-1 bg-gray-700 rounded">
                 </div>
@@ -47,8 +68,7 @@
                 <!-- HARI -->
                 <div>
                     <label class="text-sm text-gray-400">Hari</label>
-                    <select name="hari"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded">
+                    <select name="hari" class="w-full p-2 mt-1 bg-gray-700 rounded">
                         <option>Senin</option>
                         <option>Selasa</option>
                         <option>Rabu</option>
@@ -58,38 +78,62 @@
                     </select>
                 </div>
 
-                <!-- DOSEN -->
+                <!-- SESI -->
                 <div>
-                    <label class="text-sm text-gray-400">Dosen</label>
-                    <input type="text" name="dosen"
+                    <label class="text-sm text-gray-400">Sesi</label>
+                    <input type="text" name="sesi"
+                        placeholder="Sesi 1 / Sesi 2"
                         class="w-full p-2 mt-1 bg-gray-700 rounded">
                 </div>
 
-                <!-- JAM -->
+                <!-- JAM MULAI -->
                 <div>
                     <label class="text-sm text-gray-400">Jam Mulai</label>
-                    <input type="time" name="jam_mulai"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded">
-                </div>
-
-                <div>
-                    <label class="text-sm text-gray-400">Jam Selesai</label>
-                    <input type="time" name="jam_selesai"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded">
-                </div>
-
-                <!-- PAGI / MALAM -->
-                <div>
-                    <label class="text-sm text-gray-400">Kelas</label>
-                    <select name="kelas"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded">
-                        <option value="pagi">Pagi</option>
-                        <option value="malam">Malam</option>
+                    <select name="mulaipukul" class="w-full p-2 mt-1 bg-gray-700 rounded">
+                        @foreach($jamSlots as $jam)
+                            <option value="{{ $jam }}">{{ $jam }}</option>
+                        @endforeach
                     </select>
                 </div>
 
-                <!-- KETERANGAN -->
+                <!-- JAM SELESAI -->
                 <div>
+                    <label class="text-sm text-gray-400">Jam Selesai</label>
+                    <select name="selesaipukul" class="w-full p-2 mt-1 bg-gray-700 rounded">
+                        @foreach($jamSlots as $jam)
+                            <option value="{{ $jam }}">{{ $jam }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- JURUSAN -->
+                <div>
+                    <label class="text-sm text-gray-400">Jurusan</label>
+                    <select name="jurusan" class="w-full p-2 mt-1 bg-gray-700 rounded">
+                        <option value="TI">Teknik Informatika</option>
+                        <option value="SI">Sistem Informasi</option>
+                        <option value="MI">Manajemen Informatika</option>
+                    </select>
+                </div>
+
+                <!-- KELAS -->
+                <div>
+                    <label class="text-sm text-gray-400">Kelas</label>
+                    <select name="pataum" class="w-full p-2 mt-1 bg-gray-700 rounded">
+                        <option value="P">Pagi</option>
+                        <option value="M">Malam</option>
+                    </select>
+                </div>
+
+                <!-- PAGU -->
+                <div>
+                    <label class="text-sm text-gray-400">Pagu</label>
+                    <input type="number" name="pagu"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded">
+                </div>
+
+                <!-- KETERANGAN -->
+                <div class="col-span-2">
                     <label class="text-sm text-gray-400">Keterangan</label>
                     <input type="text" name="keterangan"
                         class="w-full p-2 mt-1 bg-gray-700 rounded">
@@ -97,13 +141,7 @@
 
             </div>
 
-            <!-- BUTTON -->
-            <div class="flex justify-end gap-3 mt-6">
-                <a href="/kaprodi/penawaran"
-                   class="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500">
-                    Batal
-                </a>
-
+            <div class="flex justify-end mt-6">
                 <button type="submit"
                     class="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500">
                     Simpan

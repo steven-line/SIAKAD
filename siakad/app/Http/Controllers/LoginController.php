@@ -21,14 +21,17 @@ class LoginController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+   public function store(Request $request)
 {
     $validated = $request->validate([
         'username' => ['required', 'string', 'max:255'],
-        'password' => ['required', 'string', Password::default()]
-    ]);       
-    
-    if (Auth::attempt($validated)) {
+        'password' => ['required', 'string'], // ✅ FIX DI SINI
+    ]);
+
+    if (Auth::attempt([
+        'username' => $request->username,
+        'password' => $request->password
+    ])) {
         $request->session()->regenerate();
 
         if (Auth::user()->level === 1) {
@@ -45,7 +48,7 @@ class LoginController extends Controller
     }
 
     return back()->withErrors([
-        'username' => 'The Provided Credentials do not match our records'
+        'username' => 'Username atau password salah'
     ]);
 }
 

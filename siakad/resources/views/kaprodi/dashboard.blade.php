@@ -1,57 +1,40 @@
 <x-layout>
-<div class="flex flex-col h-full justify-between bg-gray-900 p-4">
+<div class="min-h-screen bg-gray-900 p-6 text-white">
 
-    <!-- ATAS -->
-    <div>
-        <div class="mb-6 text-white font-bold text-lg">
-            Kaprodi Menu
-        </div>
-
-        <ul class="space-y-3">
-
-            <li>
-                <a href="/kaprodi/kelola_jadwal/"
-                   class="block bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg transition">
-                    📄 Kelola Jadwal
-                </a>
-            </li>
-
-            <li>
-                <a href="/kaprodi/approval"
-                   class="block bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg transition">
-                    ✅ Approval KRS
-                </a>
-            </li>
-
-            <li>
-                <a href="#"
-                   class="block bg-yellow-500 hover:bg-yellow-600 text-black font-medium p-3 rounded-lg transition">
-                    📊 Monitoring KRS
-                </a>
-            </li>
-
-            <li>
-                <a href="#"
-                   class="block bg-red-600 hover:bg-red-700 text-white p-3 rounded-lg transition">
-                    ⚙️ Pengaturan
-                </a>
-            </li>
-
-        </ul>
+    <!-- HEADER -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold">
+            Selamat datang Kaprodi {{ auth()->user()->prodi }}
+        </h1>
+        <p class="text-gray-400 mt-1">
+            Sistem Informasi Akademik - Dashboard Kaprodi
+        </p>
     </div>
 
-    <!-- BAWAH -->
-    <div>
+        <!-- INFO USER -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow">
+            <h2 class="font-semibold mb-4 text-lg">Informasi Akun</h2>
+
+            <div class="space-y-2 text-gray-300">
+                <p><strong>Username:</strong> {{ auth()->user()->username }}</p>
+                <p><strong>Prodi:</strong> {{ auth()->user()->prodi }}</p>
+                <p><strong>Level:</strong> Kaprodi</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LOGOUT -->
+    <div class="mt-8">
         <form method="POST" action="/logout">
             @csrf
             @method('DELETE')
-            <button class="w-full bg-gray-700 hover:bg-gray-800 text-white p-3 rounded-lg transition">
+
+            <button class="w-full bg-gray-700 hover:bg-gray-800 p-3 rounded-lg transition">
                 Logout
             </button>
         </form>
     </div>
 
 </div>
-
 </x-layout>
-    <!-- Title -->
