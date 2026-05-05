@@ -1,85 +1,94 @@
 <x-layout>
 <div class="p-6 text-white">
 
-    <h1 class="text-2xl font-bold mb-6">Kelola Jadwal Mata Kuliah</h1>
+    <h1 class="text-2xl font-bold mb-6">Jadwal Mata Kuliah</h1>
 
-    <div class="overflow-x-auto">
-        <table class="w-full border border-gray-700 rounded-lg overflow-hidden text-center">
-            
-            <!-- HEADER -->
-            <thead class="bg-gray-800 text-gray-300">
-                <tr>
-                    <th class="p-3 border border-gray-700">Sesi / Jam</th>
-                    <th class="p-3 border border-gray-700">Senin</th>
-                    <th class="p-3 border border-gray-700">Selasa</th>
-                    <th class="p-3 border border-gray-700">Rabu</th>
-                    <th class="p-3 border border-gray-700">Kamis</th>
-                    <th class="p-3 border border-gray-700">Jumat</th>
-                    <th class="p-3 border border-gray-700">Sabtu</th>
-                </tr>
-            </thead>
+    @php
+        $hariList = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    @endphp
 
-            <tbody class="bg-gray-900">
+    @foreach($hariList as $hari)
 
-            @foreach([
-                1 => '08:00 - 11:00',
-                2 => '11:00 - 14:00',
-                3 => '14:00 - 16:30'
-            ] as $sesi => $jam)
+        @php
+            $dataHari = $jadwals->where('hari', $hari);
+        @endphp
 
-            <tr>
-                <td class="p-3 border border-gray-700 font-semibold">
-                    Sesi {{ $sesi }} <br>
-                    <span class="text-gray-400 text-sm">{{ $jam }}</span>
-                </td>
+        @if($dataHari->count() > 0)
 
-                @foreach(['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'] as $hari)
+        <!-- 🔥 JUDUL HARI -->
+        <div class="mb-6">
+            <div class="inline-block bg-gray-700 px-3 py-1 rounded font-bold mb-2">
+                {{ $hari }}
+            </div>
 
-                    @php
-                        $jadwal = $jadwals->firstWhere('hari', $hari)
-                                        ? $jadwals->where('hari', $hari)->where('sesi', $sesi)->first()
-                                        : null;
-                    @endphp
+            <div class="overflow-x-auto">
+                <table class="w-full border border-gray-700 text-sm">
 
-                    <td class="border border-gray-700">
+                    <!-- HEADER -->
+                    <thead class="bg-gray-800 text-gray-300">
+                        <tr>
+                            <th class="p-2 border">No</th>
+                            <th class="p-2 border">Kode</th>
+                            <th class="p-2 border">Mata Kuliah</th>
+                            <th class="p-2 border">Hari</th>
+                            <th class="p-2 border">Pukul</th>
+                            <th class="p-2 border">SKS</th>
+                        </tr>
+                    </thead>
 
-                        @if($jadwal)
-                            <!-- ✅ kalau ada jadwal -->
-                            <div class="p-2 text-sm">
-                                <div class="font-bold">{{ $jadwal->nama_mk }}</div>
-                                <div class="text-gray-400">{{ $jadwal->kodemk }}</div>
-                                <div class="text-xs">{{ $jadwal->sks }} SKS</div>
+                    <tbody class="bg-gray-900">
 
-                                <div class="mt-2 flex justify-center gap-2">
-                                    <a href="/kaprodi/kelola_jadwal/edit/{{ $jadwal->id }}"
-                                    class="text-yellow-400 text-xs">Edit</a>
+                        @foreach($dataHari->values() as $i => $item)
+                        <tr class="hover:bg-gray-800">
 
-                                    <form action="/kaprodi/kelola_jadwal/delete/{{ $jadwal->id }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="text-red-400 text-xs">Hapus</button>
-                                    </form>
+                            <!-- NO -->
+                            <td class="p-2 border">{{ $i+1 }}</td>
+
+                            <!-- KODE -->
+                            <td class="p-2 border font-semibold">
+                                {{ $item->kodemk }}
+                            </td>
+
+                            <!-- MATA KULIAH -->
+                            <td class="p-2 border">
+                                <div class="font-semibold">
+                                    {{ $item->matkul->nama ?? '-' }}
                                 </div>
-                            </div>
 
-                        @else
-                            <!-- ➕ kalau kosong -->
-                            <a href="/kaprodi/kelola_jadwal/buat?hari={{ $hari }}&sesi={{ $sesi }}"
-                            class="block w-full h-full p-6 text-center hover:bg-gray-700 text-gray-400">
-                                +
-                            </a>
-                        @endif
+                                <div class="text-xs text-gray-400">
+                                    {{ $item->dosen }}
+                                </div>
+                            </td>
 
-                    </td>
+                            <!-- HARI -->
+                            <td class="p-2 border">
+                                {{ strtoupper($item->hari) }}
+                            </td>
 
-                @endforeach
-            </tr>
+                            <!-- JAM -->
+                            <td class="p-2 border">
+                                {{ \Carbon\Carbon::parse($item->mulaipukul)->format('H:i') }}
+                                -
+                                {{ \Carbon\Carbon::parse($item->selesaipukul)->format('H:i') }}
+                            </td>
 
-            @endforeach
+                            <!-- SKS -->
+                            <td class="p-2 border text-center">
+                                {{ $item->matkul->sks ?? '-' }}
+                            </td>
 
-            </tbody>
-        </table>
-    </div>
+                        </tr>
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        @endif
+
+    @endforeach
 
 </div>
 </x-layout>

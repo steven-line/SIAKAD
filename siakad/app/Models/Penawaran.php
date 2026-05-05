@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Penawaran extends Model
 {
-    protected $primaryKey = 'recno'; // 🔥 wajib
+    protected $table = 'penawarans';
+
+    protected $primaryKey = 'recno';
 
     public $incrementing = true;
 
@@ -26,4 +28,18 @@ class Penawaran extends Model
         'pagu',
         'pataum',
     ];
+
+    // 🔥 FIX: gunakan format time, bukan datetime
+    protected $casts = [
+        'mulaipukul' => 'datetime:H:i:s',
+        'selesaipukul' => 'datetime:H:i:s',
+    ];
+
+    /**
+     * 🔥 RELASI KE MATA KULIAH
+     */
+    public function matkul()
+    {
+        return $this->belongsTo(MataKuliah::class, 'kodemk', 'kodemk');
+    }
 }
