@@ -14,6 +14,13 @@ class Dosen extends Model
     protected $keyType = 'string';
     public $timestamps = false;
 
+    // ✅ TAMBAHKAN INI
+    protected $fillable = [
+        'nim_dosen',
+        'nama',
+        'nip' // 🔥 INI YANG KURANG
+    ];
+
     public function mahasiswas() {
         return $this->hasMany(Mahasiswa::class);
     }

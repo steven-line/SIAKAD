@@ -3,126 +3,55 @@
 namespace App\Http\Controllers\Kaprodi;
 
 use App\Http\Controllers\Controller;
+use App\Models\Penawaran;
 use Illuminate\Http\Request;
-use App\Models\Jadwal;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class JadwalController extends Controller
 {
-    // ✅ tampil tabel jadwal
-    public function index()
+    /**
+     * 🔥 (OPSIONAL) Slot jam - dipakai kalau mau grid
+     */
+    private function generateJamSlots()
     {
-        $jadwals = Jadwal::orderBy('hari')->orderBy('sesi')->get();
-        return view('kaprodi.kelola_jadwal.index', compact('jadwals'));
-    }
+        $slots = [];
 
-    // ✅ tampil form input
-    public function create(Request $request)
-    {
-        return view('kaprodi.kelola_jadwal.buatJadwal', [
-            'hari' => $request->hari,
-            'sesi' => $request->sesi,
-        ]);
-    }
+        $start = Carbon::createFromTime(8, 0);
+        $end   = Carbon::createFromTime(17, 10);
 
-    // ✅ simpan ke database
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'kodemk' => 'required|string|max:50',
-            'nama_mk' => 'required|string|max:255',
-            'hari' => 'required|string',
-            'sesi' => 'required|in:1,2,3',
-            'sks' => 'required|integer|min:1|max:6',
-        ]);
-
-        $sesi = (int) $validated['sesi'];
-
-        // ❌ cegah slot dobel
-        $cek = Jadwal::where('hari', $validated['hari'])
-            ->where('sesi', $sesi)
-            ->first();
-
-        if ($cek) {
-            return back()
-                ->withErrors(['error' => 'Slot jadwal sudah terisi!'])
-                ->withInput();
+        while ($start <= $end) {
+            $slots[] = $start->format('H:i');
+            $start->addMinutes(50);
         }
 
-        Jadwal::create([
-            'kodemk' => $validated['kodemk'],
-            'nama_mk' => $validated['nama_mk'],
-            'hari' => $validated['hari'],
-            'sesi' => $sesi,
-            'sks' => $validated['sks'],
-
-            'jam_mulai' => match($sesi) {
-                1 => '08:00:00',
-                2 => '11:00:00',
-                3 => '14:00:00',
-                default => null,
-            },
-
-            'jam_selesai' => match($sesi) {
-                1 => '11:00:00',
-                2 => '14:00:00',
-                3 => '16:30:00',
-                default => null,
-            },
-        ]);
-
-        return redirect('/kaprodi/kelola_jadwal')
-            ->with('success', 'Jadwal berhasil ditambahkan');
+        return $slots;
     }
 
-    // ✅ tampil form edit
-    public function edit($id)
+    /**
+     * 🔥 TAMPILKAN JADWAL
+     */
+    public function index()
     {
-        $jadwal = Jadwal::findOrFail($id);
-        return view('kaprodi.kelola_jadwal.editJadwal', compact('jadwal'));
-    }
+        // ❗ pastikan user login
+        $user = Auth::user();
 
-    // ✅ update data
-    public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'kodemk' => 'required|string|max:50',
-            'nama_mk' => 'required|string|max:255',
-            'sks' => 'required|integer|min:1|max:6',
-        ]);
+        if (!$user || !$user->prodi) {
+            abort(403, 'User tidak memiliki prodi');
+        }
 
-        $jadwal = Jadwal::findOrFail($id);
-        $sesi = (int) $jadwal->sesi;
+        // 🔥 ambil data + relasi matkul
+        $jadwals = Penawaran::with('matkul')
+            ->where('jurusan', $user->prodi)
+            ->orderByRaw("
+                FIELD(hari, 'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu')
+            ")
+            ->orderBy('mulaipukul')
+            ->get();
 
-        $jadwal->update([
-            'kodemk' => $validated['kodemk'],
-            'nama_mk' => $validated['nama_mk'],
-            'sks' => $validated['sks'],
+        // 🔥 hanya dipakai kalau pakai tampilan grid
+        $jamSlots = $this->generateJamSlots();
 
-            'jam_mulai' => match($sesi) {
-                1 => '08:00:00',
-                2 => '11:00:00',
-                3 => '14:00:00',
-                default => null,
-            },
-
-            'jam_selesai' => match($sesi) {
-                1 => '11:00:00',
-                2 => '14:00:00',
-                3 => '16:30:00',
-                default => null,
-            },
-        ]);
-
-        return redirect('/kaprodi/kelola_jadwal')
-            ->with('success', 'Jadwal berhasil diupdate');
-    }
-
-    // ✅ hapus data
-    public function destroy($id)
-    {
-        Jadwal::findOrFail($id)->delete();
-
-        return redirect('/kaprodi/kelola_jadwal')
-            ->with('success', 'Jadwal berhasil dihapus');
+        return view('kaprodi.kelola_jadwal.index', compact('jadwals', 'jamSlots'));
     }
 }

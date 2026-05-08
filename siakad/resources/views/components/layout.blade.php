@@ -48,11 +48,42 @@
                 <li><a href="/mahasiswa/ubah-password">Ubah Password</a></li>
             @endcan
             @can('kaprodi')
-                <li><a href="/kaprodi">Dashboard Kaprodi</a></li>
-                <li><a href="/kaprodi/jadwal">KRS</a></li>
+                <li>
+                    <a href="/kaprodi"
+                      class="block p-3 rounded hover:bg-gray-800 {{ request()->is('kaprodi') ? 'bg-blue-600' : '' }}">
+                        🏠 Dashboard Kaprodi
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('kaprodi.penawaran.create') }}"
+                      class="block p-3 rounded hover:bg-gray-800 {{ request()->is('kaprodi/penawaran/create') ? 'bg-blue-600' : '' }}">
+                        📄 Input Penawaran
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/kaprodi/kelola_jadwal"
+                      class="block p-3 rounded hover:bg-gray-800 {{ request()->is('kaprodi/kelola_jadwal') ? 'bg-blue-600' : '' }}">
+                        📅 Jadwal
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/kaprodi/jadwal_pagi"
+                      class="block p-3 rounded hover:bg-gray-800 {{ request()->is('kaprodi/jadwal_pagi') ? 'bg-blue-600' : '' }}">
+                        🌅 Jadwal Pagi
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/kaprodi/jadwal_malam"
+                      class="block p-3 rounded hover:bg-gray-800 {{ request()->is('kaprodi/jadwal_malam') ? 'bg-blue-600' : '' }}">
+                        🌙 Jadwal Malam
+                    </a>
+                </li>
+
             @endcan
-     
-            
               @auth
                 <form action="/logout" method="POST">
                   @csrf

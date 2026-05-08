@@ -19,11 +19,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     
-    protected $fillable = [
+        protected $fillable = [
         'username',
         'level',
         'sks',
-
         'validasi',
         'firstlogin',
         'lastlogin',
@@ -31,6 +30,7 @@ class User extends Authenticatable
         'aksesnilai',
         'aktif',
         'password',
+        'prodi', // 🔥 WAJIB TAMBAH INI
     ];
 
     /**
