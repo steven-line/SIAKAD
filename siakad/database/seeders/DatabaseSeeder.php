@@ -16,12 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+      
 
-        User::factory()->create([
-            'username' => '31123019',
-            'password' => 'hello12345',
-            'level' => '1',
-            
-        ]);
     }
 }
