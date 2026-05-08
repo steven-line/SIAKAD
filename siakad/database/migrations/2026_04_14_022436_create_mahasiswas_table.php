@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('mahasiswas', function (Blueprint $table) {
             $table->string('nrp')->primary();
             $table->string('nama');
-            $table->string('dosen_wali');
-            $table->foreign('dosen_wali')->references('nim_dosen')->on('dosens')->onDelete('cascade');
+            $table->string('dosen_wali',15);
+    
             $table->text('status_blokir');
 
         });
