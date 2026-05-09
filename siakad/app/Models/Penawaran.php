@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Penawaran extends Model
 {
-
     protected $table = 'penawaran';
+
     protected $primaryKey = 'recno';
-   
+
     public $incrementing = true;
 
     protected $keyType = 'int';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'kodemk',
@@ -29,17 +31,19 @@ class Penawaran extends Model
         'pataum',
     ];
 
-    // 🔥 FIX: gunakan format time, bukan datetime
     protected $casts = [
         'mulaipukul' => 'datetime:H:i:s',
         'selesaipukul' => 'datetime:H:i:s',
     ];
 
-    /**
-     * 🔥 RELASI KE MATA KULIAH
-     */
     public function matkul()
     {
-        return $this->belongsTo(MataKuliah::class, 'kodemk', 'kodemk');
+        return $this->belongsTo(Mk::class, 'kodemk', 'kodemk');
     }
+
+    public function registrasis()
+{
+    return $this->hasMany(Registrasi::class, 'kodemk', 'kodemk');
+}
+
 }

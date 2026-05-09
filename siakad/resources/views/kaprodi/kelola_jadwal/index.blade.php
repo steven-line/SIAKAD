@@ -51,9 +51,12 @@
 
                             <!-- MATA KULIAH -->
                             <td class="p-2 border">
-                                <div class="font-semibold">
+                                <a
+                                    href="{{ route('kaprodi.jadwal.show', $item->recno) }}"
+                                    class="font-semibold text-blue-400 hover:underline"
+                                >
                                     {{ $item->matkul->nama ?? '-' }}
-                                </div>
+                                </a>
 
                                 <div class="text-xs text-gray-400">
                                     {{ $item->dosen }}

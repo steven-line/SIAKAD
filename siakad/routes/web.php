@@ -36,17 +36,37 @@ Route::middleware('auth')->group(function(){
     // KAPRODI - JADWAL
     // =========================
 
-    Route::get('/kaprodi/kelola_jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::prefix('kaprodi')->middleware('auth')->group(function () {
 
-    Route::get('/kaprodi/kelola_jadwal/buat', [JadwalController::class, 'create'])->name('jadwal.buat');
+        // halaman jadwal
+        Route::get('/kelola_jadwal', [JadwalController::class, 'index'])
+            ->name('jadwal.index');
 
-    Route::post('/kaprodi/kelola_jadwal/store', [JadwalController::class, 'store'])->name('jadwal.store');
-    
-    Route::get('/kaprodi/kelola_jadwal/edit/{id}', [JadwalController::class, 'edit']);
+        // 🔥 DETAIL JADWAL + MAHASISWA
+        Route::get('/kelola_jadwal/{recno}', [JadwalController::class, 'show'])
+            ->name('kaprodi.jadwal.show');
 
-    Route::post('/kaprodi/kelola_jadwal/update/{id}', [JadwalController::class, 'update']);
+        // create
+        Route::get('/kelola_jadwal/buat', [JadwalController::class, 'create'])
+            ->name('jadwal.buat');
 
-    Route::delete('/kaprodi/kelola_jadwal/delete/{id}', [JadwalController::class, 'destroy']);
+        // store
+        Route::post('/kelola_jadwal/store', [JadwalController::class, 'store'])
+            ->name('jadwal.store');
+
+        // edit
+        Route::get('/kelola_jadwal/edit/{id}', [JadwalController::class, 'edit'])
+            ->name('jadwal.edit');
+
+        // update
+        Route::post('/kelola_jadwal/update/{id}', [JadwalController::class, 'update'])
+            ->name('jadwal.update');
+
+        // delete
+        Route::delete('/kelola_jadwal/delete/{id}', [JadwalController::class, 'destroy'])
+            ->name('jadwal.destroy');
+
+    });
 
 // =========================
 // KAPRODI - PENAWARAN
