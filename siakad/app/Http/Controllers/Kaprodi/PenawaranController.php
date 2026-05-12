@@ -11,8 +11,11 @@ use Carbon\Carbon;
 
 class PenawaranController extends Controller
 {
-    // 🔥 GENERATE SLOT 50 MENIT
-    private function generateJamSlots()
+    /**
+     * 🔥 SLOT JAM SESI 1 (PAGI)
+     * 08:00 - 17:10
+     */
+    private function generateJamSlotsPagi()
     {
         $slots = [];
 
@@ -27,23 +30,54 @@ class PenawaranController extends Controller
         return $slots;
     }
 
-    // 🔥 FORM INPUT
+    /**
+     * 🔥 SLOT JAM SESI 2 (MALAM)
+     * 18:00 - 22:00
+     */
+    private function generateJamSlotsMalam()
+    {
+        $slots = [];
+
+        $start = Carbon::createFromTime(18, 0);
+        $end   = Carbon::createFromTime(22, 0);
+
+        while ($start <= $end) {
+            $slots[] = $start->format('H:i');
+            $start->addMinutes(50);
+        }
+
+        return $slots;
+    }
+
+    /**
+     * 🔥 FORM INPUT
+     */
     public function create()
     {
         // 🔥 ambil matkul dari tabel mk
         $matkuls = Mk::orderBy('kodemk')->get();
 
+        // 🔥 ambil dosen
         $dosens = Dosen::orderBy('nama')->get();
 
-        $jamSlots = $this->generateJamSlots();
+        // 🔥 slot jam pagi & malam
+        $jamSlotsPagi  = $this->generateJamSlotsPagi();
+        $jamSlotsMalam = $this->generateJamSlotsMalam();
 
         return view(
             'kaprodi.penawaran.create',
-            compact('matkuls', 'dosens', 'jamSlots')
+            compact(
+                'matkuls',
+                'dosens',
+                'jamSlotsPagi',
+                'jamSlotsMalam'
+            )
         );
     }
 
-    // 🔥 SIMPAN DATA
+    /**
+     * 🔥 SIMPAN DATA
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -55,12 +89,27 @@ class PenawaranController extends Controller
             'mulaipukul'   => 'required',
             'selesaipukul' => 'required',
             'pataum'       => 'required',
+            'sesi'         => 'required',
             'pagu'         => 'nullable|numeric',
             'keterangan'   => 'nullable',
         ]);
 
         $mulai   = Carbon::createFromFormat('H:i', $request->mulaipukul);
         $selesai = Carbon::createFromFormat('H:i', $request->selesaipukul);
+
+        /**
+         * 🔥 BATAS JAM BERDASARKAN SESI
+         */
+        if ($request->sesi == '1') {
+
+            $batasAwal  = '08:00';
+            $batasAkhir = '17:10';
+
+        } else {
+
+            $batasAwal  = '18:00';
+            $batasAkhir = '22:00';
+        }
 
         // ❌ VALIDASI 1
         if ($selesai->lessThanOrEqualTo($mulai)) {
@@ -78,10 +127,13 @@ class PenawaranController extends Controller
             ])->withInput();
         }
 
-        // ❌ VALIDASI 3
-        if ($selesai->format('H:i') > '17:10') {
+        // ❌ VALIDASI 3 - CEK BATAS SESI
+        if (
+            $mulai->format('H:i') < $batasAwal ||
+            $selesai->format('H:i') > $batasAkhir
+        ) {
             return back()->withErrors([
-                'jam' => 'Melebihi batas maksimal jam 17:10'
+                'jam' => 'Jam tidak sesuai dengan sesi yang dipilih'
             ])->withInput();
         }
 

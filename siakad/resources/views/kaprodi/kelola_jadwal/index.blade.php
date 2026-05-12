@@ -77,7 +77,18 @@
 
                             <!-- SKS -->
                             <td class="p-2 border text-center">
-                                {{ $item->matkul->sks ?? '-' }}
+
+                                @php
+                                    $mulai = \Carbon\Carbon::parse($item->mulaipukul);
+                                    $selesai = \Carbon\Carbon::parse($item->selesaipukul);
+
+                                    $durasi = $mulai->diffInMinutes($selesai);
+
+                                    $sks = $durasi / 50;
+                                @endphp
+
+                                {{ $sks }}
+
                             </td>
 
                         </tr>
