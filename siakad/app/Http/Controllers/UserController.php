@@ -80,9 +80,9 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $user->update([
-            'username' => request('username'),
-            'level' => request('level'),
-            'sks' => request('sks')
+            'username' => $request->username,
+            'level' => $request->level,
+            'sks' => $request->sks
             
         ]);
 
