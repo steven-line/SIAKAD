@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Kaprodi\JadwalController;
 use App\Http\Controllers\Kaprodi\PenawaranController;
+use App\Http\Controllers\Admin\MkController;
+use App\Http\Controllers\Admin\DosenController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -23,11 +25,26 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/admin/kelola-user', [UserController::class, 'index']);
     Route::get('/admin/kelola-user/create', [UserController::class, 'create']);
-    Route::post('/admin/kelola-user/create', [UserController::class, 'store']);
+    Route::post('/admin/kelola-user', [UserController::class, 'store']);
     Route::delete('/admin/kelola-user/{user}', [UserController::class, 'destroy']);
     Route::get('/admin/kelola-user/{user}/edit', [UserController::class, 'edit']);
     Route::patch('/admin/kelola-user/{user}', [UserController::class, 'update']);
     
+    
+    Route::get('/admin/kelola-matakuliah', [MkController::class, 'index']);
+    Route::get('/admin/kelola-matakuliah/create', [MkController::class, 'create']);
+    Route::post('/admin/kelola-matakuliah', [MkController::class, 'store']);
+    Route::get('/admin/kelola-matakuliah/{mk}/edit', [MkController::class, 'edit']);
+    Route::patch('/admin/kelola-matakuliah/{mk}', [MkController::class, 'update']);
+    Route::delete('/admin/kelola-matakuliah/{mk}', [MkController::class, 'destroy']);
+    
+    Route::get('/admin/kelola-dosen', [DosenController::class, 'index']);
+    Route::get('/admin/kelola-dosen/create', [DosenController::class, 'create']);
+    Route::post('/admin/kelola-dosen', [DosenController::class, 'store']);
+    Route::get('/admin/kelola-dosen/{dosen}/edit', [DosenController::class, 'edit']);
+    Route::patch('/admin/kelola-dosen/{dosen}', [DosenController::class, 'update']);
+    Route::delete('/admin/kelola-dosen/{dosen}', [DosenController::class, 'destroy']);
+ 
     Route::get('/kaprodi', function(){
         return view('kaprodi.dashboard');
     });
