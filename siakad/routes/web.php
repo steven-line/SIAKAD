@@ -5,6 +5,7 @@ use App\Http\Controllers\PerwalianController;
 use App\Http\Controllers\UbahPasswordController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Kaprodi\JadwalController;
 use App\Http\Controllers\Kaprodi\PenawaranController;
 use App\Http\Controllers\Admin\MkController;
@@ -14,12 +15,17 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+Route::middleware('auth')->group(function () {
 
-Route::middleware('auth')->group(function(){
-
+    // =========================
+    // LOGOUT
+    // =========================
     Route::delete('/logout', [LoginController::class, 'destroy']);
 
-    Route::get('/admin', function(){
+    // =========================
+    // ADMIN
+    // =========================
+    Route::get('/admin', function () {
         return view('admin.dashboard');
     });
 
@@ -45,21 +51,32 @@ Route::middleware('auth')->group(function(){
     Route::patch('/admin/kelola-dosen/{dosen}', [DosenController::class, 'update']);
     Route::delete('/admin/kelola-dosen/{dosen}', [DosenController::class, 'destroy']);
  
-    Route::get('/kaprodi', function(){
+  
+    // =========================
+    // DASHBOARD KAPRODI
+    // =========================
+    Route::get('/kaprodi', function () {
         return view('kaprodi.dashboard');
     });
 
     // =========================
     // KAPRODI - JADWAL
     // =========================
+    Route::prefix('kaprodi')->group(function () {
 
-    Route::prefix('kaprodi')->middleware('auth')->group(function () {
-
-        // halaman jadwal
+        // 🔥 semua jadwal
         Route::get('/kelola_jadwal', [JadwalController::class, 'index'])
             ->name('jadwal.index');
 
-        // 🔥 DETAIL JADWAL + MAHASISWA
+        // 🔥 JADWAL PAGI
+        Route::get('/jadwal_pagi', [JadwalController::class, 'pagi'])
+            ->name('jadwal.pagi');
+
+        // 🔥 JADWAL MALAM
+        Route::get('/jadwal_malam', [JadwalController::class, 'malam'])
+            ->name('jadwal.malam');
+
+        // 🔥 detail jadwal + mahasiswa
         Route::get('/kelola_jadwal/{recno}', [JadwalController::class, 'show'])
             ->name('kaprodi.jadwal.show');
 
@@ -82,24 +99,21 @@ Route::middleware('auth')->group(function(){
         // delete
         Route::delete('/kelola_jadwal/delete/{id}', [JadwalController::class, 'destroy'])
             ->name('jadwal.destroy');
-
     });
+    // =========================
+    // KAPRODI - PENAWARAN
+    // =========================
+    Route::prefix('kaprodi')->group(function () {
 
-// =========================
-// KAPRODI - PENAWARAN
-// =========================
-
-    Route::prefix('kaprodi')->middleware('auth')->group(function () {
-
-        // 🔥 langsung ke form (tidak pakai index lagi)
+        // form utama
         Route::get('/penawaran', [PenawaranController::class, 'create'])
             ->name('kaprodi.penawaran');
 
-        // form create (opsional kalau mau dipisah URL)
+        // create
         Route::get('/penawaran/create', [PenawaranController::class, 'create'])
             ->name('kaprodi.penawaran.create');
 
-        // simpan data
+        // store
         Route::post('/penawaran/store', [PenawaranController::class, 'store'])
             ->name('kaprodi.penawaran.store');
 
@@ -114,30 +128,39 @@ Route::middleware('auth')->group(function(){
         // delete
         Route::delete('/penawaran/delete/{id}', [PenawaranController::class, 'destroy'])
             ->name('kaprodi.penawaran.delete');
-
     });
 
-    Route::get('/mahasiswa', function(){
-        return view("mahasiswa.dashboard");
+    // =========================
+    // MAHASISWA
+    // =========================
+    Route::get('/mahasiswa', function () {
+        return view('mahasiswa.dashboard');
     });
-    Route::get('/mahasiswa/view_krs', function(){
+
+    Route::get('/mahasiswa/view_krs', function () {
         return view('mahasiswa.kartu_KRS.index');
     });
+
     Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'create']);
     Route::patch('/mahasiswa/ubah-password', [UbahPasswordController::class, 'store']);
-    
 
-
-    Route::get('/dosen', function(){
+    // =========================
+    // DOSEN
+    // =========================
+    Route::get('/dosen', function () {
         return view('dosen.dashboard');
     });
 
     Route::get('/dosen/perwalian', [PerwalianController::class, 'index']);
-    
 });
 
-// 🔓 GUEST
-Route::middleware('guest')->group(function(){
-    Route::get('/login', [LoginController::class, 'create'])->name('login');
+// =========================
+// GUEST
+// =========================
+Route::middleware('guest')->group(function () {
+
+    Route::get('/login', [LoginController::class, 'create'])
+        ->name('login');
+
     Route::post('/login', [LoginController::class, 'store']);
 });

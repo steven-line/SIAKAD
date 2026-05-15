@@ -31,19 +31,17 @@ class JadwalController extends Controller
     }
 
     /**
-     * 🔥 HALAMAN JADWAL
+     * 🔥 QUERY DASAR JADWAL
      */
-    public function index()
+    private function getJadwalQuery()
     {
         $user = Auth::user();
 
-        // ❌ kalau tidak punya prodi
         if (!$user || !$user->prodi) {
             abort(403, 'User tidak memiliki prodi');
         }
 
-        // 🔥 ambil semua jadwal
-        $jadwals = Penawaran::with('matkul')
+        return Penawaran::with('matkul')
             ->where('jurusan', $user->prodi)
             ->orderByRaw("
                 FIELD(
@@ -56,14 +54,51 @@ class JadwalController extends Controller
                     'Sabtu'
                 )
             ")
-            ->orderBy('mulaipukul')
-            ->get();
+            ->orderBy('mulaipukul');
+    }
+
+    /**
+     * 🔥 SEMUA JADWAL
+     */
+    public function index()
+    {
+        $jadwals = $this->getJadwalQuery()->get();
 
         $jamSlots = $this->generateJamSlots();
 
         return view(
             'kaprodi.kelola_jadwal.index',
             compact('jadwals', 'jamSlots')
+        );
+    }
+
+    /**
+     * 🔥 JADWAL PAGI (SESI 1)
+     */
+    public function pagi()
+    {
+        $jadwals = $this->getJadwalQuery()
+            ->where('sesi', 1)
+            ->get();
+
+        return view(
+            'kaprodi.kelola_jadwal.index',
+            compact('jadwals')
+        );
+    }
+
+    /**
+     * 🔥 JADWAL MALAM (SESI 2)
+     */
+    public function malam()
+    {
+        $jadwals = $this->getJadwalQuery()
+            ->where('sesi', 2)
+            ->get();
+
+        return view(
+            'kaprodi.kelola_jadwal.index',
+            compact('jadwals')
         );
     }
 
