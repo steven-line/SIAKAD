@@ -1,6 +1,6 @@
 <x-layout>
       <a class="join-item btn btn-primary" href="/admin/kelola-user">⮜ Previous page</a>
-    <form class="flex h-screen"action="/admin/kelola-user/create" method="POST">
+    <form class="flex h-screen"action="/admin/kelola-user" method="POST">
     @csrf
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs h-100 border p-4 mx-auto">
 
