@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('nim_dosen', 15)->primary();
             $table->string('nip', 21)->nullable();
             $table->string('nama', 50);
+
         });
     }
 

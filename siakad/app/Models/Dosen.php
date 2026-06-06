@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Dosen extends Model
 {
@@ -20,10 +21,16 @@ class Dosen extends Model
         'nim_dosen',
         'nama',
         'nip',
+        'user_id',
+        'prodi'
     ];
 
     public function mahasiswas()
     {
         return $this->hasMany(Mahasiswa::class);
+    }
+
+    public function user() {
+        return $this->hasOne(User::class, 'username');
     }
 }

@@ -23,21 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Schema::defaultStringLength(191); // 🔥 FIX ERROR MYSQL
-        Gate::define('admin', function(User $user){
-            return $user->isAdmin() ? Response::allow() : Response::denyAsNotFound();
-        }); 
-        Gate::define('kaprodi', function(User $user){
-            return $user->isKaprodi() ? Response::allow() : Response::denyAsNotFound();
-        });
-
-        Gate::define('mahasiswa', function(User $user){
-            return $user->isMahasiswa() ? Response::allow() : Response::denyAsNotFound();
-        });
-
-
-        Gate::define('dosen_wali', function(User $user){
-            return $user->isDosen() ? Response::allow() : Response::denyAsNotFound();
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('admin') ? true : null;
         });
         
     }

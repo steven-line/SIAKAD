@@ -14,15 +14,19 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectUsersTo(function (Request $request){
-            if ($request->user()->isAdmin()) {
+            if ($request->user()->hasRole('admin')) {
                 return '/admin';
-            } elseif ($request->user()->isKaprodi()) {
+            } elseif ($request->user()->hasRole('kaprodi')) {
                 return '/kaprodi';
-            } elseif ($request->user()->isMahasiswa()) {
+            } elseif ($request->user()->hasRole('dosen-wali')){
+                return '/dosen-wali';
+                
+            } elseif ($request->user()->hasRole('mahasiswa')) {
                 return '/mahasiswa';
-            } elseif ($request->user()->isDosen()){
+            } elseif ($request->user()->hasRole('dosen')){
                 return '/dosen';
             }
+           
         });
        
     })

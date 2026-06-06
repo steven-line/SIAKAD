@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('jurusan', function(Blueprint $table) {
-            $table->foreign('fakultas', 2)->references('kode_fakultas')->on('fakultas')->onDelete('cascade');
+        Schema::create('prodi', function (Blueprint $table) {
+            $table->string('kode_prodi', 15)->primary();
+            $table->string('nama_prodi',50);
+            
         });
     }
 
@@ -21,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('prodi');
     }
 };

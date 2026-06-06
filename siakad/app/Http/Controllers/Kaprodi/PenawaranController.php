@@ -139,7 +139,8 @@ class PenawaranController extends Controller
 
         // ❌ VALIDASI 4 - CEK BENTROK
         $bentrok = Penawaran::where('hari', $request->hari)
-            ->where('jurusan', auth()->user()->prodi)
+            // 🛠️ PERBAIKAN 1: Ambil prodi lewat relasi dosen
+            ->where('jurusan', auth()->user()->dosen->prodi)
             ->where(function ($q) use ($mulai, $selesai) {
 
                 $q->whereBetween('mulaipukul', [
@@ -185,8 +186,8 @@ class PenawaranController extends Controller
             'selesaipukul' => $selesai->format('H:i:s'),
             'pataum'       => $request->pataum,
 
-            // 🔥 otomatis dari login
-            'jurusan'      => auth()->user()->prodi,
+            // 🛠️ PERBAIKAN 2: Ambil prodi lewat relasi dosen agar tidak NULL
+            'jurusan'      => auth()->user()->dosen->prodi,
 
             'sesi'         => $request->sesi,
             'keterangan'   => $request->keterangan,

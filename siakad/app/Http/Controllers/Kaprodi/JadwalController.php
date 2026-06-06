@@ -21,9 +21,7 @@ class JadwalController extends Controller
         $end   = Carbon::createFromTime(17, 10);
 
         while ($start <= $end) {
-
             $slots[] = $start->format('H:i');
-
             $start->addMinutes(50);
         }
 
@@ -31,18 +29,27 @@ class JadwalController extends Controller
     }
 
     /**
-     * 🔥 QUERY DASAR JADWAL
+     * 🔥 QUERY DASAR JADWAL (Sudah Diperbaiki via Relasi Dosen)
      */
     private function getJadwalQuery()
     {
         $user = Auth::user();
 
-        if (!$user || !$user->prodi) {
-            abort(403, 'User tidak memiliki prodi');
+        // 1. Pastikan user login dan memiliki data profil di tabel dosen
+        if (!$user || !$user->dosen) {
+            abort(403, 'User tidak teridentifikasi sebagai Dosen/Kaprodi.');
         }
 
+        // 2. Ambil kode prodi langsung dari kolom 'prodi' di tabel dosen
+        $prodiKaprodi = $user->dosen->prodi; 
+
+        if (!$prodiKaprodi) {
+            abort(403, 'Dosen ini tidak memiliki Program Studi (Homebase).');
+        }
+
+        // 3. Filter jadwal penawaran berdasarkan prodi si dosen
         return Penawaran::with('matkul')
-            ->where('jurusan', $user->prodi)
+            ->where('jurusan', $prodiKaprodi)
             ->orderByRaw("
                 FIELD(
                     hari,
@@ -63,7 +70,6 @@ class JadwalController extends Controller
     public function index()
     {
         $jadwals = $this->getJadwalQuery()->get();
-
         $jamSlots = $this->generateJamSlots();
 
         return view(
@@ -80,10 +86,12 @@ class JadwalController extends Controller
         $jadwals = $this->getJadwalQuery()
             ->where('sesi', 1)
             ->get();
+            
+        $jamSlots = $this->generateJamSlots(); // Ditambahkan agar view tidak error
 
         return view(
             'kaprodi.kelola_jadwal.index',
-            compact('jadwals')
+            compact('jadwals', 'jamSlots')
         );
     }
 
@@ -95,10 +103,12 @@ class JadwalController extends Controller
         $jadwals = $this->getJadwalQuery()
             ->where('sesi', 2)
             ->get();
+            
+        $jamSlots = $this->generateJamSlots(); // Ditambahkan agar view tidak error
 
         return view(
             'kaprodi.kelola_jadwal.index',
-            compact('jadwals')
+            compact('jadwals', 'jamSlots')
         );
     }
 

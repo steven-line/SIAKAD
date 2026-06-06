@@ -10,6 +10,7 @@ use App\Http\Controllers\Kaprodi\JadwalController;
 use App\Http\Controllers\Kaprodi\PenawaranController;
 use App\Http\Controllers\Admin\MkController;
 use App\Http\Controllers\Admin\DosenController;
+use App\Http\Controllers\Admin\ProdiController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -51,7 +52,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/admin/kelola-dosen/{dosen}', [DosenController::class, 'update']);
     Route::delete('/admin/kelola-dosen/{dosen}', [DosenController::class, 'destroy']);
  
-  
+    
+    Route::get('/admin/kelola-prodi', [ProdiController::class, 'index']);
+    Route::get('/admin/kelola-prodi/create', [ProdiController::class, 'create']);
+    Route::post('/admin/kelola-prodi', [ProdiController::class, 'store']);
+    Route::get('/admin/kelola-prodi/{prodi}/edit', [ProdiController::class, 'edit']);
+    Route::patch('/admin/kelola-prodi/{prodi}', [ProdiController::class, 'update']);
+    Route::delete('/admin/kelola-prodi/{prodi}', [ProdiController::class, 'destroy']);
+ 
     // =========================
     // DASHBOARD KAPRODI
     // =========================
@@ -147,11 +155,11 @@ Route::middleware('auth')->group(function () {
     // =========================
     // DOSEN
     // =========================
-    Route::get('/dosen', function () {
+    Route::get('/dosen-wali', function () {
         return view('dosen.dashboard');
     });
 
-    Route::get('/dosen/perwalian', [PerwalianController::class, 'index']);
+    Route::get('/dosen-wali/perwalian', [PerwalianController::class, 'index']);
 });
 
 // =========================

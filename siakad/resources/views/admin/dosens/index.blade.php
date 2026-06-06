@@ -9,6 +9,7 @@
         <th>nim_dosen</th>
         <th>nip</th>
         <th>nama</th>
+        <th>user_id</th>
         <th colspan="3">Aksi</th>
       </tr>
     </thead>
@@ -20,6 +21,7 @@
             <td>{{$dosen->nim_dosen}}</td>
             <td>{{$dosen->nip}}</td>
             <td>{{$dosen->nama}}</td>
+            <td>{{$dosen->user_id}}</td>
             <td><a class="btn btn-soft btn-info"href="">Detail</a></td>
             <td><a class="btn btn-soft btn-warning" href="/admin/kelola-dosen/{{$dosen->nim_dosen}}/edit">Edit</a>
          </td>

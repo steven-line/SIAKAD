@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->string('username',15)->primary();
             $table->string('password');
-            $table->integer('level');
+
             $table->integer('sks');
             $table->dateTime('firstlogin');
             $table->dateTime('lastlogin');

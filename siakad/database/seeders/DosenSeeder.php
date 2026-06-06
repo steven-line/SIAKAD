@@ -32,7 +32,8 @@ class DosenSeeder extends Seeder
             ['nim_dosen' => 'D003'],
             [
                 'nama' => 'Siti Rahmawati, S.Kom., M.Kom',
-                'nip' => '19800303'
+                'nip' => '19800303',
+                'user_id' => '31123019'
             ]
         );
     }

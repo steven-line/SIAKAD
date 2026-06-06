@@ -170,7 +170,7 @@
 
                     <input
                         type="text"
-                        value="{{ auth()->user()->prodi }}"
+                        value="{{ auth()->user()->dosen->prodi }}"
                         disabled
                         class="w-full p-2 mt-1 bg-gray-700 rounded text-gray-300"
                     >
