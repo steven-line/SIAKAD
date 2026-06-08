@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('prasyarat9',8)->default('');
             $table->string('prasyarat10',8)->default('');
             $table->char('prasyaratgrade',1)->default('');
-     
+          
           
         });
     }

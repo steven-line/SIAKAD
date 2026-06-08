@@ -20,6 +20,7 @@ class MkSeeder extends Seeder
                 'sks' => 3,
                 'nm_jenj_didik' => 'S1',
                 'kode_prodi_dikti' => '55201',
+                'kode_kurikulum' => 'KUR2024'
             ],
 
             [
@@ -28,6 +29,7 @@ class MkSeeder extends Seeder
                 'sks' => 3,
                 'nm_jenj_didik' => 'S1',
                 'kode_prodi_dikti' => '55201',
+                'kode_kurikulum' => 'KUR2024'
             ],
 
             [
@@ -36,6 +38,7 @@ class MkSeeder extends Seeder
                 'sks' => 3,
                 'nm_jenj_didik' => 'S1',
                 'kode_prodi_dikti' => '55201',
+                'kode_kurikulum' => 'KUR2024'
             ],
 
         ]);

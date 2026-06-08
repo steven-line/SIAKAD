@@ -208,7 +208,19 @@
                         class="w-full p-2 mt-1 bg-gray-700 rounded"
                     >
                 </div>
-
+                <div>
+                    <label class="text-sm text-gray-400">
+                        MBKM
+                    </label>
+                    <div>
+                     <input
+                        type="checkbox"
+                        name="MBKM"
+                        class="w-5 h-5 bg-gray-700 rounded ="
+                        >
+                    </div>
+                 
+                </div>
                 <!-- KETERANGAN -->
                 <div class="col-span-2">
                     <label class="text-sm text-gray-400">
@@ -221,7 +233,8 @@
                         class="w-full p-2 mt-1 bg-gray-700 rounded"
                     >
                 </div>
-
+                 
+            
             </div>
 
             <div class="flex justify-end mt-6">
@@ -232,6 +245,7 @@
                     Simpan
                 </button>
             </div>
+            
 
         </form>
 

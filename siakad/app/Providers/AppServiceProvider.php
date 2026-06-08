@@ -23,9 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // 🔥 Fix MariaDB lama (10.1)
+        Schema::defaultStringLength(191);
+
         Gate::before(function ($user, $ability) {
             return $user->hasRole('admin') ? true : null;
         });
-        
     }
 }

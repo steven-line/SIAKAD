@@ -15,25 +15,30 @@ class DosenSeeder extends Seeder
         DB::table('dosen')->updateOrInsert(
             ['nim_dosen' => 'D001'],
             [
-                'nama' => 'Dr. Budi Santoso',
-                'nip' => '19800101'
+                'nama' => 'Yonatan Widianto',
+                'nip' => '19800101',
+                'user_id' => '31123012',
+                'prodi' => 'IF',
             ]
         );
 
         DB::table('dosen')->updateOrInsert(
             ['nim_dosen' => 'D002'],
             [
-                'nama' => 'Ir. Andi Pratama',
-                'nip' => '19800202'
+                'nama' => 'Darmanto',
+                'nip' => '19800202',
+                'user_id' => '31123019',
+                'prodi' => 'ARS',
             ]
         );
 
         DB::table('dosen')->updateOrInsert(
             ['nim_dosen' => 'D003'],
             [
-                'nama' => 'Siti Rahmawati, S.Kom., M.Kom',
+                'nama' => 'Erwin',
                 'nip' => '19800303',
-                'user_id' => '31123019'
+                'user_id' => '31123003',
+                'prodi' => 'ING',
             ]
         );
     }

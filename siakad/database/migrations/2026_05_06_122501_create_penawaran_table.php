@@ -38,6 +38,7 @@ return new class extends Migration
             $table->index(['semester', 'jurusan'], 'idx_sem_jur');
             $table->index(['kodemk', 'jurusan'], 'idx_mk_jur');
             $table->index(['recno', 'kodemk', 'semester', 'periode', 'sesi', 'jurusan'], 'idx_recno_full');
+            
         });
     }
 

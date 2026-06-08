@@ -92,6 +92,7 @@ class PenawaranController extends Controller
             'sesi'         => 'required',
             'pagu'         => 'nullable|numeric',
             'keterangan'   => 'nullable',
+    
         ]);
 
         $mulai   = Carbon::createFromFormat('H:i', $request->mulaipukul);
@@ -192,6 +193,7 @@ class PenawaranController extends Controller
             'sesi'         => $request->sesi,
             'keterangan'   => $request->keterangan,
             'pagu'         => $request->pagu,
+            'mbkm'         => $request->MBKM
         ]);
 
         return redirect()
