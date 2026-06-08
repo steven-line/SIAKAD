@@ -70,4 +70,6 @@ class User extends Authenticatable
         {
         return $this->hasOne(Dosen::class, 'user_id');
     }
+
+    
 }

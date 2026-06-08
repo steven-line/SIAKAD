@@ -23,7 +23,7 @@
                 <x-forms.error name='sks'/>
             </div>
         </div>
-        <div class="grid grid-cols-3">
+        <div class="grid grid-cols-4">
             <div>
               <label class="label font-bold" for="nm_jenj_didik">Nama Jenjang Didik</label>
               <input type="text" class="input" name="nm_jenj_didik" placeholder="" value="{{$mk->nm_jenj_didik}}"/>
@@ -35,6 +35,14 @@
                 <x-forms.error name='kode_prodi_dikti'/>
             </div>
             <div>
+             <select class="select select-bordered w-full" name="kode_kurikulum" required>
+                <option disabled selected>Select Kurikulum</option>
+                @foreach ($kurikulums as $kurikulum)  
+        
+                    <option {{ $mk->kode_kurikulum == $kurikulum->kode_kurikulum ? 'selected' : '' }} value="{{ $kurikulum->kode_kurikulum }}">{{$kurikulum->kode_kurikulum}} - {{ $kurikulum->nama_kurikulum }}</option>  
+                @endforeach
+            </select>
+            <x-forms.error name='kode_kurikulum'/>
                 
                 <label class="label font-bold" for="prasyaratsks">Prasyarat Sks</label>
                 <input type="text" class="input" name="prasyaratsks" placeholder="" value="{{$mk->prasyaratsks}}"/>
@@ -91,7 +99,7 @@
             
 
         </div>
-        <div class="grid grid-cols-3 gap-4"> 
+        <div class="grid grid-cols-4 gap-4"> 
               
             <div>
                 <label class="label font-bold" for="prasyarat9">Prasyarat 9</label>
@@ -109,7 +117,14 @@
                 <input type="text" class="input" name="prasyaratgrade" placeholder="" value="{{$mk->prasyaratgrade}}"/>
                 <x-forms.error name='prasyaratgrade'/> 
             </div>
-       
+            <div>
+                 <label class="label font-bold" for="aktif" >aktif</label>
+                 <div>
+                    <input type="checkbox" class="checkbox" name="aktif" placeholder="" @checked($mk->aktif) />
+                    <x-forms.error name='aktif'/>
+                 </div>
+                 
+            </div>
     
         </div>
       

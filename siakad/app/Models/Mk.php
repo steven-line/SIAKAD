@@ -22,6 +22,7 @@ class Mk extends Model
         'sks',
         'nm_jenj_didik',
         'kode_prodi_dikti',
+        'kode_kurikulum',
         'prasyaratsks',
         'prasyarat1',
         'prasyarat2',
@@ -34,5 +35,10 @@ class Mk extends Model
         'prasyarat9',
         'prasyarat10',
         'prasyaratgrade',
+        'aktif',
+    ];
+
+        protected $casts = [
+        'aktif' => 'boolean',
     ];
 }

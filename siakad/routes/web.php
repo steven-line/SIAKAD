@@ -11,6 +11,7 @@ use App\Http\Controllers\Kaprodi\PenawaranController;
 use App\Http\Controllers\Admin\MkController;
 use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\ProdiController;
+use App\Http\Controllers\KurikulumController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -36,6 +37,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/kelola-user/{user}', [UserController::class, 'destroy']);
     Route::get('/admin/kelola-user/{user}/edit', [UserController::class, 'edit']);
     Route::patch('/admin/kelola-user/{user}', [UserController::class, 'update']);
+
+    Route::get('/admin/kelola-kurikulum', [KurikulumController::class, 'index']);
+    Route::get('/admin/kelola-kurikulum/create', [KurikulumController::class, 'create']);
+    Route::post('/admin/kelola-kurikulum', [KurikulumController::class, 'store']);
+    Route::get('/admin/kelola-kurikulum/{kurikulum}/edit', [KurikulumController::class, 'edit']);
+    Route::patch('/admin/kelola-kurikulum/{kurikulum}', [KurikulumController::class, 'update']);
+    Route::delete('/admin/kelola-kurikulum/{kurikulum}', [KurikulumController::class, 'destroy']);
     
     
     Route::get('/admin/kelola-matakuliah', [MkController::class, 'index']);

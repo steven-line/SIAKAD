@@ -31,9 +31,11 @@
             @role('admin')
               <li><a href="/admin">Dashboard</a></li>
               <li><a href="/admin/kelola-user">Kelola User</a></li>
+              <li><a href="/admin/kelola-kurikulum">Kelola Kurikulum</a></li>
               <li><a href="/admin/kelola-matakuliah">Kelola Mata Kuliah</a></li>
               <li><a href="/admin/kelola-dosen">Kelola Dosen</a></li>
               <li><a href="/admin/kelola-prodi">Kelola Prodi</a></li>
+
             @endrole
 
             @role('mahasiswa')

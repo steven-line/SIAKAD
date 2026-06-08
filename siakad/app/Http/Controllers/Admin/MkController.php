@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Mk;
 use App\Http\Controllers\Controller;
+use App\Models\Kurikulum;
 use Illuminate\Http\Request;
 
 class MkController extends Controller
@@ -22,7 +23,8 @@ class MkController extends Controller
      */
     public function create()
     {
-        return view('admin.matakuliah.create');
+        $kurikulums = Kurikulum::orderby('kode_kurikulum')->get();
+        return view('admin.matakuliah.create', ['kurikulums' => $kurikulums]);
     }
 
     /**
@@ -36,6 +38,7 @@ class MkController extends Controller
             'sks' => ['required'],
             'nm_jenj_didik' => ['required'],
             'kode_prodi_dikti' => ['required'],
+            'kode_kurikulum' => ['required'],
             'prasyaratsks' => ['required'],
             'prasyarat1' => ['required'],
             'prasyarat2' => ['required'],
@@ -47,7 +50,7 @@ class MkController extends Controller
             'prasyarat8' => ['required'],
             'prasyarat9' => ['required'],
             'prasyarat10' => ['required'],
-            'prasyaratgrade' => ['required'],
+            'prasyaratgrade' => ['required'], 
               
         ]);
         Mk::create([
@@ -56,6 +59,7 @@ class MkController extends Controller
             'sks' => $request->sks,
             'nm_jenj_didik' => $request->nm_jenj_didik,
             'kode_prodi_dikti' => $request->kode_prodi_dikti,
+            'kode_kurikulum' => $request->kode_kurikulum,
             'prasyaratsks' => $request->prasyaratsks,
             'prasyarat1' => $request->prasyarat1,
             'prasyarat2' => $request->prasyarat2,
@@ -68,7 +72,7 @@ class MkController extends Controller
             'prasyarat9' => $request->prasyarat9,
             'prasyarat10' => $request->prasyarat10,
             'prasyaratgrade' => $request->prasyaratgrade,
-        ]);
+            'aktif'          => $request->boolean('aktif'),         ]);
         return redirect('/admin/kelola-matakuliah');
 
     }
@@ -100,6 +104,7 @@ class MkController extends Controller
             'sks' => $request->sks,
             'nm_jenj_didik' => $request->nm_jenj_didik,
             'kode_prodi_dikti' => $request->kode_prodi_dikti,
+            'kode_kurikulum' => $request->kode_kurikulum,
             'prasyaratsks' => $request->prasyaratsks,
             'prasyarat1' => $request->prasyarat1,
             'prasyarat2' => $request->prasyarat2,
@@ -112,6 +117,7 @@ class MkController extends Controller
             'prasyarat9' => $request->prasyarat9,
             'prasyarat10' => $request->prasyarat10,
             'prasyaratgrade' => $request->prasyaratgrade,
+            'aktif'          => $request->boolean('aktif'), 
             ]);
             
             return redirect('/admin/kelola-matakuliah');

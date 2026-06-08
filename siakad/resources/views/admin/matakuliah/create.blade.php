@@ -22,7 +22,7 @@
                 <x-forms.error name='sks'/>
             </div>
         </div>
-        <div class="grid grid-cols-3">
+        <div class="grid grid-cols-4">
             <div>
               <label class="label font-bold" for="nm_jenj_didik">Nama Jenjang Didik</label>
               <input type="text" class="input" name="nm_jenj_didik" placeholder="" />
@@ -33,6 +33,18 @@
                <input type="text" class="input" name="kode_prodi_dikti" placeholder="" />
                 <x-forms.error name='kode_prodi_dikti'/>
             </div>
+
+            <div class="flex flex-col ml-2 mr-2">
+                <label class="label font-bold align-center" for="kode_kurikulum">Kurikulum</label>
+                 <select class="select select-bordered  align-center w-full" name="kode_kurikulum" required>
+                <option disabled selected>Select Kurikulum</option>
+                @foreach ($kurikulums as $kurikulum)  
+                    <option value="{{ $kurikulum->kode_kurikulum }}">{{$kurikulum->kode_kurikulum}} - {{ $kurikulum->nama_kurikulum }}</option>  
+                @endforeach
+            </select>
+            <x-forms.error name='kode_kurikulum'/>
+            </div>
+          
             <div>
                 
                 <label class="label font-bold" for="prasyaratsks">Prasyarat Sks</label>
@@ -90,7 +102,7 @@
             
 
         </div>
-        <div class="grid grid-cols-3 gap-4"> 
+        <div class="grid grid-cols-4 gap-4"> 
               
             <div>
                 <label class="label font-bold" for="prasyarat9">Prasyarat 9</label>
@@ -107,6 +119,15 @@
                 <label class="label font-bold" for="prasyaratgrade">Prasyarat Grade</label>
                 <input type="text" class="input" name="prasyaratgrade" placeholder="" />
                 <x-forms.error name='prasyaratgrade'/> 
+            </div>
+
+            <div>   
+                <label class="label font-bold" for="aktif">aktif</label>
+                <div>
+                     <input type="checkbox" class="checkbox" name="aktif" placeholder="" />
+                     <x-forms.error name='aktif'/>
+                </div>
+               
             </div>
        
     

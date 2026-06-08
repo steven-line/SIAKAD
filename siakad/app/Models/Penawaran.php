@@ -29,11 +29,13 @@ class Penawaran extends Model
         'jurusan',
         'pagu',
         'pataum',
+        'MBKM',
     ];
 
     protected $casts = [
         'mulaipukul' => 'datetime:H:i:s',
         'selesaipukul' => 'datetime:H:i:s',
+        'MBKM' => 'boolean',
     ];
 
     public function matkul()
