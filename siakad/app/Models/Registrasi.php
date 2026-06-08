@@ -29,9 +29,20 @@ class Registrasi extends Model
         'pataum',
     ];
 
+    protected $casts = [
+    'tanggal' => 'date',
+    'mulaipukul' => 'datetime:H:i:s',
+    'selesaipukul' => 'datetime:H:i:s',
+];
+
     // relasi ke matkul
     public function matkul()
     {
         return $this->belongsTo(Mk::class, 'kodemk', 'kodemk');
+    }
+
+    public function mahasiswa()
+    {
+    return $this->belongsTo(Biodata::class, 'nrp', 'nrp');
     }
 }

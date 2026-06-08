@@ -1,30 +1,31 @@
-<x-layout title="index">
+<x-layout title="KRS UWIKA">
  <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
   <table class="table">
-    <!-- head -->
-    <thead class="bg-blue-500 text-white">
+    <thead class="bg-green-500 text-white">
       <tr>
-        <th>Id</th>
-        <th>kode_mk</th>
-        <th>nama_mk</th>
-        <th>kelas</th>
-        <th>hari</th>
-        <th>jam_mulai</th>
-        <th>jam_selesai</th>
+        <th>kode</th>
+        <th>Mata Kuliah</th>
+        <th>Dosen</th>
+        <th>Hari</th>
+        <th>Jam</th>
+        <th>Sks</th>  
       </tr>
     </thead>
     <tbody>
-      @foreach ($jadwals as $jadwal)
+      @forelse ($penawaran as $kodemk)
         <tr>
-          <td>{{ $jadwal->id }}</td>
-          <td>{{ $jadwal->kode_mk }}</td>
-          <td>{{ $jadwal->nama_mk }}</td>
-          <td>{{ $jadwal->kelas }}</td>
-          <td>{{ $jadwal->hari }}</td>
-          <td>{{ $jadwal->jam_mulai }}</td>
-          <td>{{ $jadwal->jam_selesai }}</td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->kodemk }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->mk->nama ?? '-' }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->dosen }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->hari }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->mulaipukul->format('H:i:s') }} - {{ $kodemk->selesaipukul->format('H:i:s') }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->mk->sks ?? '-' }}</a></td>
         </tr>
-        @endforeach
+      @empty
+        <tr>
+          <td colspan="7" class="text-center py-4">Tidak ada data mata kuliah</td>
+        </tr>
+      @endforelse
     </tbody>
   </table>
 </div>

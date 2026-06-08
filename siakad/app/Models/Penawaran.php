@@ -38,7 +38,7 @@ class Penawaran extends Model
         'MBKM' => 'boolean',
     ];
 
-    public function matkul()
+    public function mk()
     {
         return $this->belongsTo(Mk::class, 'kodemk', 'kodemk');
     }

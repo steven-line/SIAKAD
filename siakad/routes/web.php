@@ -13,6 +13,11 @@ use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\ProdiController;
 use App\Http\Controllers\KurikulumController;
 
+use App\Http\Controllers\Mahasiswa\MataKuliahController;
+use App\Http\Controllers\Mahasiswa\PenawaranMahasiswaController;
+use App\Http\Controllers\Mahasiswa\KrsMahasiswaController;
+use App\Http\Controllers\Mahasiswa\DetailMataKuliahController;
+
 Route::get('/', function () {
     return redirect('/login');
 });
@@ -67,6 +72,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/kelola-prodi/{prodi}/edit', [ProdiController::class, 'edit']);
     Route::patch('/admin/kelola-prodi/{prodi}', [ProdiController::class, 'update']);
     Route::delete('/admin/kelola-prodi/{prodi}', [ProdiController::class, 'destroy']);
+
+    
  
     // =========================
     // DASHBOARD KAPRODI
@@ -168,6 +175,39 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/dosen-wali/perwalian', [PerwalianController::class, 'index']);
+
+
+    // =========================
+    // MAHASISWA
+    // =========================
+    Route::get('/mahasiswa', function(){
+        return view('mahasiswa.dashboard');
+    });
+    
+    Route::get('/mahasiswa/penawaran', [PenawaranMahasiswaController::class, 'index']);
+    Route::get('/mahasiswa/view_krs', function(){
+        return view('mahasiswa.kartu_KRS.index');
+    });
+    Route::get('/mahasiswa/nilai_krs', function(){
+        return view('mahasiswa.nilai_krs.index');
+    });
+    Route::get('/mahasiswa/KHS', function(){
+        return view('mahasiswa.KHS.index');
+    });
+    Route::get('/mahasiswa/Transkrip_Nilai', function(){
+        return view('mahasiswa.Transkrip_Nilai.index');
+    });
+
+    Route::prefix('mahasiswa')->group(function () {
+    Route::get('/krs', [KrsMahasiswaController::class, 'index'])->name('mahasiswa.krs.index');
+    Route::post('/krs', [KrsMahasiswaController::class, 'store'])->name('mahasiswa.krs.store'); // <-- tambah ini
+    Route::delete('/krs/{id}', [KrsMahasiswaController::class, 'destroy'])->name('mahasiswa.krs.destroy');
+    Route::delete('/krs/batal-multiple', [KrsMahasiswaController::class, 'batalMultiple'])->name('mahasiswa.krs.batal');
+    });
+
+    Route::get('/mahasiswa/mata-kuliah/{id}', [DetailMataKuliahController::class, 'show'])->name('mata-kuliah.show');
+    Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'edit']);
+    Route::patch('/mahasiswa/ubah-password/{user}', [UbahPasswordController::class, 'update']);
 });
 
 // =========================

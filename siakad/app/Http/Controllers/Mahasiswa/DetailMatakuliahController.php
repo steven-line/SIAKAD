@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Http\Controllers\Mahasiswa;
+
+use App\Http\Controllers\Controller;
+use App\Models\Penawaran;
+use App\Models\Registrasi;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class DetailMataKuliahController extends Controller
+{
+    /**
+     * Menampilkan detail mata kuliah berdasarkan ID penawaran (recno)
+     */
+    public function show($id)
+    {
+        // Ambil data penawaran + relasi mk
+        $penawaran = Penawaran::with('mk')->find($id);
+
+        if (!$penawaran) {
+            abort(404, 'Mata kuliah tidak ditemukan');
+        }
+
+        // Ambil NRP mahasiswa yang sedang login
+        $nrpMahasiswa = session('nrp') ?? (Auth::check() ? Auth::user()->username : null);
+        
+        // Cari apakah mahasiswa sudah terdaftar pada mata kuliah ini
+        $id_registrasi = null;
+        if ($nrpMahasiswa) {
+            $registrasi = Registrasi::where('nrp', $nrpMahasiswa)
+                ->where('kodemk', $penawaran->kodemk)
+                ->where('periode', $penawaran->periode)
+                ->first();
+            if ($registrasi) {
+                $id_registrasi = $registrasi->regkrs;
+            }
+        }
+
+        // Susun objek mataKuliah sesuai yang diharapkan view
+        $mataKuliah = (object) [
+            'kode_mk'       => $penawaran->kodemk,
+            'nama_mk'       => $penawaran->mk ? $penawaran->mk->nama : '-',
+            'dosen'         => $penawaran->dosen ?? '-',
+            'kelas'         => $penawaran->sesi ?? 'A',
+            'hari'          => $penawaran->hari,
+            'jam_mulai'     => $penawaran->mulaipukul ? date('H:i:s', strtotime($penawaran->mulaipukul)) : '',
+            'jam_selesai'   => $penawaran->selesaipukul ? date('H:i:s', strtotime($penawaran->selesaipukul)) : '',
+            'sks'           => $penawaran->mk ? $penawaran->mk->sks : 0,
+            'semester'      => $penawaran->semester ?? '6',
+            'periode'       => $penawaran->periode ?? 'GENAP / 2025-2026',
+            'kuota'         => $penawaran->pagu ?? '-',
+            'keterangan'    => $penawaran->keterangan ?? '-',
+            'penawaran_id'  => $penawaran->recno,
+            'id_registrasi' => $id_registrasi, // <-- kunci untuk tombol batal
+        ];
+
+        // Ambil daftar mahasiswa yang sudah registrasi mata kuliah ini
+        $pendaftar = Registrasi::with('mahasiswa')
+            ->where('kodemk', $penawaran->kodemk)
+            ->where('periode', $penawaran->periode)
+            ->get()
+            ->map(function ($reg) {
+                return (object) [
+                    'nrp'                => $reg->nrp,
+                    'nama'               => $reg->mahasiswa ? $reg->mahasiswa->nama : '-',
+                    'status'             => $reg->status,
+                    'tanggal_registrasi' => $reg->tanggal ? $reg->tanggal->format('d-m-Y') : '-',
+                ];
+            });
+
+        return view('mahasiswa.penawaran.show', compact('mataKuliah', 'pendaftar'));
+    }
+}

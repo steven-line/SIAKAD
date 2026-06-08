@@ -1,5 +1,7 @@
 <x-layout>
     
+    <a class="join-item btn btn-primary" href="/mahasiswa">⮜ Previous page</a>
+        <form class="flex"action="/mahasiswa/ubah-password/{{$user}}" method="POST">
     <a class="join-item btn btn-primary" href="/admin/kelola-user">⮜ Previous page</a>
         <form class="flex"action="/mahasiswa/ubah-password" method="POST">
         @csrf
