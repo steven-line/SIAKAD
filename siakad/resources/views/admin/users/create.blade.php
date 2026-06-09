@@ -28,8 +28,12 @@
                 <div class="grid grid-cols-2 gap-3 p-2 bg-base-100 rounded-box border">
                     @foreach($permissions as $permission)
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" 
-                                   class="checkbox checkbox-primary permission-checkbox" />
+                            <input
+                                type="checkbox"
+                                name="permissions[]"
+                                value="{{ $permission->name }}"
+                                class="checkbox checkbox-primary permission-checkbox"
+/>
                             <span class="label-text">{{ $permission->name }}</span>
                         </label>
                     @endforeach
@@ -46,32 +50,65 @@
     </form>
 
     <script>
-        // PERBAIKAN: Menggunakan map closure eksplisit agar struktur JSON terbentuk sempurna
-        const rolesData = @json($roles->keyBy('name')->map(function($role) {
+    const rolesData = @json(
+        $roles->keyBy('name')->map(function($role) {
             return $role->permissions->pluck('name');
-        }));
+        })
+    );
 
-        const roleSelect = document.getElementById('role-select');
-        const permWrapper = document.getElementById('permissions-wrapper');
-        const checkboxes = document.querySelectorAll('.permission-checkbox');
+    const roleSelect = document.getElementById('role-select');
+    const permWrapper = document.getElementById('permissions-wrapper');
+    const checkboxes = document.querySelectorAll('.permission-checkbox');
 
-        roleSelect.addEventListener('change', function() {
-            const selectedRole = this.value;
+    roleSelect.addEventListener('change', function () {
 
-            if (selectedRole.toLowerCase() === 'admin') {
-                permWrapper.style.display = 'none';
-                checkboxes.forEach(cb => cb.checked = false); 
+        const selectedRole = this.value;
+
+        if (selectedRole.toLowerCase() === 'admin') {
+            permWrapper.style.display = 'none';
+
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+                cb.classList.remove('default-role-permission');
+            });
+
+            return;
+        }
+
+        permWrapper.style.display = 'block';
+
+        const allowed = rolesData[selectedRole] || [];
+
+        checkboxes.forEach(cb => {
+
+            cb.classList.remove('default-role-permission');
+
+            if (allowed.includes(cb.value)) {
+
+                cb.checked = true;
+                cb.classList.add('default-role-permission');
+
             } else {
-                permWrapper.style.display = 'block';
-                
-                // Ambil daftar permission milik role yang dipilih dari data JSON di atas
-                const allowed = rolesData[selectedRole] || [];
-                
-                // COCOKKAN DAN CENTANG OTOMATIS
-                checkboxes.forEach(cb => {
-                    cb.checked = allowed.includes(cb.value);
-                });
+
+                cb.checked = false;
             }
         });
-    </script>
+    });
+
+    // cegah permission bawaan role diubah
+    document.querySelectorAll('.permission-checkbox').forEach(cb => {
+
+        cb.addEventListener('click', function(e) {
+
+            if (this.classList.contains('default-role-permission')) {
+
+                e.preventDefault();
+                this.checked = true;
+
+            }
+
+        });
+
+    });
+</script>
 </x-layout>

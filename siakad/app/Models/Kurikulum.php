@@ -14,7 +14,10 @@ class Kurikulum extends Model
     protected $fillable = [
           'kode_kurikulum',
           'nama_kurikulum',
-          'aktif'
+          'aktif',
+          'deskripsi',
+          'tahun_mulai_berlaku',
+          'tahun_selesai_berlaku',
         ];
 
     protected $casts = [

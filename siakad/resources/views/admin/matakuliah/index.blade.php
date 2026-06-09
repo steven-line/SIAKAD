@@ -11,19 +11,6 @@
         <th>nm_jenj_didik</th>
         <th>kode_prodi_dikti</th>
         <th>kode_kurikulum</th>
-        <th>sks</th>
-        <th>prasyaratsks</th>
-        <th>prasyarat1</th>
-        <th>prasyarat2</th>
-        <th>prasyarat3</th>
-        <th>prasyarat4</th>
-        <th>prasyarat5</th>
-        <th>prasyarat6</th>
-        <th>prasyarat7</th>
-        <th>prasyarat8</th>
-        <th>prasyarat9</th>
-        <th>prasyarat10</th>
-        <th>prasyaratgrade</th>
         <th>aktif</th>
 
                 
@@ -39,21 +26,8 @@
             <td class="text-center">{{$mk->nm_jenj_didik}}</td>
             <td class="text-center">{{$mk->kode_prodi_dikti}}</td>
             <td class="text-center">{{$mk->kode_kurikulum}}</td>
-            <td class="text-center">{{$mk->sks}}</td>
-            <td class="text-center">{{$mk->prasyaratsks}}</td>
-            <td class="text-center">{{$mk->prasyarat1}}</td>
-            <td class="text-center">{{$mk->prasyarat2}}</td>
-            <td class="text-center">{{$mk->prasyarat3}}</td>
-            <td class="text-center">{{$mk->prasyarat4}}</td>
-            <td class="text-center">{{$mk->prasyarat5}}</td>
-            <td class="text-center">{{$mk->prasyarat6}}</td>
-            <td class="text-center">{{$mk->prasyarat7}}</td>
-            <td class="text-center">{{$mk->prasyarat8}}</td>
-            <td class="text-center">{{$mk->prasyarat9}}</td>
-            <td class="text-center">{{$mk->prasyarat10}}</td>
-            <td class="text-center">{{$mk->prasyaratgrade}}</td>
             <th>{{$mk->aktif ?  "aktif": "tidak aktif"}}</th>
-            <th><a href='' class="btn btn-soft btn-primary">Detail</a></th>
+            <th><a href='/admin/kelola-matakuliah/{{$mk->kodemk}}' class="btn btn-soft btn-primary">Detail</a></th>
             <th><a class="btn btn-soft btn-warning" href="/admin/kelola-matakuliah/{{$mk->kodemk}}/edit">Edit</a></th>
             <td>
               <button class="btn btn-soft btn-error" onclick="deleteBox_{{$mk->kodemk}}.showModal()">Delete</button>

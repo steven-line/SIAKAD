@@ -1,20 +1,75 @@
 <x-layout>
-    <a class="join-item btn btn-primary" href="/admin/kelola-prodi">⮜ Previous page</a>
-    <form class="flex h-screen"action="/admin/kelola-prodi/{{$prodi->kode_prodi}}" method="POST">
-    @csrf
-    @method('PATCH')
-    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs h-80 border p-4 mx-auto">
 
-        <label class="label font-bold" for="kode_prodi">kode_prodi</label>
-        <input type="text" class="input" name="kode_prodi" placeholder="" value="{{$prodi->kode_prodi}}"/>
-        <x-forms.error name='kode_prodi'/>
+    <div class="p-6">
 
-        <label class="label font-bold" for="nama_prodi" >nama_prodi</label>
-        <input type="text" class="input" name="nama_prodi" placeholder="" value="{{$prodi->nama_prodi}}" />
-        <x-forms.error name='nama_prodi'/>
+        <a class="btn btn-primary mb-6" href="/admin/kelola-prodi">
+            ⮜ Previous page
+        </a>
 
-        <button class="btn btn-primary mt-4">Ubah Prodi</button>
-  </fieldset>
+        <form action="/admin/kelola-prodi/{{ $prodi->kode_prodi }}" method="POST">
+            @csrf
+            @method('PATCH')
 
-  </form>
+            <fieldset class="fieldset bg-base-200 border border-base-300 rounded-box w-full max-w-xl mx-auto p-6">
+
+                <legend class="fieldset-legend text-lg font-bold">
+                    Ubah Program Studi
+                </legend>
+
+                <label class="label font-bold" for="kode_prodi">
+                    Kode Prodi
+                </label>
+                <input
+                    type="text"
+                    class="input input-bordered w-full"
+                    name="kode_prodi"
+                    value="{{ old('kode_prodi', $prodi->kode_prodi) }}"
+                />
+                <x-forms.error name="kode_prodi"/>
+
+                <label class="label font-bold" for="nama_prodi">
+                    Nama Prodi
+                </label>
+                <input
+                    type="text"
+                    class="input input-bordered w-full"
+                    name="nama_prodi"
+                    value="{{ old('nama_prodi', $prodi->nama_prodi) }}"
+                />
+                <x-forms.error name="nama_prodi"/>
+
+                <label class="label font-bold mt-2" for="kode_fakultas">
+                    Kode Fakultas
+                </label>
+
+                <select
+                    class="select select-bordered w-full"
+                    name="kode_fakultas"
+                    required
+                >
+                    <option disabled>Pilih Fakultas</option>
+
+                    @foreach ($fakultass as $fakultas)
+                        <option
+                            value="{{ $fakultas->kode_fakultas }}"
+                            @selected(old('kode_fakultas', $prodi->kode_fakultas) == $fakultas->kode_fakultas)
+                        >
+                            {{ $fakultas->kode_fakultas }} - {{ $fakultas->nama_fakultas }}
+                        </option>
+                    @endforeach
+
+                </select>
+
+                <x-forms.error name="kode_fakultas"/>
+
+                <button class="btn btn-primary mt-6">
+                    Ubah Prodi
+                </button>
+
+            </fieldset>
+
+        </form>
+
+    </div>
+
 </x-layout>

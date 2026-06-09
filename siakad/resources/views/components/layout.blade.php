@@ -35,6 +35,7 @@
               <li><a href="/admin/kelola-matakuliah">Kelola Mata Kuliah</a></li>
               <li><a href="/admin/kelola-dosen">Kelola Dosen</a></li>
               <li><a href="/admin/kelola-prodi">Kelola Prodi</a></li>
+              <li><a href="/admin/kelola-fakultas">Kelola Fakultas</a></li>
 
             @endrole
 
@@ -57,10 +58,17 @@
                   </a>
               </li>
               <li>
+                  <a href="{{ route('kaprodi.penawaran.index') }}" class="block p-3 rounded hover:bg-gray-800 {{ request()->is('kaprodi/penawaran/') ? 'bg-blue-600 text-white' : '' }}">
+                      📄 List Penawaran
+                  </a>
+              </li>
+              
+              <li>
                   <a href="/kaprodi/kelola_jadwal" class="block p-3 rounded hover:bg-gray-800 {{ request()->is('kaprodi/kelola_jadwal') ? 'bg-blue-600 text-white' : '' }}">
                       📅 Jadwal
                   </a>
               </li>
+              
               <li>
                   <a href="/kaprodi/jadwal_pagi" class="block p-3 rounded hover:bg-gray-800 {{ request()->is('kaprodi/jadwal_pagi') ? 'bg-blue-600 text-white' : '' }}">
                       🌅 Jadwal Pagi

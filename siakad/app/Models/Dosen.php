@@ -22,7 +22,8 @@ class Dosen extends Model
         'nama',
         'nip',
         'user_id',
-        'prodi'
+        'prodi',
+        'jabatan_struktural',
     ];
 
     public function mahasiswas()
