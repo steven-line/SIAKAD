@@ -29,12 +29,12 @@
                         <tr>
                             <td class="px-4 py-2">{{ $index + 1 }}</td>
                             <td class="px-4 py-2">
-                                <a href="{{ route('mata-kuliah.show', $item->kodemk) }}" class="text-blue-400 hover:underline">
+                                <a href="{{ route('mata-kuliah.show', $item->kodemk) }}" class="text-white-400">
                                     {{ $item->kodemk }}
                                 </a>
                             </td>
                             <td class="px-4 py-2">
-                                <a href="{{ route('mata-kuliah.show', $item->kodemk) }}" class="text-blue-400 hover:underline">
+                                <a href="{{ route('mata-kuliah.show', $item->kodemk) }}" class="text-white-400">
                                     {{ $item->mk->nama ?? '-' }}
                                 </a>
                             </td>
