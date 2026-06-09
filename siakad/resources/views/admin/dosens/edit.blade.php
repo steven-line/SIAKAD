@@ -42,6 +42,10 @@
             </select>
             <x-forms.error name='prodi'/>
 
+            <label class="label font-bold mt-2" for="jabatan_struktural">Jabatan Struktural</label>
+            <input type="text"  class="input w-full" name="jabatan_struktural" placeholder="Masukkan jabatan struktural" required value="{{ $dosen->jabatan_struktural }}" />
+            <x-forms.error name='jabatan_struktural'/>
+
             <button class="btn btn-primary mt-6 w-full">Ubah Dosen</button>
         </fieldset>
     </form>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Kaprodi\PenawaranController;
 use App\Http\Controllers\Admin\MkController;
 use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\ProdiController;
+use App\Http\Controllers\FakultasController;
 use App\Http\Controllers\KurikulumController;
 
 use App\Http\Controllers\Mahasiswa\MataKuliahController;
@@ -46,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/kelola-kurikulum', [KurikulumController::class, 'index']);
     Route::get('/admin/kelola-kurikulum/create', [KurikulumController::class, 'create']);
     Route::post('/admin/kelola-kurikulum', [KurikulumController::class, 'store']);
+    Route::get('/admin/kelola-kurikulum/{kurikulum}', [KurikulumController::class, 'show']);
     Route::get('/admin/kelola-kurikulum/{kurikulum}/edit', [KurikulumController::class, 'edit']);
     Route::patch('/admin/kelola-kurikulum/{kurikulum}', [KurikulumController::class, 'update']);
     Route::delete('/admin/kelola-kurikulum/{kurikulum}', [KurikulumController::class, 'destroy']);
@@ -54,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/kelola-matakuliah', [MkController::class, 'index']);
     Route::get('/admin/kelola-matakuliah/create', [MkController::class, 'create']);
     Route::post('/admin/kelola-matakuliah', [MkController::class, 'store']);
+    Route::get('/admin/kelola-matakuliah/{mk}', [MkController::class, 'show']);
     Route::get('/admin/kelola-matakuliah/{mk}/edit', [MkController::class, 'edit']);
     Route::patch('/admin/kelola-matakuliah/{mk}', [MkController::class, 'update']);
     Route::delete('/admin/kelola-matakuliah/{mk}', [MkController::class, 'destroy']);
@@ -72,6 +75,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/kelola-prodi/{prodi}/edit', [ProdiController::class, 'edit']);
     Route::patch('/admin/kelola-prodi/{prodi}', [ProdiController::class, 'update']);
     Route::delete('/admin/kelola-prodi/{prodi}', [ProdiController::class, 'destroy']);
+
+    Route::get('/admin/kelola-fakultas', [FakultasController::class, 'index']);
+    Route::get('/admin/kelola-fakultas/create', [FakultasController::class, 'create']);
+    Route::post('/admin/kelola-fakultas', [FakultasController::class, 'store']);
+    Route::get('/admin/kelola-fakultas/{fakultas}/edit', [FakultasController::class, 'edit']);
+    Route::patch('/admin/kelola-fakultas/{fakultas}', [FakultasController::class, 'update']);
+    Route::delete('/admin/kelola-fakultas/{fakultas}', [FakultasController::class, 'destroy']);
 
     
  
@@ -129,9 +139,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('kaprodi')->group(function () {
 
         // form utama
-        Route::get('/penawaran', [PenawaranController::class, 'create'])
-            ->name('kaprodi.penawaran');
-
+    
+        Route::get('/penawaran', [PenawaranController::class, 'index'])
+            ->name('kaprodi.penawaran.index');
         // create
         Route::get('/penawaran/create', [PenawaranController::class, 'create'])
             ->name('kaprodi.penawaran.create');
@@ -141,15 +151,15 @@ Route::middleware('auth')->group(function () {
             ->name('kaprodi.penawaran.store');
 
         // edit
-        Route::get('/penawaran/edit/{id}', [PenawaranController::class, 'edit'])
+        Route::get('/penawaran/{recno}/edit', [PenawaranController::class, 'edit'])
             ->name('kaprodi.penawaran.edit');
 
         // update
-        Route::put('/penawaran/update/{id}', [PenawaranController::class, 'update'])
+        Route::put('/penawaran/{recno}', [PenawaranController::class, 'update'])
             ->name('kaprodi.penawaran.update');
 
         // delete
-        Route::delete('/penawaran/delete/{id}', [PenawaranController::class, 'destroy'])
+        Route::delete('/penawaran/delete/{recno}', [PenawaranController::class, 'destroy'])
             ->name('kaprodi.penawaran.delete');
     });
 

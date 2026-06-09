@@ -12,6 +12,15 @@
         <input type="text" class="input" name="nama_prodi" placeholder="" />
         <x-forms.error name='nama_prodi'/>
 
+        <label class="label font-bold mt-2" for="kode_fakultas">Kode Fakultas</label>
+            <select class="select select-bordered w-full" name="kode_fakultas" required>
+                <option disabled selected>Pilih Fakultas</option>
+                @foreach ($fakultass as $fakultas)  
+                    <option value="{{ $fakultas->kode_fakultas }}">{{ $fakultas->kode_fakultas }}</option>  
+                @endforeach
+            </select>
+            <x-forms.error name='fakultas'/>
+
         <button class="btn btn-primary mt-4">Buat Prodi</button>
   </fieldset>
 

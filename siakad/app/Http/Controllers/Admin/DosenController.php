@@ -44,7 +44,8 @@ class DosenController extends Controller
             'nip' => ['required', 'min:8', 'unique:dosen,nip'],
             'nama' => ['required', 'max:255'],
             'user_id' => ['required', 'unique:dosen,user_id'], 
-            'prodi' => ['required', 'exists:prodi,kode_prodi'] 
+            'prodi' => ['required', 'exists:prodi,kode_prodi'],
+            'jabatan_struktural' => ['required'] 
         ]);
        
         Dosen::create([
@@ -52,7 +53,8 @@ class DosenController extends Controller
             'nip' => $request->nip,
             'nama' => $request->nama,
             'user_id' => $request->user_id,
-            'prodi' => $request->prodi
+            'prodi' => $request->prodi,
+            'jabatan_struktural' => $request->jabatan_struktural
         ]);
 
         return redirect('/admin/kelola-dosen');
@@ -104,7 +106,9 @@ class DosenController extends Controller
                 'required', 
                 Rule::unique('dosen', 'user_id')->ignore($dosen->nim_dosen, 'nim_dosen')
             ], 
-            'prodi' => ['required', 'exists:prodi,kode_prodi']
+            'prodi' => ['required', 'exists:prodi,kode_prodi'],
+            'jabatan_struktural' => ['required']
+
         ]);
 
         $dosen->update([
@@ -112,7 +116,8 @@ class DosenController extends Controller
             'nip' => $request->nip,
             'nama' => $request->nama,
             'user_id' => $request->user_id,
-            'prodi' => $request->prodi
+            'prodi' => $request->prodi,
+            'jabatan_struktural' => $request->jabatan_struktural
         ]);
    
         return redirect('/admin/kelola-dosen');

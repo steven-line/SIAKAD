@@ -15,7 +15,7 @@
                     <th>Akses Nilai</th>
                     <th>Pataum</th>
                     <th>Aktif</th>
-                    <th>Prodi</th>
+                   
                     <th class="text-center">Aksi</th>
                 </tr>
             </thead>
@@ -44,7 +44,7 @@
                         <td>{{ $user->aksesnilai }}</td>
                         <td>{{ $user->pataum }}</td>
                         <td>{{ $user->aktif }}</td>
-                        <td>{{ $user->prodi }}</td>
+
                         
                         <td class="flex gap-2">
                             <a href="#" class="btn btn-soft btn-primary btn-sm">Detail</a>

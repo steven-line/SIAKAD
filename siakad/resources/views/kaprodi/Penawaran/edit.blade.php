@@ -1,0 +1,301 @@
+<x-layout>
+<div class="p-6 text-white max-w-4xl mx-auto">
+
+    <h1 class="text-2xl font-bold text-center mb-6">
+        Edit Penawaran Mata Kuliah
+    </h1>
+
+    <div class="bg-gray-800 p-6 rounded-lg shadow">
+
+        @if ($errors->any())
+            <div class="bg-red-500 p-3 mb-4 rounded">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form
+            method="POST"
+            action="/kaprodi/penawaran/{{$penawaran->recno}}/edit"
+        >
+            @csrf
+            @method('PUT')
+
+            <div class="grid grid-cols-2 gap-4">
+
+                {{-- MATA KULIAH --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Mata Kuliah
+                    </label>
+
+                    <select
+                        name="kodemk"
+                        id="kodemk"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                        @foreach($matkuls as $mk)
+                            <option
+                                value="{{ $mk->kodemk }}"
+                                data-sks="{{ $mk->sks }}"
+                                @selected(old('kodemk', $penawaran->kodemk) == $mk->kodemk)
+                            >
+                                {{ $mk->kodemk }}
+                                -
+                                {{ $mk->nama }}
+                                ({{ $mk->sks }} SKS)
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- DOSEN --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Dosen
+                    </label>
+
+                    <select
+                        name="dosen"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                        @foreach($dosens as $dsn)
+                            <option
+                                value="{{ $dsn->nama }}"
+                                @selected(old('dosen', $penawaran->dosen) == $dsn->nama)
+                            >
+                                {{ $dsn->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- SEMESTER --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Semester
+                    </label>
+
+                    <select
+                        name="semester"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                        @for($i=1;$i<=8;$i++)
+                            <option
+                                value="{{ $i }}"
+                                @selected(old('semester', $penawaran->semester) == $i)
+                            >
+                                {{ $i }}
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+
+                {{-- PERIODE --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Periode
+                    </label>
+
+                    <input
+                        type="text"
+                        name="periode"
+                        value="{{ old('periode', $penawaran->periode) }}"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                </div>
+
+                {{-- HARI --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Hari
+                    </label>
+
+                    <select
+                        name="hari"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                        @foreach(['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'] as $hari)
+                            <option
+                                value="{{ $hari }}"
+                                @selected(old('hari', $penawaran->hari) == $hari)
+                            >
+                                {{ $hari }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- SESI --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Sesi
+                    </label>
+
+                    <select
+                        name="sesi"
+                        id="sesi"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                        <option value="1"
+                            @selected(old('sesi', $penawaran->sesi) == '1')>
+                            Sesi 1 (Pagi)
+                        </option>
+
+                        <option value="2"
+                            @selected(old('sesi', $penawaran->sesi) == '2')>
+                            Sesi 2 (Malam)
+                        </option>
+                    </select>
+                </div>
+
+                {{-- JAM MULAI --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Jam Mulai
+                    </label>
+
+                    <select
+                        name="mulaipukul"
+                        id="mulaipukul"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                        <option value="{{ $penawaran->mulaipukul }}">
+                            {{ \Carbon\Carbon::parse($penawaran->mulaipukul)->format('H:i') }}
+                        </option>
+                    </select>
+                </div>
+
+                {{-- JAM SELESAI --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Jam Selesai
+                    </label>
+
+                    <input
+                        type="text"
+                        name="selesaipukul"
+                        id="selesaipukul"
+                        readonly
+                        value="{{ \Carbon\Carbon::parse($penawaran->selesaipukul)->format('H:i:s') }}"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded text-gray-300"
+                    >
+                </div>
+
+                {{-- JURUSAN --}}
+                <div>
+                    <label class="label font-bold">
+                        Jurusan
+                    </label>
+
+                    <select
+                        class="select select-bordered w-full"
+                        name="jurusan"
+                    >
+                        @foreach($jurusans as $jurusan)
+                            <option
+                                value="{{ $jurusan->kode_jurusan }}"
+                                @selected(old('jurusan', $penawaran->jurusan) == $jurusan->kode_jurusan)
+                            >
+                                {{ $jurusan->nama_jurusan }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- KELAS --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Kelas
+                    </label>
+
+                    <select
+                        name="pataum"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                        <option value="P"
+                            @selected(old('pataum', $penawaran->pataum) == 'P')>
+                            Pagi
+                        </option>
+
+                        <option value="M"
+                            @selected(old('pataum', $penawaran->pataum) == 'M')>
+                            Malam
+                        </option>
+                    </select>
+                </div>
+
+                {{-- PAGU --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        Pagu
+                    </label>
+
+                    <input
+                        type="number"
+                        name="pagu"
+                        value="{{ old('pagu', $penawaran->pagu) }}"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                </div>
+
+                {{-- MBKM --}}
+                <div>
+                    <label class="text-sm text-gray-400">
+                        MBKM
+                    </label>
+
+                    <div class="mt-2">
+                        <input
+                            type="checkbox"
+                            name="MBKM"
+                            value="1"
+                            class="w-5 h-5"
+                            @checked(old('MBKM', $penawaran->MBKM))
+                        >
+                    </div>
+                </div>
+
+                {{-- KETERANGAN --}}
+                <div class="col-span-2">
+                    <label class="text-sm text-gray-400">
+                        Keterangan
+                    </label>
+
+                    <input
+                        type="text"
+                        name="keterangan"
+                        value="{{ old('keterangan', $penawaran->keterangan) }}"
+                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                    >
+                </div>
+
+            </div>
+
+            <div class="flex justify-end gap-2 mt-6">
+
+                <a
+                    href="{{ route('kaprodi.penawaran.index') }}"
+                    class="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+                >
+                    Batal
+                </a>
+
+                <button
+                    type="submit"
+                    class="px-4 py-2 bg-yellow-600 rounded hover:bg-yellow-500"
+                >
+                    Update
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+</x-layout>

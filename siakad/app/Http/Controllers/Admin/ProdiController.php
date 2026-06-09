@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Prodi;
 use App\Http\Controllers\Controller;
+use App\Models\Fakultas;
 use Illuminate\Http\Request;
 
 class ProdiController extends Controller
@@ -23,7 +24,8 @@ class ProdiController extends Controller
      */
     public function create()
     {
-        return view('admin.prodi.create');
+        $fakultass = Fakultas::orderBy('kode_fakultas')->get();
+        return view('admin.prodi.create', ['fakultass' => $fakultass]);
     }
 
     /**
@@ -34,10 +36,12 @@ class ProdiController extends Controller
         $request->validate([
             'kode_prodi' => ['required', 'min:3'],
             'nama_prodi' => ['required', 'min:4'],
+            'kode_fakultas' => ['required']
         ]);
         Prodi::create([
             'kode_prodi' => $request->kode_prodi,
-            'nama_prodi' => $request->nama_prodi
+            'nama_prodi' => $request->nama_prodi,
+            'kode_fakultas' => $request->kode_fakultas,
         ]);
         return redirect('/admin/kelola-prodi');
         
@@ -56,7 +60,9 @@ class ProdiController extends Controller
      */
     public function edit(Prodi $prodi)
     {
-        return view('admin.prodi.edit', ['prodi' => $prodi]);
+        $fakultass = Fakultas::orderBy('kode_fakultas')->get();
+
+        return view('admin.prodi.edit', ['prodi' => $prodi, 'fakultass' => $fakultass]);
     }
 
     /**
@@ -67,6 +73,8 @@ class ProdiController extends Controller
         $prodi->update([
             'kode_prodi' => $request->kode_prodi,
             'nama_prodi' => $request->nama_prodi,
+            'kode_fakultas' => $request->kode_fakultas,
+
         ]);
 
         return redirect('/admin/kelola-prodi');

@@ -83,6 +83,7 @@ class MkController extends Controller
     public function show(Mk $mk)
     {
         //
+        return view('admin.matakuliah.show', ['mk' => $mk]);
     }
 
     /**
@@ -90,8 +91,8 @@ class MkController extends Controller
      */
     public function edit(Mk $mk)
     {
-
-        return view('admin.matakuliah.edit', ['mk' => $mk]);
+         $kurikulums = Kurikulum::orderby('kode_kurikulum')->get();
+        return view('admin.matakuliah.edit', ['mk' => $mk, 'kurikulums' => $kurikulums]);
     }
 
     /**

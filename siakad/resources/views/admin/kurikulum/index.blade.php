@@ -9,6 +9,7 @@
         <th>Kode Kurikulum</th>
         <th>Nama Kurikulum</th>
         <th>Aktif</th>
+    
         <th colspan="3">Aksi</th>
       </tr>
     </thead>
@@ -21,7 +22,7 @@
             <th>{{$kurikulum->kode_kurikulum}}</th>
             <th>{{$kurikulum->nama_kurikulum}}</th>
             <th>{{$kurikulum->aktif ? "aktif": "tidak aktif"}}</th>
-            <th><a href='' class="btn btn-soft btn-primary">Detail</a></th>
+            <th><a href="/admin/kelola-kurikulum/{{$kurikulum->kode_kurikulum}}" class="btn btn-soft btn-primary">Detail</a></th>
             <th><a class="btn btn-soft btn-warning" href="/admin/kelola-kurikulum/{{$kurikulum->kode_kurikulum}}/edit">Edit</a></th>
             <th>
               <button class="btn btn-soft btn-error" onclick="deleteBox_{{$kurikulum->kode_kurikulum}}.showModal()">Delete</button>
