@@ -41,7 +41,7 @@
             @role('mahasiswa')
               <li><a href="/mahasiswa">Dashboard</a></li>
               <li><a href="/mahasiswa/penawaran">Penawaran</a></li>
-              <li><a href="/mahasiswa/view_krs">KRS</a></li>
+              <li><a href="/mahasiswa/krs">KRS</a></li>
               <li><a href="/mahasiswa/ubah-password">Ubah Password</a></li>
             @endrole
 

@@ -185,7 +185,7 @@ Route::middleware('auth')->group(function () {
     });
     
     Route::get('/mahasiswa/penawaran', [PenawaranMahasiswaController::class, 'index']);
-    Route::get('/mahasiswa/view_krs', function(){
+    Route::get('/mahasiswa/krs', function(){
         return view('mahasiswa.kartu_KRS.index');
     });
     Route::get('/mahasiswa/nilai_krs', function(){
@@ -205,7 +205,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/krs/batal-multiple', [KrsMahasiswaController::class, 'batalMultiple'])->name('mahasiswa.krs.batal');
     });
 
-    Route::get('/mahasiswa/mata-kuliah/{id}', [DetailMataKuliahController::class, 'show'])->name('mata-kuliah.show');
+    Route::get('/mahasiswa/mata-kuliah/{kode_mk}', [DetailMataKuliahController::class, 'show'])->name('mata-kuliah.show');
     Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'edit']);
     Route::patch('/mahasiswa/ubah-password/{user}', [UbahPasswordController::class, 'update']);
 });

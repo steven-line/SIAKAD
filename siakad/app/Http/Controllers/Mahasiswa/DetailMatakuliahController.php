@@ -13,10 +13,10 @@ class DetailMataKuliahController extends Controller
     /**
      * Menampilkan detail mata kuliah berdasarkan ID penawaran (recno)
      */
-    public function show($id)
+    public function show($kode_mk)
     {
         // Ambil data penawaran + relasi mk
-        $penawaran = Penawaran::with('mk')->find($id);
+        $penawaran = Penawaran::with('mk')->where('kodemk', $kode_mk)->first();
 
         if (!$penawaran) {
             abort(404, 'Mata kuliah tidak ditemukan');

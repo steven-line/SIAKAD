@@ -35,7 +35,6 @@ class Registrasi extends Model
     'selesaipukul' => 'datetime:H:i:s',
 ];
 
-    // relasi ke matkul
     public function matkul()
     {
         return $this->belongsTo(Mk::class, 'kodemk', 'kodemk');

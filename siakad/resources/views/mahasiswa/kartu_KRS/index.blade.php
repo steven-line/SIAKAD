@@ -1,8 +1,8 @@
 <x-layout title="KRS UWIKA">
     <div class="container mx-auto p-4">
         <!-- Header -->
-        <h1 class="text-2xl font-bold mb-2 text-gray-800">KRS Anda yang Terdaftar</h1>
-        <p class="mb-2 text-gray-700">Berikut adalah daftar mata kuliah yang sudah anda daftarkan. Centang mata kuliah yang ingin dibatalkan, lalu klik tombol "Batalkan yang Dipilih".</p>
+        <h1 class="text-2xl font-bold mb-2 text-white-800">KRS Anda yang Terdaftar</h1>
+        <p class="mb-2 text-white-700">Berikut adalah daftar mata kuliah yang sudah anda daftarkan. Centang mata kuliah yang ingin dibatalkan, lalu klik tombol "Batalkan yang Dipilih".</p>
 
         <!-- Peringatan -->
         <div class="alert alert-warning mb-4 p-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
@@ -56,7 +56,7 @@
                                 <td class="px-4 py-2">{{ $index + 1 }}</td>
                                 <td class="px-4 py-2">{{ $item->kode_mk }}</td>
                                 <td class="px-4 py-2">
-                                    <a href="{{ route('mata-kuliah.show', $item->id) }}" class="text-blue-600 hover:underline">
+                                    <a href="{{ route('mata-kuliah.show', $item->kode_mk) }}" class="text-blue-600 hover:underline">
                                         {{ $item->nama_mk }}
                                     </a>
                                 </td>

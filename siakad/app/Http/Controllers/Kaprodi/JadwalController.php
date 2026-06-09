@@ -40,7 +40,7 @@ class JadwalController extends Controller
 
         $kodeJurusan = $user->dosen->prodi;
 
-        return Penawaran::with('matkul')
+        return Penawaran::with('mk')
             ->where('jurusan', $kodeJurusan)
             ->orderByRaw("
                 FIELD(
@@ -110,7 +110,7 @@ class JadwalController extends Controller
      */
     public function show($recno)
     {
-        $jadwal = Penawaran::with('matkul')
+        $jadwal = Penawaran::with('mk')
             ->findOrFail($recno);
 
         return view(

@@ -2,8 +2,8 @@
     <div class="px-4 py-6 max-w-7xl mx-auto">
         <!-- Sapaan -->
         <div class="mb-8">
-            <h1 class="text-2xl md:text-3xl font-semibold text-gray-800">Hello Mahasiswa</h1>
-            <p class="text-gray-500 text-sm mt-1">Selamat datang kembali. Berikut ringkasan akademik Anda.</p>
+            <h1 class="text-2xl md:text-3xl font-semibold text-white-800">Hello Mahasiswa</h1>
+            <p class="text-white-500 text-sm mt-1">Selamat datang kembali. Berikut ringkasan akademik Anda.</p>
         </div>
 
         <!-- 4 Kartu Statistik: IPS, IPK, SKS, SKK -->

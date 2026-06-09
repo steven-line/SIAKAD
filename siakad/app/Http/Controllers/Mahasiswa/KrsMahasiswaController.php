@@ -17,7 +17,7 @@ class KrsMahasiswaController extends Controller
     {
         // Sesuaikan dengan periode yang sedang berjalan
         // Contoh: return session('periode_aktif', '2025/Genap');
-        return '2025/Genap'; // Ganti sesuai kebutuhan
+        return '2025/2026'; // Ganti sesuai kebutuhan
     }
 
     /**
@@ -28,7 +28,7 @@ class KrsMahasiswaController extends Controller
         $nrp = session('nrp') ?? Auth::user()->username;
         $periode = $this->getPeriodeAktif();
 
-        // Ambil data registrasi untuk periode aktif, dengan relasi matkul
+        // Ambil data registrasi untuk periode aktif, dengan relasi matkul (bukan kodemk)
         $krsItems = Registrasi::with('matkul')
             ->where('nrp', $nrp)
             ->where('periode', $periode)
@@ -54,7 +54,7 @@ class KrsMahasiswaController extends Controller
         $toleransiSks = 0;
         $sisaLimit    = $limitSks - $totalSks - $toleransiSks;
 
-        return view('mahasiswa.krs.index', compact('krsItems', 'totalSks', 'ipsTerakhir', 'limitSks', 'toleransiSks', 'sisaLimit'));
+        return view('mahasiswa.kartu_KRS.index', compact('krsItems', 'totalSks', 'ipsTerakhir', 'limitSks', 'toleransiSks', 'sisaLimit'));
     }
 
     public function store(Request $request)
