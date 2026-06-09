@@ -14,12 +14,12 @@
     <tbody>
       @forelse ($penawaran as $kodemk)
         <tr>
-          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->kodemk }}</a></td>
-          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->mk->nama ?? '-' }}</a></td>
-          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->dosen }}</a></td>
-          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->hari }}</a></td>
-          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->mulaipukul->format('H:i:s') }} - {{ $kodemk->selesaipukul->format('H:i:s') }}</a></td>
-          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="link link-primary">{{ $kodemk->mk->sks ?? '-' }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="text-white-200">{{ $kodemk->kodemk }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="text-white-200">{{ $kodemk->mk->nama ?? '-' }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="text-white-200">{{ $kodemk->dosen }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="text-white-200">{{ $kodemk->hari }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="text-white-200">{{ $kodemk->mulaipukul->format('H:i:s') }} - {{ $kodemk->selesaipukul->format('H:i:s') }}</a></td>
+          <td> <a href="{{ route('mata-kuliah.show', $kodemk->recno) }}" class="text-white-200">{{ $kodemk->mk->sks ?? '-' }}</a></td>
         </tr>
       @empty
         <tr>
