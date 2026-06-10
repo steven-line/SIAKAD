@@ -41,6 +41,7 @@
 
             @role('mahasiswa')
               <li><a href="/mahasiswa" class="text-white">Dashboard</a></li>
+              <li><a href="/mahasiswa/biodata" class="text-white">Biodata</a></li>
               <li><a href="/mahasiswa/penawaran" class="text-white">Penawaran</a></li>
               <li><a href="/mahasiswa/krs" class="text-white">KRS</a></li>
               <li><a href="/mahasiswa/nilai_krs" class="text-white">Nilai KRS</a></li>

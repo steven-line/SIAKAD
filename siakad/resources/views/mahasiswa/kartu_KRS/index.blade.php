@@ -19,7 +19,9 @@
             <div class="flex flex-wrap justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg">
                 <div class="flex items-center space-x-2">
                     <span class="text-green-700 font-semibold">Status:</span>
-                    <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">KRS Anda Telah Tervalidasi</span>
+                    <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
+                        {{ $statusBlokir ?? 'KRS Anda Telah Tervalidasi' }}
+                    </span>
                 </div>
                 <div class="flex gap-2">
                     <button type="button" id="cetakKRS" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use App\Models\Registrasi;
+use App\Models\Mahasiswa;
 use App\Models\Penawaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,10 @@ class KrsMahasiswaController extends Controller
     {
         $nrp = session('nrp') ?? Auth::user()->username;
         $periode = $this->getPeriodeAktif();
+
+        // Ambil status blokir mahasiswa
+        $mahasiswa = Mahasiswa::where('nrp', $nrp)->first();
+        $statusBlokir = $mahasiswa ? $mahasiswa->status_blokir : 'Tidak ada data';
 
         // Ambil data registrasi untuk periode aktif, dengan relasi matkul (bukan kodemk)
         $krsItems = Registrasi::with('matkul')
@@ -54,7 +59,7 @@ class KrsMahasiswaController extends Controller
         $toleransiSks = 0;
         $sisaLimit    = $limitSks - $totalSks - $toleransiSks;
 
-        return view('mahasiswa.kartu_KRS.index', compact('krsItems', 'totalSks', 'ipsTerakhir', 'limitSks', 'toleransiSks', 'sisaLimit'));
+        return view('mahasiswa.kartu_KRS.index', compact('krsItems', 'totalSks', 'ipsTerakhir', 'limitSks', 'toleransiSks', 'sisaLimit', 'statusBlokir'));
     }
 
     public function store(Request $request)

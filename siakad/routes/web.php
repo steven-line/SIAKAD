@@ -18,6 +18,7 @@ use App\Http\Controllers\Mahasiswa\MataKuliahController;
 use App\Http\Controllers\Mahasiswa\PenawaranMahasiswaController;
 use App\Http\Controllers\Mahasiswa\KrsMahasiswaController;
 use App\Http\Controllers\Mahasiswa\DetailMataKuliahController;
+use App\Models\Mahasiswa;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -164,20 +165,6 @@ Route::middleware('auth')->group(function () {
     });
 
     // =========================
-    // MAHASISWA
-    // =========================
-    Route::get('/mahasiswa', function () {
-        return view('mahasiswa.dashboard');
-    });
-
-    Route::get('/mahasiswa/view_krs', function () {
-        return view('mahasiswa.kartu_KRS.index');
-    });
-
-    Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'create']);
-    Route::patch('/mahasiswa/ubah-password', [UbahPasswordController::class, 'store']);
-
-    // =========================
     // DOSEN
     // =========================
     Route::get('/dosen-wali', function () {
@@ -192,6 +179,10 @@ Route::middleware('auth')->group(function () {
     // =========================
     Route::get('/mahasiswa', function(){
         return view('mahasiswa.dashboard');
+    });
+
+    Route::get('/mahasiswa/biodata', function(){
+        return view('mahasiswa.biodata.index');
     });
     
     Route::get('/mahasiswa/penawaran', [PenawaranMahasiswaController::class, 'index']);
