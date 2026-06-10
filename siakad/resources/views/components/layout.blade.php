@@ -16,10 +16,10 @@
           <img src="{{ asset('images/boy.png')}}" alt="boy" class="w-20 h-20">
         </div>
 
-        <hr class="my-6 border-gray-200" />
+        <hr class="my-6 border-gray-200"/>
 
         <div>
-          <ul class="[&>li]:py-2 [&>li]:hover:bg-gray-100 flex-1">
+          <ul class="[&>li]:py-2 [&>li] flex-1">
             
             {{-- Perbaikan: Menggunakan @role untuk sidebar navigasi --}}
             
@@ -40,13 +40,13 @@
             @endrole
 
             @role('mahasiswa')
-              <li><a href="/mahasiswa">Dashboard</a></li>
-              <li><a href="/mahasiswa/penawaran">Penawaran</a></li>
-              <li><a href="/mahasiswa/krs">KRS</a></li>
-              <li><a href="/mahasiswa/nilai_krs">Nilai KRS</a></li>
-              <li><a href="/mahasiswa/KHS">KHS</a></li>
-              <li><a href="/mahasiswa/Transkrip_Nilai">Transkrip Nilai</a></li>
-              <li><a href="/mahasiswa/ubah-password">Ubah Password</a></li>
+              <li><a href="/mahasiswa" class="text-white">Dashboard</a></li>
+              <li><a href="/mahasiswa/penawaran" class="text-white">Penawaran</a></li>
+              <li><a href="/mahasiswa/krs" class="text-white">KRS</a></li>
+              <li><a href="/mahasiswa/nilai_krs" class="text-white">Nilai KRS</a></li>
+              <li><a href="/mahasiswa/KHS" class="text-white">KHS</a></li>
+              <li><a href="/mahasiswa/Transkrip_Nilai" class="text-white">Transkrip Nilai</a></li>
+              <li><a href="/mahasiswa/ubah-password" class="text-black">Ubah Password</a></li>
             @endrole
 
             @role('kaprodi')

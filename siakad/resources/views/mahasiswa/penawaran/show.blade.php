@@ -64,7 +64,7 @@
                 </thead>
                 <tbody>
                     @forelse ($pendaftar as $index => $mhs)
-                        <tr class="border-b hover:bg-gray-50">
+                        <tr>
                             <td class="px-4 py-2">{{ $index + 1 }}</td>
                             <td class="px-4 py-2">{{ $mhs->nrp }}</td>
                             <td class="px-4 py-2">{{ $mhs->nama }}</td>
