@@ -2,25 +2,25 @@
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-bold mb-4">Informasi Mata Kuliah</h1>
 
-        <!-- Informasi Detail Mata Kuliah -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-100 rounded-lg">
-            <div><strong>Kode MK:</strong> {{ $mataKuliah->kode_mk }}</div>
-            <div><strong>Nama MK:</strong> {{ $mataKuliah->nama_mk }}</div>
-            <div><strong>Kelas:</strong> {{ $mataKuliah->kelas }}</div>
-            <div><strong>Hari:</strong> {{ $mataKuliah->hari }}</div>
-            <div><strong>Jam Mulai:</strong> {{ $mataKuliah->jam_mulai }}</div>
-            <div><strong>Jam Selesai:</strong> {{ $mataKuliah->jam_selesai }}</div>
-            <div><strong>SKS:</strong> {{ $mataKuliah->sks }}</div>
-            <div><strong>Semester:</strong> {{ $mataKuliah->semester }}</div>
-        </div>
+            <!-- Informasi Detail Mata Kuliah -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-100 rounded-lg">
+                <div><strong>Kode MK:</strong> {{ $mataKuliah->kode_mk }}</div>
+                <div><strong>Nama MK:</strong> {{ $mataKuliah->nama_mk }}</div>
+                <div><strong>Kelas:</strong> {{ $mataKuliah->kelas }}</div>
+                <div><strong>Hari:</strong> {{ $mataKuliah->hari }}</div>
+                <div><strong>Jam Mulai:</strong> {{ $mataKuliah->jam_mulai }}</div>
+                <div><strong>Jam Selesai:</strong> {{ $mataKuliah->jam_selesai }}</div>
+                <div><strong>SKS:</strong> {{ $mataKuliah->sks }}</div>
+                <div><strong>Semester:</strong> {{ $mataKuliah->semester }}</div>
+            </div>
 
-        <!-- Info Semester/SKS, Periode, Kuota, Keterangan -->
-        <div class="mb-6 p-4 border rounded-lg bg-blue-100 shadow-sm">
-            <p><strong>Semester / SKS :</strong> {{ $mataKuliah->semester }} / {{ $mataKuliah->sks }} SKS</p>
-            <p><strong>Periode :</strong> {{ $mataKuliah->periode ?? 'GENAP / 2025-2026' }}</p>
-            <p><strong>Kuota Kelas :</strong> {{ $mataKuliah->kuota ?? '-' }}</p>
-            <p><strong>Keterangan :</strong> {{ $mataKuliah->keterangan ?? '-' }}</p>
-        </div>
+            <!-- Info Semester/SKS, Periode, Kuota, Keterangan -->
+            <div class="mb-6 p-4 border rounded-lg bg-blue-100 shadow-sm">
+                <p><strong>Semester / SKS :</strong> {{ $mataKuliah->semester }} / {{ $mataKuliah->sks }} SKS</p>
+                <p><strong>Periode :</strong> {{ $mataKuliah->periode ?? 'GENAP / 2025-2026' }}</p>
+                <p><strong>Kuota Kelas :</strong> {{ $mataKuliah->kuota ?? '-' }}</p>
+                <p><strong>Keterangan :</strong> {{ $mataKuliah->keterangan ?? '-' }}</p>
+            </div>
 
         <!-- Tabel Daftar Mahasiswa -->
         <h2 class="text-xl font-semibold mb-2">Daftar Mahasiswa Peserta</h2>

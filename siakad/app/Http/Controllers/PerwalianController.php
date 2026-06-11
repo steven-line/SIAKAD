@@ -13,8 +13,17 @@ class PerwalianController extends Controller
      */
     public function index()
     {   
-        $mahasiswas =  Mahasiswa::with('dosenWali')->get();
-        return view('dosen.perwalian.index', ['mahasiswas' => $mahasiswas]);
+    
+        $nimDosen = auth()->user()->dosen->nim_dosen;
+
+            $mahasiswas = Mahasiswa::with('dosenWali')
+                ->where('dosen_wali', $nimDosen)
+                ->get();
+
+            return view(
+                'dosen_wali.perwalian.index',
+                ['mahasiswas' => $mahasiswas]
+            );
     }
 
     /**
@@ -36,9 +45,10 @@ class PerwalianController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Mahasiswa $mahasiswa)
     {
-        //
+        
+        return view('dosen_wali.perwalian.show', ['mahasiswa' => $mahasiswa]);
     }
 
     /**

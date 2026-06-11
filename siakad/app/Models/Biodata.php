@@ -8,5 +8,10 @@ class Biodata extends Model
 {
     //
     protected $table = 'biodata';
+    public $incrementing = false;
     protected $primaryKey = 'nrp';
+    public $timestamps = false;
+    public function biodata() {
+        return $this->hasOne(Mahasiswa::class, 'nrp', 'nrp');
+     }
 }

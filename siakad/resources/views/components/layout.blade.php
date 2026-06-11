@@ -24,8 +24,8 @@
             {{-- Perbaikan: Menggunakan @role untuk sidebar navigasi --}}
             
             @role('dosen-wali')
-              <li><a href="/dosen">Dashboard</a></li>
-              <li><a href="/dosen/perwalian">Perwalian</a></li>
+              <li><a href="/dosen-wali">Dashboard</a></li>
+              <li><a href="/dosen-wali/perwalian">Perwalian</a></li>
             @endrole
 
             @role('admin')
@@ -36,6 +36,7 @@
               <li><a href="/admin/kelola-dosen">Kelola Dosen</a></li>
               <li><a href="/admin/kelola-prodi">Kelola Prodi</a></li>
               <li><a href="/admin/kelola-fakultas">Kelola Fakultas</a></li>
+              <li><a href="/admin/kelola-biodata">Kelola Biodata</a></li>
 
             @endrole
 

@@ -163,9 +163,6 @@
                         id="mulaipukul"
                         class="w-full p-2 mt-1 bg-gray-700 rounded"
                     >
-                        <option value="{{ $penawaran->mulaipukul }}">
-                            {{ \Carbon\Carbon::parse($penawaran->mulaipukul)->format('H:i') }}
-                        </option>
                     </select>
                 </div>
 
@@ -177,10 +174,8 @@
 
                     <input
                         type="text"
-                        name="selesaipukul"
                         id="selesaipukul"
                         readonly
-                        value="{{ \Carbon\Carbon::parse($penawaran->selesaipukul)->format('H:i:s') }}"
                         class="w-full p-2 mt-1 bg-gray-700 rounded text-gray-300"
                     >
                 </div>
@@ -299,3 +294,87 @@
 
 </div>
 </x-layout>
+
+<script>
+    const sesiSelect = document.getElementById('sesi');
+    const mkSelect = document.getElementById('kodemk');
+    const mulaiSelect = document.getElementById('mulaipukul');
+    const selesaiInput = document.getElementById('selesaipukul');
+
+    const jamPagi = @json($jamSlotsPagi);
+    const jamMalam = @json($jamSlotsMalam);
+
+    const currentMulai =
+        "{{ \Carbon\Carbon::parse($penawaran->mulaipukul)->format('H:i') }}";
+
+    function isiJam(slots) {
+
+        mulaiSelect.innerHTML = '';
+
+        slots.forEach(jam => {
+
+            const selected =
+                jam === currentMulai ? 'selected' : '';
+
+            mulaiSelect.innerHTML += `
+                <option value="${jam}" ${selected}>
+                    ${jam}
+                </option>
+            `;
+        });
+    }
+
+    function addMinutes(time, minutes) {
+
+        const [hours, mins] = time.split(':').map(Number);
+
+        const total = hours * 60 + mins + minutes;
+
+        const newHours = Math.floor(total / 60);
+        const newMins = total % 60;
+
+        return String(newHours).padStart(2, '0')
+            + ':'
+            + String(newMins).padStart(2, '0');
+    }
+
+    function hitungSelesai() {
+
+        const selectedOption =
+            mkSelect.options[mkSelect.selectedIndex];
+
+        const sks =
+            parseInt(selectedOption.dataset.sks || 0);
+
+        const jamMulai =
+            mulaiSelect.value;
+
+        if (!sks || !jamMulai) {
+
+            selesaiInput.value = '';
+            return;
+        }
+
+        const durasiMenit = sks * 50;
+
+        selesaiInput.value =
+            addMinutes(jamMulai, durasiMenit);
+    }
+
+    function updateJam() {
+
+        if (sesiSelect.value == '2') {
+            isiJam(jamMalam);
+        } else {
+            isiJam(jamPagi);
+        }
+
+        hitungSelesai();
+    }
+
+    sesiSelect.addEventListener('change', updateJam);
+    mkSelect.addEventListener('change', hitungSelesai);
+    mulaiSelect.addEventListener('change', hitungSelesai);
+
+    updateJam();
+</script>
