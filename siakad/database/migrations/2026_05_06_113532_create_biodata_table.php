@@ -94,14 +94,7 @@ return new class extends Migration
             $table->string('email', 100);
             $table->string('jenis_kelamin', 12);
             $table->string('nisn', 25);
-            
-            
-            
-            
-            
-            
-            
-            
+              
         });
     }
 

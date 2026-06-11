@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BiodataAdminController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PerwalianController;
 use App\Http\Controllers\UbahPasswordController;
@@ -84,6 +85,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/admin/kelola-fakultas/{fakultas}', [FakultasController::class, 'update']);
     Route::delete('/admin/kelola-fakultas/{fakultas}', [FakultasController::class, 'destroy']);
 
+    Route::get('/admin/kelola-biodata', [BiodataAdminController::class, 'index']);
+    Route::get('/admin/kelola-biodata/create', [BiodataAdminController::class, 'create']);
+    Route::post('/admin/kelola-biodata', [BiodataAdminController::class, 'store']);
+    Route::get('/admin/kelola-biodata/{biodata}/edit', [BiodataAdminController::class, 'edit']);
+    Route::patch('/admin/kelola-biodata/{biodata}', [BiodataAdminController::class, 'update']);
+    Route::delete('/admin/kelola-biodata/{biodata}', [BiodataAdminController::class, 'destroy']);
     
  
     // =========================
@@ -209,6 +216,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/mahasiswa/mata-kuliah/{kode_mk}', [DetailMataKuliahController::class, 'show'])->name('mata-kuliah.show');
     Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'edit']);
     Route::patch('/mahasiswa/ubah-password/{user}', [UbahPasswordController::class, 'update']);
+
+    Route::get('/dosen-wali/perwalian', [PerwalianController::class, 'index']);
+    
+    Route::get('/dosen-wali/perwalian/{mahasiswa}', [PerwalianController::class, 'show']);
 });
 
 // =========================

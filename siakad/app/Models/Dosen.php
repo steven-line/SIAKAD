@@ -28,11 +28,11 @@ class Dosen extends Model
 
     public function mahasiswas()
     {
-        return $this->hasMany(Mahasiswa::class);
+        return $this->hasMany(Mahasiswa::class, 'dosen_wali', 'nim_dosen');
     }
 
     public function user() {
-        return $this->hasOne(User::class, 'username');
+        return $this->hasOne(User::class, 'username', 'user_id');
     }
     
 }

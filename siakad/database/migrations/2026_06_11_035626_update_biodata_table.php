@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Dosen;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,21 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mahasiswas', function (Blueprint $table) {
-            $table->string('nrp')->primary();
-            $table->string('nama');
-            $table->string('dosen_wali',15);
-            
-            $table->text('status_blokir');
-
-        });
+       Schema::table('biodata', function (Blueprint $table) {
+            $table->foreign('nrp')->references('nrp')->on('mahasiswas')->onDelete('cascade');
+             
+    });
     }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {
-        Schema::dropIfExists('mahasiswas');
+    {   
+        //
+            Schema::table('biodata', function (Blueprint $table) {
+        $table->dropForeign(['mahasiswas']);
+            });
     }
 };
