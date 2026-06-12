@@ -67,6 +67,24 @@ class PerwalianController extends Controller
         //
     }
 
+    public function validasi(Mahasiswa $mahasiswa)
+    {
+        $mahasiswa->status_blokir = "DISETUJUI";
+        $mahasiswa->save();
+
+        return redirect('/dosen-wali/perwalian')
+            ->with('success', 'Mahasiswa berhasil divalidasi');
+    }
+
+    public function lock(Mahasiswa $mahasiswa)
+    {
+        $mahasiswa->status_blokir = "TERKUNCI";
+        $mahasiswa->save();
+
+        return redirect('/dosen-wali/perwalian')
+            ->with('success', 'KRS TERKUNCI');
+    }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -74,4 +92,5 @@ class PerwalianController extends Controller
     {
         //
     }
+
 }

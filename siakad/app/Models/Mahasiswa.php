@@ -11,6 +11,7 @@ class Mahasiswa extends Model
      public $incrementing = false;
      protected $primaryKey = 'nrp';
 
+ 
 
      public function dosenWali() {
         return $this->belongsTo(Dosen::class, 'dosen_wali', 'nim_dosen');

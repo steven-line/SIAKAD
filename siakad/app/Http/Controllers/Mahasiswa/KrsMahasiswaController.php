@@ -59,7 +59,7 @@ class KrsMahasiswaController extends Controller
         $toleransiSks = 0;
         $sisaLimit    = $limitSks - $totalSks - $toleransiSks;
 
-        return view('mahasiswa.kartu_KRS.index', compact('krsItems', 'totalSks', 'ipsTerakhir', 'limitSks', 'toleransiSks', 'sisaLimit', 'statusBlokir'));
+        return view('mahasiswa.kartu_KRS.index', compact('krsItems', 'totalSks', 'ipsTerakhir', 'limitSks', 'toleransiSks', 'sisaLimit', 'statusBlokir', 'nrp'));
     }
 
     public function store(Request $request)
@@ -155,5 +155,22 @@ class KrsMahasiswaController extends Controller
 
         return redirect()->route('mahasiswa.krs.index')
                          ->with('success', 'Mata kuliah yang dipilih berhasil dibatalkan.');
+    }
+
+        public function validasi(Mahasiswa $mahasiswa)
+    {
+            $loginNrp = session('nrp') ?? Auth::user()->username;
+
+            // pastikan tidak sembarang orang bisa validasi
+            if ($loginNrp !== $mahasiswa->nrp) {
+                abort(403, 'Tidak diizinkan');
+            }
+
+
+            $mahasiswa->status_blokir = "MENUNGGU_VALIDASI";
+            $mahasiswa->save();
+
+            return redirect('/mahasiswa/krs')
+                ->with('success', 'Menunggu Validasi Dosen');
     }
 }
