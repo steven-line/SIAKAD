@@ -19,6 +19,8 @@ use App\Http\Controllers\Mahasiswa\MataKuliahController;
 use App\Http\Controllers\Mahasiswa\PenawaranMahasiswaController;
 use App\Http\Controllers\Mahasiswa\KrsMahasiswaController;
 use App\Http\Controllers\Mahasiswa\DetailMataKuliahController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
 use App\Models\Mahasiswa;
 
 Route::get('/', function () {
@@ -92,7 +94,23 @@ Route::middleware('auth')->group(function () {
     Route::patch('/admin/kelola-biodata/{biodata}', [BiodataAdminController::class, 'update']);
     Route::delete('/admin/kelola-biodata/{biodata}', [BiodataAdminController::class, 'destroy']);
     
- 
+    
+    Route::get('/admin/master-permission', [PermissionController::class, 'index']);
+    Route::get('/admin/master-permission/create', [PermissionController::class, 'create']);
+    Route::post('/admin/master-permission', [PermissionController::class, 'store']);
+    Route::get('/admin/master-permission/{permission}/edit', [PermissionController::class, 'edit']);
+    Route::patch('/admin/master-permission/{permission}', [PermissionController::class, 'update']);
+    Route::delete('/admin/master-permission/{permission}', [PermissionController::class, 'destroy']);
+    
+    
+    Route::get('/admin/master-role', [RoleController::class, 'index']);
+    Route::get('/admin/master-role/create', [RoleController::class, 'create']);
+    Route::post('/admin/master-role', [RoleController::class, 'store']);
+    Route::get('/admin/master-role/{role}/edit', [RoleController::class, 'edit']);
+    Route::patch('/admin/master-role/{role}', [RoleController::class, 'update']);
+    Route::delete('/admin/master-role/{role}', [RoleController::class, 'destroy']);
+    
+    
     // =========================
     // DASHBOARD KAPRODI
     // =========================

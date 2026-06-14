@@ -9,7 +9,7 @@
     @vite('resources/css/app.css')
 </head>
 <body class="flex min-h-screen">
-  <nav class="bg-white shadow-md border-r border-gray-200 h-screen top-0 left-0 min-w-[250px] py-6 px-4 overflow-auto dark:bg-black">
+  <nav class="bg-white shadow-md border-r border-gray-200 h-screen sticky  top-0 left-0 min-w-[250px] py-6 px-4  dark:bg-black">
       <div class="relative flex flex-col h-full">
 
         <div class="flex flex-col gap-y-2 justify-center items-center cursor-pointer relative">
@@ -37,6 +37,8 @@
               <li><a href="/admin/kelola-prodi">Kelola Prodi</a></li>
               <li><a href="/admin/kelola-fakultas">Kelola Fakultas</a></li>
               <li><a href="/admin/kelola-biodata">Kelola Biodata</a></li>
+              <li><a href="/admin/master-permission">Master Permission</a></li>
+              <li><a href="/admin/master-role">Master Role</a></li>
 
             @endrole
 
@@ -102,7 +104,7 @@
       </div>
   </nav>
 
-  <main class="flex-1 px-4 py-6">
+  <main class="flex-1 px-4 py-6 overflow-y-auto">
     {{$slot}}
   </main>
 </body>
