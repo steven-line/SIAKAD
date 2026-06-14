@@ -12,10 +12,10 @@
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs h-64 sborder p-4 mx-auto">
 
         <label class="label font-bold" for="username">Username</label>
-        <input type="text" class="input" name="username" placeholder="Username/NRP" />
+        <input type="text" class="input" name="username" placeholder="Username/NRP" value="{{ old('username') }}" />
         <x-forms.error name="username"/>
         <label class="label font-bold">Password</label>
-        <input type="password" class="input" name="password" placeholder="Password" />
+        <input type="password" class="input" name="password" placeholder="Password" value="{{ old('password') }}"/>
         <x-forms.error name="password"/>
         <button class="btn btn-primary mt-4">Login</button>
   </fieldset>

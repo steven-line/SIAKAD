@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -23,7 +24,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('admin.role.create');
+        $permissions = Permission::all();
+        return view('admin.role.create', ['permissions' => $permissions]);
     }
 
     /**
@@ -32,15 +34,19 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'min:5']
+            'name' => ['required', 'min:5'],
+            'permissions' => ['required']
         ]);
 
-        role::create([
+        $role = Role::create([
             'name' => $request->name,
-            'guard_name' => 'web'
+            'guard_name' => 'web',
            
         ]);
         
+        if ($request->has('permissions')) {
+            $role->givePermissionTo($request->permissions);
+        }
         return redirect('/admin/master-role/');
     }
 
