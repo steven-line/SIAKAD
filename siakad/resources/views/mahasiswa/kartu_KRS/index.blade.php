@@ -10,10 +10,7 @@
             <a href="#" class="text-blue-600 underline mx-1">Dosen Wali</a> anda.
         </div>
 
-        <!-- Form untuk pembatalan KRS -->
-        <form action="{{ route('mahasiswa.krs.batal') }}" method="POST" id="formBatalKrs">
-            @csrf
-            @method('DELETE')
+        
 
             <!-- Status Validasi dan Cetak KRS -->
             <div class="flex flex-wrap justify-between items-center mt-6 p-4 bg-gray-100 rounded-lg">
@@ -35,8 +32,6 @@
                         Cetak KRS
                     </button>
                 </div>
-
-                 
             </div>
        
             <!-- Tabel KRS dengan checkbox pembatalan -->
