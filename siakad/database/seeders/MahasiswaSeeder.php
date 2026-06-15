@@ -16,21 +16,21 @@ class MahasiswaSeeder extends Seeder
         
          Mahasiswa::create([
             'nrp' => '31129999',
-            'dosen_wali' => '12345678', // ini harus ID dari tabel dosens
+            'dosen_wali' => 'D001', // ini harus ID dari tabel dosens
             'status_blokir' => 'KRS, Terkunci Sistem, Harus Ke Bakeu',
             'prodi' => 'IF'
         ]);
 
         Mahasiswa::create([
             'nrp' => '31128888',
-            'dosen_wali' => '12345678',
+            'dosen_wali' => 'D002',
             'status_blokir' => 'Telah disetujui Dosen Wali',
             'prodi' => 'IF'
         ]);
 
         Mahasiswa::create([
             'nrp' => '31127777',
-            'dosen_wali' => '87654321',
+            'dosen_wali' => 'D003',
             'status_blokir' => 'Telah disetujui mahasiswa',
             'prodi' => 'ING'
         ]);
