@@ -8,7 +8,6 @@
                 <div><strong>Kode MK:</strong> {{ $mataKuliah->kode_mk }}</div>
                 <div><strong>Mata Kuliah:</strong> {{ $mataKuliah->nama_mk }}</div>
                 <div><strong>Dosen:</strong> {{ $mataKuliah->dosen ?? '-' }}</div>
-                <div><strong>Kelas:</strong> {{ $mataKuliah->kelas }}</div>
                 <div><strong>Hari:</strong> {{ $mataKuliah->hari }}</div>
                 <div><strong>Jam Mulai:</strong> {{ $mataKuliah->jam_mulai }}</div>
                 <div><strong>Jam Selesai:</strong> {{ $mataKuliah->jam_selesai }}</div>

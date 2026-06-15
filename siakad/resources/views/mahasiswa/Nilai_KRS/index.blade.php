@@ -1,4 +1,4 @@
-<x-layout title="KRS UWIKA">
+<x-layout title="Nilai KRS Mahasiswa">
     <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
         <table class="table">
             <thead class="bg-green-500 text-white">
@@ -17,45 +17,33 @@
                 </tr>
             </thead>
             <tbody>
+                @forelse ($nilaiKrs as $index => $row)
                 <tr>
-                    <td>1</td>
-                    <td>MK001</td>
-                    <td>Rekayasa Perangkat Lunak</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $row->KODE }}</td>
+                    <td>{{ $row->nama_mk ?? '-' }}</td>
+                    <td>{{ $row->SKS ?? '-' }}</td>
+                    <td class="text-center">
+                        @if($row->BU == '1')
+                            <span class="badge bg-green-500 text-white px-2 py-1 rounded">Lulus</span>
+                        @elseif($row->BU == '0')
+                            <span class="badge bg-red-500 text-white px-2 py-1 rounded">Tidak Lulus</span>
+                        @else
+                            {{ $row->BU ?? '-' }}
+                        @endif
+                    </td>
+                    <td>{{ number_format($row->TTT1, 2) ?? '-' }}</td>
+                    <td>{{ number_format($row->TTT2, 2) ?? '-' }}</td>
+                    <td>{{ number_format($row->UTS, 2) ?? '-' }}</td>
+                    <td>{{ number_format($row->UAS, 2) ?? '-' }}</td>
+                    <td>{{ number_format($row->LAIN, 2) ?? '-' }}</td>
+                    <td>{{ $row->NA ?? '-' }}</td>
                 </tr>
+                @empty
                 <tr>
-                    <td>2</td>
-                    <td>MK002</td>
-                    <td>Sistem Informasi</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td colspan="11" class="text-center py-4">Belum ada data nilai KRS</td>
                 </tr>
-                <tr>
-                    <td>3</td>
-                    <td>MK003</td>
-                    <td>Sistem Basis Data</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

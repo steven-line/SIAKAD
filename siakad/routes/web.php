@@ -19,7 +19,9 @@ use App\Http\Controllers\KurikulumController;
 use App\Http\Controllers\Mahasiswa\MataKuliahController;
 use App\Http\Controllers\Mahasiswa\PenawaranMahasiswaController;
 use App\Http\Controllers\Mahasiswa\KrsMahasiswaController;
+use App\Http\Controllers\Mahasiswa\NilaiKrsMahasiswaController;
 use App\Http\Controllers\Mahasiswa\DetailMataKuliahController;
+use App\Http\Controllers\Mahasiswa\BiodataMahasiswaController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Models\Mahasiswa;
@@ -215,12 +217,12 @@ Route::middleware('auth')->group(function () {
   
 
 
-    Route::get('/mahasiswa/nilai_krs', function(){
-        return view('mahasiswa.nilai_krs.index');
-    });
+    Route::get('/mahasiswa/nilai_krs', [NilaiKrsMahasiswaController::class, 'index'])->name('mahasiswa.nilai_krs');
+
     Route::get('/mahasiswa/KHS', function(){
         return view('mahasiswa.KHS.index');
     });
+
     Route::get('/mahasiswa/Transkrip_Nilai', function(){
         return view('mahasiswa.Transkrip_Nilai.index');
     });
@@ -236,7 +238,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/mahasiswa/mata-kuliah/{kode_mk}', [DetailMataKuliahController::class, 'show'])->name('mata-kuliah.show');
     Route::get('/mahasiswa/ubah-password', [UbahPasswordController::class, 'edit']);
     Route::patch('/mahasiswa/ubah-password/{user}', [UbahPasswordController::class, 'update']);
-
+    Route::get('/mahasiswa/biodata', [BiodataMahasiswaController::class, 'index'])->name('mahasiswa.biodata.index');
     Route::get('/dosen-wali/perwalian', [PerwalianController::class, 'index']);
         
     Route::post('/dosen-wali/perwalian/{mahasiswa}/validasi', [PerwalianController::class, 'validasi']);

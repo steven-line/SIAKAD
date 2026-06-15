@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     {
         $datas = [
             [
-                'username' => '31123019',
+                'username' => '3112999',
                 'password' => Hash::make('hello12346'),
                 'firstlogin' => Carbon::now(),
                 'lastlogin' => Carbon::now(),
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
                 'pataum' => 'o',
             ],
             [
-                'username' => '31123012',
+                'username' => '31128888',
                 'password' => Hash::make('hello12346'),
                 'firstlogin' => Carbon::now(),
                 'lastlogin' => Carbon::now(),
@@ -38,7 +38,7 @@ class UserSeeder extends Seeder
                 'pataum' => 'o',
             ],
             [
-                'username' => '31123003',
+                'username' => '31127777',
                 'password' => Hash::make('hello12346'),
                 'firstlogin' => Carbon::now(),
                 'lastlogin' => Carbon::now(),
