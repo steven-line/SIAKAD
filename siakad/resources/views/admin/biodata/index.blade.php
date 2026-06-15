@@ -30,14 +30,14 @@
             <td>{{$biodata->tempat_lahir}}</td>
             <td>{{$biodata->tanggal_lahir}}</td>
             <td>{{$biodata->sex}}</td>
-            <th>{{$biodata->tinggi}}</th
+            <th>{{$biodata->tinggi}}</th>
             <th>{{$biodata->berat}}</th>
             <th>{{$biodata->alamat}}</th>
             <td><a class="btn btn-soft btn-info"href="">Detail</a></td>
             <td><a class="btn btn-soft btn-warning" href="/admin/kelola-biodata/{{$biodata->nrp}}/edit">Edit</a>
          </td>
             <td>
-              <button class="btn btn-soft btn-error" onclick="deleteBox_{{$biodata>nrp}}.showModal()">Delete</button>
+              <button class="btn btn-soft btn-error" onclick="deleteBox_{{$biodata->nrp}}.showModal()">Delete</button>
               <dialog id="deleteBox_{{$biodata->nrp}}" class="modal modal-bottom sm:modal-middle">
                 <div class="modal-box">
                   <h3 class="text-lg font-bold">Peringatan Penghapusan</h3>

@@ -27,6 +27,7 @@ class Registrasi extends Model
         'ip_address',
         'sks',
         'pataum',
+        'dosen'
     ];
 
     protected $casts = [

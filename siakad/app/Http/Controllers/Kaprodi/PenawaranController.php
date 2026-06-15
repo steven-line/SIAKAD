@@ -83,6 +83,153 @@ class PenawaranController extends Controller
     
         }
 
+public function store(Request $request)
+{
+    $request->validate([
+        'kodemk'     => 'required',
+        'semester'   => 'required',
+        'periode'    => 'required',
+        'dosen'      => 'required',
+        'hari'       => 'required',
+        'mulaipukul' => 'required',
+        'pataum'     => 'required',
+        'sesi'       => 'required',
+        'pagu'       => 'nullable|numeric',
+        'keterangan' => 'nullable',
+    ]);
+
+    // Ambil data MK
+    $mk = Mk::where('kodemk', $request->kodemk)
+        ->firstOrFail();
+
+    // Hitung durasi berdasarkan SKS
+    $durasiMenit = ((int) $mk->sks) * 50;
+
+    $mulai = Carbon::createFromFormat(
+        'H:i',
+        $request->mulaipukul
+    );
+
+    $selesai = $mulai->copy()
+        ->addMinutes($durasiMenit);
+
+    // Ambil prodi dosen login
+    $kodeJurusan = auth()->user()->dosen->prodi;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validasi sesi
+    |--------------------------------------------------------------------------
+    */
+    if ($request->sesi == '1') {
+
+        $batasAwal  = Carbon::createFromTime(8, 0);
+        $batasAkhir = Carbon::createFromTime(17, 10);
+
+    } else {
+
+        $batasAwal  = Carbon::createFromTime(18, 0);
+        $batasAkhir = Carbon::createFromTime(22, 0);
+    }
+
+    if ($mulai->lt($batasAwal)) {
+
+        return back()
+            ->withErrors([
+                'jam' => 'Jam mulai tidak sesuai sesi'
+            ])
+            ->withInput();
+    }
+
+    if ($selesai->gt($batasAkhir)) {
+
+        return back()
+            ->withErrors([
+                'jam' => 'Durasi mata kuliah melebihi batas sesi'
+            ])
+            ->withInput();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cek bentrok jadwal
+    |--------------------------------------------------------------------------
+    */
+    $bentrok = Penawaran::where('hari', $request->hari)
+        ->where('jurusan', $kodeJurusan)
+        ->where(function ($q) use ($mulai, $selesai) {
+
+            $q->whereBetween(
+                'mulaipukul',
+                [
+                    $mulai->format('H:i:s'),
+                    $selesai->format('H:i:s')
+                ]
+            )
+
+            ->orWhereBetween(
+                'selesaipukul',
+                [
+                    $mulai->format('H:i:s'),
+                    $selesai->format('H:i:s')
+                ]
+            )
+
+            ->orWhere(function ($q2) use ($mulai, $selesai) {
+
+                $q2->where(
+                    'mulaipukul',
+                    '<=',
+                    $mulai->format('H:i:s')
+                )
+                ->where(
+                    'selesaipukul',
+                    '>=',
+                    $selesai->format('H:i:s')
+                );
+            });
+
+        })
+        ->exists();
+
+    if ($bentrok) {
+
+        return back()
+            ->withErrors([
+                'jam' => 'Jadwal bentrok dengan jadwal lain'
+            ])
+            ->withInput();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Simpan Data
+    |--------------------------------------------------------------------------
+    */
+    Penawaran::create([
+        'kodemk'       => $request->kodemk,
+        'semester'     => $request->semester,
+        'periode'      => $request->periode,
+        'dosen'        => $request->dosen,
+        'hari'         => $request->hari,
+        'mulaipukul'   => $mulai->format('H:i:s'),
+        'selesaipukul' => $selesai->format('H:i:s'),
+        'pataum'       => $request->pataum,
+        'jurusan'      => $kodeJurusan,
+        'sesi'         => $request->sesi,
+        'keterangan'   => $request->keterangan,
+        'pagu'         => $request->pagu,
+        'MBKM'         => $request->has('MBKM'),
+    ]);
+
+    return redirect()
+        ->route('kaprodi.penawaran.index')
+        ->with(
+            'success',
+            'Penawaran berhasil ditambahkan'
+        );
+}
+
     public function edit(Penawaran $penawaran)
 {
     $matkuls = Mk::orderBy('kodemk')->get();

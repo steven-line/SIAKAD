@@ -60,7 +60,7 @@
                         class="w-full p-2 mt-1 bg-gray-700 rounded"
                     >
                         @foreach($dosens as $dsn)
-                            <option value="{{ $dsn->nama }}" @selected(old('dosen') == $dsn->nama)>
+                            <option value="{{ $dsn->nim_dosen}}" @selected(old('dosen') == $dsn->nim_dosen)>
                                 {{ $dsn->nama }}
                             </option>
                         @endforeach

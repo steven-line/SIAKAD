@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\MkController;
 use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\ProdiController;
 use App\Http\Controllers\FakultasController;
+use App\Http\Controllers\KrsController;
 use App\Http\Controllers\KurikulumController;
 
 use App\Http\Controllers\Mahasiswa\MataKuliahController;
@@ -243,6 +244,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/dosen-wali/perwalian/{mahasiswa}/lock', [PerwalianController::class, 'lock']);
     Route::get('/dosen-wali/perwalian/{mahasiswa}', [PerwalianController::class, 'show']);
 });
+
+
+
+/////////////////////////////////DOSEN
+    Route::get('/dosen', function(){
+        return view('dosen.dashboard');
+    });
+    Route::get('/dosen/input-nilai/list_matkul', [KrsController::class, 'list_matkul']);
+    Route::get('/dosen/input-nilai/{mk}/mahasiswa', [KrsController::class, 'list_mahasiswa']);
+    Route::get('/dosen/input-nilai/{mahasiswa}/{mk}/create', [KrsController::class, 'create']);
+    Route::post('/dosen/input-nilai/{mahasiswa}/{mk}/store', [KrsController::class, 'store']);
+    Route::get('/dosen/input-nilai/{mahasiswa}/{mk}', [KrsController::class, 'show']);
 
 // =========================
 // GUEST

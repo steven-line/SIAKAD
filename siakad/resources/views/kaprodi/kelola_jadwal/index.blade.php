@@ -86,7 +86,7 @@
                                     href="{{ route('kaprodi.jadwal.show', $item->recno) }}"
                                     class="text-blue-400 hover:underline font-semibold"
                                 >
-                                    {{ $item->matkul->nama ?? '-' }}
+                                    {{ $item->mk->nama ?? '-' }}
                                 </a>
 
                             </td>

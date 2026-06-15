@@ -14,54 +14,77 @@ class KrsMahasiswaController extends Controller
     /**
      * Ambil periode aktif (bisa dari session, config, atau database)
      */
-    protected function getPeriodeAktif()
-    {
-        // Sesuaikan dengan periode yang sedang berjalan
-        // Contoh: return session('periode_aktif', '2025/Genap');
-        return '2025/2026'; // Ganti sesuai kebutuhan
-    }
+   
 
     /**
      * Menampilkan daftar KRS mahasiswa yang sedang login
      */
-    public function index()
-    {
-        $nrp = session('nrp') ?? Auth::user()->username;
-        $periode = $this->getPeriodeAktif();
+   public function index()
+{
+    $nrp = session('nrp') ?? Auth::user()->username;
 
-        // Ambil status blokir mahasiswa
-        $mahasiswa = Mahasiswa::where('nrp', $nrp)->first();
-        $statusBlokir = $mahasiswa ? $mahasiswa->status_blokir : 'Tidak ada data';
+   
 
-        // Ambil data registrasi untuk periode aktif, dengan relasi matkul (bukan kodemk)
-        $krsItems = Registrasi::with('matkul')
-            ->where('nrp', $nrp)
-            ->where('periode', $periode)
-            ->get()
-            ->map(function ($reg) {
-                return (object) [
-                    'id'         => $reg->regkrs,
-                    'kode_mk'    => $reg->kodemk,
-                    'nama_mk'    => $reg->matkul ? $reg->matkul->nama : 'Mata Kuliah Tidak Ditemukan',
-                    'status'     => $reg->status,
-                    'hari'       => $reg->hari,
-                    'jam_mulai'  => date('H:i:s', strtotime($reg->mulaipukul)),
-                    'jam_selesai'=> date('H:i:s', strtotime($reg->selesaipukul)),
-                    'sks'        => $reg->sks,
-                ];
-            });
+    // 🔥 DEBUG SAFE QUERY (tidak langsung hilang kalau periode salah)
+    $registrasiQuery = Registrasi::where('nrp', $nrp);
 
-        $totalSks = $krsItems->sum('sks');
-
-        // Data tambahan (bisa diambil dari tabel mahasiswa atau setting)
-        $ipsTerakhir  = 3.813;   // nanti ganti dengan query nilai
-        $limitSks     = 24;      // ambil dari setting prodi
-        $toleransiSks = 0;
-        $sisaLimit    = $limitSks - $totalSks - $toleransiSks;
-
-        return view('mahasiswa.kartu_KRS.index', compact('krsItems', 'totalSks', 'ipsTerakhir', 'limitSks', 'toleransiSks', 'sisaLimit', 'statusBlokir', 'nrp'));
+    // kalau periode ada, pakai filter
+    if (!empty($periode)) {
+        $registrasiQuery->where('periode', $periode);
     }
 
+    $registrasi = $registrasiQuery
+        ->get();
+
+    // 🔥 mapping aman tanpa relasi wajib
+    $krsItems = $registrasi->map(function ($reg) {
+
+        return (object) [
+            'id'            => $reg->regkrs,
+            'kode_mk'       => $reg->kodemk,
+
+            // 🔥 FIX UTAMA: jangan paksa relasi matkul
+            'nama_mk'       => optional($reg->matkul)->nama_mk
+                                ?? optional($reg->matkul)->nama
+                                ?? $reg->kodemk,
+
+            'status'        => $reg->status ?? 'BARU',
+            'hari'          => $reg->hari ?? '-',
+
+            'jam_mulai'     => $reg->mulaipukul
+                ? date('H:i', strtotime($reg->mulaipukul))
+                : '-',
+
+            'jam_selesai'   => $reg->selesaipukul
+                ? date('H:i', strtotime($reg->selesaipukul))
+                : '-',
+
+            'sks'           => $reg->sks ?? 0,
+        ];
+    });
+
+    $totalSks = $krsItems->sum('sks');
+
+    $mahasiswa = Mahasiswa::where('nrp', $nrp)->first();
+
+    $statusBlokir = $mahasiswa?->status_blokir ?? 'BELUM_KRS';
+
+    $ipsTerakhir  = 3.813;
+    $limitSks     = 24;
+    $toleransiSks = 0;
+    $sisaLimit    = $limitSks - $totalSks - $toleransiSks;
+
+    return view('mahasiswa.kartu_KRS.index', compact(
+        'krsItems',
+        'totalSks',
+        'ipsTerakhir',
+        'limitSks',
+        'toleransiSks',
+        'sisaLimit',
+        'statusBlokir',
+        'nrp'
+    ));
+}
     public function store(Request $request)
     {
         $request->validate([
@@ -113,6 +136,7 @@ class KrsMahasiswaController extends Controller
             'ip_address'    => $request->ip(),
             'sks'           => $sksMatkul,
             'pataum'        => $penawaran->pataum ?? '1',
+            'dosen'         => $penawaran->dosen
         ]);
 
         return redirect()->route('mahasiswa.krs.index')->with('success', 'Berhasil mendaftar mata kuliah.');

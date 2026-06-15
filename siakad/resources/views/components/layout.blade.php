@@ -41,6 +41,10 @@
               <li><a href="/admin/master-role">Master Role</a></li>
 
             @endrole
+            @role('dosen')
+              <li><a href="/dosen/input-nilai/list_matkul" class="text-white">List Matkul</a></li>
+
+            @endrole
 
             @role('mahasiswa')
               <li><a href="/mahasiswa" class="text-white">Dashboard</a></li>
@@ -87,7 +91,7 @@
                   </a>
               </li>
             @endrole
-
+            
             {{-- Logout selalu tampil untuk user yang sudah login --}}
             @auth
               <hr class="my-4 border-gray-200" />

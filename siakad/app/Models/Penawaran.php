@@ -30,6 +30,7 @@ class Penawaran extends Model
         'pagu',
         'pataum',
         'MBKM',
+        
     ];
 
     protected $casts = [
