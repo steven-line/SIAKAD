@@ -20,33 +20,43 @@
             <td>{{$mahasiswa->nrp}}</td>
             <td>{{$mahasiswa->biodata->nama}}</td>
             <td>{{$mahasiswa->dosen_wali}}</td>
-            <td>Status (non blokiran)</td>
-            <td><a class="btn btn-soft btn-info"href="/dosen-wali/perwalian/{{$mahasiswa->nrp}}">Detail</a></td>
-            <td><a class="btn btn-soft btn-warning" href="/admin/kelola-mahasiswa/{{$mahasiswa->nrp}}/edit">Edit</a>
-         </td>
             <td>
-              <button class="btn btn-soft btn-error" onclick="deleteBox_{{$mahasiswa->nrp}}.showModal()">Delete</button>
-              <dialog id="deleteBox_{{$mahasiswa->nrp}}" class="modal modal-bottom sm:modal-middle">
-                <div class="modal-box">
-                  <h3 class="text-lg font-bold">Peringatan Penghapusan</h3>
-                  <p class="py-4">Apa anda yakin ingin menghapus?</p>
-                  <div class="modal-action">
-                    <form method="dialog">
-                      <!-- if there is a button in form, it will close the modal -->
-                      <button class="btn btn-primary" form="delete-mahasiswa-form-{{$mahasiswa->nrp}}">Ya</button>
-                      <button class="btn btn-neutral">Tidak</button>
-                    </form>
-                  </div>
-                </div>
-              </dialog>
-            </td>
+              {{ $mahasiswa->status_blokir }}
+          </td>
+            <td><a class="btn btn-soft btn-info"href="/dosen-wali/perwalian/{{$mahasiswa->nrp}}">Detail</a></td>
+            <td>
+          @if ($mahasiswa->status_blokir === 'MENUNGGU_VALIDASI')
+              <button class="btn btn-soft btn-warning"
+                      form="validasi-mahasiswa-form-{{$mahasiswa->nrp}}">
+                  Validasi
+              </button>
+          @endif
+          </td>
+
+          <td>
+        
+              <button class="btn btn-soft btn-warning"
+                      form="lock-mahasiswa-form-{{$mahasiswa->nrp}}">
+                  Lock
+              </button>
+        
+          </td>
+
+
            
         </tr>
                <form id="delete-mahasiswa-form-{{$mahasiswa->nrp}}" action="/admin/kelola-mahasiswa/{{ $mahasiswa->nrp }}" method='POST'>
             @csrf  
             @method('DELETE')
+
+
        </form>
-  
+       <form id="validasi-mahasiswa-form-{{$mahasiswa->nrp}}" action="/dosen-wali/perwalian/{{ $mahasiswa->nrp }}/validasi" method='POST'>
+            @csrf  
+       </form>
+      <form id="lock-mahasiswa-form-{{$mahasiswa->nrp}}" action="/dosen-wali/perwalian/{{ $mahasiswa->nrp }}/lock" method='POST'>
+            @csrf        
+       </form>
         
       @empty
       <tr>

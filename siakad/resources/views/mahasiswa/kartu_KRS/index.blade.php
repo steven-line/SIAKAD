@@ -24,12 +24,21 @@
                     </span>
                 </div>
                 <div class="flex gap-2">
+                   @if ($statusBlokir === 'BELUM_KRS')
+                            <button type="submit"
+                                    form="validasi-mahasiswa-form-{{ $nrp }}"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow">
+                                Validasi
+                            </button>
+                        @endif
                     <button type="button" id="cetakKRS" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md shadow">
                         Cetak KRS
                     </button>
                 </div>
-            </div>
 
+                 
+            </div>
+       
             <!-- Tabel KRS dengan checkbox pembatalan -->
             <div class="overflow-x-auto rounded-box border border-base-content/5 bg-white shadow-md mt-4">
                 <table class="table w-full">
@@ -80,7 +89,11 @@
                 </table>
             </div>
         </form>
+        <form id="validasi-mahasiswa-form-{{$nrp}}" action="/mahasiswa/krs/{{ $nrp }}/validasi" method='POST'>
+                    @csrf  
 
+                    
+            </form>
         <!-- Total SKS -->
         <div class="flex justify-end mt-4 font-bold text-lg">
             TOTAL {{ $totalSks }} SKS

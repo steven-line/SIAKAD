@@ -19,6 +19,8 @@ use App\Http\Controllers\Mahasiswa\MataKuliahController;
 use App\Http\Controllers\Mahasiswa\PenawaranMahasiswaController;
 use App\Http\Controllers\Mahasiswa\KrsMahasiswaController;
 use App\Http\Controllers\Mahasiswa\DetailMataKuliahController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
 use App\Models\Mahasiswa;
 
 Route::get('/', function () {
@@ -92,7 +94,23 @@ Route::middleware('auth')->group(function () {
     Route::patch('/admin/kelola-biodata/{biodata}', [BiodataAdminController::class, 'update']);
     Route::delete('/admin/kelola-biodata/{biodata}', [BiodataAdminController::class, 'destroy']);
     
- 
+    
+    Route::get('/admin/master-permission', [PermissionController::class, 'index']);
+    Route::get('/admin/master-permission/create', [PermissionController::class, 'create']);
+    Route::post('/admin/master-permission', [PermissionController::class, 'store']);
+    Route::get('/admin/master-permission/{permission}/edit', [PermissionController::class, 'edit']);
+    Route::patch('/admin/master-permission/{permission}', [PermissionController::class, 'update']);
+    Route::delete('/admin/master-permission/{permission}', [PermissionController::class, 'destroy']);
+    
+    
+    Route::get('/admin/master-role', [RoleController::class, 'index']);
+    Route::get('/admin/master-role/create', [RoleController::class, 'create']);
+    Route::post('/admin/master-role', [RoleController::class, 'store']);
+    Route::get('/admin/master-role/{role}/edit', [RoleController::class, 'edit']);
+    Route::patch('/admin/master-role/{role}', [RoleController::class, 'update']);
+    Route::delete('/admin/master-role/{role}', [RoleController::class, 'destroy']);
+    
+    
     // =========================
     // DASHBOARD KAPRODI
     // =========================
@@ -193,9 +211,9 @@ Route::middleware('auth')->group(function () {
     });
     
     Route::get('/mahasiswa/penawaran', [PenawaranMahasiswaController::class, 'index']);
-    Route::get('/mahasiswa/krs', function(){
-        return view('mahasiswa.kartu_KRS.index');
-    });
+  
+
+
     Route::get('/mahasiswa/nilai_krs', function(){
         return view('mahasiswa.nilai_krs.index');
     });
@@ -208,6 +226,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('mahasiswa')->group(function () {
     Route::get('/krs', [KrsMahasiswaController::class, 'index'])->name('mahasiswa.krs.index');
+    Route::post('/krs/{mahasiswa}/validasi', [KrsMahasiswaController::class, 'validasi']);
     Route::post('/krs', [KrsMahasiswaController::class, 'store'])->name('mahasiswa.krs.store'); // <-- tambah ini
     Route::delete('/krs/{id}', [KrsMahasiswaController::class, 'destroy'])->name('mahasiswa.krs.destroy');
     Route::delete('/krs/batal-multiple', [KrsMahasiswaController::class, 'batalMultiple'])->name('mahasiswa.krs.batal');
@@ -218,7 +237,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/mahasiswa/ubah-password/{user}', [UbahPasswordController::class, 'update']);
 
     Route::get('/dosen-wali/perwalian', [PerwalianController::class, 'index']);
+        
+    Route::post('/dosen-wali/perwalian/{mahasiswa}/validasi', [PerwalianController::class, 'validasi']);
     
+    Route::post('/dosen-wali/perwalian/{mahasiswa}/lock', [PerwalianController::class, 'lock']);
     Route::get('/dosen-wali/perwalian/{mahasiswa}', [PerwalianController::class, 'show']);
 });
 

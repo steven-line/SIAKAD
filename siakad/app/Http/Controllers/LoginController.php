@@ -34,22 +34,11 @@ class LoginController extends Controller
     ])) {
         $request->session()->regenerate();
 
-        if (Auth::user()->level === 1) {
-            return redirect('/admin');
-        }
-
-        if (Auth::user()->level === 2) {
-            return redirect('/kaprodi');
-        }
-
-        if (Auth::user()->level === 3) {
-            return redirect('/mahasiswa');
-        }
     }
 
     return back()->withErrors([
         'username' => 'Username atau password salah'
-    ]);
+    ])->withInput();
 }
 
 
