@@ -44,26 +44,45 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // Aturan validasi
+        $rules = [
             'username'    => ['required', 'string', 'max:255', 'unique:users'],
             'password'    => ['required', Password::default()],
             'role'        => ['required', 'string', 'exists:roles,name'],
             'permissions' => ['nullable', 'array'],
             'sks'         => ['required', 'numeric'],
-        ]);
+        ];
 
-        $user = User::create([
+        // Validasi pataum khusus mahasiswa
+        if (strtolower($request->role) === 'mahasiswa') {
+            $rules['pataum'] = ['required', 'in:P,M'];
+        }
+
+        $request->validate($rules);
+
+        // Data dasar user
+        $userData = [
             'username'   => $request->username,
             'password'   => Hash::make($request->password),
             'sks'        => $request->sks,
             'firstlogin' => Carbon::now(),
             'lastlogin'  => Carbon::now(),
-        ]);
+        ];
 
-        // Assign Role (Single Role)
+        // Proses pataum jika ada
+        if ($request->has('pataum')) {
+            // Mapping nilai ke ENUM yang benar di database
+            $map = [
+                'P' => 'P (Pagi)',
+                'M' => 'M (Malam)'
+            ];
+            $userData['pataum'] = $map[$request->pataum] ?? $request->pataum;
+        }
+
+        $user = User::create($userData);
+
+        // Assign role dan permissions
         $user->assignRole($request->role);
-
-        // Assign Direct Permissions (Optional)
         if ($request->has('permissions')) {
             $user->givePermissionTo($request->permissions);
         }

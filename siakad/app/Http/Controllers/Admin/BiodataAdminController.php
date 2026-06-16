@@ -101,7 +101,7 @@ class BiodataAdminController extends Controller
             'kebutuhan_ayah' => 'required|size:4',
             'kebutuhan_ibu' => 'required|size:4',
             'last_update' => 'required|date',
-            'pataum' => 'required|size:1',
+            'pataum' => 'required|in:P (Pagi),M (Malam)',
             'email' => 'required|email|max:100',
             'jenis_kelamin' => 'required|max:12',
             'nisn' => 'required|max:25',
