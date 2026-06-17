@@ -19,7 +19,7 @@
 
         <form
             method="POST"
-            action="/kaprodi/penawaran/{{$penawaran->recno}}/edit"
+            action="{{ route('kaprodi.penawaran.update', $penawaran->recno) }}"
         >
             @csrf
             @method('PUT')
@@ -64,8 +64,8 @@
                     >
                         @foreach($dosens as $dsn)
                             <option
-                                value="{{ $dsn->nama }}"
-                                @selected(old('dosen', $penawaran->dosen) == $dsn->nama)
+                                value="{{ $dsn->nim_dosen }}"
+                                @selected(old('dosen', $penawaran->dosen) == $dsn->nim_dosen)
                             >
                                 {{ $dsn->nama }}
                             </option>

@@ -2,9 +2,10 @@
 
     <div class="p-6">
 
-        <a class="btn btn-primary mb-6" href="/admin/kelola-kurikulum">
-            ⮜ Previous page
-        </a>
+       
+       <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+        ⮜ Previous page
+    </a>
 
         <div class="card bg-base-200 border border-base-300 shadow-xl max-w-3xl mx-auto">
 
@@ -92,18 +93,13 @@
                 <div class="card-actions justify-end mt-6">
 
                     <a
-                        href="/admin/kelola-kurikulum/{{$kurikulum->kode_kurikulum}}/edit"
+                        href="{{ route('kurikulum.edit', $kurikulum->kode_kurikulum) }}"
                         class="btn btn-warning"
                     >
                         Edit
                     </a>
 
-                    <a
-                        href="/admin/kelola-kurikulum"
-                        class="btn btn-primary"
-                    >
-                        Kembali
-                    </a>
+            
 
                 </div>
 

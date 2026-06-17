@@ -1,7 +1,9 @@
-<x-layout>
-    <a class="join-item btn btn-primary mb-4" href="/admin/kelola-user">⮜ Previous page</a>
+<<x-layout>
+    <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+        ⮜ Previous page
+    </a>
 
-    <form action="/admin/kelola-user" method="POST">
+    <form action="{{ route('users.store') }}" method="POST">
         @csrf
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-6 mx-auto">
             <legend class="fieldset-legend font-bold text-lg">Tambah User Baru</legend>
@@ -71,7 +73,7 @@
     </form>
 
     <script>
-        const rolesData = @json(
+    const rolesData = @json(
             $roles->keyBy('name')->map(function($role) {
                 return $role->permissions->pluck('name');
             })

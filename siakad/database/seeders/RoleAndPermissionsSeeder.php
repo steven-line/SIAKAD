@@ -13,18 +13,19 @@ class RoleAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         // ======================
-        // CLEAR CACHE SPATIE
+        // CLEAR CACHE (WAJIB)
         // ======================
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // ======================
-        // RESET (full reset)
+        // CLEAN ROLE & PERMISSION
+        // (AMAN karena kita rebuild semua)
         // ======================
         Role::query()->delete();
         Permission::query()->delete();
 
         // ======================
-        // ROLE
+        // ROLES
         // ======================
         $adminRole     = Role::firstOrCreate(['name' => 'admin']);
         $dosenRole     = Role::firstOrCreate(['name' => 'dosen']);
@@ -36,30 +37,39 @@ class RoleAndPermissionsSeeder extends Seeder
         // PERMISSIONS
         // ======================
         $permissions = [
-            // Mahasiswa
-            'biodata.view',
+            // ADMIN MODULE
+            'user.manage',
+            'kurikulum.manage',
+            'mk.manage',
+            'dosen.manage',
+            'prodi.manage',
+            'fakultas.manage',
+            'biodata.manage',
+            'role.manage',
+            'permission.manage',
+
+            // PENAWARAN
             'penawaran.view',
-            'penawaran.daftar',
+            'penawaran.manage',
+
+            // JADWAL
+            'jadwal.view_sendiri',
+            'jadwal.view_umum',
+            'jadwal.manage',
+
+            // MAHASISWA
+            'biodata.view',
             'krs.view',
             'krs.submit',
             'nilai_krs.view',
             'khs.view',
             'transkrip.view',
 
-            // Dosen (base, diwarisi kaprodi & dosen-wali)
-            'jadwal.view_sendiri',
+            // DOSEN
             'nilai.input',
 
-            // Kaprodi (tambahan)
-            'penawaran.manage',
-            'jadwal.view_umum',
-
-            // Dosen Wali (tambahan)
+            // DOSEN WALI
             'perwalian.manage',
-            'biodata_mahasiswa.view',
-            'nilai_anak_wali.view',
-            'khs_anak_wali.view',
-            'tawaran_mk.view',
         ];
 
         foreach ($permissions as $permission) {
@@ -70,56 +80,77 @@ class RoleAndPermissionsSeeder extends Seeder
         }
 
         // ======================
-        // ASSIGN PER ROLE
-        // ======================
-
         // MAHASISWA
-        $mahasiswaPermissions = [
+        // ======================
+        $mahasiswaRole->syncPermissions([
             'biodata.view',
             'penawaran.view',
-            'penawaran.daftar',
             'krs.view',
             'krs.submit',
             'nilai_krs.view',
             'khs.view',
             'transkrip.view',
-        ];
-        $mahasiswaRole->syncPermissions($mahasiswaPermissions);
+        ]);
 
-        // DOSEN (base permissions)
-        $dosenPermissions = [
+        // ======================
+        // DOSEN
+        // ======================
+        $dosenRole->syncPermissions([
             'jadwal.view_sendiri',
             'nilai.input',
             'penawaran.view',
-        ];
-        $dosenRole->syncPermissions($dosenPermissions);
+        ]);
 
-        // KAPRODI = warisan DOSEN + permission tambahan
-        $kaprodiPermissions = array_merge($dosenPermissions, [
-            'penawaran.manage',
+        // ======================
+        // KAPRODI
+        // ======================
+        $kaprodiRole->syncPermissions([
+            'jadwal.view_sendiri',
             'jadwal.view_umum',
+            'jadwal.manage',
+            'nilai.input',
+            'penawaran.view',
+            'penawaran.manage',
         ]);
-        $kaprodiRole->syncPermissions($kaprodiPermissions);
 
-        // DOSEN WALI = warisan DOSEN + permission tambahan
-        $dosenWaliPermissions = array_merge($dosenPermissions, [
+        // ======================
+        // DOSEN WALI
+        // ======================
+        $dosenWaliRole->syncPermissions([
+            'jadwal.view_sendiri',
+            'nilai.input',
+            'penawaran.view',
             'perwalian.manage',
-            'biodata_mahasiswa.view',
-            'nilai_anak_wali.view',
-            'khs_anak_wali.view',
-            'tawaran_mk.view',
         ]);
-        $dosenWaliRole->syncPermissions($dosenWaliPermissions);
 
-        // ADMIN FULL ACCESS
-        $adminRole->syncPermissions(Permission::all());
+        // ======================
+        // ADMIN (FULL ACCESS MODULE ADMIN)
+        // ======================
+        $adminRole->syncPermissions([
+            'user.manage',
+            'kurikulum.manage',
+            'mk.manage',
+            'dosen.manage',
+            'prodi.manage',
+            'fakultas.manage',
+            'biodata.manage',
+            'role.manage',
+            'permission.manage',
+        ]);
 
         // ======================
         // ASSIGN ADMIN USER
         // ======================
         $userAdmin = User::where('username', '31123019')->first();
+
         if ($userAdmin) {
-            $userAdmin->assignRole('admin');
+            // lebih aman dari assignRole
+            $userAdmin->syncRoles(['admin']);
         }
+
+        // ======================
+        // FINAL CACHE CLEAR
+        // ======================
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }

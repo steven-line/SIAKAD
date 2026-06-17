@@ -16,7 +16,6 @@ class ProdiController extends Controller
     {
         $prodis = Prodi::paginate(15);
         return view('admin.prodi.index', ['prodis' => $prodis]);
-   
     }
 
     /**
@@ -38,13 +37,15 @@ class ProdiController extends Controller
             'nama_prodi' => ['required', 'min:4'],
             'kode_fakultas' => ['required']
         ]);
+
         Prodi::create([
             'kode_prodi' => $request->kode_prodi,
             'nama_prodi' => $request->nama_prodi,
             'kode_fakultas' => $request->kode_fakultas,
         ]);
-        return redirect('/admin/kelola-prodi');
-        
+
+        return redirect()->route('prodi.index')
+            ->with('success', 'Prodi berhasil ditambahkan');
     }
 
     /**
@@ -62,7 +63,10 @@ class ProdiController extends Controller
     {
         $fakultass = Fakultas::orderBy('kode_fakultas')->get();
 
-        return view('admin.prodi.edit', ['prodi' => $prodi, 'fakultass' => $fakultass]);
+        return view('admin.prodi.edit', [
+            'prodi' => $prodi,
+            'fakultass' => $fakultass
+        ]);
     }
 
     /**
@@ -74,10 +78,10 @@ class ProdiController extends Controller
             'kode_prodi' => $request->kode_prodi,
             'nama_prodi' => $request->nama_prodi,
             'kode_fakultas' => $request->kode_fakultas,
-
         ]);
 
-        return redirect('/admin/kelola-prodi');
+        return redirect()->route('prodi.index')
+            ->with('success', 'Prodi berhasil diperbarui');
     }
 
     /**
@@ -85,9 +89,9 @@ class ProdiController extends Controller
      */
     public function destroy(Prodi $prodi)
     {
-        
-     $prodi->delete();
-        return redirect('/admin/kelola-prodi')->with('success', 'Prodi Dihapus');
-   
+        $prodi->delete();
+
+        return redirect()->route('prodi.index')
+            ->with('success', 'Prodi Dihapus');
     }
 }

@@ -7,26 +7,26 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Prodi;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule; // <-- WAJIB IMPORT INI
+use Illuminate\Validation\Rule;
 
 class DosenController extends Controller
 {
     public function index()
     {
         $dosens = Dosen::paginate(15);
-        return view('admin.dosens.index', ['dosens' => $dosens]);
+
+        return view('admin.dosens.index', [
+            'dosens' => $dosens
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $users = User::whereDoesntHave('roles', function ($query) {
             $query->where('name', 'admin');
-        })->whereDoesntHave('dosen')->get(); 
+        })->whereDoesntHave('dosen')->get();
 
-        $prodis = Prodi::all(); 
+        $prodis = Prodi::all();
 
         return view('admin.dosens.create', [
             'users' => $users,
@@ -34,20 +34,17 @@ class DosenController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'nim_dosen' => ['required', 'min:8', 'unique:dosen,nim_dosen'],
             'nip' => ['required', 'min:8', 'unique:dosen,nip'],
             'nama' => ['required', 'max:255'],
-            'user_id' => ['required', 'unique:dosen,user_id'], 
+            'user_id' => ['required', 'unique:dosen,user_id'],
             'prodi' => ['required', 'exists:prodi,kode_prodi'],
-            'jabatan_struktural' => ['required'] 
+            'jabatan_struktural' => ['required']
         ]);
-       
+
         Dosen::create([
             'nim_dosen' => $request->nim_dosen,
             'nip' => $request->nip,
@@ -57,7 +54,7 @@ class DosenController extends Controller
             'jabatan_struktural' => $request->jabatan_struktural
         ]);
 
-        return redirect('/admin/kelola-dosen');
+        return redirect()->route('dosen.index');
     }
 
     public function show(Dosen $dosen)
@@ -65,50 +62,42 @@ class DosenController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Dosen $dosen)
-    {   
+    {
         $users = User::whereDoesntHave('roles', function ($query) {
             $query->where('name', 'admin');
-        })->where(function($query) use ($dosen) {
+        })->where(function ($query) use ($dosen) {
             $query->whereDoesntHave('dosen')
-                  ->orWhere('username', $dosen->user_id); 
+                  ->orWhere('username', $dosen->user_id);
         })->get();
 
-        $prodis = Prodi::all(); 
+        $prodis = Prodi::all();
 
         return view('admin.dosens.edit', [
-            'dosen' => $dosen, 
+            'dosen' => $dosen,
             'users' => $users,
             'prodis' => $prodis
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Dosen $dosen)
     {
-        // PERBAIKAN VALIDASI: Menggunakan Rule::unique dengan acuan nim_dosen
         $request->validate([
             'nim_dosen' => [
-                'required', 
+                'required',
                 Rule::unique('dosen', 'nim_dosen')->ignore($dosen->nim_dosen, 'nim_dosen')
             ],
             'nip' => [
-                'required', 
+                'required',
                 Rule::unique('dosen', 'nip')->ignore($dosen->nim_dosen, 'nim_dosen')
             ],
             'nama' => ['required', 'max:255'],
             'user_id' => [
-                'required', 
+                'required',
                 Rule::unique('dosen', 'user_id')->ignore($dosen->nim_dosen, 'nim_dosen')
-            ], 
+            ],
             'prodi' => ['required', 'exists:prodi,kode_prodi'],
             'jabatan_struktural' => ['required']
-
         ]);
 
         $dosen->update([
@@ -119,13 +108,16 @@ class DosenController extends Controller
             'prodi' => $request->prodi,
             'jabatan_struktural' => $request->jabatan_struktural
         ]);
-   
-        return redirect('/admin/kelola-dosen');
+
+        return redirect()->route('dosen.index');
     }
 
     public function destroy(Dosen $dosen)
     {
         $dosen->delete();
-        return redirect('/admin/kelola-dosen')->with('success', 'Dosen Dihapus');
+
+        return redirect()
+            ->route('dosen.index')
+            ->with('success', 'Dosen Dihapus');
     }
 }

@@ -19,7 +19,7 @@
             <p><strong>Username Akun:</strong> {{ auth()->user()->username }}</p>
             <p><strong>Program Studi:</strong> <span class="badge badge-primary">{{ auth()->user()->dosen->prodi }}</span></p>
             <p><strong>Level Akses:</strong> Kaprodi</p>
-        </div>
+        </div>55
     </div>
 
   

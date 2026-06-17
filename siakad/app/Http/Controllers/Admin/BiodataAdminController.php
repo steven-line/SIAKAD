@@ -9,33 +9,34 @@ use Illuminate\Http\Request;
 
 class BiodataAdminController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $biodatas = Biodata::paginate(15);
-        return view('admin.biodata.index', ['biodatas' => $biodatas]);
+
+        return view('admin.biodata.index', [
+            'biodatas' => $biodatas
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $mahasiswas = Mahasiswa::all();
+
         return view('admin.biodata.create', [
             'mahasiswas' => $mahasiswas,
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function show(Biodata $biodata)
+    {
+        return view('admin.biodata.show', [
+            'biodata' => $biodata
+        ]);
+    }
+
     public function store(Request $request)
     {
-        
-       $request->validate([
+        $request->validate([
             'nrp' => 'required|size:8|unique:biodata,nrp',
             'nama' => 'required|max:50',
             'nik' => 'required|size:16',
@@ -95,9 +96,9 @@ class BiodataAdminController extends Controller
             'pekerjaan_wali' => 'required|max:50',
             'pendidikan_wali' => 'required|max:25',
             'warganegara_wali' => 'required|max:20',
-            'special_need' => 'required|size:4',            
+            'special_need' => 'required|size:4',
             'kps' => 'required|integer',
-            'status_pendidikan' => 'required|size:1',                  // Diperbaiki jadi tipe integer            'status_pendidikan' => 'required|max:20',
+            'status_pendidikan' => 'required|size:1',
             'kebutuhan_ayah' => 'required|size:4',
             'kebutuhan_ibu' => 'required|size:4',
             'last_update' => 'required|date',
@@ -105,10 +106,8 @@ class BiodataAdminController extends Controller
             'email' => 'required|email|max:100',
             'jenis_kelamin' => 'required|max:12',
             'nisn' => 'required|max:25',
-            
-
         ]);
-       
+
         Biodata::create([
             'nrp' => $request->nrp,
             'nama' => $request->nama,
@@ -117,7 +116,7 @@ class BiodataAdminController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
             'sex' => $request->jenis_kelamin,
             'tinggi' => $request->tinggi,
-            'berat' => $request->berat, 
+            'berat' => $request->berat,
             'alamat' => $request->alamat,
             'kecamatan' => $request->kecamatan,
             'kelurahan' => $request->kelurahan,
@@ -181,32 +180,22 @@ class BiodataAdminController extends Controller
             'nisn' => $request->nisn,
         ]);
 
-        return redirect('/admin/kelola-biodata');
+        return redirect()->route('admin.biodata.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Biodata $biodata)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Biodata $biodata)
     {
-         $mahasiswas = Mahasiswa::all();
-         return view('admin.biodata.edit', ['biodata' => $biodata, 'mahasiswas' => $mahasiswas]);
+        $mahasiswas = Mahasiswa::all();
+
+        return view('admin.biodata.edit', [
+            'biodata' => $biodata,
+            'mahasiswas' => $mahasiswas
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Biodata $biodata)
     {
-            $biodata->update([
+        $biodata->update([
             'nrp' => $request->nrp,
             'nama' => $request->nama,
             'nik' => $request->nik,
@@ -214,7 +203,7 @@ class BiodataAdminController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
             'sex' => $request->jenis_kelamin,
             'tinggi' => $request->tinggi,
-            'berat' => $request->berat, 
+            'berat' => $request->berat,
             'alamat' => $request->alamat,
             'kecamatan' => $request->kecamatan,
             'kelurahan' => $request->kelurahan,
@@ -276,16 +265,13 @@ class BiodataAdminController extends Controller
             'email' => $request->email,
             'jenis_kelamin' => $request->jenis_kelamin,
             'nisn' => $request->nisn,
-            ]);
-            
-            return redirect('/admin/kelola-biodata');
+        ]);
+
+        return redirect()->route('admin.biodata.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Biodata $biodata)
     {
-        //
+        return redirect()->route('admin.biodata.index');
     }
 }

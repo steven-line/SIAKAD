@@ -1,7 +1,9 @@
 <x-layout>
-    <a class="join-item btn btn-primary mb-4" href="/admin/kelola-biodata">⮜ Previous page</a>
+    <a class="join-item btn btn-primary mb-4" href="{{ route('biodata.index') }}">
+        ⮜ Previous page
+    </a>
 
-    <form action="/admin/kelola-biodata" method="POST">
+    <form action="{{ route('biodata.store') }}" method="POST">
         @csrf
 
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-6 mx-auto max-w-4xl">

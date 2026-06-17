@@ -9,7 +9,6 @@
     <div class="overflow-x-auto">
 
         <table class="table table-zebra">
-
             <tbody>
 
                 <tr>
@@ -56,24 +55,19 @@
                     <th>Status</th>
                     <td>
                         @if($mk->aktif)
-                            <span class="badge badge-success">
-                                Aktif
-                            </span>
+                            <span class="badge badge-success">Aktif</span>
                         @else
-                            <span class="badge badge-error">
-                                Tidak Aktif
-                            </span>
+                            <span class="badge badge-error">Tidak Aktif</span>
                         @endif
                     </td>
                 </tr>
 
             </tbody>
-
         </table>
 
     </div>
 
-    {{-- TABEL PRASYARAT --}}
+    {{-- PRASYARAT --}}
     <div class="divider">
         Prasyarat Mata Kuliah
     </div>
@@ -81,7 +75,6 @@
     <div class="overflow-x-auto">
 
         <table class="table table-zebra">
-
             <thead>
                 <tr>
                     <th>No</th>
@@ -120,7 +113,6 @@
                 @endforelse
 
             </tbody>
-
         </table>
 
     </div>
@@ -129,14 +121,14 @@
     <div class="card-actions justify-end mt-6">
 
         <a
-            href="/admin/kelola-matakuliah/{{ $mk->kodemk }}/edit"
+            href="{{ route('mk.edit', $mk->kodemk) }}"
             class="btn btn-warning"
         >
             Edit
         </a>
 
         <a
-            href="/admin/kelola-matakuliah"
+            href="{{ route('mk.index') }}"
             class="btn btn-primary"
         >
             Kembali

@@ -30,7 +30,6 @@ class Penawaran extends Model
         'pagu',
         'pataum',
         'MBKM',
-        
     ];
 
     protected $casts = [
@@ -41,12 +40,37 @@ class Penawaran extends Model
 
     public function mk()
     {
-        return $this->belongsTo(Mk::class, 'kodemk', 'kodemk');
+        return $this->belongsTo(
+            Mk::class,
+            'kodemk',
+            'kodemk'
+        );
+    }
+
+    public function dosenRelasi()
+    {
+        return $this->belongsTo(
+            Dosen::class,
+            'dosen',
+            'nim_dosen'
+        );
+    }
+    
+    public function jurusanRelasi()
+    {
+        return $this->belongsTo(
+            Jurusan::class,
+            'jurusan',
+            'kode_jurusan'
+        );
     }
 
     public function registrasis()
-{
-    return $this->hasMany(Registrasi::class, 'kodemk', 'kodemk');
-}
-
+    {
+        return $this->hasMany(
+            Registrasi::class,
+            'kodemk',
+            'kodemk'
+        );
+    }
 }

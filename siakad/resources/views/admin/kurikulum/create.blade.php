@@ -2,11 +2,10 @@
 
     <div class="p-6">
 
-        <a class="btn btn-primary mb-6" href="/admin/kelola-kurikulum">
-            ⮜ Previous page
-        </a>
-
-        <form action="/admin/kelola-kurikulum" method="POST">
+       <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+        ⮜ Previous page
+    </a>
+        <form action="{{ route('kurikulums.store') }" method="POST">
             @csrf
 
             <fieldset class="fieldset bg-base-200 border border-base-300 rounded-box w-full max-w-xl mx-auto p-6">

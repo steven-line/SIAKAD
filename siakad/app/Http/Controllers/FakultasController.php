@@ -42,7 +42,8 @@ class FakultasController extends Controller
             'nama_fakultas' => $request->nama_fakultas,
         ]);
 
-        return redirect('/admin/kelola-fakultas');
+        return redirect()->route('fakultas.index')
+            ->with('success', 'Fakultas berhasil ditambahkan');
     }
 
     /**
@@ -73,7 +74,8 @@ class FakultasController extends Controller
             'nama_fakultas' => $request->nama_fakultas,
         ]);
 
-        return redirect('/admin/kelola-fakultas');
+        return redirect()->route('fakultas.index')
+            ->with('success', 'Fakultas berhasil diperbarui');
     }
 
     /**
@@ -83,7 +85,7 @@ class FakultasController extends Controller
     {
         $fakultas->delete();
 
-        return redirect('/admin/kelola-fakultas')
+        return redirect()->route('fakultas.index')
             ->with('success', 'Fakultas Dihapus');
     }
 }

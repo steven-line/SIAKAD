@@ -2,11 +2,11 @@
 
     <div class="p-6">
 
-        <a class="btn btn-primary mb-6" href="/admin/kelola-prodi">
+        <a class="btn btn-primary mb-6" href="{{ route('prodi.index') }}">
             ⮜ Previous page
         </a>
 
-        <form action="/admin/kelola-prodi/{{ $prodi->kode_prodi }}" method="POST">
+        <form action="{{ route('prodi.update', $prodi->kode_prodi) }}" method="POST">
             @csrf
             @method('PATCH')
 

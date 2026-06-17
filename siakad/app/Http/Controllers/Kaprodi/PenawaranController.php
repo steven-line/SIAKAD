@@ -83,6 +83,20 @@ class PenawaranController extends Controller
     
         }
 
+    public function show($recno)
+    {
+        $penawaran = Penawaran::with([
+            'mk',
+            'dosenRelasi',
+            'jurusanRelasi'
+        ])->findOrFail($recno);
+
+        return view(
+            'kaprodi.penawaran.show',
+            compact('penawaran')
+        );
+    }
+
 public function store(Request $request)
 {
     $request->validate([
@@ -144,7 +158,7 @@ public function store(Request $request)
     if ($selesai->gt($batasAkhir)) {
 
         return back()
-            ->withErrors([
+            ->withErro5rs([
                 'jam' => 'Durasi mata kuliah melebihi batas sesi'
             ])
             ->withInput();

@@ -9,27 +9,18 @@ use Illuminate\Http\Request;
 
 class MkController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $mks = Mk::paginate(15);
         return view('admin.matakuliah.index', ['mks' => $mks]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $kurikulums = Kurikulum::orderby('kode_kurikulum')->get();
         return view('admin.matakuliah.create', ['kurikulums' => $kurikulums]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -51,8 +42,8 @@ class MkController extends Controller
             'prasyarat9' => ['required'],
             'prasyarat10' => ['required'],
             'prasyaratgrade' => ['required'], 
-              
         ]);
+
         Mk::create([
             'kodemk' => $request->kodemk,
             'nama' => $request->nama,
@@ -72,35 +63,30 @@ class MkController extends Controller
             'prasyarat9' => $request->prasyarat9,
             'prasyarat10' => $request->prasyarat10,
             'prasyaratgrade' => $request->prasyaratgrade,
-            'aktif'          => $request->boolean('aktif'),         ]);
-        return redirect('/admin/kelola-matakuliah');
+            'aktif' => $request->boolean('aktif'),
+        ]);
 
+        return redirect()->route('mk.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Mk $mk)
     {
-        //
         return view('admin.matakuliah.show', ['mk' => $mk]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Mk $mk)
     {
-         $kurikulums = Kurikulum::orderby('kode_kurikulum')->get();
-        return view('admin.matakuliah.edit', ['mk' => $mk, 'kurikulums' => $kurikulums]);
+        $kurikulums = Kurikulum::orderby('kode_kurikulum')->get();
+        return view('admin.matakuliah.edit', [
+            'mk' => $mk,
+            'kurikulums' => $kurikulums
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Mk $mk)
     {
-        $mk->update([    'kodemk' => $request->kodemk,
+        $mk->update([
+            'kodemk' => $request->kodemk,
             'nama' => $request->nama,
             'sks' => $request->sks,
             'nm_jenj_didik' => $request->nm_jenj_didik,
@@ -118,19 +104,18 @@ class MkController extends Controller
             'prasyarat9' => $request->prasyarat9,
             'prasyarat10' => $request->prasyarat10,
             'prasyaratgrade' => $request->prasyaratgrade,
-            'aktif'          => $request->boolean('aktif'), 
-            ]);
-            
-            return redirect('/admin/kelola-matakuliah');
-            
+            'aktif' => $request->boolean('aktif'),
+        ]);
+
+        return redirect()->route('mk.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Mk $mk)
     {
         $mk->delete();
-        return redirect('/admin/kelola-matakuliah')->with('success', 'Mata Kuliah Dihapus');
+
+        return redirect()
+            ->route('mk.index')
+            ->with('success', 'Mata Kuliah Dihapus');
     }
 }

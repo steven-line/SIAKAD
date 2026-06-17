@@ -1,10 +1,12 @@
 <?php
 
-
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,22 +15,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectUsersTo(function (Request $request){
-            if ($request->user()->hasRole('admin')) {
-                return '/admin';
-            } elseif ($request->user()->hasRole('kaprodi')) {
-                return '/kaprodi';
-            } elseif ($request->user()->hasRole('dosen-wali')){
-                return '/dosen-wali';
-                
-            } elseif ($request->user()->hasRole('mahasiswa')) {
-                return '/mahasiswa';
-            } elseif ($request->user()->hasRole('dosen')){
-                return '/dosen';
-            }
-           
-        });
-       
+
+        // ❌ HAPUS redirectUsersTo (tidak perlu)
+        // $middleware->redirectUsersTo('/dashboard');
+
+        // ✅ REGISTER SPATIE PROPERLY
+        $middleware->alias([
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

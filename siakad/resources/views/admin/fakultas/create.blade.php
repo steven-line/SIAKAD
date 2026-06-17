@@ -1,7 +1,13 @@
 <x-layout>
-      <a class="join-item btn btn-primary" href="/admin/kelola-fakultas">⮜ Previous page</a>
-    <form class="flex h-screen"action="/admin/kelola-fakultas" method="POST">
+      <a class="join-item btn btn-primary" href="{{ route('fakultas.index') }}">
+          ⮜ Previous page
+      </a>
+
+    <form class="flex h-screen"
+          action="{{ route('fakultas.store') }}"
+          method="POST">
     @csrf
+
     <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs h-80 border p-4 mx-auto">
 
         <label class="label font-bold" for="kode_fakultas">kode_fakultas</label>
@@ -13,7 +19,8 @@
         <x-forms.error name='nama_fakultas'/>
 
         <button class="btn btn-primary mt-4">Buat fakultas</button>
-  </fieldset>
 
-  </form>
+    </fieldset>
+
+    </form>
 </x-layout>

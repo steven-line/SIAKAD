@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Role;
@@ -14,125 +13,104 @@ use Spatie\Permission\Models\Permission;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * LIST USER
      */
     public function index()
-    {
-        Gate::authorize('viewAny', User::class);
-        
-        // Eager load roles dan permissions untuk performa yang lebih baik
-        $users = User::with(['roles', 'permissions'])->get();
-        
-        return view('admin.users.index', [
-            'users' => $users,
-        ]);
-    }
+{
+    $users = User::with(['roles', 'permissions'])->paginate(10);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $roles = Role::all();
-        $permissions = Permission::all();
-        
-        return view('admin.users.create', compact('roles', 'permissions'));
-    }
+    return view('admin.users.index', compact('users'));
+}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        // Aturan validasi
-        $rules = [
-            'username'    => ['required', 'string', 'max:255', 'unique:users'],
-            'password'    => ['required', Password::default()],
-            'role'        => ['required', 'string', 'exists:roles,name'],
-            'permissions' => ['nullable', 'array'],
-            'sks'         => ['required', 'numeric'],
-        ];
+/**
+ * FORM CREATE
+ */
+public function create()
+{
+    return view('admin.users.create', [
+        'roles' => Role::all(),
+        'permissions' => Permission::all(),
+    ]);
+}
 
-        // Validasi pataum khusus mahasiswa
-        if (strtolower($request->role) === 'mahasiswa') {
-            $rules['pataum'] = ['required', 'in:P,M'];
-        }
+/**
+ * STORE USER
+ */
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'username' => ['required', 'string', 'max:255', 'unique:users'],
+        'password' => ['required', Password::default()],
+        'role'     => ['required', 'exists:roles,name'],
+        'permissions' => ['nullable', 'array'],
+        'permissions.*' => ['string', 'exists:permissions,name'],
+        'sks'      => ['required', 'numeric'],
+        'pataum'   => ['nullable', 'in:P,M'],
+    ]);
 
-        $request->validate($rules);
+    $user = User::create([
+        'username'   => $validated['username'],
+        'password'   => Hash::make($validated['password']),
+        'sks'        => $validated['sks'],
+        'pataum'     => $validated['pataum'] ?? null,
+        'firstlogin' => Carbon::now(),
+        'lastlogin'  => Carbon::now(),
+    ]);
 
-        // Data dasar user
-        $userData = [
-            'username'   => $request->username,
-            'password'   => Hash::make($request->password),
-            'sks'        => $request->sks,
-            'firstlogin' => Carbon::now(),
-            'lastlogin'  => Carbon::now(),
-        ];
+    $user->syncRoles([$validated['role']]);
+    $user->syncPermissions($validated['permissions'] ?? []);
 
-        // Proses pataum jika ada
-        if ($request->has('pataum')) {
-            // Mapping nilai ke ENUM yang benar di database
-            $map = [
-                'P' => 'P (Pagi)',
-                'M' => 'M (Malam)'
-            ];
-            $userData['pataum'] = $map[$request->pataum] ?? $request->pataum;
-        }
+    return redirect()->route('users.index')
+        ->with('success', 'User berhasil ditambahkan');
+}
 
-        $user = User::create($userData);
+/**
+ * EDIT FORM
+ */
+public function edit(User $user)
+{
+    return view('admin.users.edit', [
+        'user' => $user->load(['roles', 'permissions']),
+        'roles' => Role::all(),
+        'permissions' => Permission::all(),
+    ]);
+}
 
-        // Assign role dan permissions
-        $user->assignRole($request->role);
-        if ($request->has('permissions')) {
-            $user->givePermissionTo($request->permissions);
-        }
+/**
+ * UPDATE USER
+ */
+public function update(Request $request, User $user)
+{
+    $validated = $request->validate([
+        'username' => ['required', 'string', 'max:255'],
+        'role'     => ['required', 'exists:roles,name'],
+        'permissions' => ['nullable', 'array'],
+        'permissions.*' => ['string', 'exists:permissions,name'],
+        'sks'      => ['required', 'numeric'],
+        'pataum'   => ['nullable', 'in:P,M'],
+    ]);
 
-        return redirect('/admin/kelola-user')->with('success', 'User berhasil ditambahkan.');
-    }
+    $user->update([
+        'username' => $validated['username'],
+        'sks'      => $validated['sks'],
+        'pataum'   => $validated['pataum'] ?? $user->pataum,
+    ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        $roles = Role::all();
-        $permissions = Permission::all();
-        
-        return view('admin.users.edit', compact('user', 'roles', 'permissions'));
-    }
+    $user->syncRoles([$validated['role']]);
+    $user->syncPermissions($validated['permissions'] ?? []);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'username'    => ['required', 'string', 'max:255'],
-            'role'        => ['required', 'string', 'exists:roles,name'],
-            'permissions' => ['nullable', 'array'],
-            'sks'         => ['required', 'numeric'],
-        ]);
+    return redirect()->route('users.index')
+        ->with('success', 'User berhasil diperbarui');
+}
 
-        $user->update([
-            'username' => $request->username,
-            'sks'      => $request->sks,
-        ]);
+/**
+ * DELETE USER
+ */
+public function destroy(User $user)
+{
+    $user->delete();
 
-        // Sync Roles (Menghapus role lama, memasang role baru)
-        $user->syncRoles($request->role);
-
-        // Sync Permissions (Memastikan permission sesuai dengan checkbox yang dicentang)
-        $user->syncPermissions($request->permissions ?? []);
-
-        return redirect('/admin/kelola-user')->with('success', 'User berhasil diperbarui.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        $user->delete();
-        return redirect('/admin/kelola-user')->with('success', 'User berhasil dihapus.');
-    }
+    return redirect()->route('users.index')
+        ->with('success', 'User berhasil dihapus');
+}
 }

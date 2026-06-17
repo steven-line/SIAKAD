@@ -2,12 +2,13 @@
 
     <div class="p-6">
 
-        <a class="btn btn-primary mb-6" href="/admin/kelola-kurikulum">
-            ⮜ Previous page
-        </a>
+      
+       <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+        ⮜ Previous page
+    </a>
 
         <form
-            action="/admin/kelola-kurikulum/{{ $kurikulum->kode_kurikulum }}"
+            action="{{ route('kurikulum.store', $kurikulum->kode_kurikulum) }}"
             method="POST"
         >
             @csrf
