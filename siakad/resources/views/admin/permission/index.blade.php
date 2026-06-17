@@ -1,6 +1,6 @@
 <x-layout title="index">
  <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-    <a class="btn btn-primary text-white mb-6" href="/admin/master-permission/create">Create Permission</a>
+    <a class="btn btn-primary text-white mb-6" href="{{route('permissions.create')}}">Create Permission</a>
   <table class="table">
     <thead class="bg-blue-500 text-white">
       <tr>
@@ -21,7 +21,7 @@
             <th>{{$permission->name}}</th>
             <th>{{$permission->guard_name}}</th>
             <th><a href='' class="btn btn-soft btn-primary">Detail</a></th>
-            <th><a class="btn btn-soft btn-warning" href="/admin/master-permission/{{$permission->id}}/edit">Edit</a></th>
+            <th><a class="btn btn-soft btn-warning" href="{{route('permissions.edit',$permission->id)}}">Edit</a></th>
             <th>
               <button class="btn btn-soft btn-error" onclick="deleteBox_{{$permission->id}}.showModal()">Delete</button>
               <dialog id="deleteBox_{{$permission->id}}" class="modal modal-bottom sm:modal-middle">
@@ -40,7 +40,7 @@
             </th>
         </tr>
         
-        <form id="delete-permission-form-{{$permission->id}}" action="/admin/master-permission/{{ $permission->id }}" method='POST'>
+        <form id="delete-permission-form-{{$permission->id}}" action="{{route('permissions.destroy', $permission->id) }}" method='POST'>
             @csrf  
             @method('DELETE')
        </form>

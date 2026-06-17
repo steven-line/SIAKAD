@@ -30,31 +30,31 @@
 
         {{-- ADMIN --}}
         @can('user.manage')
-        <li><a href="/users">Kelola User</a></li>
+        <li><a href="/users">Master User</a></li>
         @endcan
 
         @can('kurikulum.manage')
-        <li><a href="/kurikulum">Kelola Kurikulum</a></li>
+        <li><a href="/kurikulum">Master Kurikulum</a></li>
         @endcan
 
         @can('mk.manage')
-        <li><a href="/matakuliah">Kelola Mata Kuliah</a></li>
+        <li><a href="/matakuliah">Master Mata Kuliah</a></li>
         @endcan
 
         @can('dosen.manage')
-        <li><a href="/dosen">Kelola Dosen</a></li>
+        <li><a href="/dosen">Master Dosen</a></li>
         @endcan
 
         @can('prodi.manage')
-        <li><a href="/prodi">Kelola Prodi</a></li>
+        <li><a href="/prodi">Master Prodi</a></li>
         @endcan
 
         @can('fakultas.manage')
-        <li><a href="/fakultas">Kelola Fakultas</a></li>
+        <li><a href="/fakultas">Master Fakultas</a></li>
         @endcan
 
         @can('biodata.manage')
-        <li><a href="/biodata">Kelola Biodata</a></li>
+        <li><a href="/biodata">Master Biodata</a></li>
         @endcan
 
         {{-- ROLE & PERMISSION --}}

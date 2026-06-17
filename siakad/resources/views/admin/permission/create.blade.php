@@ -1,6 +1,6 @@
 <x-layout>
       <a class="join-item btn btn-primary" href="{{url()->previous()}}">⮜ Previous page</a>
-    <form class="flex"action="/admin/master-permission" method="POST">
+    <form class="flex"action="{{route('permissions.store')}}" method="POST">
     @csrf
 
     <fieldset class="fieldset bg-base-200 border-base-300 field-sizing-content rounded-box w-xs border p-4 mx-auto">

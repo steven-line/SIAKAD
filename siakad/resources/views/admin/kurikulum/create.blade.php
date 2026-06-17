@@ -5,7 +5,7 @@
        <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
         ⮜ Previous page
     </a>
-        <form action="{{ route('kurikulums.store') }" method="POST">
+        <form action="{{ route('kurikulum.store') }}" method="POST">
             @csrf
 
             <fieldset class="fieldset bg-base-200 border border-base-300 rounded-box w-full max-w-xl mx-auto p-6">

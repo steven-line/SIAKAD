@@ -1,6 +1,6 @@
 <x-layout title="index">
  <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-    <a class="btn btn-primary text-white mb-6" href="/admin/master-role/create">Create Role</a>
+    <a class="btn btn-primary text-white mb-6" href="{{route('roles.create')}}">Create Role</a>
   <table class="table">
     <thead class="bg-blue-500 text-white">
       <tr>
@@ -33,7 +33,7 @@
             <th>{{$role->updated_at}}</th>
            
             <th><a href='' class="btn btn-soft btn-primary">Detail</a></th>
-            <th><a class="btn btn-soft btn-warning" href="/admin/master-role/{{$role->id}}/edit">Edit</a></th>
+            <th><a class="btn btn-soft btn-warning" href="{{route('roles.edit', $role->id)}}">Edit</a></th>
             <th>
               <button class="btn btn-soft btn-error" onclick="deleteBox_{{$role->id}}.showModal()">Delete</button>
               <dialog id="deleteBox_{{$role->id}}" class="modal modal-bottom sm:modal-middle">
@@ -52,7 +52,7 @@
             </th>
         </tr>
         
-        <form id="delete-role-form-{{$role->id}}" action="/admin/master-role/{{ $role->id }}" method='POST'>
+        <form id="delete-role-form-{{$role->id}}" action="{{route('roles.destroy', $role->id)}}" method='POST'>
             @csrf  
             @method('DELETE')
        </form>

@@ -49,7 +49,7 @@ class KurikulumController extends Controller
             'tahun_selesai_berlaku' => $request->tahun_selesai_berlaku,
         ]);
 
-        return redirect()->route('admin.kurikulum.index');
+        return redirect()->route('kurikulum.index');
     }
 
     /**
@@ -94,7 +94,7 @@ class KurikulumController extends Controller
             'tahun_selesai_berlaku' => $request->tahun_selesai_berlaku,
         ]);
 
-        return redirect()->route('admin.kurikulum.index');
+        return redirect()->route('kurikulum.index');
     }
 
     /**
@@ -105,7 +105,7 @@ class KurikulumController extends Controller
         $kurikulum->delete();
 
         return redirect()
-            ->route('admin.kurikulum.index')
+            ->route('kurikulum.index')
             ->with('success', 'Kurikulum berhasil dihapus');
     }
 }

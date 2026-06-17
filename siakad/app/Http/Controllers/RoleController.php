@@ -47,7 +47,7 @@ class RoleController extends Controller
         if ($request->has('permissions')) {
             $role->givePermissionTo($request->permissions);
         }
-        return redirect('/admin/master-role/');
+           return redirect()->route('roles.index');
     }
 
     /**
@@ -79,7 +79,7 @@ class RoleController extends Controller
 
         ]);
 
-        return redirect('/admin/master-role/');
+        return redirect()->route('roles.index');
     }
 
     /**
@@ -88,7 +88,7 @@ class RoleController extends Controller
     public function destroy(role $role)
     {
         $role->delete();
-        return redirect('/admin/master-role')->with('success', 'role Dihapus');
+          return redirect()->route('roles.index')->with('success', 'role Dihapus');
    
     }
 }

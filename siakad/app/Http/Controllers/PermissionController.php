@@ -40,7 +40,8 @@ class PermissionController extends Controller
            
         ]);
         
-        return redirect('/admin/master-permission/');
+        return redirect()->route('permissions.index');
+      
     }
 
     /**
@@ -70,7 +71,7 @@ class PermissionController extends Controller
 
         ]);
 
-        return redirect('/admin/master-permission/');
+        return redirect()->route('permissions.index');
     }
 
     /**
@@ -79,7 +80,7 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         $permission->delete();
-        return redirect('/admin/master-permission')->with('success', 'Permission Dihapus');
+          return redirect()->route('permissions.index')->with('success', 'Permission Dihapus');
    
     }
 }

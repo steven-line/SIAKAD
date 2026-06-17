@@ -1,6 +1,6 @@
 <x-layout>
       <a class="join-item btn btn-primary" href="{{url()->previous()}}">⮜ Previous page</a>
-    <form class="flex"action="/admin/master-permission/{{$permission->id}}" method="POST">
+    <form class="flex"action="{{route('permissions.update',$permission->id)}}" method="POST">
     @csrf
     @method('PATCH')
 
