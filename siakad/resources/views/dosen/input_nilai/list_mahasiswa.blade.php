@@ -14,7 +14,7 @@
                 <th>Periode</th>
                 <th>Status</th>
                 <th>SKS</th>
-                <th>Aksi</th>
+                <th colspan="3">Aksi</th>
             </tr>
         </thead>
 
@@ -44,15 +44,21 @@
                 <td>{{ $mhs->sks }}</td>
                 <td>
                    <a class="btn btn-soft btn-warning"
-   href="/dosen/input-nilai/{{ $mhs->nrp }}/{{ $mk->kodemk }}">
-   Show
-</a>
-
+                            href="{{ route('nilai.show', ['mahasiswa' => $mhs->nrp,  'mk' => $mk->kodemk]) }}">
+                    Show 
+                    </a>
                 </td>
+                <td>
+                  <a class="btn btn-soft btn-error" href="{{ route('nilai.edit', ['mahasiswa' => $mhs->nrp,  'mk' => $mk->kodemk]) }}">
+                        Edit
+                    </a>
+         
+                </td>
+    
                 <td>
                     <a
                         class="btn btn-soft btn-info"
-                        href="/dosen/input-nilai/{{$mhs->nrp}}/{{$mk->kodemk}}/create">
+                        href="{{ route('nilai.create',['mahasiswa' => $mhs->nrp,  'mk' => $mk->kodemk]) }}">
                         Input Nilai
                     </a>
                 </td>

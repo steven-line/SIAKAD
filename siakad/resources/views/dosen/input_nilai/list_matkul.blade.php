@@ -48,7 +48,7 @@
                 <td>
                     <a
                         class="btn btn-soft btn-info"
-                        href="/dosen/input-nilai/{{ $mk->kodemk }}/mahasiswa">
+                        href="{{route('nilai.mahasiswa', $mk->kodemk)}}">
                         Lihat Mahasiswa
                     </a>
                 </td>

@@ -1,7 +1,10 @@
 <x-layout>
     <a class="join-item btn btn-primary mb-4"  href="{{url()->previous()}}">⮜ Previous page</a>
 
-    <form action="/dosen/input-nilai/{{$mahasiswa->nrp}}/{{$mk->kodemk}}/store" method="POST">
+    <form action="{{route('nilai.store', [
+    'mahasiswa' => $mahasiswa->nrp,
+    'mk' => $mk->kodemk,
+])}}" method="POST">
         @csrf
 
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-6 mx-auto max-w-4xl">

@@ -23,7 +23,7 @@
             <td>
               {{ $mahasiswa->status_blokir }}
           </td>
-            <td><a class="btn btn-soft btn-info"href="/dosen-wali/perwalian/{{$mahasiswa->nrp}}">Detail</a></td>
+            <td><a class="btn btn-soft btn-info" href="{{route('perwalian.show',$mahasiswa->nrp)}}">Detail</a></td>
             <td>
           @if ($mahasiswa->status_blokir === 'MENUNGGU_VALIDASI')
               <button class="btn btn-soft btn-warning"
@@ -45,16 +45,14 @@
 
            
         </tr>
-               <form id="delete-mahasiswa-form-{{$mahasiswa->nrp}}" action="/admin/kelola-mahasiswa/{{ $mahasiswa->nrp }}" method='POST'>
-            @csrf  
-            @method('DELETE')
+             
 
 
        </form>
-       <form id="validasi-mahasiswa-form-{{$mahasiswa->nrp}}" action="/dosen-wali/perwalian/{{ $mahasiswa->nrp }}/validasi" method='POST'>
+       <form id="validasi-mahasiswa-form-{{$mahasiswa->nrp}}" action="{{ route('perwalian.validasi', $mahasiswa->nrp) }}" method='POST'>
             @csrf  
        </form>
-      <form id="lock-mahasiswa-form-{{$mahasiswa->nrp}}" action="/dosen-wali/perwalian/{{ $mahasiswa->nrp }}/lock" method='POST'>
+      <form id="lock-mahasiswa-form-{{$mahasiswa->nrp}}" action="{{ route('perwalian.lock', $mahasiswa->nrp) }}" method='POST'>
             @csrf        
        </form>
         

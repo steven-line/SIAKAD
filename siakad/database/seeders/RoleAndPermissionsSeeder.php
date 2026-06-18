@@ -108,7 +108,6 @@ class RoleAndPermissionsSeeder extends Seeder
             'jadwal.view_umum',
             'jadwal.manage',
             'nilai.input',
-            'penawaran.view',
             'penawaran.manage',
         ]);
 
@@ -118,7 +117,6 @@ class RoleAndPermissionsSeeder extends Seeder
         $dosenWaliRole->syncPermissions([
             'jadwal.view_sendiri',
             'nilai.input',
-            'penawaran.view',
             'perwalian.manage',
         ]);
 

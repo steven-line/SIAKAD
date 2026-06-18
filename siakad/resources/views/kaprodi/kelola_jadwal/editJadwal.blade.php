@@ -3,7 +3,7 @@
 
     <h1 class="text-2xl font-bold mb-6 text-center">Edit Jadwal</h1>
 
-    <form method="POST" action="/kaprodi/kelola_jadwal/update/{{ $jadwal->id }}">
+    <form method="POST" action="{{route('jadwal.update', $jadwal->id) }}">
         @csrf
 
         <input type="hidden" name="sesi" value="{{ $jadwal->sesi }}">
@@ -31,7 +31,7 @@
         </div>
 
         <div class="flex justify-between mt-6">
-            <a href="/kaprodi/kelola_jadwal"
+            <a href="{{route('jadwal.index')}}"
                class="bg-gray-600 px-4 py-2 rounded">
                 Kembali
             </a>
