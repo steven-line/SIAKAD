@@ -19,10 +19,10 @@
 
         <form
             method="POST"
-            action="{{ route('kaprodi.penawaran.update', $penawaran->recno) }}"
+            action="{{ route('penawaran.update', $penawaran->recno) }}"
         >
             @csrf
-            @method('PUT')
+            @method('PATCH')
 
             <div class="grid grid-cols-2 gap-4">
 
@@ -273,7 +273,7 @@
             <div class="flex justify-end gap-2 mt-6">
 
                 <a
-                    href="{{ route('kaprodi.penawaran.index') }}"
+                    href="{{ route('penawaran.index') }}"
                     class="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
                 >
                     Batal

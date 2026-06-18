@@ -72,7 +72,7 @@ class PerwalianController extends Controller
         $mahasiswa->status_blokir = "DISETUJUI";
         $mahasiswa->save();
 
-        return redirect('/dosen-wali/perwalian')
+        return redirect()->route('perwalian.index')
             ->with('success', 'Mahasiswa berhasil divalidasi');
     }
 
@@ -81,7 +81,7 @@ class PerwalianController extends Controller
         $mahasiswa->status_blokir = "TERKUNCI";
         $mahasiswa->save();
 
-        return redirect('/dosen-wali/perwalian')
+        return redirect()->route('perwalian.index')
             ->with('success', 'KRS TERKUNCI');
     }
 

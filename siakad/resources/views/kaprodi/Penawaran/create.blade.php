@@ -25,7 +25,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('kaprodi.penawaran.store') }}">
+        <form method="POST" action="{{ route('penawaran.store') }}">
             @csrf
 
             <div class="grid grid-cols-2 gap-4">

@@ -16,23 +16,24 @@ class MahasiswaSeeder extends Seeder
         
          Mahasiswa::create([
             'nrp' => '31129999',
-            'dosen_wali' => '12345678', // ini harus ID dari tabel dosens
-            'status_blokir' => 'BELUM_KRS',
+            'dosen_wali' => '31123012', // ini harus ID dari tabel dosens
+            'status_blokir' => 'MENUNGGU_VALIDASI',
             'prodi' => 'IF'
         ]);
 
         Mahasiswa::create([
             'nrp' => '31128888',
-            'dosen_wali' => '12345678',
+            'dosen_wali' => '31123012',
+            'status_blokir' => 'BELUM_KRS',
+            'prodi' => 'IF'
+        ]);
+        
+        Mahasiswa::create([
+            'nrp' => '31127777',
+            'dosen_wali' => '31123012',
             'status_blokir' => 'BELUM_KRS',
             'prodi' => 'IF'
         ]);
 
-        Mahasiswa::create([
-            'nrp' => '31127777',
-            'dosen_wali' => '87654321',
-            'status_blokir' => 'BELUM_KRS',
-            'prodi' => 'ING'
-        ]);
     }
 }

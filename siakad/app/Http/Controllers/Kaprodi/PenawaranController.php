@@ -237,7 +237,7 @@ public function store(Request $request)
     ]);
 
     return redirect()
-        ->route('kaprodi.penawaran.index')
+        ->route('penawaran.index')
         ->with(
             'success',
             'Penawaran berhasil ditambahkan'
@@ -400,7 +400,7 @@ public function update(Request $request, Penawaran $penawaran)
     ]);
 
     return redirect()
-        ->route('kaprodi.penawaran.index')
+        ->route('penawaran.index')
         ->with(
             'success',
             'Penawaran berhasil diperbarui'

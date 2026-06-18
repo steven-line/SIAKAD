@@ -30,7 +30,7 @@
         </div>
 
         <div class="flex justify-between mt-6">
-            <a href="/kaprodi/kelola_jadwal"
+            <a href="{{route('jadwal.index')}}"
                class="bg-gray-600 px-4 py-2 rounded">
                 Kembali
             </a>

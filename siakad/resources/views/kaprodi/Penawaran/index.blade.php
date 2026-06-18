@@ -4,7 +4,7 @@
 
     <div class="p-4">
         <a class="btn btn-primary text-white mb-4"
-           href="/admin/kelola-penawaran/create">
+           href="{{route('penawaran.create')}}">
             Create Penawaran
         </a>
     </div>
@@ -78,7 +78,7 @@
                 {{-- DETAIL --}}
                 <td>
                     <a class="btn btn-soft btn-info"
-                       href="/kaprodi/penawaran/{{ $penawaran->recno }}">
+                       href="{{route('penawaran.show', $penawaran->recno )}}">
                         Detail
                     </a>
                 </td>
@@ -86,7 +86,7 @@
                 {{-- EDIT --}}
                 <td>
                     <a class="btn btn-soft btn-warning"
-                       href="/kaprodi/penawaran/{{ $penawaran->recno }}/edit">
+                       href="{{ route('penawaran.edit', $penawaran->recno) }}">
                         Edit
                     </a>
                 </td>
@@ -138,7 +138,7 @@
 
             <form
                 id="delete-penawaran-form-{{ $penawaran->recno }}"
-                action="/admin/kelola-penawaran/{{ $penawaran->recno }}"
+                action="{{ route('penawaran.destroy', $penawaran->recno) }}"
                 method="POST">
 
                 @csrf

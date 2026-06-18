@@ -255,9 +255,10 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/', [PenawaranController::class, 'index'])->name('index');
             Route::get('/create', [PenawaranController::class, 'create'])->name('create');
+            route::get('/{penawaran}/edit', [PenawaranController::class, 'edit'])->name('edit');
             Route::post('/', [PenawaranController::class, 'store'])->name('store');
             Route::get('/{recno}', [PenawaranController::class, 'show'])->name('show');
-            Route::put('/{penawaran}', [PenawaranController::class, 'update'])->name('update');
+            Route::patch('/{penawaran}', [PenawaranController::class, 'update'])->name('update');
             Route::delete('/{recno}', [PenawaranController::class, 'destroy'])->name('destroy');
         });
 
@@ -273,8 +274,8 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/', [PerwalianController::class, 'index'])->name('index');
             Route::get('/{mahasiswa}', [PerwalianController::class, 'show'])->name('show');
-            Route::post('/{mahasiswa}/validasi')->name('validasi');
-            Route::post('/{mahasiswa}/lock')->name('lock');
+            Route::post('/{mahasiswa}/validasi', [PerwalianController::class, 'validasi'])->name('validasi');
+            Route::post('/{mahasiswa}/lock', [PerwalianController::class, 'lock'])->name('lock');
         });
 
     /*

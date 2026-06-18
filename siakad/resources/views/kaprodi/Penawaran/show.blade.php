@@ -88,7 +88,7 @@
 
         <div class="mt-6">
             <a
-                href="{{ route('kaprodi.penawaran.index') }}"
+                href="{{ route('penawaran.index') }}"
                 class="bg-blue-600 px-4 py-2 rounded"
             >
                 Kembali
