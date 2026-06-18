@@ -17,17 +17,22 @@ class NilaiKrsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'NRP tidak ditemukan.');
         }
 
-        // Periode aktif (sesuaikan dengan kebutuhan)
-        $periode = '2025';
+        // Periode aktif (sesuaikan format dengan tabel registrasi)
+        // Contoh: '2025/2026' atau '2025' – sesuaikan dengan data Anda
+        $periode = '2025/2026'; // atau '2025' jika sesuai
 
-        $nilaiKrs = DB::table('krs')
-            ->leftJoin('mk', 'krs.kode', '=', 'mk.kodemk')
-            ->where('krs.nrp', $nrp)
-            ->where('krs.periode', $periode)
+        $nilaiKrs = DB::table('registrasi')
+            ->leftJoin('krs', function ($join) use ($nrp, $periode) {
+                $join->on('registrasi.kodemk', '=', 'krs.kode')
+                     ->on('registrasi.nrp', '=', 'krs.nrp');
+            })
+            ->leftJoin('mk', 'registrasi.kodemk', '=', 'mk.kodemk')
+            ->where('registrasi.nrp', $nrp)
+            ->where('registrasi.periode', $periode)
             ->select(
-                'krs.kode',
+                'registrasi.kodemk as kode',
                 'mk.nama as nama_mk',
-                'krs.sks',
+                'mk.sks as sks',
                 'krs.bu',
                 'krs.ttt1',
                 'krs.ttt2',
@@ -36,7 +41,7 @@ class NilaiKrsMahasiswaController extends Controller
                 'krs.lain',
                 'krs.na'
             )
-            ->orderBy('krs.kode')
+            ->orderBy('registrasi.kodemk')
             ->get();
 
         return view('mahasiswa.nilai_krs.index', compact('nilaiKrs'));

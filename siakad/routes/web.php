@@ -255,10 +255,9 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/', [PenawaranController::class, 'index'])->name('index');
             Route::get('/create', [PenawaranController::class, 'create'])->name('create');
-            route::get('/{penawaran}/edit', [PenawaranController::class, 'edit'])->name('edit');
             Route::post('/', [PenawaranController::class, 'store'])->name('store');
             Route::get('/{recno}', [PenawaranController::class, 'show'])->name('show');
-            Route::patch('/{penawaran}', [PenawaranController::class, 'update'])->name('update');
+            Route::put('/{penawaran}', [PenawaranController::class, 'update'])->name('update');
             Route::delete('/{recno}', [PenawaranController::class, 'destroy'])->name('destroy');
         });
 
@@ -274,8 +273,8 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/', [PerwalianController::class, 'index'])->name('index');
             Route::get('/{mahasiswa}', [PerwalianController::class, 'show'])->name('show');
-            Route::post('/{mahasiswa}/validasi', [PerwalianController::class, 'validasi'])->name('validasi');
-            Route::post('/{mahasiswa}/lock', [PerwalianController::class, 'lock'])->name('lock');
+            Route::post('/{mahasiswa}/validasi')->name('validasi');
+            Route::post('/{mahasiswa}/lock')->name('lock');
         });
 
     /*
@@ -350,9 +349,6 @@ Route::middleware('auth')->group(function () {
             ->name('krs.')
             ->group(function () {
 
-
-
-
                 Route::get('/', [KrsMahasiswaController::class, 'index'])
                     ->middleware('permission:krs.view')
                     ->name('index');
@@ -396,8 +392,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/{mahasiswa}/{mk}/create', [KrsController::class, 'create'])->name('create');
             Route::post('/{mahasiswa}/{mk}', [KrsController::class, 'store'])->name('store');
             Route::get('/{mahasiswa}/{mk}', [KrsController::class, 'show'])->name('show');
-            Route::get('/{mahasiswa}/{mk}/edit', [KrsController::class, 'edit'])->name('edit');
-            Route::patch('/{mahasiswa}/{mk}', [KrsController::class, 'update'])->name('update');
         });
 
     /*
