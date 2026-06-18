@@ -18,25 +18,25 @@ class NilaiKrsMahasiswaController extends Controller
         }
 
         // Periode aktif (sesuaikan dengan kebutuhan)
-        $periode = '2025/2026';
+        $periode = '2025';
 
         $nilaiKrs = DB::table('krs')
-            ->leftJoin('mk', 'krs.KODE', '=', 'mk.kodemk')
-            ->where('krs.NRP', $nrp)
-            ->where('krs.PERIODE', $periode)
+            ->leftJoin('mk', 'krs.kode', '=', 'mk.kodemk')
+            ->where('krs.nrp', $nrp)
+            ->where('krs.periode', $periode)
             ->select(
-                'krs.KODE',
+                'krs.kode',
                 'mk.nama as nama_mk',
-                'krs.SKS',
-                'krs.BU',
-                'krs.TTT1',
-                'krs.TTT2',
-                'krs.UTS',
-                'krs.UAS',
-                'krs.LAIN',
-                'krs.NA'
+                'krs.sks',
+                'krs.bu',
+                'krs.ttt1',
+                'krs.ttt2',
+                'krs.uts',
+                'krs.uas',
+                'krs.lain',
+                'krs.na'
             )
-            ->orderBy('krs.KODE')
+            ->orderBy('krs.kode')
             ->get();
 
         return view('mahasiswa.nilai_krs.index', compact('nilaiKrs'));

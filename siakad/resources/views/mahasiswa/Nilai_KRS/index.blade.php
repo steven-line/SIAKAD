@@ -20,24 +20,24 @@
                 @forelse ($nilaiKrs as $index => $row)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ $row->KODE }}</td>
+                    <td>{{ $row->kode }}</td>
                     <td>{{ $row->nama_mk ?? '-' }}</td>
-                    <td>{{ $row->SKS ?? '-' }}</td>
+                    <td>{{ $row->sks ?? '-' }}</td>
                     <td class="text-center">
-                        @if($row->BU == '1')
+                        @if($row->bu == '1')
                             <span class="badge bg-green-500 text-white px-2 py-1 rounded">Lulus</span>
-                        @elseif($row->BU == '0')
+                        @elseif($row->bu == '0')
                             <span class="badge bg-red-500 text-white px-2 py-1 rounded">Tidak Lulus</span>
                         @else
-                            {{ $row->BU ?? '-' }}
+                            {{ $row->bu ?? '-' }}
                         @endif
                     </td>
-                    <td>{{ number_format($row->TTT1, 2) ?? '-' }}</td>
-                    <td>{{ number_format($row->TTT2, 2) ?? '-' }}</td>
-                    <td>{{ number_format($row->UTS, 2) ?? '-' }}</td>
-                    <td>{{ number_format($row->UAS, 2) ?? '-' }}</td>
-                    <td>{{ number_format($row->LAIN, 2) ?? '-' }}</td>
-                    <td>{{ $row->NA ?? '-' }}</td>
+                    <td>{{ number_format($row->ttt1, 2) ?? '-' }}</td>
+                    <td>{{ number_format($row->ttt2, 2) ?? '-' }}</td>
+                    <td>{{ number_format($row->uts, 2) ?? '-' }}</td>
+                    <td>{{ number_format($row->uas, 2) ?? '-' }}</td>
+                    <td>{{ number_format($row->lain, 2) ?? '-' }}</td>
+                    <td>{{ $row->na ?? '-' }}</td>
                 </tr>
                 @empty
                 <tr>
