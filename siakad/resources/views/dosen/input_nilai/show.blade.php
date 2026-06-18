@@ -118,16 +118,12 @@
                 {{-- ACTION --}}
                 <div class="card-actions justify-end mt-6">
 
-                    <a href="/dosen/input-nilai/{{ $krs->nrp }}/{{ $krs->kode }}/edit"
+                    <a href="{{route('nilai.edit', ['mahasiswa' => $krs->nrp,  'mk' => $krs->kode])}}"
                        class="btn btn-warning">
                         Edit Nilai
                     </a>
 
-                    <a href="/dosen/input-nilai"
-                       class="btn btn-primary">
-                        Kembali
-                    </a>
-
+                    
                 </div>
 
             </div>

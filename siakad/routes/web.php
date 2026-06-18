@@ -350,6 +350,9 @@ Route::middleware('auth')->group(function () {
             ->name('krs.')
             ->group(function () {
 
+
+
+
                 Route::get('/', [KrsMahasiswaController::class, 'index'])
                     ->middleware('permission:krs.view')
                     ->name('index');
@@ -393,6 +396,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/{mahasiswa}/{mk}/create', [KrsController::class, 'create'])->name('create');
             Route::post('/{mahasiswa}/{mk}', [KrsController::class, 'store'])->name('store');
             Route::get('/{mahasiswa}/{mk}', [KrsController::class, 'show'])->name('show');
+            Route::get('/{mahasiswa}/{mk}/edit', [KrsController::class, 'edit'])->name('edit');
+            Route::patch('/{mahasiswa}/{mk}', [KrsController::class, 'update'])->name('update');
         });
 
     /*

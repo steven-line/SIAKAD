@@ -60,7 +60,7 @@ class KrsController extends Controller
     {
         $krs = Krs::where('nrp', $mahasiswa->nrp)
             ->where('kode', $mk->kodemk)
-            ->firstOrFail();
+            ->first();
 
         return view('dosen.input_nilai.show', [
             'krs' => $krs,
@@ -72,65 +72,240 @@ class KrsController extends Controller
     /**
      * SIMPAN NILAI KRS
      */
-    public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
-    {
-        if (!$mahasiswa || !$mk) {
-            abort(404, 'Data tidak valid');
-        }
+   
+public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
+{
+    $validated = $request->validate([
+        // Kelas
+        'kelas' => [
+            'required',
+            'string',
+            'size:1',
+            'in:A,B,C',
+        ],
 
-        $validated = $request->validate([
-            'kelas' => ['required'],
-            'periode' => ['nullable'],
-            'bu' => ['nullable'],
+        // Periode Akademik
+        'periode' => [
+            'required',
+            'string',
+            'max:8',
+            'regex:/^[0-9]{5}$/', // contoh: 20241
+        ],
 
-            'ttt1' => ['nullable'],
-            'ttt2' => ['nullable'],
-            'ttt3' => ['nullable'],
+        // BU
+        'bu' => [
+            'nullable',
+            'string',
+            'size:1',
+            'in:Y,N',
+        ],
 
-            'lain' => ['nullable'],
+        // Nilai Tugas
+        'ttt1' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
 
-            'uts' => ['nullable'],
-            'uas' => ['nullable'],
+        'ttt2' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
 
-            'na' => ['nullable'],
-            'sks' => ['nullable'],
+        'ttt3' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
 
-            'survey' => ['nullable'],
-        ]);
+        // Nilai Lain
+        'lain' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
 
-        Krs::updateOrCreate(
-            [
-                'nrp' => $mahasiswa->nrp,
-                'kode' => $mk->kodemk,
-                'periode' => $validated['periode'] ?? null,
-            ],
-            [
-                'kelas' => $validated['kelas'],
+        // UTS
+        'uts' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
 
-                'bu' => $validated['bu'] ?? null,
+        // UAS
+        'uas' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
 
-                'ttt1' => $validated['ttt1'] ?? null,
-                'ttt2' => $validated['ttt2'] ?? null,
-                'ttt3' => $validated['ttt3'] ?? null,
+        // Nilai Huruf
+        'na' => [
+            'nullable',
+            'string',
+            'max:2',
+            'in:A,A-,B+,B,B-,C+,C,C-,D,E',
+        ],
 
-                'lain' => $validated['lain'] ?? null,
+        // Survey
+        'survey' => [
+            'required',
+            'boolean',
+        ],
+    ]);
 
-                'uts' => $validated['uts'] ?? null,
-                'uas' => $validated['uas'] ?? null,
+    Krs::updateOrCreate(
+        [
+            'nrp'     => $mahasiswa->nrp,
+            'kode'    => $mk->kodemk,
+            'periode' => $validated['periode'],
+        ],
+        [
+            'kelas' => $validated['kelas'],
 
-                'na' => $validated['na'] ?? null,
+            'bu' => $validated['bu'],
 
-                'sks' => $validated['sks'] ?? null,
+            'ttt1' => $validated['ttt1'],
+            'ttt2' => $validated['ttt2'],
+            'ttt3' => $validated['ttt3'],
 
-                'survey' => $validated['survey'] ?? false,
-            ]
-        );
+            'lain' => $validated['lain'],
 
-        return redirect('/dosen/input_nilai/list_matkul')
-            ->with('success', 'Nilai berhasil disimpan.');
+            'uts' => $validated['uts'],
+            'uas' => $validated['uas'],
+
+            'na' => $validated['na'],
+
+            // Diambil dari data mata kuliah
+            'sks' => $mk->sks,
+
+            'survey' => $validated['survey'],
+        ]
+    );
+
+    return redirect()
+        ->route('nilai.index')
+        ->with('success', 'Nilai berhasil disimpan.');
+
     }
 
-    public function edit(Krs $krs) {}
-    public function update(Request $request, Krs $krs) {}
+   public function edit(Mahasiswa $mahasiswa, Mk $mk)
+{
+    $krs = Krs::where('nrp', $mahasiswa->nrp)
+        ->where('kode', $mk->kodemk)
+        ->firstOrFail();
+
+    return view('dosen.input_nilai.edit', [
+        'krs' => $krs,
+        'mahasiswa' => $mahasiswa,
+        'mk' => $mk,
+    ]);
+}
+    public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
+{
+    $validated = $request->validate([
+        'kelas' => [
+            'required',
+            'string',
+            'size:1',
+            'in:A,B,C',
+        ],
+
+        'periode' => [
+            'required',
+            'string',
+            'max:8',
+            'regex:/^[0-9]{5}$/',
+        ],
+
+        'bu' => [
+            'nullable',
+            'string',
+            'size:1',
+            'in:Y,N',
+        ],
+
+        'ttt1' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
+
+        'ttt2' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
+
+        'ttt3' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
+
+        'lain' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
+
+        'uts' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
+
+        'uas' => [
+            'nullable',
+            'numeric',
+            'between:0,100',
+        ],
+
+        'na' => [
+            'nullable',
+            'string',
+            'max:2',
+            'in:A,A-,B+,B,B-,C+,C,C-,D,E',
+        ],
+
+        'survey' => [
+            'required',
+            'boolean',
+        ],
+    ]);
+
+    $krs = Krs::where('nrp', $mahasiswa->nrp)
+        ->where('kode', $mk->kodemk)
+        ->firstOrFail();
+
+    $krs->update([
+        'kelas' => $validated['kelas'],
+        'periode' => $validated['periode'],
+        'bu' => $validated['bu'],
+
+        'ttt1' => $validated['ttt1'],
+        'ttt2' => $validated['ttt2'],
+        'ttt3' => $validated['ttt3'],
+
+        'lain' => $validated['lain'],
+
+        'uts' => $validated['uts'],
+        'uas' => $validated['uas'],
+
+        'na' => $validated['na'],
+
+        'sks' => $mk->sks,
+
+        'survey' => $validated['survey'],
+    ]);
+
+    return redirect()
+        ->route('nilai.show', [
+            'mahasiswa' => $mahasiswa->nrp,
+            'mk' => $mk->kodemk,
+        ])
+        ->with('success', 'Nilai berhasil diperbarui.');
+}
     public function destroy(Krs $krs) {}
 }
