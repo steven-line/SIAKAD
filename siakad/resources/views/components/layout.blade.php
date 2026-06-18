@@ -17,6 +17,19 @@
 
     <div class="flex flex-col items-center gap-2">
         <img src="{{ asset('images/boy.png') }}" class="w-20 h-20" alt="user">
+        <span class="font-bold text-lg">
+            @php
+                $user = auth()->user();
+                $displayName = $user->username ?? 'Guest';
+                if ($user && $user->hasRole('mahasiswa')) {
+                    $nama = DB::table('biodata')->where('nrp', $user->username)->value('nama');
+                    if ($nama) {
+                        $displayName = $nama;
+                    }
+                }
+            @endphp
+            {{ $displayName }}
+        </span>
     </div>
 
     <hr class="my-6 border-gray-200"/>
@@ -72,12 +85,12 @@
         @endcan
 
         {{-- MAHASISWA --}}
-        @can('krs.view')
-        <li><a href="/mahasiswa/krs">KRS</a></li>
-        @endcan
-
         @can('biodata.view')
         <li><a href="/mahasiswa/biodata">Biodata</a></li>
+        @endcan
+
+        @can('krs.view')
+        <li><a href="/mahasiswa/krs">KRS</a></li>
         @endcan
 
         @can('penawaran.view')
@@ -86,6 +99,14 @@
 
         @can('nilai_krs.view')
         <li><a href="/mahasiswa/nilai-krs">Nilai KRS</a></li>
+        @endcan
+
+        @can('khs.view')
+        <li><a href="/mahasiswa/khs">KHS</a></li>
+        @endcan
+
+        @can('transkrip.view')
+        <li><a href="/mahasiswa/transkrip">Transkrip</a></li>
         @endcan
 
         {{-- PERWALIAN --}}
@@ -131,4 +152,4 @@
 </main>
 
 </body>
-</html>2
+</html>

@@ -286,34 +286,93 @@ Route::middleware('auth')->group(function () {
         ->name('mahasiswa.')
         ->group(function () {
 
-        Route::get('/biodata', [BiodataMahasiswaController::class, 'index'])
+        /*
+        |--------------------------------------------------------------------------
+        | BIODATA MAHASISWA
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('biodata')
             ->middleware('permission:biodata.view')
-            ->name('biodata');
+            ->name('biodata.')
+            ->group(function () {
 
-        Route::get('/penawaran', [PenawaranMahasiswaController::class, 'index'])
+                Route::get('/', [BiodataMahasiswaController::class, 'index'])->name('index');
+                // kalau nanti ada edit/update bisa ditambah:
+                // Route::get('/edit', ...)->name('edit');
+                // Route::patch('/', ...)->name('update');
+            });
+
+        /*
+        |--------------------------------------------------------------------------
+        | PENAWARAN
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('penawaran')
             ->middleware('permission:penawaran.view')
-            ->name('penawaran');
+            ->name('penawaran.')
+            ->group(function () {
 
-        Route::get('/nilai-krs', [NilaiKrsMahasiswaController::class, 'index'])
+                Route::get('/', [PenawaranMahasiswaController::class, 'index'])->name('index');
+            });
+
+        /*
+        |--------------------------------------------------------------------------
+        | NILAI KRS
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('nilai-krs')
             ->middleware('permission:nilai_krs.view')
-            ->name('nilai_krs');
+            ->name('nilai_krs.')
+            ->group(function () {
 
-        Route::get('/krs', [KrsMahasiswaController::class, 'index'])
-            ->middleware('permission:krs.view')
-            ->name('krs');
+                Route::get('/', [NilaiKrsMahasiswaController::class, 'index'])->name('index');
+            });
 
-        Route::post('/krs', [KrsMahasiswaController::class, 'store'])
-            ->middleware('permission:krs.submit')
-            ->name('krs.store');
+        /*
+        |--------------------------------------------------------------------------
+        | KHS
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('khs')
+            ->middleware('permission:khs.view')
+            ->name('khs.')
+            ->group(function () {
+                Route::get('/', [NilaiKrsMahasiswaController::class, 'khs'])->name('index');
+            });
 
-        Route::delete('/krs/{id}', [KrsMahasiswaController::class, 'destroy'])
-            ->middleware('permission:krs.submit')
-            ->name('krs.destroy');
+        /*
+        |--------------------------------------------------------------------------
+        | KRS
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('krs')
+            ->name('krs.')
+            ->group(function () {
 
-        Route::delete('/krs/batal-multiple', [KrsMahasiswaController::class, 'batalMultiple'])
-            ->middleware('permission:krs.submit')
-            ->name('krs.batal_multiple');
+                Route::get('/', [KrsMahasiswaController::class, 'index'])
+                    ->middleware('permission:krs.view')
+                    ->name('index');
 
+                Route::post('/', [KrsMahasiswaController::class, 'store'])
+                    ->middleware('permission:krs.submit')
+                    ->name('store');
+
+                Route::delete('/{id}', [KrsMahasiswaController::class, 'destroy'])
+                    ->middleware('permission:krs.submit')
+                    ->name('destroy');
+
+                Route::delete('/batal-multiple', [KrsMahasiswaController::class, 'batalMultiple'])
+                    ->middleware('permission:krs.submit')
+                    ->name('batal_multiple');
+            });
+
+        
+
+        /*
+        |--------------------------------------------------------------------------
+        | DETAIL MATA KULIAH
+        |--------------------------------------------------------------------------
+        */
         Route::get('/mata-kuliah/{kode_mk}', [DetailMataKuliahController::class, 'show'])
             ->name('mata_kuliah.show');
     });

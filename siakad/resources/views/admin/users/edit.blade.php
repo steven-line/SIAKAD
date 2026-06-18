@@ -5,7 +5,7 @@
     </a>
 
     {{-- UPDATE FORM (no hardcode) --}}
-    <form action="{{ route('users.edit', $user) }}" method="POST">
+    <form action="{{ route('users.update', $user) }}" method="POST">
         @csrf
         @method('PATCH')
 
