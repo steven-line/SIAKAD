@@ -9,7 +9,6 @@ use Illuminate\Validation\Rules\Password;
 
 class LoginController extends Controller
 {
-   
     /**
      * Show the form for creating a new resource.
      */
@@ -21,26 +20,33 @@ class LoginController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
-{
-    $validated = $request->validate([
-        'username' => ['required', 'string', 'max:255'],
-        'password' => ['required', 'string'], // ✅ FIX DI SINI
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string'],
+        ]);
 
-    if (Auth::attempt([
-        'username' => $request->username,
-        'password' => $request->password
-    ])) {
-        $request->session()->regenerate();
+        if (Auth::attempt([
+            'username' => $request->username,
+            'password' => $request->password
+        ])) {
+            $request->session()->regenerate();
 
+            // Simpan pataum user ke session
+            $user = Auth::user();
+            if ($user && isset($user->pataum)) {
+                // Ambil karakter pertama dari pataum (misal 'P (Pagi)' -> 'P')
+                $pataum = substr($user->pataum, 0, 1);
+                session(['pataum' => $pataum]);
+            }
+
+        }
+
+        return back()->withErrors([
+            'username' => 'Username atau password salah'
+        ])->withInput();
     }
-
-    return back()->withErrors([
-        'username' => 'Username atau password salah'
-    ])->withInput();
-}
-
 
     /**
      * Remove the specified resource from storage.
@@ -48,7 +54,7 @@ class LoginController extends Controller
     public function destroy()
     {
         Auth::logout();
-        
+        session()->forget('pataum'); // hapus session pataum
         return redirect('/login');
     }
 }

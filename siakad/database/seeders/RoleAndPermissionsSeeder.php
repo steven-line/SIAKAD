@@ -98,7 +98,6 @@ class RoleAndPermissionsSeeder extends Seeder
         $dosenRole->syncPermissions([
             'jadwal.view_sendiri',
             'nilai.input',
-            'penawaran.view',
         ]);
 
         // ======================

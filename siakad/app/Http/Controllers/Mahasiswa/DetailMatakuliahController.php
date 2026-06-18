@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class DetailMataKuliahController extends Controller
 {
     /**
-     * Menampilkan detail mata kuliah berdasarkan ID penawaran (recno)
+     * Menampilkan detail mata kuliah berdasarkan kode MK
      */
     public function show($kode_mk)
     {
@@ -20,6 +20,12 @@ class DetailMataKuliahController extends Controller
 
         if (!$penawaran) {
             abort(404, 'Mata kuliah tidak ditemukan');
+        }
+
+        // Cek akses berdasarkan pataum
+        $pataumUser = session('pataum') ?? (Auth::check() ? substr(Auth::user()->pataum, 0, 1) : null);
+        if ($pataumUser && $penawaran->pataum !== $pataumUser) {
+            abort(403, 'Anda tidak memiliki akses ke mata kuliah ini.');
         }
 
         // Ambil NRP mahasiswa yang sedang login
@@ -37,7 +43,7 @@ class DetailMataKuliahController extends Controller
             }
         }
 
-        // Susun objek mataKuliah sesuai yang diharapkan view
+        // Susun objek mataKuliah
         $mataKuliah = (object) [
             'kode_mk'       => $penawaran->kodemk,
             'nama_mk'       => $penawaran->mk ? $penawaran->mk->nama : '-',
@@ -52,10 +58,10 @@ class DetailMataKuliahController extends Controller
             'kuota'         => $penawaran->pagu ?? '-',
             'keterangan'    => $penawaran->keterangan ?? '-',
             'penawaran_id'  => $penawaran->recno,
-            'id_registrasi' => $id_registrasi, // <-- kunci untuk tombol batal
+            'id_registrasi' => $id_registrasi,
         ];
 
-        // Ambil daftar mahasiswa yang sudah registrasi mata kuliah ini
+        // Ambil daftar mahasiswa yang sudah registrasi
         $pendaftar = Registrasi::with('mahasiswa')
             ->where('kodemk', $penawaran->kodemk)
             ->where('periode', $penawaran->periode)
