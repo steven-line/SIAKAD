@@ -15,14 +15,17 @@ class Biodata extends Model
     protected $guarded = [];
 
     // Accessor untuk mendapatkan nama dosen wali
-    public function getDosenwaliNamaAttribute()
+   public function getDosenwaliNamaAttribute()
     {
-        if (empty($this->dosenwali)) {
+        // Ambil data mahasiswa terkait
+        $mahasiswa = $this->mahasiswa; // relasi ke Mahasiswa
+
+        if (!$mahasiswa || empty($mahasiswa->dosen_wali)) {
             return '-';
         }
-        // Ambil 4 karakter pertama (contoh: D001001 -> D001)
-        $prefix = substr($this->dosenwali, 0, 4);
-        $dosen = Dosen::where('nim_dosen', $prefix)->first();
+
+        // Cari dosen berdasarkan nim_dosen
+        $dosen = Dosen::where('nim_dosen', $mahasiswa->dosen_wali)->first();
         return $dosen ? $dosen->nama : '-';
     }
 
