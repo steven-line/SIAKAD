@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [UserController::class, 'create'])->name('create');
             Route::post('/', [UserController::class, 'store'])->name('store');
             Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+            Route::get('/{user}', [UserController::class, 'show'])->name('show');
             Route::patch('/{user}', [UserController::class, 'update'])->name('update');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
         });
@@ -127,6 +128,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [DosenController::class, 'store'])->name('store');
             Route::get('/{dosen}/edit', [DosenController::class, 'edit'])->name('edit');
             Route::patch('/{dosen}', [DosenController::class, 'update'])->name('update');
+            Route::get('/{dosen}', [DosenController::class, 'show'])->name('show');
             Route::delete('/{dosen}', [DosenController::class, 'destroy'])->name('destroy');
         });
 
@@ -145,6 +147,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [ProdiController::class, 'store'])->name('store');
             Route::get('/{prodi}/edit', [ProdiController::class, 'edit'])->name('edit');
             Route::patch('/{prodi}', [ProdiController::class, 'update'])->name('update');
+            Route::get('/{prodi}', [ProdiController::class, 'show'])->name('show');
             Route::delete('/{prodi}', [ProdiController::class, 'destroy'])->name('destroy');
         });
 
@@ -164,6 +167,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{fakultas}/edit', [FakultasController::class, 'edit'])->name('edit');
             Route::patch('/{fakultas}', [FakultasController::class, 'update'])->name('update');
             Route::delete('/{fakultas}', [FakultasController::class, 'destroy'])->name('destroy');
+             Route::get('/{fakultas}', [FakultasController::class, 'show'])->name('show');
         });
 
     /*
@@ -181,7 +185,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{biodata}', [BiodataAdminController::class, 'show'])->name('show');
             Route::post('/', [BiodataAdminController::class, 'store'])->name('store');
             Route::get('/{biodata}/edit', [BiodataAdminController::class, 'edit'])->name('edit');
-            Route::put('/{biodata}', [BiodataAdminController::class, 'update'])->name('update');
+            Route::patch('/{biodata}', [BiodataAdminController::class, 'update'])->name('update');
             Route::delete('/{biodata}', [BiodataAdminController::class, 'destroy'])->name('destroy');
         });
 
