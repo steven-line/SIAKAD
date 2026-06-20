@@ -1,6 +1,7 @@
+
 <x-layout>
     {{-- PREVIOUS --}}
-    <a class="join-item abtn btn-primary"
+    <a class="btn btn-primary"
        href="{{ route('mk.index') }}">
         ⮜ Previous page
     </a>
@@ -19,21 +20,21 @@
                 <div>
                     <label class="label font-bold">KodeMk</label>
                     <input type="text" class="input" name="kodemk"
-                           value="{{ $mk->kodemk }}"/>
+                           value="{{ old('kodemk', $mk->kodemk) }}" maxlength="8"/>
                     <x-forms.error name="kodemk"/>
                 </div>
 
                 <div>
                     <label class="label font-bold">Nama</label>
                     <input type="text" class="input" name="nama"
-                           value="{{ $mk->nama }}"/>
+                           value="{{ old('nama', $mk->nama) }}" maxlength="50"/>
                     <x-forms.error name="nama"/>
                 </div>
 
                 <div>
                     <label class="label font-bold">SKS</label>
                     <input type="text" class="input" name="sks"
-                           value="{{ $mk->sks }}"/>
+                           value="{{ old('sks', $mk->sks) }}" maxlength="3"/>
                     <x-forms.error name="sks"/>
                 </div>
             </div>
@@ -42,14 +43,14 @@
                 <div>
                     <label class="label font-bold">Nama Jenjang Didik</label>
                     <input type="text" class="input" name="nm_jenj_didik"
-                           value="{{ $mk->nm_jenj_didik }}"/>
+                           value="{{ old('nm_jenj_didik', $mk->nm_jenj_didik) }}" maxlength="2"/>
                     <x-forms.error name="nm_jenj_didik"/>
                 </div>
 
                 <div>
                     <label class="label font-bold">Kode Prodi Dikti</label>
                     <input type="text" class="input" name="kode_prodi_dikti"
-                           value="{{ $mk->kode_prodi_dikti }}"/>
+                           value="{{ old('kode_prodi_dikti', $mk->kode_prodi_dikti) }}" maxlength="5"/>
                     <x-forms.error name="kode_prodi_dikti"/>
                 </div>
 
@@ -69,8 +70,8 @@
 
                 <div>
                     <label class="label font-bold">Prasyarat SKS</label>
-                    <input type="text" class="input" name="prasyaratsks"
-                           value="{{ $mk->prasyaratsks }}"/>
+                    <input type="text" class="input" name="prasyaratsks" maxlength="3"
+                           value="{{ old('prasyaratsks', $mk->prasyaratsks) }}" />
                     <x-forms.error name="prasyaratsks"/>
                 </div>
             </div>
@@ -83,7 +84,8 @@
                         <input type="text"
                                class="input"
                                name="prasyarat{{ $i }}"
-                               value="{{ $mk->{'prasyarat'.$i} }}"/>
+                               maxlength="8"
+                               value="{{ old('prasyarat'.$i, $mk->{'prasyarat'.$i}) }}" />
                         <x-forms.error name="prasyarat{{ $i }}"/>
                     </div>
                 @endfor
@@ -93,14 +95,14 @@
                 <div>
                     <label class="label font-bold">Prasyarat Grade</label>
                     <input type="text" class="input" name="prasyaratgrade"
-                           value="{{ $mk->prasyaratgrade }}"/>
+                           value="{{ old('prasyaratgrade', $mk->prasyaratgrade) }}" maxlength="1"/>
                     <x-forms.error name="prasyaratgrade"/>
                 </div>
 
                 <div>
                     <label class="label font-bold">Aktif</label>
                     <input type="checkbox" class="checkbox" name="aktif"
-                        @checked($mk->aktif) />
+                        @checked(old('aktif', $mk->aktif)) />
                     <x-forms.error name="aktif"/>
                 </div>
             </div>
