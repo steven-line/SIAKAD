@@ -300,9 +300,7 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
 
         /*
-        |--------------------------------------------------------------------------
         | BIODATA MAHASISWA
-        |--------------------------------------------------------------------------
         */
         Route::prefix('biodata')
             ->middleware('permission:biodata.view')
@@ -316,9 +314,7 @@ Route::middleware('auth')->group(function () {
             });
 
         /*
-        |--------------------------------------------------------------------------
         | PENAWARAN
-        |--------------------------------------------------------------------------
         */
         Route::prefix('penawaran')
             ->middleware('permission:penawaran.view')
@@ -329,9 +325,7 @@ Route::middleware('auth')->group(function () {
             });
 
         /*
-        |--------------------------------------------------------------------------
         | NILAI KRS
-        |--------------------------------------------------------------------------
         */
         Route::prefix('nilai-krs')
             ->middleware('permission:nilai_krs.view')
@@ -342,9 +336,7 @@ Route::middleware('auth')->group(function () {
             });
 
         /*
-        |--------------------------------------------------------------------------
         | KHS
-        |--------------------------------------------------------------------------
         */
         Route::prefix('khs')
             ->middleware('permission:khs.view')
@@ -354,9 +346,17 @@ Route::middleware('auth')->group(function () {
             });
 
         /*
-        |--------------------------------------------------------------------------
+        | TRANSKRIP NILAI
+        */
+        Route::prefix('transkrip')
+            ->middleware('permission:transkrip.view')
+            ->name('transkrip.')
+            ->group(function () {
+                Route::get('/', [NilaiKrsMahasiswaController::class, 'transkrip'])->name('index');
+            });
+
+        /*
         | KRS
-        |--------------------------------------------------------------------------
         */
         Route::prefix('krs')
             ->name('krs.')
@@ -382,12 +382,8 @@ Route::middleware('auth')->group(function () {
                     ->name('batal_multiple');
             });
 
-        
-
         /*
-        |--------------------------------------------------------------------------
         | DETAIL MATA KULIAH
-        |--------------------------------------------------------------------------
         */
         Route::get('/mata-kuliah/{kode_mk}', [DetailMataKuliahController::class, 'show'])
             ->name('mata_kuliah.show');
