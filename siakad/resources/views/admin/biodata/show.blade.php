@@ -150,10 +150,7 @@
                 <span class="block px-3 py-2 bg-base-100 rounded-md border border-base-300">{{ $biodata->lulus_smu }}</span>
             </div>
 
-            <div>
-                <span class="block text-sm font-bold opacity-70 mb-1">Dosen Wali</span>
-                <span class="block px-3 py-2 bg-base-100 rounded-md border border-base-300">{{ $biodata->dosenwali }}</span>
-            </div>
+
 
             <div>
                 <span class="block text-sm font-bold opacity-70 mb-1">Status Pendidikan</span>

@@ -20,17 +20,17 @@
 
             <label class="label font-bold">NIM DOSEN</label>
             <input type="text" class="input w-full" name="nim_dosen"
-                   placeholder="Masukkan NIM Dosen" required />
+                   placeholder="Masukkan NIM Dosen" required maxlength="15" />
             <x-forms.error name="nim_dosen"/>
 
             <label class="label font-bold mt-2">NIP</label>
             <input type="text" class="input w-full" name="nip"
-                   placeholder="Masukkan NIP" required />
+                   placeholder="Masukkan NIP" required maxlength="21" />
             <x-forms.error name="nip"/>
 
             <label class="label font-bold mt-2">Nama</label>
             <input type="text" class="input w-full" name="nama"
-                   placeholder="Masukkan Nama Lengkap" required />
+                   placeholder="Masukkan Nama Lengkap" required maxlength="50" />
             <x-forms.error name="nama"/>
 
             <label class="label font-bold mt-2">Akun User (Log In)</label>
@@ -57,7 +57,7 @@
 
             <label class="label font-bold mt-2">Jabatan Struktural</label>
             <input type="text" class="input w-full" name="jabatan_struktural"
-                   placeholder="Masukkan jabatan struktural" required />
+                   placeholder="Masukkan jabatan struktural" required maxlength="100" />
             <x-forms.error name="jabatan_struktural"/>
 
             <button class="btn btn-primary mt-6 w-full">

@@ -3,12 +3,12 @@
     <div class="p-6">
 
       
-       <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+       <a class="join-item btn btn-primary mb-4" href="{{ route('kurikulum.index') }}">
         ⮜ Previous page
     </a>
 
         <form
-            action="{{ route('kurikulum.store', $kurikulum->kode_kurikulum) }}"
+            action="{{ route('kurikulum.update', $kurikulum->kode_kurikulum) }}"
             method="POST"
         >
             @csrf
@@ -27,6 +27,7 @@
                 <input
                     type="text"
                     name="kode_kurikulum"
+                    maxlength="15"
                     value="{{ old('kode_kurikulum', $kurikulum->kode_kurikulum) }}"
                     class="input input-bordered w-full"
                 />
@@ -41,6 +42,7 @@
                     name="nama_kurikulum"
                     value="{{ old('nama_kurikulum', $kurikulum->nama_kurikulum) }}"
                     class="input input-bordered w-full"
+                    maxlength="50"
                 />
                 <x-forms.error name="nama_kurikulum"/>
 
@@ -63,6 +65,7 @@
                 <textarea
                     name="deskripsi"
                     class="textarea textarea-bordered w-full min-h-32"
+                    maxlength="255"
                 >{{ old('deskripsi', $kurikulum->deskripsi) }}</textarea>
                 <x-forms.error name="deskripsi"/>
 

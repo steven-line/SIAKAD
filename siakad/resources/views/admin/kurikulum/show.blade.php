@@ -3,7 +3,7 @@
     <div class="p-6">
 
        
-       <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+       <a class="join-item btn btn-primary mb-4" href="{{ route('kurikulum.index') }}">
         ⮜ Previous page
     </a>
 

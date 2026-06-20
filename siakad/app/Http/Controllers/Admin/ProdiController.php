@@ -6,6 +6,7 @@ use App\Models\Prodi;
 use App\Http\Controllers\Controller;
 use App\Models\Fakultas;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProdiController extends Controller
 {
@@ -33,9 +34,9 @@ class ProdiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_prodi' => ['required', 'min:3'],
-            'nama_prodi' => ['required', 'min:4'],
-            'kode_fakultas' => ['required']
+            'kode_prodi' => ['required', 'min:3', 'unique:prodi', 'max:15'],
+            'nama_prodi' => ['required', 'min:4', 'max:50'],
+            'kode_fakultas' => ['required', 'max:15']
         ]);
 
         Prodi::create([
@@ -51,11 +52,7 @@ class ProdiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Prodi $prodi)
-    {
-        //
-    }
-
+    
     /**
      * Show the form for editing the specified resource.
      */
@@ -68,12 +65,27 @@ class ProdiController extends Controller
             'fakultass' => $fakultass
         ]);
     }
+     public function show(Prodi $prodi)
+    {
+        
+
+        return view('admin.prodi.show', [
+            'prodi' => $prodi,
+
+        ]);
+    }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Prodi $prodi)
     {
+        $request->validate([
+            'kode_prodi' => ['required', 'min:3', Rule::unique('prodi')->ignore($prodi), 'max:15'],
+            'nama_prodi' => ['required', 'min:4', 'max:50'],
+            'kode_fakultas' => ['required', 'max:15']
+        ]);
         $prodi->update([
             'kode_prodi' => $request->kode_prodi,
             'nama_prodi' => $request->nama_prodi,

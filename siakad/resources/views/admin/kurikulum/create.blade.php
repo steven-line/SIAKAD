@@ -2,7 +2,7 @@
 
     <div class="p-6">
 
-       <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+       <a class="join-item btn btn-primary mb-4" href="{{ route('kurikulum.index') }}">
         ⮜ Previous page
     </a>
         <form action="{{ route('kurikulum.store') }}" method="POST">
@@ -20,6 +20,7 @@
                 <input
                     type="text"
                     name="kode_kurikulum"
+                    maxlength="15"
                     class="input input-bordered w-full"
                 />
                 <x-forms.error name="kode_kurikulum"/>
@@ -30,6 +31,7 @@
                 <input
                     type="text"
                     name="nama_kurikulum"
+                    maxlength="50"
                     class="input input-bordered w-full"
                 />
                 <x-forms.error name="nama_kurikulum"/>
@@ -49,6 +51,7 @@
                 </label>
                 <textarea
                     name="deskripsi"
+                    maxlength="255"
                     class="textarea textarea-bordered w-full min-h-32"
                 ></textarea>
                 <x-forms.error name="deskripsi"/>
@@ -60,7 +63,7 @@
                     type="number"
                     name="tahun_mulai_berlaku"
                     min="2000"
-                    maxlength="4"
+                  
                     max="2100"
                     class="input input-bordered w-full"
                 />
@@ -73,7 +76,7 @@
                     type="number"
                     name="tahun_selesai_berlaku"
                     min="2000"
-                    
+        
                     max="2100"
                     class="input input-bordered w-full"
                 />

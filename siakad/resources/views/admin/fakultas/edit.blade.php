@@ -14,13 +14,13 @@
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs h-80 border p-4 mx-auto">
 
             <label class="label font-bold" for="kode_fakultas">kode_fakultas</label>
-            <input type="text" class="input" name="kode_fakultas"
-                   value="{{ $fakultas->kode_fakultas }}" />
+            <input type="text" maxlength="3" class="input" name="kode_fakultas"
+                   value="{{ old('kode_fakultas', $fakultas->kode_fakultas) }}" />
             <x-forms.error name='kode_fakultas'/>
 
             <label class="label font-bold" for="nama_fakultas">nama_fakultas</label>
-            <input type="text" class="input" name="nama_fakultas"
-                   value="{{ $fakultas->nama_fakultas }}" />
+            <input type="text" maxlength="50" class="input" name="nama_fakultas"
+                   value="{{ old('nama_fakultas', $fakultas->nama_fakultas) }}" />
             <x-forms.error name='nama_fakultas'/>
 
             <button class="btn btn-primary mt-4">Ubah fakultas</button>

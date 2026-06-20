@@ -34,7 +34,7 @@
 
     <hr class="my-6 border-gray-200"/>
 
-    <ul class="flex-1 [&>li]:py-2">
+    <ul class="flex-1 [&>li]:py-2 [&>li]:hover:bg-gray-200">
 
         {{-- DASHBOARD (SEMUA USER) --}}
         <li>

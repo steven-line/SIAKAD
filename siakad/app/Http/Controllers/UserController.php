@@ -6,6 +6,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -69,6 +70,7 @@ public function store(Request $request)
  */
 public function edit(User $user)
 {
+    
     return view('admin.users.edit', [
         'user' => $user->load(['roles', 'permissions']),
         'roles' => Role::all(),
@@ -76,14 +78,23 @@ public function edit(User $user)
     ]);
 }
 
+public function show(User $user)
+{
+    return view('admin.users.show', [
+        'user' =>  $user->load(['roles', 'permissions'])
+    ]);
+}
+
 /**
  * UPDATE USER
  */
-public function update(Request $request, User $user)
+ 
+
+public function update(Request $request, User $user)    
 {
     $validated = $request->validate([
-        'username' => ['required', 'string', 'max:255'],
-        'role'     => ['required', 'exists:roles,name'],
+        'username' => ['required', 'string', 'max:255',  Rule::unique('users')->ignoreModel($user)],
+        'role'     => ['required', 'exists:roles,name', ],
         'permissions' => ['nullable', 'array'],
         'permissions.*' => ['string', 'exists:permissions,name'],
         'sks'      => ['required', 'numeric'],

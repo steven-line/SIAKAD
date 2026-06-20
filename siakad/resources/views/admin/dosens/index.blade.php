@@ -31,7 +31,7 @@
             <td>{{ $dosen->jabatan_struktural }}</td>
 
             <td>
-                <a class="btn btn-soft btn-info">
+                <a class="btn btn-soft btn-info" href="{{route('dosen.show', $dosen->nim_dosen)}}">
                     Detail
                 </a>
             </td>
