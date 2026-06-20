@@ -23,6 +23,7 @@
                     type="text"
                     class="input input-bordered w-full"
                     name="kode_prodi"
+                    maxlength="15"
                     value="{{ old('kode_prodi', $prodi->kode_prodi) }}"
                 />
                 <x-forms.error name="kode_prodi"/>
@@ -34,6 +35,7 @@
                     type="text"
                     class="input input-bordered w-full"
                     name="nama_prodi"
+                    maxlength="50"
                     value="{{ old('nama_prodi', $prodi->nama_prodi) }}"
                 />
                 <x-forms.error name="nama_prodi"/>
