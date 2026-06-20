@@ -113,6 +113,7 @@
         {{-- PERWALIAN --}}
         @can('perwalian.manage')
         <li><a href="/perwalian">Perwalian</a></li>
+        <li><a href="/nilai_anak_wali">Nilai Anak Wali</a></li>
         @endcan
 
         {{-- KAPRODI (jadwal/penawaran pakai permission juga) --}}
