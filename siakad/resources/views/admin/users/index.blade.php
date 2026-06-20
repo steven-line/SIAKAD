@@ -61,7 +61,7 @@
                         <td class="flex gap-2">
 
                             {{-- DETAIL --}}
-                            <a href="#"
+                            <a href="{{ route('users.show', $user)}}"
                                class="btn btn-soft btn-primary btn-sm">
                                 Detail
                             </a>
