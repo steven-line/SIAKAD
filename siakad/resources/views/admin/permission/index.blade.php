@@ -20,7 +20,7 @@
             <th>{{$permission->id}}</th>
             <th>{{$permission->name}}</th>
             <th>{{$permission->guard_name}}</th>
-            <th><a href='' class="btn btn-soft btn-primary">Detail</a></th>
+            <th><a href='{{route('permissions.show', $permission->id)}}' class="btn btn-soft btn-primary">Detail</a></th>
             <th><a class="btn btn-soft btn-warning" href="{{route('permissions.edit',$permission->id)}}">Edit</a></th>
             <th>
               <button class="btn btn-soft btn-error" onclick="deleteBox_{{$permission->id}}.showModal()">Delete</button>
