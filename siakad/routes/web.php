@@ -205,6 +205,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('edit');
             Route::patch('/{role}', [RoleController::class, 'update'])->name('update');
             Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
+            Route::get('/{role}', [RoleController::class, 'show'])->name('show');
         });
 
     /*
@@ -223,6 +224,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{permission}/edit', [PermissionController::class, 'edit'])->name('edit');
             Route::patch('/{permission}', [PermissionController::class, 'update'])->name('update');
             Route::delete('/{permission}', [PermissionController::class, 'destroy'])->name('destroy');
+             Route::get('/{permission}', [PermissionController::class, 'show'])->name('show');
         });
 
     /*
@@ -410,6 +412,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{mahasiswa}/{mk}', [KrsController::class, 'show'])->name('show');
             Route::get('/{mahasiswa}/{mk}/edit', [KrsController::class, 'edit'])->name('edit');
             Route::patch('/{mahasiswa}/{mk}', [KrsController::class, 'update'])->name('update');
+            
 
         });
 
