@@ -12,7 +12,7 @@ class MkController extends Controller
 {
     public function index()
     {
-        $mks = Mk::paginate('15');
+        $mks = Mk::paginate('10');
         return view('admin.matakuliah.index', ['mks' => $mks]);
     }
 

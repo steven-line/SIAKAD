@@ -18,7 +18,7 @@
         </thead>
 
         <tbody>
-        @foreach($kurikulums as $kurikulum)
+        @forelse($kurikulums as $kurikulum)
             <tr>
                 <th>{{ $loop->index }}</th>
 
@@ -81,8 +81,13 @@
                 @csrf
                 @method('DELETE')
             </form>
+         @empty
+            <tr>
+                <td colspan="5" class="text-center">Tidak ada data</td>
+            </tr>
 
-        @endforeach
+        @endforelse
+        <td>{{$kurikulums->links()}}</td>
         </tbody>
     </table>
 

@@ -13,7 +13,7 @@ class DosenController extends Controller
 {
     public function index()
     {
-        $dosens = Dosen::paginate(15);
+        $dosens = Dosen::paginate(10);
 
         return view('admin.dosens.index', [
             'dosens' => $dosens

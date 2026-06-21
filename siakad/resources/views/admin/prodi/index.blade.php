@@ -71,6 +71,7 @@
 
       @endforeach
     </tbody>
+    <td>{{$prodis->links()}}</td>
   </table>
 
 </div>

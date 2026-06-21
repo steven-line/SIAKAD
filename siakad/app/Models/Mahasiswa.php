@@ -11,6 +11,12 @@ class Mahasiswa extends Model
      public $incrementing = false;
      protected $primaryKey = 'nrp';
 
+     protected $fillable = [
+      'nrp',
+      'prodi',
+      'dosen_wali',
+      'status_blokir'
+     ];
  
 
      public function dosenWali() {

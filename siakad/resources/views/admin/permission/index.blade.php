@@ -46,7 +46,7 @@
        </form>
       @endforeach
       <td>
-{{ $permissions->links() }}</td>
+      {{ $permissions->links() }}</td>
     </tbody>
   </table>
   <!-- Open the modal using ID.showModal() method -->

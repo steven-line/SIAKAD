@@ -1,9 +1,9 @@
 <x-layout>
       <a class="join-item btn btn-primary" href="{{route('roles.index')}}">⮜ Previous page</a>
-    <form class="flex"action="{{route('roles.store')}}" method="POST">
+    <form class="flex mt-10" action="{{route('roles.store')}}" method="POST">
     @csrf
     
-    <fieldset class="fieldset bg-base-200 border-base-300 w-auto field-sizing-content rounded-box border p-4 mx-auto">
+    <fieldset class="fieldset bg-base-200 border-base-300 w-8/10 field-sizing-content rounded-box border p-4 mx-auto">
 
     
 

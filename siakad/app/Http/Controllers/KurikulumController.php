@@ -13,7 +13,7 @@ class KurikulumController extends Controller
      */
     public function index()
     {
-        $kurikulums = Kurikulum::paginate(15);
+        $kurikulums = Kurikulum::paginate(10);
 
         return view('admin.kurikulum.index', [
             'kurikulums' => $kurikulums

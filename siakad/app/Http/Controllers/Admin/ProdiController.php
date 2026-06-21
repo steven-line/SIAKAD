@@ -15,7 +15,7 @@ class ProdiController extends Controller
      */
     public function index()
     {
-        $prodis = Prodi::paginate(15);
+        $prodis = Prodi::paginate(10);
         return view('admin.prodi.index', ['prodis' => $prodis]);
     }
 

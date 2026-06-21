@@ -116,7 +116,7 @@
                         </td>
                     </tr>
                 @endforeach
-                {{ $users->links() }}</td>
+                <td>{{ $users->links() }}</td>
             </tbody>
 
         </table>

@@ -13,7 +13,7 @@ class FakultasController extends Controller
      */
     public function index()
     {
-        $fakultass = Fakultas::paginate(15);
+        $fakultass = Fakultas::paginate(10);
 
         return view('admin.fakultas.index', [
             'fakultass' => $fakultass

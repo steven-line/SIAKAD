@@ -31,6 +31,8 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
+         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         $request->validate([
             'name' => ['required', 'min:5', 'max:191','unique:permissions']
         ]);
@@ -58,6 +60,8 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
+         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
          return view('admin.permission.edit', ['permission' => $permission]);
     
     }

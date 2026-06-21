@@ -66,20 +66,22 @@
               </dialog>
             </td>
         </tr>
-
+        
         <form id="delete-dosen-form-{{ $dosen->nim_dosen }}"
               action="{{ route('dosen.destroy', $dosen->nim_dosen) }}"
               method="POST">
             @csrf
             @method('DELETE')
         </form>
-
+       
       @empty
       <tr>
         <td colspan="5" class="text-center">Tidak ada data</td>
       </tr>
       @endforelse
+      <td>   {{ $dosens->links() }}</td>
     </tbody>
+    
   </table>
 
 </div>

@@ -12,7 +12,7 @@ class BiodataAdminController extends Controller
 {
     public function index()
     {
-        $biodatas = Biodata::paginate(15);
+        $biodatas = Biodata::paginate(10);
 
         return view('admin.biodata.index', [
             'biodatas' => $biodatas

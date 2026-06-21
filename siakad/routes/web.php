@@ -14,6 +14,7 @@ use App\Http\Controllers\{
     KrsController,
     NilaiKrsAnakWali,
     NilaiKrsAnakWaliController,
+    MahasiswaAdminController
 };
 
 use App\Http\Controllers\Admin\{
@@ -33,7 +34,8 @@ use App\Http\Controllers\Mahasiswa\{
     KrsMahasiswaController,
     NilaiKrsMahasiswaController,
     DetailMataKuliahController,
-    BiodataMahasiswaController
+    BiodataMahasiswaController,
+   
 };
 
 /*
@@ -88,10 +90,11 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [KurikulumController::class, 'index'])->name('index');
             Route::get('/create', [KurikulumController::class, 'create'])->name('create');
             Route::post('/', [KurikulumController::class, 'store'])->name('store');
-            Route::get('/{kurikulum}', [KurikulumController::class, 'show'])->name('show');
             Route::get('/{kurikulum}/edit', [KurikulumController::class, 'edit'])->name('edit');
+            Route::get('/{kurikulum}', [KurikulumController::class, 'show'])->name('show');
             Route::patch('/{kurikulum}', [KurikulumController::class, 'update'])->name('update');
             Route::delete('/{kurikulum}', [KurikulumController::class, 'destroy'])->name('destroy');
+            
         });
 
     /*
@@ -296,6 +299,19 @@ Route::middleware('auth')->group(function () {
 
         });
 
+          Route::prefix('mahasiswa-admin')
+            ->middleware('permission:mahasiswa.manage')
+            ->name('mahasiswa_admin.')
+            ->group(function () {
+                Route::get('/', [MahasiswaAdminController::class, 'index'])->name('index');
+                Route::get('/create', [MahasiswaAdminController::class, 'create'])->name('create');
+                Route::get('/{mahasiswa}/edit', [MahasiswaAdminController::class, 'edit'])->name('edit');
+                Route::post('/', [MahasiswaAdminController::class, 'store'])->name('store');
+                Route::get('/{mahasiswa}', [MahasiswaAdminController::class, 'show'])->name('show');
+                Route::patch('/{mahasiswa}', [MahasiswaAdminController::class, 'update'])->name('update');
+                Route::delete('/{mahasiswa}', [MahasiswaAdminController::class, 'destroy'])->name('destroy');
+  
+            });
     /*
     |--------------------------------------------------------------------------
     | MAHASISWA
@@ -340,6 +356,12 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/', [NilaiKrsMahasiswaController::class, 'index'])->name('index');
             });
+
+
+        /*
+        MahasiswaAdmin
+        */
+
 
         /*
         | KHS

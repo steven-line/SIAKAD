@@ -85,7 +85,10 @@
         @endcan
 
         {{-- MAHASISWA --}}
-        
+         
+        @can('mahasiswa.manage')
+        <li><a href="/mahasiswa-admin">Master Mahasiswa</a></li>
+        @endcan
         @can('biodata.view')
         <li><a href="/mahasiswa/biodata">Biodata</a></li>
         @endcan
