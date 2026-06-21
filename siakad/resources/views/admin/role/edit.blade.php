@@ -1,5 +1,5 @@
 <x-layout>
-      <a class="join-item btn btn-primary" href="{{url()->previous()}}">⮜ Previous page</a>
+      <a class="join-item btn btn-primary" href="{{route('roles.index')}}">⮜ Previous page</a>
     <form class="flex"action="{{route('roles.update', $role->id)}}" method="POST">
     @csrf
     @method('PATCH')
@@ -8,7 +8,7 @@
     
 
         <label class="label font-bold" for="name">Name</label>
-        <input type="text" class="input w-auto" name="name" placeholder="" value="{{$role->name}}"/>
+        <input type="text" class="input w-auto" name="name" placeholder="" maxlength="191" value="{{old('name', $role->name)}}"/>
         <x-forms.error name='name'/>
             <div id="permissions-wrapper">
                 <label class="label font-bold mt-4">Permissions yang dimiliki role ini</label>
