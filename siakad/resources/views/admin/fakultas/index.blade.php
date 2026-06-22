@@ -17,7 +17,7 @@
     </thead>
 
     <tbody>
-       @foreach($fakultass as $fakultas)
+       @forelse($fakultass as $fakultas)
         <tr>
             <th>{{ $loop->index }}</th>
 
@@ -25,7 +25,7 @@
             <th>{{ $fakultas->nama_fakultas }}</th>
 
             <th>
-                <a href="#" class="btn btn-soft btn-primary">Detail</a>
+                <a href="{{ route("fakultas.show", $fakultas->kode_fakultas) }}" class="btn btn-soft btn-primary">Detail</a>
             </th>
 
             <th>
@@ -60,6 +60,7 @@
             </th>
 
         </tr>
+        
 
         <form id="delete-fakultas-form-{{ $fakultas->kode_fakultas }}"
               action="{{ route('fakultas.destroy', $fakultas->kode_fakultas) }}"
@@ -67,8 +68,12 @@
             @csrf  
             @method('DELETE')
         </form>
-
-      @endforeach
+      @empty
+        <tr>
+         <td colspan="5" class="text-center">Tidak ada data</td>
+        </tr>
+      @endforelse
+      <td>{{{$fakultass->links()}}}</td>
     </tbody>
   </table>
 

@@ -32,7 +32,7 @@
             <th>{{$role->created_at}}</th>
             <th>{{$role->updated_at}}</th>
            
-            <th><a href='' class="btn btn-soft btn-primary">Detail</a></th>
+            <th><a href='{{ route('roles.show', $role)}}' class="btn btn-soft btn-primary">Detail</a></th>
             <th><a class="btn btn-soft btn-warning" href="{{route('roles.edit', $role->id)}}">Edit</a></th>
             <th>
               <button class="btn btn-soft btn-error" onclick="deleteBox_{{$role->id}}.showModal()">Delete</button>

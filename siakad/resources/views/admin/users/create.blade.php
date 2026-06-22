@@ -1,5 +1,6 @@
-<<x-layout>
-    <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+
+<x-layout>
+    <a class="join-item btn btn-primary mb-4" href="{{ route('users.index') }}">
         ⮜ Previous page
     </a>
 
@@ -10,12 +11,12 @@
 
             <!-- Username -->
             <label class="label font-bold" for="username">Username</label>
-            <input type="number" class="input w-full" name="username" placeholder="Username/NRP" required />
+            <input type="number" class="input w-full" maxlength="15" value="{{ old('username') }}" name="username" placeholder="Username/NRP" required />
             <x-forms.error name='username'/>
 
             <!-- Password -->
             <label class="label font-bold" for="password">Password</label>
-            <input type="password" class="input w-full" name="password" placeholder="Password" required />
+            <input type="password" class="input w-full" maxlength="255" value="{{ old('password') }}" name="password" placeholder="Password" required />
             <x-forms.error name='password'/>
 
             <!-- Role -->
@@ -49,7 +50,7 @@
 
             <!-- SKS -->
             <label class="label font-bold mt-4" for="sks">SKS</label>
-            <input type="number" class="input w-full" name="sks" placeholder="Contoh: 20" required />
+            <input type="number" class="input w-full" oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="10" value="{{ old('sks') }}" name="sks" placeholder="Contoh: 20" required />
             <x-forms.error name='sks'/>
 
             <!-- PATAUM (khusus mahasiswa) -->

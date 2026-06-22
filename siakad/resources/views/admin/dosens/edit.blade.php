@@ -11,15 +11,15 @@
             <legend class="fieldset-legend font-bold text-lg">Edit Data Dosen</legend>
 
             <label class="label font-bold" for="nim_dosen">NIM DOSEN</label>
-            <input type="text" class="input w-full" name="nim_dosen" value="{{ $dosen->nim_dosen }}" required />
+            <input type="text" class="input w-full" maxlength="15" name="nim_dosen" value="{{ $dosen->nim_dosen }}" required />
             <x-forms.error name='nim_dosen'/>
 
             <label class="label font-bold mt-2" for="nip">NIP</label>
-            <input type="text" class="input w-full" name="nip" value="{{ $dosen->nip }}" required />
+            <input type="text" class="input w-full" name="nip" value="{{ $dosen->nip }}" required maxlength="21" />
             <x-forms.error name='nip'/>
 
             <label class="label font-bold mt-2" for="nama">Nama</label>
-            <input type="text" class="input w-full" name="nama" value="{{ $dosen->nama }}" required />
+            <input type="text" class="input w-full" name="nama" value="{{ $dosen->nama }}" required maxlength="50"  />
             <x-forms.error name='nama'/>
 
             <label class="label font-bold mt-2" for="user_id">Akun User (Log In)</label>
@@ -45,7 +45,7 @@
             <x-forms.error name='prodi'/>
 
             <label class="label font-bold mt-2" for="jabatan_struktural">Jabatan Struktural</label>
-            <input type="text" class="input w-full" name="jabatan_struktural" value="{{ $dosen->jabatan_struktural }}" required />
+            <input type="text" class="input w-full" name="jabatan_struktural" value="{{ $dosen->jabatan_struktural }}" required maxlength="100" />
             <x-forms.error name='jabatan_struktural'/>
 
             <button class="btn btn-primary mt-6 w-full">Ubah Dosen</button>

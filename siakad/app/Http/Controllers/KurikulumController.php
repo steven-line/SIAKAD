@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kurikulum;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class KurikulumController extends Controller
 {
@@ -12,7 +13,7 @@ class KurikulumController extends Controller
      */
     public function index()
     {
-        $kurikulums = Kurikulum::paginate(15);
+        $kurikulums = Kurikulum::paginate(10);
 
         return view('admin.kurikulum.index', [
             'kurikulums' => $kurikulums
@@ -29,15 +30,15 @@ class KurikulumController extends Controller
 
     /**
      * Store new data
-     */
+     */   
     public function store(Request $request)
     {
         $request->validate([
-            'kode_kurikulum' => ['required', 'min:3'],
-            'nama_kurikulum' => ['required', 'min:4'],
+            'kode_kurikulum' => ['required', 'min:3', 'max:15', 'unique:kurikulum'],
+            'nama_kurikulum' => ['required', 'min:4', 'max:50'],
             'deskripsi' => ['required', 'min:20'],
-            'tahun_mulai_berlaku' => ['required'],
-            'tahun_selesai_berlaku' => ['required'],
+            'tahun_mulai_berlaku' => ['required',  'integer', 'max:'.date('Y')+10],
+            'tahun_selesai_berlaku' => ['required',  'integer', 'max:9999'],
         ]);
 
         Kurikulum::create([
@@ -78,11 +79,11 @@ class KurikulumController extends Controller
     public function update(Request $request, Kurikulum $kurikulum)
     {
         $request->validate([
-            'kode_kurikulum' => ['required', 'min:3'],
-            'nama_kurikulum' => ['required', 'min:4'],
+            'kode_kurikulum' => ['required', 'min:3', 'max:15', Rule::unique('kurikulum')->ignore($kurikulum)],
+            'nama_kurikulum' => ['required', 'min:4', 'max:50'],
             'deskripsi' => ['required', 'min:20'],
-            'tahun_mulai_berlaku' => ['required'],
-            'tahun_selesai_berlaku' => ['required'],
+            'tahun_mulai_berlaku' => ['required',  'integer', 'max:'.date('Y')+10],
+            'tahun_selesai_berlaku' => ['required',  'integer', 'max:9999'],
         ]);
 
         $kurikulum->update([

@@ -26,7 +26,7 @@
             <th>{{ $prodi->kode_fakultas }}</th>
 
             <th>
-                <a href="#" class="btn btn-soft btn-primary">Detail</a>
+                <a href="{{ route('prodi.show', $prodi->kode_prodi) }}" class="btn btn-soft btn-primary">Detail</a>
             </th>
 
             <th>
@@ -71,6 +71,7 @@
 
       @endforeach
     </tbody>
+    <td>{{$prodis->links()}}</td>
   </table>
 
 </div>

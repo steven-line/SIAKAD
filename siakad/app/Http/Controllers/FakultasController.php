@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Fakultas;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class FakultasController extends Controller
 {
@@ -12,7 +13,7 @@ class FakultasController extends Controller
      */
     public function index()
     {
-        $fakultass = Fakultas::paginate(15);
+        $fakultass = Fakultas::paginate(10);
 
         return view('admin.fakultas.index', [
             'fakultass' => $fakultass
@@ -33,8 +34,8 @@ class FakultasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_fakultas' => ['required', 'min:3'],
-            'nama_fakultas' => ['required', 'min:4'],
+            'kode_fakultas' => ['required', 'min:3', 'max:3', 'unique:fakultas'],
+            'nama_fakultas' => ['required', 'min:4', 'max:50'],
         ]);
 
         Fakultas::create([
@@ -51,7 +52,9 @@ class FakultasController extends Controller
      */
     public function show(Fakultas $fakultas)
     {
-        //
+        return view('admin.fakultas.show', [
+            'fakultas' => $fakultas
+        ]);
     }
 
     /**
@@ -69,6 +72,10 @@ class FakultasController extends Controller
      */
     public function update(Request $request, Fakultas $fakultas)
     {
+        $request->validate([
+            'kode_fakultas' => ['required', 'min:3', 'max:3', Rule::unique('fakultas')->ignore($fakultas)],
+            'nama_fakultas' => ['required', 'min:4', 'max:50'],
+        ]);
         $fakultas->update([
             'kode_fakultas' => $request->kode_fakultas,
             'nama_fakultas' => $request->nama_fakultas,
@@ -81,6 +88,7 @@ class FakultasController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    
     public function destroy(Fakultas $fakultas)
     {
         $fakultas->delete();

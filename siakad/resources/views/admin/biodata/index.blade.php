@@ -85,6 +85,7 @@
             <td colspan="5" class="text-center">Tidak ada data</td>
           </tr>
         @endforelse
+        <td>{{$biodatas->links()}}</td>
       </tbody>
     </table>
 

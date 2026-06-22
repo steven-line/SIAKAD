@@ -31,7 +31,7 @@
             <td>{{ $dosen->jabatan_struktural }}</td>
 
             <td>
-                <a class="btn btn-soft btn-info">
+                <a class="btn btn-soft btn-info" href="{{route('dosen.show', $dosen->nim_dosen)}}">
                     Detail
                 </a>
             </td>
@@ -66,20 +66,22 @@
               </dialog>
             </td>
         </tr>
-
+        
         <form id="delete-dosen-form-{{ $dosen->nim_dosen }}"
               action="{{ route('dosen.destroy', $dosen->nim_dosen) }}"
               method="POST">
             @csrf
             @method('DELETE')
         </form>
-
+       
       @empty
       <tr>
         <td colspan="5" class="text-center">Tidak ada data</td>
       </tr>
       @endforelse
+      <td>   {{ $dosens->links() }}</td>
     </tbody>
+    
   </table>
 
 </div>

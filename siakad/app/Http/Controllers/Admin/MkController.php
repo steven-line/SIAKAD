@@ -6,12 +6,13 @@ use App\Models\Mk;
 use App\Http\Controllers\Controller;
 use App\Models\Kurikulum;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MkController extends Controller
 {
     public function index()
     {
-        $mks = Mk::paginate(15);
+        $mks = Mk::paginate('10');
         return view('admin.matakuliah.index', ['mks' => $mks]);
     }
 
@@ -23,25 +24,28 @@ class MkController extends Controller
 
     public function store(Request $request)
     {
+
+  
         $request->validate([
-            'kodemk' => ['required'],
-            'nama' => ['required'],
-            'sks' => ['required'],
-            'nm_jenj_didik' => ['required'],
-            'kode_prodi_dikti' => ['required'],
-            'kode_kurikulum' => ['required'],
-            'prasyaratsks' => ['required'],
-            'prasyarat1' => ['required'],
-            'prasyarat2' => ['required'],
-            'prasyarat3' => ['required'],
-            'prasyarat4' => ['required'],
-            'prasyarat5' => ['required'],
-            'prasyarat6' => ['required'],
-            'prasyarat7' => ['required'],
-            'prasyarat8' => ['required'],
-            'prasyarat9' => ['required'],
-            'prasyarat10' => ['required'],
-            'prasyaratgrade' => ['required'], 
+            'kodemk' => ['required', 'unique:mk', 'max:8'],
+            'nama' => ['required', 'max:50'],
+            'sks' => ['required','max:3'],
+            'nm_jenj_didik' => ['required', 'max:2'],
+            'kode_prodi_dikti' => ['required', 'max:5'],
+            'kode_kurikulum' => ['required', 'max:10'],
+            'prasyaratsks' => ['required', 'max:3'],
+            'prasyarat1' => ['required', 'max:8'],
+            'prasyarat2' => ['required', 'max:8'],
+            'prasyarat3' => ['required', 'max:8'],
+            'prasyarat4' => ['required', 'max:8'],
+            'prasyarat5' => ['required', 'max:8'],
+            'prasyarat6' => ['required', 'max:8'],
+            'prasyarat7' => ['required', 'max:8'],
+            'prasyarat8' => ['required', 'max:8'],
+            'prasyarat9' => ['required', 'max:8'],
+            'prasyarat10' => ['required', 'max:8'],
+            'prasyaratgrade' => ['required', 'max:1'], 
+         
         ]);
 
         Mk::create([
@@ -85,6 +89,28 @@ class MkController extends Controller
 
     public function update(Request $request, Mk $mk)
     {
+         $request->validate([
+            'kodemk' => ['required', 'max:8', Rule::unique('mk')->ignore($mk)],
+            'nama' => ['required', 'max:50'],
+            'sks' => ['required','max:3'],
+            'nm_jenj_didik' => ['required', 'max:2'],
+            'kode_prodi_dikti' => ['required', 'max:5'],
+            'kode_kurikulum' => ['required', 'max:10'],
+            'prasyaratsks' => ['required', 'max:3'],
+            'prasyarat1' => ['required', 'max:8'],
+            'prasyarat2' => ['required', 'max:8'],
+            'prasyarat3' => ['required', 'max:8'],
+            'prasyarat4' => ['required', 'max:8'],
+            'prasyarat5' => ['required', 'max:8'],
+            'prasyarat6' => ['required', 'max:8'],
+            'prasyarat7' => ['required', 'max:8'],
+            'prasyarat8' => ['required', 'max:8'],
+            'prasyarat9' => ['required', 'max:8'],
+            'prasyarat10' => ['required', 'max:8'],
+            'prasyaratgrade' => ['required', 'max:1'], 
+           
+        ]);
+
         $mk->update([
             'kodemk' => $request->kodemk,
             'nama' => $request->nama,

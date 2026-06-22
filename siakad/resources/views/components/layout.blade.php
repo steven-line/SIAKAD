@@ -34,7 +34,7 @@
 
     <hr class="my-6 border-gray-200"/>
 
-    <ul class="flex-1 [&>li]:py-2">
+    <ul class="flex-1 [&>li]:py-2 [&>li]:hover:bg-gray-200">
 
         {{-- DASHBOARD (SEMUA USER) --}}
         <li>
@@ -85,7 +85,10 @@
         @endcan
 
         {{-- MAHASISWA --}}
-        
+         
+        @can('mahasiswa.manage')
+        <li><a href="/mahasiswa-admin">Master Mahasiswa</a></li>
+        @endcan
         @can('biodata.view')
         <li><a href="/mahasiswa/biodata">Biodata</a></li>
         @endcan
@@ -113,6 +116,7 @@
         {{-- PERWALIAN --}}
         @can('perwalian.manage')
         <li><a href="/perwalian">Perwalian</a></li>
+        <li><a href="/nilai_anak_wali">Nilai Anak Wali</a></li>
         @endcan
 
         {{-- KAPRODI (jadwal/penawaran pakai permission juga) --}}

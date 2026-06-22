@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Biodata;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class BiodataAdminController extends Controller
 {
     public function index()
     {
-        $biodatas = Biodata::paginate(15);
+        $biodatas = Biodata::paginate(10);
 
         return view('admin.biodata.index', [
             'biodatas' => $biodatas
@@ -37,9 +38,9 @@ class BiodataAdminController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nrp' => 'required|size:8|unique:biodata,nrp',
+            'nrp' => 'required|max:8|unique:biodata,nrp',
             'nama' => 'required|max:50',
-            'nik' => 'required|size:16',
+            'nik' => 'required|max:16',
             'tempat_lahir' => 'nullable|max:25',
             'tanggal_lahir' => 'nullable|date',
             'tinggi' => 'required|integer',
@@ -64,7 +65,6 @@ class BiodataAdminController extends Controller
             'asal_smu' => 'required|max:50',
             'lulus_smu' => 'required|max:4',
             'transportasi' => 'required|max:25',
-            'dosenwali' => 'required|size:8|exists:dosen,nim_dosen',
             'nama_ayah' => 'required|max:50',
             'alamat_ayah' => 'required|max:100',
             'no_telp_ayah' => 'required|max:13',
@@ -95,13 +95,13 @@ class BiodataAdminController extends Controller
             'pekerjaan_wali' => 'required|max:50',
             'pendidikan_wali' => 'required|max:25',
             'warganegara_wali' => 'required|max:20',
-            'special_need' => 'required|size:4',
+            'special_need' => 'required|max:4',
             'kps' => 'required|integer',
-            'status_pendidikan' => 'required|size:1',
-            'kebutuhan_ayah' => 'required|size:4',
-            'kebutuhan_ibu' => 'required|size:4',
+            'status_pendidikan' => 'required|max:1',
+            'kebutuhan_ayah' => 'required|max:4',
+            'kebutuhan_ibu' => 'required|max:4',
             'last_update' => 'required|date',
-            'pataum' => 'required|in:P (Pagi),M (Malam)',
+            'pataum' => 'required|in:P,M',
             'email' => 'required|email|max:100',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan', // validasi nilai yang diterima
             'nisn' => 'required|max:25',
@@ -140,7 +140,6 @@ class BiodataAdminController extends Controller
                 'asal_smu' => $request->asal_smu,
                 'lulus_smu' => $request->lulus_smu,
                 'transportasi' => $request->transportasi,
-                'dosenwali' => $request->dosenwali,
                 'nama_ayah' => $request->nama_ayah,
                 'alamat_ayah' => $request->alamat_ayah,
                 'no_telp_ayah' => $request->no_telp_ayah,
@@ -183,7 +182,7 @@ class BiodataAdminController extends Controller
                 'nisn' => $request->nisn,
             ]);
 
-            return redirect()->route('admin.biodata.index')->with('success', 'Biodata berhasil ditambahkan.');
+            return redirect()->route('biodata.index')->with('success', 'Biodata berhasil ditambahkan.');
         } catch (\Exception $e) {
             return back()->withInput()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
         }
@@ -203,9 +202,9 @@ class BiodataAdminController extends Controller
     {
         // Validasi update (sama dengan store, tapi tanpa unique nrp)
         $request->validate([
-            'nrp' => 'required|size:8',
+            'nrp' => ['required', 'max:8', Rule::unique('biodata')->ignore($biodata)], // validasi unik dengan pengecualian untuk record saat ini
             'nama' => 'required|max:50',
-            'nik' => 'required|size:16',
+            'nik' => 'required|max:16',
             'tempat_lahir' => 'nullable|max:25',
             'tanggal_lahir' => 'nullable|date',
             'tinggi' => 'required|integer',
@@ -230,7 +229,7 @@ class BiodataAdminController extends Controller
             'asal_smu' => 'required|max:50',
             'lulus_smu' => 'required|max:4',
             'transportasi' => 'required|max:25',
-            'dosenwali' => 'required|size:15|exists:dosen,nim_dosen',
+           
             'nama_ayah' => 'required|max:50',
             'alamat_ayah' => 'required|max:100',
             'no_telp_ayah' => 'required|max:13',
@@ -261,13 +260,13 @@ class BiodataAdminController extends Controller
             'pekerjaan_wali' => 'required|max:50',
             'pendidikan_wali' => 'required|max:25',
             'warganegara_wali' => 'required|max:20',
-            'special_need' => 'required|size:4',
+            'special_need' => 'required|max:4',
             'kps' => 'required|integer',
-            'status_pendidikan' => 'required|size:1',
-            'kebutuhan_ayah' => 'required|size:4',
-            'kebutuhan_ibu' => 'required|size:4',
+            'status_pendidikan' => 'required|max:1',
+            'kebutuhan_ayah' => 'required|max:4',
+            'kebutuhan_ibu' => 'required|max:4',
             'last_update' => 'required|date',
-            'pataum' => 'required|in:P (Pagi),M (Malam)',
+            'pataum' => 'required|in:P,M',
             'email' => 'required|email|max:100',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'nisn' => 'required|max:25',
@@ -306,7 +305,7 @@ class BiodataAdminController extends Controller
                 'asal_smu' => $request->asal_smu,
                 'lulus_smu' => $request->lulus_smu,
                 'transportasi' => $request->transportasi,
-                'dosenwali' => $request->dosenwali,
+             
                 'nama_ayah' => $request->nama_ayah,
                 'alamat_ayah' => $request->alamat_ayah,
                 'no_telp_ayah' => $request->no_telp_ayah,
@@ -349,7 +348,7 @@ class BiodataAdminController extends Controller
                 'nisn' => $request->nisn,
             ]);
 
-            return redirect()->route('admin.biodata.index')->with('success', 'Biodata berhasil diperbarui.');
+            return redirect()->route('biodata.index')->with('success', 'Biodata berhasil diperbarui.');
         } catch (\Exception $e) {
             return back()->withInput()->withErrors(['error' => 'Gagal memperbarui data: ' . $e->getMessage()]);
         }
@@ -359,7 +358,7 @@ class BiodataAdminController extends Controller
     {
         try {
             $biodata->delete();
-            return redirect()->route('admin.biodata.index')->with('success', 'Biodata berhasil dihapus.');
+            return redirect()->route('biodata.index')->with('success', 'Biodata berhasil dihapus.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal menghapus data: ' . $e->getMessage()]);
         }

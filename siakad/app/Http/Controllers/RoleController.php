@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
@@ -34,7 +35,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'min:5'],
+            'name' => ['required', 'min:5','max:191', 'unique:roles'],
             'permissions' => ['required']
         ]);
 
@@ -55,7 +56,11 @@ class RoleController extends Controller
      */
     public function show(role $role)
     {
-        //
+        $permissions = $role->permissions->pluck('name');
+        return view('admin.role.show', [
+            'role' => $role,
+            'permissions' => $permissions
+        ]);
     }
 
     /**
@@ -74,11 +79,19 @@ class RoleController extends Controller
      */
     public function update(Request $request, role $role)
     {
-           $role->update([
-            'name' => $request->name
-
+          $request->validate([
+            'name' => ['required', 'min:5', 'max:191', Rule::unique('roles')->ignore($role)],
+            'permissions' => ['required']
         ]);
 
+           $role->update([
+            'name' => $request->name,
+            'guard_name' => 'web',
+
+        ]);
+        if ($request->has('permissions')) {
+                    $role->syncPermissions($request->permissions);
+                }
         return redirect()->route('roles.index');
     }
 

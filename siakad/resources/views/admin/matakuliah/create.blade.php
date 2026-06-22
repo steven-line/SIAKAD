@@ -12,19 +12,19 @@
             <div class="grid grid-cols-3 gap-4">
                 <div>
                     <label class="label font-bold" for="kodemk">KodeMk</label>
-                    <input type="text" class="input" name="kodemk" placeholder="TF2028" />
+                    <input type="text" class="input" name="kodemk" value="{{old('kodemk')}}" placeholder="TF2028" maxlength="8"/>
                     <x-forms.error name='kodemk'/>
                 </div>
 
                 <div>
                     <label class="label font-bold" for="nama">Nama</label>
-                    <input type="text" class="input" name="nama" placeholder="Aljabar Linear Matriks" />
+                    <input type="text" class="input" name="nama" maxlength="50" placeholder="Aljabar Linear Matriks" value="{{old('nama')}}"/>
                     <x-forms.error name='nama'/>
                 </div>
 
                 <div>
                     <label class="label font-bold" for="sks">SKS</label>
-                    <input type="text" class="input" name="sks" placeholder="3" />
+                    <input type="text" class="input" name="sks" maxlength="3" value="{{old('sks')}}"/>
                     <x-forms.error name='sks'/>
                 </div>
             </div>
@@ -32,13 +32,13 @@
             <div class="grid grid-cols-4 mt-4">
                 <div>
                     <label class="label font-bold" for="nm_jenj_didik">Nama Jenjang Didik</label>
-                    <input type="text" class="input" name="nm_jenj_didik" />
+                    <input type="text" class="input" maxlength="2" name="nm_jenj_didik" value="{{old('nm_jenj_didik')}}"/>
                     <x-forms.error name='nm_jenj_didik'/>
                 </div>
 
                 <div>
                     <label class="label font-bold" for="kode_prodi_dikti">Kode Prodi Dikti</label>
-                    <input type="text" class="input" name="kode_prodi_dikti" />
+                    <input type="text" class="input" maxlength="5" name="kode_prodi_dikti" value="{{old('kode_prodi_dikti')}}"/>
                     <x-forms.error name='kode_prodi_dikti'/>
                 </div>
 
@@ -57,7 +57,7 @@
 
                 <div>
                     <label class="label font-bold" for="prasyaratsks">Prasyarat SKS</label>
-                    <input type="text" class="input" name="prasyaratsks" />
+                    <input type="text" class="input" name="prasyaratsks" value="{{old('prasyaratsks')}}" maxlength="3"/>
                     <x-forms.error name='prasyaratsks'/>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                 @for ($i = 1; $i <= 4; $i++)
                 <div>
                     <label class="label font-bold">Prasyarat {{ $i }}</label>
-                    <input type="text" class="input" name="prasyarat{{ $i }}" />
+                    <input type="text" class="input" name="prasyarat{{ $i }}" value="{{old('prasyarat'.$i)}}" maxlength="8"/>
                     <x-forms.error name="prasyarat{{ $i }}"/>
                 </div>
                 @endfor
@@ -77,7 +77,7 @@
                 @for ($i = 5; $i <= 8; $i++)
                 <div>
                     <label class="label font-bold">Prasyarat {{ $i }}</label>
-                    <input type="text" class="input" name="prasyarat{{ $i }}" />
+                    <input type="text" class="input" name="prasyarat{{ $i }}" value="{{old('prasyarat'.$i)}}" maxlength="8"/>
                     <x-forms.error name="prasyarat{{ $i }}"/>
                 </div>
                 @endfor
@@ -87,14 +87,14 @@
                 @for ($i = 9; $i <= 10; $i++)
                 <div>
                     <label class="label font-bold">Prasyarat {{ $i }}</label>
-                    <input type="text" class="input" name="prasyarat{{ $i }}" />
+                    <input type="text" class="input" name="prasyarat{{ $i }}" value="{{old('prasyarat'.$i)}}" maxlength="8"/>
                     <x-forms.error name="prasyarat{{ $i }}"/>
                 </div>
                 @endfor
 
                 <div>
                     <label class="label font-bold">Prasyarat Grade</label>
-                    <input type="text" class="input" name="prasyaratgrade" />
+                    <input type="text" class="input" name="prasyaratgrade" value="{{old('prasyaratgrade')}}" maxlength="1"  />
                     <x-forms.error name='prasyaratgrade'/>
                 </div>
 

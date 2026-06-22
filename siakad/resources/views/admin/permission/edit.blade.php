@@ -1,5 +1,5 @@
 <x-layout>
-      <a class="join-item btn btn-primary" href="{{url()->previous()}}">⮜ Previous page</a>
+      <a class="join-item btn btn-primary" href="{{route('permissions.index')}}">⮜ Previous page</a>
     <form class="flex"action="{{route('permissions.update',$permission->id)}}" method="POST">
     @csrf
     @method('PATCH')
@@ -9,7 +9,7 @@
     
 
         <label class="label font-bold" for="name">Name</label>
-        <input type="text" class="input" name="name" placeholder="" value="{{$permission->name}}"/>
+        <input type="text" class="input" maxlength="191" name="name" placeholder="" value="{{old('name', $permission->name)}}"/>
         <x-forms.error name='name'/>
 
         <button class="btn btn-primary mt-4">Ubah Permission</button>

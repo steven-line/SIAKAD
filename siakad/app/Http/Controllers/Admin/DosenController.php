@@ -13,7 +13,7 @@ class DosenController extends Controller
 {
     public function index()
     {
-        $dosens = Dosen::paginate(15);
+        $dosens = Dosen::paginate(10);
 
         return view('admin.dosens.index', [
             'dosens' => $dosens
@@ -37,12 +37,12 @@ class DosenController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nim_dosen' => ['required', 'min:8', 'unique:dosen,nim_dosen'],
-            'nip' => ['required', 'min:8', 'unique:dosen,nip'],
-            'nama' => ['required', 'max:255'],
+            'nim_dosen' => ['required', 'min:8', 'unique:dosen,nim_dosen', 'max:15'],
+            'nip' => ['required', 'min:8', 'unique:dosen,nip', 'max:21'],
+            'nama' => ['required', 'max:50'],
             'user_id' => ['required', 'unique:dosen,user_id'],
             'prodi' => ['required', 'exists:prodi,kode_prodi'],
-            'jabatan_struktural' => ['required']
+            'jabatan_struktural' => ['required', 'max:100']
         ]);
 
         Dosen::create([
@@ -59,7 +59,11 @@ class DosenController extends Controller
 
     public function show(Dosen $dosen)
     {
-        //
+       
+        return view('admin.dosens.show', [
+            'dosen' => $dosen,
+          
+        ]);
     }
 
     public function edit(Dosen $dosen)
@@ -85,19 +89,21 @@ class DosenController extends Controller
         $request->validate([
             'nim_dosen' => [
                 'required',
+                'max:15',
                 Rule::unique('dosen', 'nim_dosen')->ignore($dosen->nim_dosen, 'nim_dosen')
             ],
             'nip' => [
                 'required',
+                'max:21',
                 Rule::unique('dosen', 'nip')->ignore($dosen->nim_dosen, 'nim_dosen')
             ],
-            'nama' => ['required', 'max:255'],
+            'nama' => ['required', 'max:50'],
             'user_id' => [
                 'required',
                 Rule::unique('dosen', 'user_id')->ignore($dosen->nim_dosen, 'nim_dosen')
             ],
             'prodi' => ['required', 'exists:prodi,kode_prodi'],
-            'jabatan_struktural' => ['required']
+            'jabatan_struktural' => ['required', 'max:100']
         ]);
 
         $dosen->update([

@@ -1,7 +1,7 @@
 
 <x-layout>
     {{-- BACK BUTTON (dynamic previous URL) --}}
-    <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
+    <a class="join-item btn btn-primary mb-4" href="{{ route('users.index') }}">
         ⮜ Previous page
     </a>
 
@@ -21,6 +21,7 @@
                 type="text"
                 class="input w-full"
                 name="username"
+                maxlength="15"
                 value="{{ $user->username }}"
                 required
             />
@@ -116,6 +117,8 @@
                 type="number"
                 class="input w-full"
                 name="sks"
+                maxlength="10"
+                oninput="this.value=this.value.slice(0,this.maxLength)"
                 value="{{ $user->sks }}"
                 required
             />

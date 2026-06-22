@@ -12,6 +12,9 @@ use App\Http\Controllers\{
     FakultasController,
     KurikulumController,
     KrsController,
+    NilaiKrsAnakWali,
+    NilaiKrsAnakWaliController,
+    MahasiswaAdminController
 };
 
 use App\Http\Controllers\Admin\{
@@ -70,6 +73,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [UserController::class, 'create'])->name('create');
             Route::post('/', [UserController::class, 'store'])->name('store');
             Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+            Route::get('/{user}', [UserController::class, 'show'])->name('show');
             Route::patch('/{user}', [UserController::class, 'update'])->name('update');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
         });
@@ -87,10 +91,11 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [KurikulumController::class, 'index'])->name('index');
             Route::get('/create', [KurikulumController::class, 'create'])->name('create');
             Route::post('/', [KurikulumController::class, 'store'])->name('store');
-            Route::get('/{kurikulum}', [KurikulumController::class, 'show'])->name('show');
             Route::get('/{kurikulum}/edit', [KurikulumController::class, 'edit'])->name('edit');
+            Route::get('/{kurikulum}', [KurikulumController::class, 'show'])->name('show');
             Route::patch('/{kurikulum}', [KurikulumController::class, 'update'])->name('update');
             Route::delete('/{kurikulum}', [KurikulumController::class, 'destroy'])->name('destroy');
+            
         });
 
     /*
@@ -127,6 +132,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [DosenController::class, 'store'])->name('store');
             Route::get('/{dosen}/edit', [DosenController::class, 'edit'])->name('edit');
             Route::patch('/{dosen}', [DosenController::class, 'update'])->name('update');
+            Route::get('/{dosen}', [DosenController::class, 'show'])->name('show');
             Route::delete('/{dosen}', [DosenController::class, 'destroy'])->name('destroy');
         });
 
@@ -145,6 +151,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [ProdiController::class, 'store'])->name('store');
             Route::get('/{prodi}/edit', [ProdiController::class, 'edit'])->name('edit');
             Route::patch('/{prodi}', [ProdiController::class, 'update'])->name('update');
+            Route::get('/{prodi}', [ProdiController::class, 'show'])->name('show');
             Route::delete('/{prodi}', [ProdiController::class, 'destroy'])->name('destroy');
         });
 
@@ -164,6 +171,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{fakultas}/edit', [FakultasController::class, 'edit'])->name('edit');
             Route::patch('/{fakultas}', [FakultasController::class, 'update'])->name('update');
             Route::delete('/{fakultas}', [FakultasController::class, 'destroy'])->name('destroy');
+             Route::get('/{fakultas}', [FakultasController::class, 'show'])->name('show');
         });
 
     /*
@@ -181,7 +189,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{biodata}', [BiodataAdminController::class, 'show'])->name('show');
             Route::post('/', [BiodataAdminController::class, 'store'])->name('store');
             Route::get('/{biodata}/edit', [BiodataAdminController::class, 'edit'])->name('edit');
-            Route::put('/{biodata}', [BiodataAdminController::class, 'update'])->name('update');
+            Route::patch('/{biodata}', [BiodataAdminController::class, 'update'])->name('update');
             Route::delete('/{biodata}', [BiodataAdminController::class, 'destroy'])->name('destroy');
         });
 
@@ -201,6 +209,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('edit');
             Route::patch('/{role}', [RoleController::class, 'update'])->name('update');
             Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
+            Route::get('/{role}', [RoleController::class, 'show'])->name('show');
         });
 
     /*
@@ -219,6 +228,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{permission}/edit', [PermissionController::class, 'edit'])->name('edit');
             Route::patch('/{permission}', [PermissionController::class, 'update'])->name('update');
             Route::delete('/{permission}', [PermissionController::class, 'destroy'])->name('destroy');
+             Route::get('/{permission}', [PermissionController::class, 'show'])->name('show');
         });
 
     /*
@@ -257,9 +267,10 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/', [PenawaranController::class, 'index'])->name('index');
             Route::get('/create', [PenawaranController::class, 'create'])->name('create');
+            route::get('/{penawaran}/edit', [PenawaranController::class, 'edit'])->name('edit');
             Route::post('/', [PenawaranController::class, 'store'])->name('store');
             Route::get('/{recno}', [PenawaranController::class, 'show'])->name('show');
-            Route::put('/{penawaran}', [PenawaranController::class, 'update'])->name('update');
+            Route::patch('/{penawaran}', [PenawaranController::class, 'update'])->name('update');
             Route::delete('/{recno}', [PenawaranController::class, 'destroy'])->name('destroy');
         });
 
@@ -275,10 +286,33 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/', [PerwalianController::class, 'index'])->name('index');
             Route::get('/{mahasiswa}', [PerwalianController::class, 'show'])->name('show');
-            Route::post('/{mahasiswa}/validasi')->name('validasi');
-            Route::post('/{mahasiswa}/lock')->name('lock');
+            Route::post('/{mahasiswa}/validasi', [PerwalianController::class, 'validasi'])->name('validasi');
+            Route::post('/{mahasiswa}/lock', [PerwalianController::class, 'lock'])->name('lock');
         });
 
+     Route::prefix('nilai_anak_wali')
+        ->middleware('permission:perwalian.manage')
+        ->name('nilai_anak_wali.')
+        ->group(function () {
+
+            Route::get('/', [NilaiKrsAnakWaliController::class, 'index'])->name('index');
+            Route::get('/{mahasiswa}', [NilaiKrsAnakWaliController::class, 'show'])->name('show');
+
+        });
+
+          Route::prefix('mahasiswa-admin')
+            ->middleware('permission:mahasiswa.manage')
+            ->name('mahasiswa_admin.')
+            ->group(function () {
+                Route::get('/', [MahasiswaAdminController::class, 'index'])->name('index');
+                Route::get('/create', [MahasiswaAdminController::class, 'create'])->name('create');
+                Route::get('/{mahasiswa}/edit', [MahasiswaAdminController::class, 'edit'])->name('edit');
+                Route::post('/', [MahasiswaAdminController::class, 'store'])->name('store');
+                Route::get('/{mahasiswa}', [MahasiswaAdminController::class, 'show'])->name('show');
+                Route::patch('/{mahasiswa}', [MahasiswaAdminController::class, 'update'])->name('update');
+                Route::delete('/{mahasiswa}', [MahasiswaAdminController::class, 'destroy'])->name('destroy');
+  
+            });
     /*
     |--------------------------------------------------------------------------
     | MAHASISWA
@@ -324,6 +358,15 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', [NilaiKrsMahasiswaController::class, 'index'])->name('index');
             });
 
+
+        /*
+        MahasiswaAdmin
+        */
+
+
+        /*
+        | KHS
+        */
         Route::prefix('khs')
             ->middleware('permission:khs.view')
             ->name('khs.')
@@ -344,6 +387,9 @@ Route::middleware('auth')->group(function () {
         Route::prefix('krs')
             ->name('krs.')
             ->group(function () {
+
+
+
 
                 Route::get('/', [KrsMahasiswaController::class, 'index'])
                     ->middleware('permission:krs.view')
@@ -389,6 +435,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/{mahasiswa}/{mk}/create', [KrsController::class, 'create'])->name('create');
             Route::post('/{mahasiswa}/{mk}', [KrsController::class, 'store'])->name('store');
             Route::get('/{mahasiswa}/{mk}', [KrsController::class, 'show'])->name('show');
+            Route::get('/{mahasiswa}/{mk}/edit', [KrsController::class, 'edit'])->name('edit');
+            Route::patch('/{mahasiswa}/{mk}', [KrsController::class, 'update'])->name('update');
+            
+
         });
 
     /*

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Permission;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PermissionController extends Controller
 {
@@ -30,8 +31,10 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
+         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
         $request->validate([
-            'name' => ['required', 'min:5']
+            'name' => ['required', 'min:5', 'max:191','unique:permissions']
         ]);
 
         Permission::create([
@@ -57,6 +60,8 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
+         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
          return view('admin.permission.edit', ['permission' => $permission]);
     
     }
@@ -66,7 +71,10 @@ class PermissionController extends Controller
      */
     public function update(Request $request, Permission $permission)
     {
-           $permission->update([
+        $request->validate([
+            'name' => ['required', 'min:5', 'max:191', Rule::unique('permissions')->ignore($permission)]
+        ]);
+        $permission->update([
             'name' => $request->name
 
         ]);
