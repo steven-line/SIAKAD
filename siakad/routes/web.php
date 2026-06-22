@@ -35,7 +35,8 @@ use App\Http\Controllers\Mahasiswa\{
     NilaiKrsMahasiswaController,
     DetailMataKuliahController,
     BiodataMahasiswaController,
-   
+    KhsMahasiswaController,
+    TranskripMahasiswaController
 };
 
 /*
@@ -349,7 +350,7 @@ Route::middleware('auth')->group(function () {
         /*
         | NILAI KRS
         */
-        Route::prefix('nilai-krs')
+        Route::prefix('nilai_krs')
             ->middleware('permission:nilai_krs.view')
             ->name('nilai_krs.')
             ->group(function () {
@@ -370,17 +371,14 @@ Route::middleware('auth')->group(function () {
             ->middleware('permission:khs.view')
             ->name('khs.')
             ->group(function () {
-                Route::get('/', [NilaiKrsMahasiswaController::class, 'khs'])->name('index');
+                Route::get('/', [KhsMahasiswaController::class, 'index'])->name('index');
             });
 
-        /*
-        | TRANSKRIP NILAI
-        */
         Route::prefix('transkrip')
             ->middleware('permission:transkrip.view')
             ->name('transkrip.')
             ->group(function () {
-                Route::get('/', [NilaiKrsMahasiswaController::class, 'transkrip'])->name('index');
+                Route::get('/', [TranskripMahasiswaController::class, 'index'])->name('index');
             });
 
         /*
@@ -408,6 +406,11 @@ Route::middleware('auth')->group(function () {
                 Route::delete('/batal-multiple', [KrsMahasiswaController::class, 'batalMultiple'])
                     ->middleware('permission:krs.submit')
                     ->name('batal_multiple');
+
+                Route::post('/krs/{nrp}/validasi', [KrsMahasiswaController::class, 'validasi'])
+                    ->name('validasi')
+                    ->middleware('auth');
+                
             });
 
         /*

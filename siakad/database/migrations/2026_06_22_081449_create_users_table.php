@@ -18,10 +18,10 @@ return new class extends Migration
             $table->integer('sks');
             $table->dateTime('firstlogin');
             $table->dateTime('lastlogin');
-            $table->integer('validasi');
-            $table->integer('aksesnilai');
-            $table->string('pataum', 1);
-            $table->integer('aktif');
+            $table->integer('validasi')->nullable();
+            $table->integer('aksesnilai')->nullable();
+            $table->enum('pataum', ['P', 'M'])->default('P');
+            $table->boolean('aktif')->default(true);
             $table->rememberToken();
         });
 

@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('krs', function (Blueprint $table) {
 
             $table->id();
-
+		
             // Relasi ke mahasiswa
-            $table->string('nrp', 8);
+	    $table->unsignedBigInteger('registrasi_id');
+            $table->foreign('registrasi_id')->references('regkrs')->on('registrasi')->onDelete('cascade')->onUpdate('cascade');
 
             // Relasi ke mata kuliah
             $table->string('kode', 8);
@@ -35,24 +36,19 @@ return new class extends Migration
             $table->string('na', 2)->nullable();
 
             $table->decimal('sks', 2, 0)->nullable();
-
-            $table->string('periode', 8)->nullable();
+		 
 
             $table->char('kelas', 1);
 
             $table->boolean('survey')->default(false)
                   ->comment('0 = Belum, 1 = Sudah');
 
-            // Foreign Key
-            $table->foreign('nrp')
-                ->references('nrp')
-                ->on('mahasiswas')
-                ->cascadeOnDelete();
 
             $table->foreign('kode')
                 ->references('kodemk')
                 ->on('mk')
-                ->cascadeOnDelete();
+                ->onDelete('cascade')
+		->onUpdate('cascade');
         });
     }
 

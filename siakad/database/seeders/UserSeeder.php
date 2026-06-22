@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
                 'aktif' => 0,
                 'sks' => 110,
                 'validasi' => 1,
-                'pataum' => 'o',
+                'pataum' => 'P',
             ],
             [
                 'username' => '31128888',
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
                 'aktif' => 0,
                 'sks' => 110,
                 'validasi' => 1,
-                'pataum' => 'o',
+                'pataum' => 'P',
             ],
             [
                 'username' => '31127777',
@@ -46,7 +46,18 @@ class UserSeeder extends Seeder
                 'aktif' => 0,
                 'sks' => 110,
                 'validasi' => 1,
-                'pataum' => 'o',
+                'pataum' => 'P',
+            ],
+            [
+                'username' => '31123019',
+                'password' => Hash::make('hello12346'),
+                'firstlogin' => Carbon::now(),
+                'lastlogin' => Carbon::now(),
+                'aksesnilai' => 0,
+                'aktif' => 0,
+                'sks' => 110,
+                'validasi' => 1,
+                'pataum' => 'P',
             ]
         ];
 

@@ -15,7 +15,9 @@ return new class extends Migration
            $table->id('regkrs');
            $table->string('nrp', 8)->default('')->index();
            $table->string('kodemk', 8)->default('')->index();
-           $table->string('periode', 9)->default('')->index();
+   	   $table->unsignedBigInteger('penawaran_id');
+           $table->foreign('penawaran_id')->references('recno')->on('penawaran')->onDelete('cascade')->onUpdate('cascade');
+	
            $table->string('status', 5)->default('');
 
            $table->string('sesi', 5)->default('')->index();
@@ -28,17 +30,18 @@ return new class extends Migration
            $table->time('selesaipukul')->default('00:00:00');
            $table->string('ip_address', 100)->default('');
            $table->integer('sks')->default('0');
-           $table->string('pataum', 1);
+           $table->enum('pataum', ['P', 'M'])->default('P');
 
          
          
            $table->foreign('kodemk')
             ->references('kodemk')
             ->on('mk')
-            ->onDelete('cascade');
+            ->onDelete('cascade')->onUpdate('cascade');
+	    
           
-            $table->index(['periode', 'sesi'], 'periode'); 
-            $table->index(['kodemk', 'periode', 'sesi'], 'kodemk_2');
+        
+	    $table->foreign('nrp')->references('nrp')->on('mahasiswas')->onDelete('cascade')->onUpdate('cascade');	
 
 
 

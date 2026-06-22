@@ -2,7 +2,7 @@
     <div class="container mx-auto p-4">
         <!-- Header -->
         <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded shadow-sm">
-            <p class="font-semibold">BERIKUT ADALAH DATA DIRI ANDA, JIKA ADA KENDALA SILAHKAN MENGHUBUNGI KAMI</p>
+            <p class="font-semibold">Jika ada data yang tidak sesuai, silakan hubungi bagian kemahasiswaan atau dosen wali Anda.</p>
         </div>
 
         <!-- Tabel / Grid Data Diri -->
@@ -75,14 +75,13 @@
                 </div>
                 <div class="flex border-b pb-2">
                     <div class="w-1/3 font-semibold text-gray-700">Kelas</div>
-                    <div class="w-2/3 text-gray-900">: {{ $biodata->pataum?? '-' }}</div>
+                    <div class="w-2/3 text-gray-900">: {{ $biodata->pataum ?? '-' }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Footer / Tambahan (opsional) -->
         <div class="mt-6 text-center text-sm text-gray-500">
-            <p>Jika ada data yang tidak sesuai, silakan hubungi bagian kemahasiswaan atau dosen wali Anda.</p>
         </div>
     </div>
 </x-layout>

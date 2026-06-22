@@ -13,11 +13,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
+
             $table->string('nrp')->primary();
             $table->string('nama');
             $table->string('dosen_wali',15);
-            
-            $table->text('status_blokir');
+	    $table->string('prodi', 15)->nullable();
+            $table->foreign('prodi')->references('kode_prodi')->on('prodi')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('nrp')->references('username')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('status_blokir', [
+            'BELUM_KRS',
+            'MENUNGGU_VALIDASI',
+            'DISETUJUI',
+            'TERKUNCI'
+             ])->default('BELUM_KRS')->change();
 
         });
     }

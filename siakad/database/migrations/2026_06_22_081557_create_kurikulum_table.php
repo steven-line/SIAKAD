@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-         
-    Schema::table('kurikulum', function (Blueprint $table) {
+        Schema::create('kurikulum', function (Blueprint $table) {
+            $table->string('kode_kurikulum', 15)->primary();
+            $table->string('nama_kurikulum',50);
             $table->boolean("aktif")->default(false);
-            
-    });
-          
+            $table->text("deskripsi");
+            $table->year("tahun_mulai_berlaku");
+            $table->year("tahun_selesai_berlaku");
+        });
     }
 
     /**
@@ -24,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-         Schema::table('kurikulum', function($table) {
-             $table->dropColumn('aktif');
-    });
+        Schema::dropIfExists('kurikulum');
     }
 };

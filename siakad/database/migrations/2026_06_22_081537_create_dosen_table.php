@@ -15,6 +15,11 @@ return new class extends Migration
             $table->string('nim_dosen', 15)->primary();
             $table->string('nip', 21)->nullable();
             $table->string('nama', 50);
+	    $table->string('user_id',15)->nullable()->constrained()->unique();
+            $table->foreign('user_id')->references('username')->on('users')->onDelete('cascade')->onUpdate('cascade');
+	    $table->string('prodi', 15)->nullable();
+            $table->foreign('prodi')->references('kode_prodi')->on('prodi')->onDelete('cascade')->onUpdate('cascade');
+            $table->string("jabatan_struktural", 100);
 
         });
     }

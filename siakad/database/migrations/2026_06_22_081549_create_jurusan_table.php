@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('sk_ban',50);
             $table->string('kaprodi',15);
             $table->text('keterangan')->nullable();
-            $table->string('fakultas',2)->nullable()->index();  
-          
+            $table->string('fakultas',3);  
+            $table->foreign('fakultas')->references('kode_fakultas')->on('fakultas')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
