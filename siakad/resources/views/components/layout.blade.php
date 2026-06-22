@@ -99,7 +99,7 @@
         @endcan
 
         @can('nilai_krs.view')
-        <li><a href="/mahasiswa/nilai-krs">Nilai KRS</a></li>
+        <li><a href="/mahasiswa/nilai_krs">Nilai KRS</a></li>
         @endcan
 
         @can('khs.view')
@@ -107,7 +107,7 @@
         @endcan
 
         @can('transkrip.view')
-        <li><a href="/mahasiswa/transkrip">Transkrip</a></li>
+        <li><a href="/mahasiswa/transkrip">Transkrip Nilai</a></li>
         @endcan
 
         {{-- PERWALIAN --}}

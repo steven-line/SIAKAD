@@ -34,7 +34,7 @@
                 </div>
             </div>
        
-            <!-- Tabel KRS dengan checkbox pembatalan -->
+            <!-- Tabel KRS -->
             <div class="overflow-x-auto rounded-box border border-base-content/5 bg-white shadow-md mt-4">
                 <table class="table w-full">
                     <thead class="bg-blue-500 text-white">
@@ -84,11 +84,12 @@
                 </table>
             </div>
         </form>
-        <form id="validasi-mahasiswa-form-{{$nrp}}" action="/mahasiswa/krs/{{ $nrp }}/validasi" method='POST'>
-                    @csrf  
-
-                    
-            </form>
+        
+        <form id="validasi-mahasiswa-form-{{$nrp}}" 
+              action="{{ route('mahasiswa.krs.validasi', $nrp) }}" 
+              method='POST'>
+              @csrf
+        </form>
         <!-- Total SKS -->
         <div class="flex justify-end mt-4 font-bold text-lg">
             TOTAL {{ $totalSks }} SKS
@@ -115,14 +116,4 @@
         </div>
     </div>
 
-    <!-- JavaScript untuk check/uncheck semua -->
-    <script>
-        document.getElementById('pilihSemua')?.addEventListener('change', function(e) {
-            document.querySelectorAll('.checkboxBatal').forEach(cb => cb.checked = e.target.checked);
-        });
-
-        document.getElementById('cetakKRS')?.addEventListener('click', function() {
-            window.print();
-        });
-    </script>
 </x-layout>

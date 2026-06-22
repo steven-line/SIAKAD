@@ -11,56 +11,34 @@
                         <th>Kode</th>
                         <th>Mata Kuliah</th>
                         <th>SKS</th>
-                        <th>Nilai</th>
-                        <th>UTS</th>
-                        <th>UAS</th>
-                        <th>TTT1</th>
-                        <th>TTT2</th>
-                        <th>Lain</th>
+                        <th>Grade</th>
+                        <th>Mutu</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($transkrip as $index => $row)
+                    @forelse ($transkripWithMutu as $index => $row)
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $row->periode }}</td>
                         <td>{{ $row->kode }}</td>
                         <td>{{ $row->nama_mk ?? '-' }}</td>
                         <td>{{ $row->sks ?? '-' }}</td>
-                        <td class="text-center">
-                            @if($row->bu == '1')
-                                <span class="badge bg-green-500 text-white px-2 py-1 rounded">{{ $row->na ?? 'L' }}</span>
-                            @elseif($row->bu == '0')
-                                <span class="badge bg-red-500 text-white px-2 py-1 rounded">{{ $row->na ?? 'E' }}</span>
-                            @else
-                                <span>-</span>
-                            @endif
-                        </td>
-                        <td>{{ $row->uts ?? '-' }}</td>
-                        <td>{{ $row->uas ?? '-' }}</td>
-                        <td>{{ $row->ttt1 ?? '-' }}</td>
-                        <td>{{ $row->ttt2 ?? '-' }}</td>
-                        <td>{{ $row->lain ?? '-' }}</td>
+                        <td>{{ $row->na ?? '-' }}</td>
+                        <td>{{ number_format($row->mutu, 2) }}</td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="11" class="text-center py-4">Belum ada data transkrip.</td>
+                        <td colspan="7" class="text-center py-4">Belum ada data transkrip.</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <!-- Ringkasan total -->
-        @php
-            $totalSks = $transkrip->sum('sks');
-            $lulus = $transkrip->filter(fn($item) => $item->bu == '1')->count();
-            $totalMatkul = $transkrip->count();
-        @endphp
-        <div class="mt-4 p-4 bg-transparent rounded-lg">
-            <p><strong>Total SKS:</strong> {{ $totalSks }}</p>
-            <p><strong>Total Mata Kuliah:</strong> {{ $totalMatkul }}</p>
-            <p><strong>Lulus:</strong> {{ $lulus }}</p>
+        <div class="mt-4 p-4 bg-transparent rounded">
+            <p><strong>Total SKS:</strong> {{ $total_sks ?? 0 }}</p>
+            <p><strong>Total Mutu:</strong> {{ number_format($total_mutu ?? 0, 2) }}</p>
+            <p><strong>IPK:</strong> {{ number_format($ipk ?? 0, 3) }}</p>
         </div>
     </div>
 </x-layout>
