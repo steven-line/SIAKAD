@@ -16,7 +16,13 @@ class KrsController extends Controller
      */
     public function list_matkul()
     {
-        $nimDosen = auth()->user()->dosen->nim_dosen;
+        $user = auth()->user();
+
+        if (!$user || !$user->dosen) {
+            abort(403, 'Akun tidak memiliki data dosen.');
+        }
+
+        $nimDosen = $user->dosen->nim_dosen;
 
         $mks = Penawaran::with('mk')
             ->where('dosen', $nimDosen)
@@ -24,14 +30,20 @@ class KrsController extends Controller
 
         return view('dosen.input_nilai.list_matkul', compact('mks'));
     }
+    public function registrasi()
+    {
+        return $this->belongsTo(Registrasi::class, 'registrasi_id', 'regkrs');
+    }
 
     /**
      * LIST MAHASISWA PER MK
      */
     public function list_mahasiswa(Mk $mk)
     {
-        $mahasiswas = Registrasi::with('mahasiswa')
-            ->where('kodemk', $mk->kodemk)
+        $mahasiswas = Registrasi::with(['mahasiswa', 'penawaran.mk'])
+            ->whereHas('penawaran', function ($q) use ($mk) {
+                $q->where('kodemk', $mk->kodemk);
+            })
             ->get();
 
         return view('dosen.input_nilai.list_mahasiswa', [
@@ -58,7 +70,9 @@ class KrsController extends Controller
 
     public function show(Mahasiswa $mahasiswa, Mk $mk)
     {
-        $krs = Krs::where('nrp', $mahasiswa->nrp)
+        $krs = Krs::whereHas('registrasi', function ($q) use ($mahasiswa) {
+                $q->where('nrp', $mahasiswa->nrp);
+            })
             ->where('kode', $mk->kodemk)
             ->first();
 

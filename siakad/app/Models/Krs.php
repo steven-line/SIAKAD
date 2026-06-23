@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Krs extends Model
 {
-    //
     protected $table = 'krs';
-     public $timestamps = false;
-     protected $fillable = [
-        'nrp',
+
+    protected $fillable = [
+        'registrasi_id',
         'kode',
         'bu',
         'ttt1',
@@ -21,8 +20,20 @@ class Krs extends Model
         'uas',
         'na',
         'sks',
-        'periode',
         'kelas',
-        'survey'
-        ];
+        'survey',
+    ];
+
+    /**
+     * RELASI WAJIB
+     */
+    public function registrasi()
+    {
+        return $this->belongsTo(Registrasi::class, 'registrasi_id', 'regkrs');
+    }
+
+    public function mk()
+    {
+        return $this->belongsTo(Mk::class, 'kode', 'kodemk');
+    }
 }

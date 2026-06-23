@@ -55,6 +55,11 @@ class PenawaranController extends Controller
         return $this->belongsTo(Semester::class, 'semester_id', 'id');
     }
 
+    public function registrasis()
+    {
+        return $this->hasMany(Registrasi::class, 'penawaran_id', 'recno');
+    }
+
     /**
      * FORM INPUT
      */
