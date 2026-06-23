@@ -49,19 +49,15 @@
                     <input type="date" class="input w-full" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" />
                     <x-forms.error name="tanggal_lahir" />
                 </div>
-                  <div>
-                    <label class="label font-bold" for="sex">Sex</label>
-                    <select class="select select-bordered w-full" name="sex" required>
-                        <option disabled>Pilih Jenis Kelamin</option>
-                        <option value="L">Laki-laki</option>
-                        <option value="P">Perempuan</option>
-                    </select>
-                    <x-forms.error name="sex" />
-                </div>
+                
 
-                <div>
+              <div>
                     <label class="label font-bold" for="jenis_kelamin">Jenis Kelamin</label>
-                    <input type="text" maxlength="12" class="input w-full" name="jenis_kelamin" value="{{ old('jenis_kelamin') }}" placeholder="Masukkan Jenis Kelamin" required />
+                    <select class="select select-bordered w-full" name="jenis_kelamin" required>
+                        <option disabled>Pilih Jenis Kelamin</option>
+                        <option value="L">L</option>
+                        <option value="P">P</option>
+                    </select>
                     <x-forms.error name="jenis_kelamin" />
                 </div>
 
