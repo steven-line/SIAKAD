@@ -14,7 +14,8 @@ use App\Http\Controllers\{
     KrsController,
     NilaiKrsAnakWali,
     NilaiKrsAnakWaliController,
-    MahasiswaAdminController
+    MahasiswaAdminController,
+    PeriodeController
 };
 
 use App\Http\Controllers\Admin\{
@@ -313,6 +314,21 @@ Route::middleware('auth')->group(function () {
                 Route::delete('/{mahasiswa}', [MahasiswaAdminController::class, 'destroy'])->name('destroy');
   
             });
+
+    Route::prefix('periode')
+        ->middleware('permission:periode.manage')
+        ->name('periode.')
+        ->group(function () {
+            Route::get('/', [PeriodeController::class, 'index'])->name('index');
+            Route::get('/create', [PeriodeController::class, 'create'])->name('create');
+            Route::post('/', [PeriodeController::class, 'store'])->name('store');
+            Route::get('/{periode}/edit', [PeriodeController::class, 'edit'])->name('edit');
+            Route::patch('/{periode}', [PeriodeController::class, 'update'])->name('update');
+            Route::delete('/{periode}', [PeriodeController::class, 'destroy'])->name('destroy');
+            Route::get('/{periode}', [PeriodeController::class, 'show'])->name('show');
+            
+        });
+        
     /*
     |--------------------------------------------------------------------------
     | MAHASISWA

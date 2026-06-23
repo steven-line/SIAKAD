@@ -16,7 +16,7 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31129999',
-                'kodemk' => 'IF101001',
+               
                 'penawaran_id' => 1,
                 'status' => 'AMBIL',
                 'sesi' => 'A',
@@ -33,7 +33,7 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31129999',
-                'kodemk' => 'IF101002',
+              
                 'penawaran_id' => 2,
                 'status' => 'AMBIL',
                 'sesi' => 'A',
@@ -50,7 +50,7 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31128888',
-                'kodemk' => 'IF101001',
+   
                 'penawaran_id' => 1,
                 'status' => 'AMBIL',
                 'sesi' => 'A',
@@ -67,7 +67,7 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31127777',
-                'kodemk' => 'IF101005',
+         
                 'penawaran_id' => 5,
                 'status' => 'AMBIL',
                 'sesi' => 'A',

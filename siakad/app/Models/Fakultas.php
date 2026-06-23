@@ -14,5 +14,11 @@ class Fakultas extends Model
           'kode_fakultas',
           'nama_fakultas'
         ];
+      public function jurusans()
+        {
+        return $this->hasMany(
+            Jurusan::class
+        );
+    }
     //
 }

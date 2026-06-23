@@ -21,9 +21,10 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
            
             FakultasSeeder::class,
-            ProdiSeeder::class,
+          
             DosenSeeder::class,
             JurusanSeeder::class,
+            ProdiSeeder::class,
             KurikulumSeeder::class,
             MkSeeder::class,
             PeriodeSeeder::class,

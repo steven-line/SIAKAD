@@ -24,7 +24,7 @@ class ProdiController extends Controller
      */
     public function create()
     {
-        $fakultass = Fakultas::orderBy('kode_fakultas')->get();
+        $fakultass = Fakultas::orderBy('kode_jurusan')->get();
         return view('admin.prodi.create', ['fakultass' => $fakultass]);
     }
 
@@ -36,13 +36,13 @@ class ProdiController extends Controller
         $request->validate([
             'kode_prodi' => ['required', 'min:3', 'unique:prodi', 'max:15'],
             'nama_prodi' => ['required', 'min:4', 'max:50'],
-            'kode_fakultas' => ['required', 'max:3']
+            'kode_jurusan' => ['required', 'max:3']
         ]);
 
         Prodi::create([
             'kode_prodi' => $request->kode_prodi,
             'nama_prodi' => $request->nama_prodi,
-            'kode_fakultas' => $request->kode_fakultas,
+            'kode_jurusan' => $request->kode_jurusan,
         ]);
 
         return redirect()->route('prodi.index')
@@ -58,7 +58,7 @@ class ProdiController extends Controller
      */
     public function edit(Prodi $prodi)
     {
-        $fakultass = Fakultas::orderBy('kode_fakultas')->get();
+        $fakultass = Fakultas::orderBy('kode_jurusan')->get();
 
         return view('admin.prodi.edit', [
             'prodi' => $prodi,
@@ -84,12 +84,12 @@ class ProdiController extends Controller
         $request->validate([
             'kode_prodi' => ['required', 'min:3', Rule::unique('prodi')->ignore($prodi), 'max:15'],
             'nama_prodi' => ['required', 'min:4', 'max:50'],
-            'kode_fakultas' => ['required', 'max:3']
+            'kode_jurusan' => ['required', 'max:3']
         ]);
         $prodi->update([
             'kode_prodi' => $request->kode_prodi,
             'nama_prodi' => $request->nama_prodi,
-            'kode_fakultas' => $request->kode_fakultas,
+            'kode_jurusan' => $request->kode_jurusan,
         ]);
 
         return redirect()->route('prodi.index')

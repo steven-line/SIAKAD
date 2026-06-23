@@ -40,29 +40,29 @@
                 />
                 <x-forms.error name="nama_prodi"/>
 
-                <label class="label font-bold mt-2" for="kode_fakultas">
+                <label class="label font-bold mt-2" for="kode_jurusan">
                     Kode Fakultas
                 </label>
 
                 <select
                     class="select select-bordered w-full"
-                    name="kode_fakultas"
+                    name="kode_jurusan"
                     required
                 >
                     <option disabled>Pilih Fakultas</option>
 
                     @foreach ($fakultass as $fakultas)
                         <option
-                            value="{{ $fakultas->kode_fakultas }}"
-                            @selected(old('kode_fakultas', $prodi->kode_fakultas) == $fakultas->kode_fakultas)
+                            value="{{ $fakultas->kode_jurusan }}"
+                            @selected(old('kode_jurusan', $prodi->kode_jurusan) == $fakultas->kode_jurusan)
                         >
-                            {{ $fakultas->kode_fakultas }} - {{ $fakultas->nama_fakultas }}
+                            {{ $fakultas->kode_jurusan }} - {{ $fakultas->nama_fakultas }}
                         </option>
                     @endforeach
 
                 </select>
 
-                <x-forms.error name="kode_fakultas"/>
+                <x-forms.error name="kode_jurusan"/>
 
                 <button class="btn btn-primary mt-6">
                     Ubah Prodi
