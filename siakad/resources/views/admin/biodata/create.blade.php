@@ -409,20 +409,7 @@
                     <x-forms.error name="last_update" />
                 </div>
 
-                <div>
-                    <label class="label font-bold" for="pataum">PATAUM</label>
-                    <div class="flex gap-4 mt-1">
-                        <label class="flex items-center gap-2">
-                            <input type="radio" name="pataum" value="P (Pagi)" {{ old('pataum') == 'P (Pagi)' ? 'checked' : '' }} class="radio radio-primary" />
-                            <span>Pagi</span>
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="radio" name="pataum" value="M (Malam)" {{ old('pataum') == 'M (Malam)' ? 'checked' : '' }} class="radio radio-primary" />
-                            <span>Malam</span>
-                        </label>
-                    </div>
-                    <x-forms.error name="pataum" />
-                </div>
+             
 
                 <div>
                     <label class="label font-bold" for="email">Email</label>
