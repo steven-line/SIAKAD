@@ -43,10 +43,7 @@
                                 data-sks="{{ $mk->sks }}"
                                 @selected(old('kodemk', $penawaran->kodemk) == $mk->kodemk)
                             >
-                                {{ $mk->kodemk }}
-                                -
-                                {{ $mk->nama }}
-                                ({{ $mk->sks }} SKS)
+                                {{ $mk->kodemk }} - {{ $mk->nama }} ({{ $mk->sks }} SKS)
                             </option>
                         @endforeach
                     </select>
@@ -80,32 +77,20 @@
                     </label>
 
                     <select
-                        name="semester"
+                        name="semester_id"
                         class="w-full p-2 mt-1 bg-gray-700 rounded"
                     >
-                        @for($i=1;$i<=8;$i++)
+                        @foreach($semesters as $semester)
                             <option
-                                value="{{ $i }}"
-                                @selected(old('semester', $penawaran->semester) == $i)
+                                value="{{ $semester->id }}"
+                                @selected(old('semester_id', $penawaran->semester_id) == $semester->id)
                             >
-                                {{ $i }}
+                                {{ $semester->periode_id }}
+                                - {{ $semester->jenis }}
+                                {{ $semester->aktif ? '(Aktif)' : '' }}
                             </option>
-                        @endfor
+                        @endforeach
                     </select>
-                </div>
-
-                {{-- PERIODE --}}
-                <div>
-                    <label class="text-sm text-gray-400">
-                        Periode
-                    </label>
-
-                    <input
-                        type="text"
-                        name="periode"
-                        value="{{ old('periode', $penawaran->periode) }}"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded"
-                    >
                 </div>
 
                 {{-- HARI --}}
@@ -180,22 +165,22 @@
                     >
                 </div>
 
-                {{-- JURUSAN --}}
+                {{-- prodi --}}
                 <div>
                     <label class="label font-bold">
-                        Jurusan
+                        prodi
                     </label>
 
                     <select
                         class="select select-bordered w-full"
-                        name="jurusan"
+                        name="prodi"
                     >
-                        @foreach($jurusans as $jurusan)
+                        @foreach($prodis as $prodi)
                             <option
-                                value="{{ $jurusan->kode_jurusan }}"
-                                @selected(old('jurusan', $penawaran->jurusan) == $jurusan->kode_jurusan)
+                                value="{{ $prodi->kode_prodi }}"
+                                @selected(old('prodi', $penawaran->prodi) == $prodi->kode_prodi)
                             >
-                                {{ $jurusan->nama_jurusan }}
+                                {{ $prodi->nama_prodi }}
                             </option>
                         @endforeach
                     </select>

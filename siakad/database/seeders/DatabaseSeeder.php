@@ -33,7 +33,6 @@ class DatabaseSeeder extends Seeder
             RegistrasiSeeder::class,
             KrsSeeder::class,
 
-
         ]);
     }
 }

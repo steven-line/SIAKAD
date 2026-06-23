@@ -269,11 +269,11 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/', [PenawaranController::class, 'index'])->name('index');
             Route::get('/create', [PenawaranController::class, 'create'])->name('create');
-            route::get('/{penawaran}/edit', [PenawaranController::class, 'edit'])->name('edit');
+            Route::get('/{penawaran}/edit', [PenawaranController::class, 'edit'])->name('edit');
             Route::post('/', [PenawaranController::class, 'store'])->name('store');
-            Route::get('/{recno}', [PenawaranController::class, 'show'])->name('show');
+            Route::get('/{penawaran}', [PenawaranController::class, 'show'])->name('show');
             Route::patch('/{penawaran}', [PenawaranController::class, 'update'])->name('update');
-            Route::delete('/{recno}', [PenawaranController::class, 'destroy'])->name('destroy');
+            Route::delete('/{penawaran}', [PenawaranController::class, 'destroy'])->name('destroy');
         });
 
     /*
