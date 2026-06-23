@@ -14,18 +14,20 @@ return new class extends Migration
     {
         Schema::create('mahasiswas', function (Blueprint $table) {
 
-            $table->string('nrp')->primary();
-            $table->string('nama');
+            $table->string('nrp', 8)->primary();
             $table->string('dosen_wali',15);
-	    $table->string('prodi', 15)->nullable();
+	         $table->string('prodi', 15)->nullable();
             $table->foreign('prodi')->references('kode_prodi')->on('prodi')->onDelete('cascade')->onUpdate('cascade');
+
             $table->foreign('nrp')->references('username')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            
+            $table->foreign('dosen_wali')->references('nim_dosen')->on('dosen')->onDelete('cascade')->onUpdate('cascade');
             $table->enum('status_blokir', [
             'BELUM_KRS',
             'MENUNGGU_VALIDASI',
             'DISETUJUI',
             'TERKUNCI'
-             ])->default('BELUM_KRS')->change();
+             ])->default('BELUM_KRS');
 
         });
     }

@@ -18,7 +18,6 @@ class BiodataSeeder extends Seeder
                 'nik' => '3201010101010001',
                 'tempat_lahir' => 'Bandung',
                 'tanggal_lahir' => '2000-01-01',
-                'sex' => 'L',
                 'tinggi' => 170,
                 'berat' => 65,
                 'alamat' => 'Jl. Mawar No 1',
@@ -41,8 +40,6 @@ class BiodataSeeder extends Seeder
                 'asal_smu' => 'SMAN 1 Bandung',
                 'lulus_smu' => '2018',
                 'transportasi' => 'Motor',
-                'dosenwali' => 'D0010001',
-
                 'nama_ayah' => 'Sutrisno',
                 'alamat_ayah' => 'Bandung',
                 'no_telp_ayah' => '0221111111',
@@ -82,10 +79,9 @@ class BiodataSeeder extends Seeder
                 'kebutuhan_ayah' => '0',
                 'kebutuhan_ibu' => '0',
                 'last_update' => Carbon::now(),
-
-                'pataum' => 'N',
+    
                 'email' => 'budi@example.com',
-                'jenis_kelamin' => 'Laki-Laki',
+                'jenis_kelamin' => 'L',
                 'nisn' => '1234567890',
             ],
 
@@ -95,7 +91,7 @@ class BiodataSeeder extends Seeder
                 'nik' => '3201010101010002',
                 'tempat_lahir' => 'Jakarta',
                 'tanggal_lahir' => '2000-05-10',
-                'sex' => 'L',
+              
                 'tinggi' => 168,
                 'berat' => 60,
                 'alamat' => 'Jl. Melati',
@@ -118,7 +114,7 @@ class BiodataSeeder extends Seeder
                 'asal_smu' => 'SMAN 2 Bandung',
                 'lulus_smu' => '2018',
                 'transportasi' => 'Motor',
-                'dosenwali' => 'D0010002',
+                
 
                 'nama_ayah' => 'Bambang',
                 'alamat_ayah' => 'Bandung',
@@ -160,9 +156,8 @@ class BiodataSeeder extends Seeder
                 'kebutuhan_ibu' => '0',
                 'last_update' => Carbon::now(),
 
-                'pataum' => 'N',
                 'email' => 'andi@example.com',
-                'jenis_kelamin' => 'Laki-Laki',
+                'jenis_kelamin' => 'L',
                 'nisn' => '1234567891',
             ],
 
@@ -172,7 +167,7 @@ class BiodataSeeder extends Seeder
                 'nik' => '3201010101010003',
                 'tempat_lahir' => 'Depok',
                 'tanggal_lahir' => '2000-08-20',
-                'sex' => 'P',
+              
                 'tinggi' => 160,
                 'berat' => 50,
                 'alamat' => 'Jl. Anggrek',
@@ -195,7 +190,7 @@ class BiodataSeeder extends Seeder
                 'asal_smu' => 'SMAN 3 Cimahi',
                 'lulus_smu' => '2018',
                 'transportasi' => 'Jalan Kaki',
-                'dosenwali' => 'D0010003',
+               
 
                 'nama_ayah' => 'Rahmat',
                 'alamat_ayah' => 'Cimahi',
@@ -237,9 +232,8 @@ class BiodataSeeder extends Seeder
                 'kebutuhan_ibu' => '0',
                 'last_update' => Carbon::now(),
 
-                'pataum' => 'N',
                 'email' => 'siti@example.com',
-                'jenis_kelamin' => 'Perempuan',
+                'jenis_kelamin' => 'P',
                 'nisn' => '1234567892',
             ],
         ];

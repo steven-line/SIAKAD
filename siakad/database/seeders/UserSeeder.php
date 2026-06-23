@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     {
         $datas = [
             [
-                'username' => '3112999',
+                'username' => '31129999',
                 'password' => Hash::make('hello12346'),
                 'firstlogin' => Carbon::now(),
                 'lastlogin' => Carbon::now(),

@@ -20,17 +20,17 @@
 
             <label class="label font-bold">NIM DOSEN</label>
             <input type="text" class="input w-full" name="nim_dosen"
-                   placeholder="Masukkan NIM Dosen" required maxlength="15" />
+                   placeholder="Masukkan NIM Dosen" required maxlength="15" value="{{ old('nim_dosen') }}"/>
             <x-forms.error name="nim_dosen"/>
 
             <label class="label font-bold mt-2">NIP</label>
             <input type="text" class="input w-full" name="nip"
-                   placeholder="Masukkan NIP" required maxlength="21" />
+                   placeholder="Masukkan NIP" required maxlength="21" value="{{ old('nip') }}"/>
             <x-forms.error name="nip"/>
 
             <label class="label font-bold mt-2">Nama</label>
             <input type="text" class="input w-full" name="nama"
-                   placeholder="Masukkan Nama Lengkap" required maxlength="50" />
+                   placeholder="Masukkan Nama Lengkap" required maxlength="50" value="{{ old('nama') }}"/>
             <x-forms.error name="nama"/>
 
             <label class="label font-bold mt-2">Akun User (Log In)</label>
@@ -48,7 +48,7 @@
             <select class="select select-bordered w-full" name="prodi" required>
                 <option disabled selected>Pilih Program Studi</option>
                 @foreach ($prodis as $prodi)
-                    <option value="{{ $prodi->kode_prodi }}">
+                    <option value="{{ $prodi->kode_prodi }}" @selected(old('prodi', $prodi->kode_prodi) == $prodi->kode_prodi) >
                         {{ $prodi->nama_prodi }}
                     </option>
                 @endforeach

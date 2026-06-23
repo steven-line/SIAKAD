@@ -17,18 +17,22 @@ class DatabaseSeeder extends Seeder
         $this->call([
 
             // User & Role
-            ProdiSeeder::class,
             RoleAndPermissionsSeeder::class,
             UserSeeder::class,
-            KurikulumSeeder::class,
-            // Master Data
+           
+            FakultasSeeder::class,
+            ProdiSeeder::class,
             DosenSeeder::class,
-            MkSeeder::class,
-
-            // Data Akademik
             JurusanSeeder::class,
+            KurikulumSeeder::class,
+            MkSeeder::class,
+            PeriodeSeeder::class,
+            SemesterSeeder::class,
             PenawaranSeeder::class,
-
+            MahasiswaSeeder::class,
+            BiodataSeeder::class,
+            RegistrasiSeeder::class,
+            KrsSeeder::class,
 
 
         ]);

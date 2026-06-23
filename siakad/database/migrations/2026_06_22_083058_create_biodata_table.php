@@ -20,7 +20,7 @@ return new class extends Migration
             $table->char('nik',16);
             $table->string('tempat_lahir', 25)->nullable();
             $table->date('tanggal_lahir')->nullable();
-            $table->char('sex', 1)->default('');
+        
             $table->integer('tinggi')->default(0);
             $table->integer('berat')->default(0);
             $table->string('alamat',100)->default('');
@@ -80,7 +80,7 @@ return new class extends Migration
             $table->char('kebutuhan_ibu', 4);
             $table->date('last_update');
             $table->string('email', 100);
-            $table->string('jenis_kelamin', 12);
+            $table->enum('jenis_kelamin', ['P', 'L'])->default('P');
             $table->string('nisn', 25);
              
         });

@@ -17,7 +17,7 @@ class DosenSeeder extends Seeder
             [
                 'nama' => 'Yonatan Widianto',
                 'nip' => '19800101',
-                'user_id' => '31123012',
+                'user_id' => '31127777',
                 'prodi' => 'IF',
                 'jabatan_struktural' => 'rektor',
             ]
@@ -28,7 +28,7 @@ class DosenSeeder extends Seeder
             [
                 'nama' => 'Darmanto',
                 'nip' => '19800202',
-                'user_id' => '31123019',
+                'user_id' => '31129999',
                 'prodi' => 'ARS',
                 'jabatan_struktural' => 'dosen biasa',
 
@@ -40,7 +40,7 @@ class DosenSeeder extends Seeder
             [
                 'nama' => 'Erwin',
                 'nip' => '19800303',
-                'user_id' => '31123003',
+                'user_id' => '31128888',
                 'prodi' => 'ING',
                 'jabatan_struktural' => 'yayasan',
 

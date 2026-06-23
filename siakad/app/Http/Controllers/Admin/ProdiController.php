@@ -36,7 +36,7 @@ class ProdiController extends Controller
         $request->validate([
             'kode_prodi' => ['required', 'min:3', 'unique:prodi', 'max:15'],
             'nama_prodi' => ['required', 'min:4', 'max:50'],
-            'kode_fakultas' => ['required', 'max:15']
+            'kode_fakultas' => ['required', 'max:3']
         ]);
 
         Prodi::create([
@@ -84,7 +84,7 @@ class ProdiController extends Controller
         $request->validate([
             'kode_prodi' => ['required', 'min:3', Rule::unique('prodi')->ignore($prodi), 'max:15'],
             'nama_prodi' => ['required', 'min:4', 'max:50'],
-            'kode_fakultas' => ['required', 'max:15']
+            'kode_fakultas' => ['required', 'max:3']
         ]);
         $prodi->update([
             'kode_prodi' => $request->kode_prodi,

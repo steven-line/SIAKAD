@@ -101,15 +101,15 @@ class BiodataAdminController extends Controller
             'kebutuhan_ayah' => 'required|max:4',
             'kebutuhan_ibu' => 'required|max:4',
             'last_update' => 'required|date',
-            'pataum' => 'required|in:P,M',
+           
             'email' => 'required|email|max:100',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan', // validasi nilai yang diterima
+            'jenis_kelamin' => 'required|in:L,P', // validasi nilai yang diterima
             'nisn' => 'required|max:25',
         ]);
 
         try {
             // Mapping nilai jenis_kelamin ke sex (L/P)
-            $sex = $request->jenis_kelamin === 'Laki-laki' ? 'L' : 'P';
+            
 
             Biodata::create([
                 'nrp' => $request->nrp,
@@ -117,7 +117,7 @@ class BiodataAdminController extends Controller
                 'nik' => $request->nik,
                 'tempat_lahir' => $request->tempat_lahir,
                 'tanggal_lahir' => $request->tanggal_lahir,
-                'sex' => $sex, // diisi dari mapping
+              
                 'tinggi' => $request->tinggi,
                 'berat' => $request->berat,
                 'alamat' => $request->alamat,
@@ -176,7 +176,7 @@ class BiodataAdminController extends Controller
                 'kebutuhan_ayah' => $request->kebutuhan_ayah,
                 'kebutuhan_ibu' => $request->kebutuhan_ibu,
                 'last_update' => $request->last_update,
-                'pataum' => $request->pataum,
+               
                 'email' => $request->email,
                 'jenis_kelamin' => $request->jenis_kelamin, // tetap menyimpan nilai asli
                 'nisn' => $request->nisn,
@@ -266,14 +266,12 @@ class BiodataAdminController extends Controller
             'kebutuhan_ayah' => 'required|max:4',
             'kebutuhan_ibu' => 'required|max:4',
             'last_update' => 'required|date',
-            'pataum' => 'required|in:P,M',
+
             'email' => 'required|email|max:100',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'jenis_kelamin' => 'required|in:L,P',
             'nisn' => 'required|max:25',
         ]);
 
-        // Mapping sama seperti store
-        $sex = $request->jenis_kelamin === 'Laki-laki' ? 'L' : 'P';
 
         try {
             $biodata->update([
@@ -282,7 +280,6 @@ class BiodataAdminController extends Controller
                 'nik' => $request->nik,
                 'tempat_lahir' => $request->tempat_lahir,
                 'tanggal_lahir' => $request->tanggal_lahir,
-                'sex' => $sex,
                 'tinggi' => $request->tinggi,
                 'berat' => $request->berat,
                 'alamat' => $request->alamat,
@@ -342,7 +339,7 @@ class BiodataAdminController extends Controller
                 'kebutuhan_ayah' => $request->kebutuhan_ayah,
                 'kebutuhan_ibu' => $request->kebutuhan_ibu,
                 'last_update' => $request->last_update,
-                'pataum' => $request->pataum,
+               
                 'email' => $request->email,
                 'jenis_kelamin' => $request->jenis_kelamin,
                 'nisn' => $request->nisn,
