@@ -239,22 +239,27 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::prefix('jadwal')
-        ->middleware('permission:jadwal.view_umum|jadwal.view_sendiri')
         ->name('jadwal.')
         ->group(function () {
 
+            // bisa diakses umum / dosen
             Route::get('/', [JadwalController::class, 'index'])->name('index');
             Route::get('/pagi', [JadwalController::class, 'pagi'])->name('pagi');
             Route::get('/malam', [JadwalController::class, 'malam'])->name('malam');
 
+            // detail (biasanya tetap boleh lihat)
+            Route::get('/{recno}', [JadwalController::class, 'show'])->name('show');
+
+            // CRUD hanya admin / kaprodi
             Route::middleware('permission:jadwal.manage')->group(function () {
                 Route::get('/create', [JadwalController::class, 'create'])->name('create');
                 Route::post('/', [JadwalController::class, 'store'])->name('store');
-                Route::get('/{recno}', [JadwalController::class, 'show'])->name('show');
-                Route::get('/{id}/edit', [JadwalController::class, 'edit'])->name('edit');
-                Route::post('/{id}', [JadwalController::class, 'update'])->name('update');
-                Route::delete('/{id}', [JadwalController::class, 'destroy'])->name('destroy');
+                Route::get('/{recno}/edit', [JadwalController::class, 'edit'])->name('edit');
+
+                Route::put('/{recno}', [JadwalController::class, 'update'])->name('update');
+                Route::delete('/{recno}', [JadwalController::class, 'destroy'])->name('destroy');
             });
+
         });
 
     /*

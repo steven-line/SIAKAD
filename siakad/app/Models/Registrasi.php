@@ -7,18 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Registrasi extends Model
 {
     protected $table = 'registrasi';
-
     protected $primaryKey = 'regkrs';
-
     public $timestamps = false;
 
-    /**
-     * Kolom-kolom yang dapat diisi secara massal.
-     * Disesuaikan dengan struktur tabel registrasi terbaru.
-     */
     protected $fillable = [
         'nrp',
-        'penawaran_id',    // foreign key ke penawaran.recno
+        'penawaran_id',
         'status',
         'sesi',
         'tanggal',
@@ -30,18 +24,14 @@ class Registrasi extends Model
         'ip_address',
         'sks',
         'pataum',
-        // 'kodemk', 'periode', 'dosen' TIDAK ADA di tabel, jangan dimasukkan
     ];
 
     protected $casts = [
-        'tanggal'    => 'date',
-        'mulaipukul' => 'datetime:H:i:s',
-        'selesaipukul' => 'datetime:H:i:s',
+        'tanggal' => 'date',
     ];
 
     /**
-     * Relasi ke tabel penawaran.
-     * Registrasi terikat pada satu penawaran.
+     * RELASI KE PENAWARAN
      */
     public function penawaran()
     {
@@ -49,8 +39,7 @@ class Registrasi extends Model
     }
 
     /**
-     * Relasi ke tabel mahasiswa (melalui nrp).
-     * Jika model Mahasiswa berbeda, sesuaikan.
+     * RELASI KE MAHASISWA
      */
     public function mahasiswa()
     {
@@ -58,19 +47,17 @@ class Registrasi extends Model
     }
 
     /**
-     * (Opsional) Relasi tidak langsung ke Mk melalui penawaran.
-     * Digunakan untuk kemudahan akses $registrasi->matkul.
+     * RELASI MK (LEBIH AMAN LEWAT PENAWARAN)
      */
-    public function matkul()
+    public function mk()
     {
-        // Melalui penawaran ke Mk
         return $this->hasOneThrough(
             Mk::class,
             Penawaran::class,
-            'recno',        // foreign key pada penawaran (primary key)
-            'kodemk',       // foreign key pada mk (primary key)
-            'penawaran_id', // local key pada registrasi
-            'kodemk'        // local key pada penawaran yang merujuk ke mk.kodemk
+            'recno',   // Penawaran PK
+            'kodemk',  // MK PK
+            'penawaran_id',
+            'kodemk'
         );
     }
 }
