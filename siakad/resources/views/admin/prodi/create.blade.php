@@ -18,17 +18,17 @@
             <input type="text" class="input input-bordered w-full" maxlength="50" name="nama_prodi" placeholder="" value="{{ old('nama_prodi') }}" />
             <x-forms.error name='nama_prodi'/>
 
-            <label class="label font-bold mt-2" for="kode_fakultas">Kode Fakultas</label>
-            <select class="select select-bordered w-full" name="kode_fakultas" required>
+            <label class="label font-bold mt-2" for="kode_jurusan">Kode Fakultas</label>
+            <select class="select select-bordered w-full" name="kode_jurusan" required>
                 <option disabled selected>Pilih Fakultas</option>
                 @foreach ($fakultass as $fakultas)
-                    <option value="{{ $fakultas->kode_fakultas }}">
-                        {{ $fakultas->kode_fakultas }}
+                    <option value="{{ $fakultas->kode_jurusan }}">
+                        {{ $fakultas->kode_jurusan }}
                     </option>
                 @endforeach
             </select>
 
-            <x-forms.error name='kode_fakultas'/>
+            <x-forms.error name='kode_jurusan'/>
 
             <button class="btn btn-primary mt-4">Buat Prodi</button>
         </fieldset>

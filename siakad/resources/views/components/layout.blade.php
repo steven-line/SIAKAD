@@ -11,9 +11,9 @@
 
 <body class="flex min-h-screen">
 
-<nav class="bg-white shadow-md border-r border-gray-200 h-screen sticky top-0 left-0 min-w-[250px] py-6 px-4 dark:bg-black">
+<nav class="bg-white shadow-md border-r border-gray-200 h-screen sticky top-0 left-0 min-w-[250px] py-6 px-4 dark:bg-black ">
 
-<div class="flex flex-col h-full">
+<div class="flex flex-col h-full ">
 
     <div class="flex flex-col items-center gap-2">
         <img src="{{ asset('images/boy.png') }}" class="w-20 h-20" alt="user">
@@ -34,7 +34,7 @@
 
     <hr class="my-6 border-gray-200"/>
 
-    <ul class="flex-1 [&>li]:py-2 [&>li]:hover:bg-gray-200">
+    <ul class="flex-1 [&>li]:py-2 [&>li]:hover:bg-gray-200 overflow-y-auto">
 
         {{-- DASHBOARD (SEMUA USER) --}}
         <li>
@@ -78,10 +78,16 @@
      
 
         @can('biodata.manage')
-        <li><a href="/biodata">Master Biodata</a></li>
+          <li><a href="/biodata">Master Biodata</a></li>
         @endcan
 
-     
+        @can('periode.manage')
+            <li><a href="/periode">Master Periode</a></li>
+        @endcan
+
+        @can('semester.manage')
+            <li><a href="/semester">Master Semester</a></li>
+        @endcan
 
         {{-- DOSEN INPUT NILAI --}}
         @can('nilai.input')

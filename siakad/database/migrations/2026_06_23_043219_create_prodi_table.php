@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('prodi', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->string('kode_prodi', 15)->primary();
+            $table->string('nama_prodi',50);
+            $table->string('kode_jurusan', 3);
+            $table->foreign('kode_jurusan')->references('kode_jurusan')->on('jurusan')->onDelete('cascade')->onUpdate('cascade');
+            
         });
     }
 

@@ -13,7 +13,8 @@ class Prodi extends Model
       protected $fillable = [
           'kode_prodi',
           'nama_prodi',
-          'kode_fakultas',
+          'kode_jurusan',
         ];
-    //
+
+  
 }

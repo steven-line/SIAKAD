@@ -18,7 +18,7 @@ class DosenSeeder extends Seeder
                 'nama' => 'Yonatan Widianto',
                 'nip' => '19800101',
                 'user_id' => '31127777',
-                'prodi' => 'IF',
+                'prodi' => 'IF', // Ada di ProdiSeeder (Teknik Informatika)
                 'jabatan_struktural' => 'rektor',
             ]
         );
@@ -29,9 +29,8 @@ class DosenSeeder extends Seeder
                 'nama' => 'Darmanto',
                 'nip' => '19800202',
                 'user_id' => '31129999',
-                'prodi' => 'ARS',
+                'prodi' => 'SI', // DISAMAKAN: Berubah dari ARS ke SI
                 'jabatan_struktural' => 'dosen biasa',
-
             ]
         );
 
@@ -41,9 +40,8 @@ class DosenSeeder extends Seeder
                 'nama' => 'Erwin',
                 'nip' => '19800303',
                 'user_id' => '31128888',
-                'prodi' => 'ING',
+                'prodi' => 'MNJ', // DISAMAKAN: Berubah dari ING ke MNJ
                 'jabatan_struktural' => 'yayasan',
-
             ]
         );
     }

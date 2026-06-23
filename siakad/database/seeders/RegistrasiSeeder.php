@@ -16,6 +16,10 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31129999',
+<<<<<<< HEAD
+=======
+               
+>>>>>>> 9830e8b0dd12445de582382663d9bed2ea21f49e
                 'penawaran_id' => 1,
                 'status' => 'BARU',
                 'sesi' => 'A',
@@ -32,6 +36,10 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31129999',
+<<<<<<< HEAD
+=======
+              
+>>>>>>> 9830e8b0dd12445de582382663d9bed2ea21f49e
                 'penawaran_id' => 2,
                 'status' => 'BARU',
                 'sesi' => 'A',
@@ -48,6 +56,10 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31128888',
+<<<<<<< HEAD
+=======
+   
+>>>>>>> 9830e8b0dd12445de582382663d9bed2ea21f49e
                 'penawaran_id' => 1,
                 'status' => 'BARU',
                 'sesi' => 'A',
@@ -64,6 +76,10 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31127777',
+<<<<<<< HEAD
+=======
+         
+>>>>>>> 9830e8b0dd12445de582382663d9bed2ea21f49e
                 'penawaran_id' => 5,
                 'status' => 'AMBIL',
                 'sesi' => 'A',
