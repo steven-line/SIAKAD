@@ -44,7 +44,7 @@
                                 </form>
                             @endif
                         @else
-                            <span class="text-gray-500 ml-2">Status KRS: {{ $statusBlokir }} – Tidak dapat melakukan perubahan.</span>
+            
                         @endif
                     @else
                         <span class="text-gray-500 ml-2">(Login untuk mendaftar)</span>

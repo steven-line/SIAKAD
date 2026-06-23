@@ -12,36 +12,16 @@ use Illuminate\Support\Facades\Auth;
 class KrsMahasiswaController extends Controller
 {
     /**
-     * Ambil periode aktif (bisa dari session, config, atau database)
-     */
-    protected function getPeriodeAktif()
-    {
-        // Sesuaikan dengan periode yang sedang berjalan
-        return '2026/2027'; // atau ambil dari session
-    }
-
-    /**
      * Menampilkan daftar KRS mahasiswa yang sedang login
      */
     public function index()
     {
         $nrp = session('nrp') ?? Auth::user()->username;
 
-        // Ambil periode aktif
-        $periode = $this->getPeriodeAktif();
-
-        // Query registrasi dengan relasi penawaran
-        $registrasiQuery = Registrasi::with('penawaran.mk')
-            ->where('nrp', $nrp);
-
-        // Filter periode melalui relasi penawaran
-        if (!empty($periode)) {
-            $registrasiQuery->whereHas('penawaran', function ($query) use ($periode) {
-                $query->where('periode', $periode);
-            });
-        }
-
-        $registrasi = $registrasiQuery->get();
+        // Ambil semua registrasi mahasiswa (tanpa filter semester)
+        $registrasi = Registrasi::with('penawaran.mk')
+            ->where('nrp', $nrp)
+            ->get();
 
         // Mapping data
         $krsItems = $registrasi->map(function ($reg) {
@@ -80,11 +60,12 @@ class KrsMahasiswaController extends Controller
         ));
     }
 
+    /**
+     * Menyimpan registrasi mata kuliah baru (tambah KRS)
+     */
     public function store(Request $request)
     {
-        // ============================================================
-        // 1. CEK STATUS BLOKIR MAHASISWA
-        // ============================================================
+        // CEK STATUS BLOKIR MAHASISWA
         $nrp = session('nrp') ?? Auth::user()->username;
         $mahasiswa = Mahasiswa::where('nrp', $nrp)->first();
 
@@ -92,9 +73,7 @@ class KrsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'Anda tidak dapat mendaftar mata kuliah karena status KRS sudah tidak dalam status BELUM_KRS.');
         }
 
-        // ============================================================
-        // 2. VALIDASI & PROSES PENDAFTARAN
-        // ============================================================
+        // VALIDASI
         $request->validate([
             'penawaran_id' => 'required|exists:penawaran,recno',
         ]);
@@ -105,7 +84,7 @@ class KrsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'Data penawaran tidak ditemukan.');
         }
 
-        // Cek apakah sudah terdaftar (berdasarkan penawaran_id)
+        // Cek apakah sudah terdaftar
         $sudah = Registrasi::where('nrp', $nrp)
                     ->where('penawaran_id', $penawaran->recno)
                     ->exists();
@@ -114,22 +93,21 @@ class KrsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'Anda sudah mendaftar mata kuliah ini.');
         }
 
-        // Hitung total SKS yang sudah diambil pada periode yang sama
-        // Gunakan whereHas untuk mengambil registrasi dengan penawaran periode yang sama
+        // Hitung total SKS yang sudah diambil pada semester yang sama
         $totalSksTerdaftar = Registrasi::where('nrp', $nrp)
                             ->whereHas('penawaran', function ($query) use ($penawaran) {
-                                $query->where('periode', $penawaran->periode);
+                                $query->where('semester_id', $penawaran->semester_id);
                             })
                             ->sum('sks');
 
         $sksMatkul = $penawaran->mk ? $penawaran->mk->sks : 3;
-        $limitSks = 24; // nanti ambil dari setting
+        $limitSks = 24;
 
         if ($totalSksTerdaftar + $sksMatkul > $limitSks) {
             return redirect()->back()->with('error', 'Melebihi batas SKS yang diizinkan (maksimal ' . $limitSks . ' SKS).');
         }
 
-        // Simpan registrasi dengan field yang sesuai tabel registrasi
+        // Simpan registrasi
         Registrasi::create([
             'nrp'           => $nrp,
             'penawaran_id'  => $penawaran->recno,
@@ -143,7 +121,7 @@ class KrsMahasiswaController extends Controller
             'selesaipukul'  => $penawaran->selesaipukul,
             'ip_address'    => $request->ip(),
             'sks'           => $sksMatkul,
-            'pataum'        => $penawaran->pataum ?? 'P', // default 'P'
+            'pataum'        => $penawaran->pataum ?? 'P',
         ]);
 
         return redirect()->route('mahasiswa.krs.index')->with('success', 'Berhasil mendaftar mata kuliah.');
@@ -156,9 +134,7 @@ class KrsMahasiswaController extends Controller
     {
         $nrp = session('nrp') ?? Auth::user()->username;
 
-        // ============================================================
         // CEK STATUS BLOKIR
-        // ============================================================
         $mahasiswa = Mahasiswa::where('nrp', $nrp)->first();
         if ($mahasiswa && $mahasiswa->status_blokir !== 'BELUM_KRS') {
             return redirect()->back()->with('error', 'Anda tidak dapat membatalkan mata kuliah karena status KRS sudah tidak dalam status BELUM_KRS.');
@@ -179,11 +155,13 @@ class KrsMahasiswaController extends Controller
 
     /**
      * Validasi KRS mahasiswa (ubah status menjadi MENUNGGU_VALIDASI)
+     * Method ini dipanggil dari route: /mahasiswa/krs/krs/{nrp}/validasi
      */
     public function validasi($nrp)
     {
         $loginNrp = session('nrp') ?? Auth::user()->username;
 
+        // Pastikan yang melakukan validasi adalah mahasiswa yang bersangkutan
         if ($loginNrp !== $nrp) {
             abort(403, 'Aksi tidak diizinkan.');
         }
@@ -194,6 +172,7 @@ class KrsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'Data mahasiswa tidak ditemukan.');
         }
 
+        // Ubah status blokir menjadi 'MENUNGGU_VALIDASI'
         $mahasiswa->status_blokir = 'MENUNGGU_VALIDASI';
         $mahasiswa->save();
 

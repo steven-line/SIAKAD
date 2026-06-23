@@ -25,7 +25,7 @@
                 </div>
                 <div class="flex border-b pb-2">
                     <div class="w-1/3 font-semibold text-gray-700">JENIS KELAMIN</div>
-                    <div class="w-2/3 text-gray-900">: {{ $biodata->jenis_kelamin ?? ($biodata->sex == 'L' ? 'LAKI-LAKI' : 'PEREMPUAN') }}</div>
+                    <div class="w-2/3 text-gray-900">: <span id="jenis_kelamin">{{ $biodata->jenis_kelamin ?? '-' }}</span></div>
                 </div>
 
                 <!-- Baris 3 -->
@@ -84,4 +84,14 @@
         <div class="mt-6 text-center text-sm text-gray-500">
         </div>
     </div>
+    <script>
+        const jenis_kelamin = "{{ $biodata->jenis_kelamin ?? '-' }}";
+        if (jenis_kelamin === 'L') {
+            document.getElementById('jenis_kelamin').textContent = 'Laki-laki';
+        } else if (jenis_kelamin === 'P') {
+            document.getElementById('jenis_kelamin').textContent = 'Perempuan';
+        } else {
+            document.getElementById('jenis_kelamin').textContent = '-';
+        }
+    </script>
 </x-layout>
