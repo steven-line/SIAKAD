@@ -23,11 +23,7 @@ return new class extends Migration
             $table->string('hari',6)->default('');
             $table->time('mulaipukul');
             $table->time('selesaipukul');
-<<<<<<< HEAD
-            $table->string('prodi',3)->default('');
-=======
             $table->string('prodi',3);
->>>>>>> 3d467cf76c969fe05c1fe20f9e620157b777371c
             $table->string('pagu',3)->default('0');
             $table->enum('pataum', ['P', 'M'])->default('P');
             $table->foreign('kodemk')->references('kodemk')->on('mk')
