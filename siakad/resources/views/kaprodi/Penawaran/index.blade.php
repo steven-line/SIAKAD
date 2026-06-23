@@ -4,7 +4,7 @@
 
     <div class="p-4">
         <a class="btn btn-primary text-white mb-4"
-           href="{{route('penawaran.create')}}">
+           href="{{ route('penawaran.create') }}">
             Create Penawaran
         </a>
     </div>
@@ -17,7 +17,6 @@
                 <th>MBKM</th>
                 <th>Kode MK</th>
                 <th>Semester</th>
-                <th>Periode</th>
                 <th>Dosen</th>
                 <th>Sesi</th>
                 <th>Hari</th>
@@ -31,54 +30,82 @@
 
         <tbody>
 
-            @forelse($penawarans as $penawaran)
+        @forelse($penawarans as $penawaran)
 
             <tr>
 
+                {{-- NO (AMAN UNTUK PAGINATION) --}}
                 <td>
-                    {{ $loop->iteration }}
+                    {{ $loop->iteration + ($penawarans->firstItem() - 1) }}
                 </td>
 
+                {{-- MBKM --}}
                 <td>
                     @if($penawaran->MBKM)
-                        <span class="badge badge-success">
-                            Ya
-                        </span>
+                        <span class="badge badge-success">Ya</span>
                     @else
-                        <span class="badge badge-error">
-                            Tidak
-                        </span>
+                        <span class="badge badge-error">Tidak</span>
                     @endif
                 </td>
 
-                <td>{{ $penawaran->kodemk }}</td>
+                {{-- MK --}}
+                <td>
+                    {{ $penawaran->mk->kodemk ?? $penawaran->kodemk }}
+                </td>
 
-                <td>{{ $penawaran->semester }}</td>
+                {{-- SEMESTER (FIX AMAN) --}}
+                <td>
+                    @if($penawaran->semesterRelasi)
+                        {{ $penawaran->semesterRelasi->jenis }}
+                        @if($penawaran->semesterRelasi->aktif)
+                            <span class="text-green-500">(Aktif)</span>
+                        @endif
+                    @else
+                        <span class="text-red-500">Belum ada semester</span>
+                    @endif
+                </td>
 
-                <td>{{ $penawaran->periode }}</td>
+                {{-- DOSEN --}}
+                <td>
+                    {{ $penawaran->dosenRelasi->nama ?? $penawaran->dosen }}
+                </td>
 
-                <td>{{ $penawaran->dosen }}</td>
+                {{-- SESI --}}
+                <td>
+                    Sesi {{ $penawaran->sesi }}
+                </td>
 
-                <td>{{ $penawaran->sesi }}</td>
+                {{-- HARI --}}
+                <td>
+                    {{ $penawaran->hari }}
+                </td>
 
-                <td>{{ $penawaran->hari }}</td>
-
+                {{-- JAM --}}
                 <td>
                     {{ \Carbon\Carbon::parse($penawaran->mulaipukul)->format('H:i') }}
                     -
                     {{ \Carbon\Carbon::parse($penawaran->selesaipukul)->format('H:i') }}
                 </td>
 
-                <td>{{ $penawaran->jurusan }}</td>
+                {{-- JURUSAN --}}
+                <td>
+                    {{ $penawaran->prodiRelasi->nama_prodi ?? $penawaran->prodi }}
+                </td>
 
-                <td>{{ $penawaran->pagu }}</td>
+                {{-- PAGU --}}
+                <td>
+                    {{ $penawaran->pagu }}
+                </td>
 
-                <td>{{ $penawaran->pataum }}</td>
+                {{-- P/M --}}
+                <td>
+                    {{ $penawaran->pataum }}
+                </td>
 
                 {{-- DETAIL --}}
                 <td>
                     <a class="btn btn-soft btn-info"
-                       href="{{route('penawaran.show', $penawaran->recno )}}">
+                       href="{{ route('penawaran.show', $penawaran->recno) }}">
                         Detail
                     </a>
                 </td>
@@ -95,7 +122,7 @@
                 <td>
 
                     <button class="btn btn-soft btn-error"
-                        onclick="deleteBox_{{ $penawaran->recno }}.showModal()">
+                        onclick="document.getElementById('deleteBox_{{ $penawaran->recno }}').showModal()">
                         Delete
                     </button>
 
@@ -109,20 +136,24 @@
                             </h3>
 
                             <p class="py-4">
-                                Apakah Anda yakin ingin menghapus data penawaran ini?
+                                Apakah Anda yakin ingin menghapus data ini?
                             </p>
 
                             <div class="modal-action">
 
                                 <form method="dialog">
-                                    <button
-                                        class="btn btn-primary"
-                                        form="delete-penawaran-form-{{ $penawaran->recno }}">
-                                        Ya
-                                    </button>
-
                                     <button class="btn btn-neutral">
                                         Tidak
+                                    </button>
+                                </form>
+
+                                <form action="{{ route('penawaran.destroy', $penawaran->recno) }}"
+                                      method="POST">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="btn btn-error">
+                                        Delete
                                     </button>
                                 </form>
 
@@ -136,25 +167,15 @@
 
             </tr>
 
-            <form
-                id="delete-penawaran-form-{{ $penawaran->recno }}"
-                action="{{ route('penawaran.destroy', $penawaran->recno) }}"
-                method="POST">
-
-                @csrf
-                @method('DELETE')
-
-            </form>
-
-            @empty
+        @empty
 
             <tr>
-                <td colspan="15" class="text-center">
+                <td colspan="12" class="text-center text-gray-400">
                     Tidak ada data penawaran
                 </td>
             </tr>
 
-            @endforelse
+        @endforelse
 
         </tbody>
 

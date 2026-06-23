@@ -17,7 +17,7 @@ class JurusanSeeder extends Seeder
                 'kode_jurusan' => 'TI1',
                 'nama_jurusan' => 'Teknik Informatika',
                 'program_pendidikan' => 'S1',
-                'sk_ban' => '001/SK/BAN-PT/2024',
+                'sk_ban' => '001/SK/BAN-PT/2024',                
                 'keterangan' => null,
                 'fakultas' => 'FTI',
             ],
