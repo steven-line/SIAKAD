@@ -30,7 +30,9 @@ return new class extends Migration
             $table->string('prasyarat9',8)->default('');
             $table->string('prasyarat10',8)->default('');
             $table->char('prasyaratgrade',1)->default('');
-          
+            $table->string('kode_kurikulum', 15);
+            $table->foreign('kode_kurikulum')->references('kode_kurikulum')->on('kurikulum')->onDelete('cascade')->onUpdate('cascade');
+            $table->boolean("aktif")->default(false);
           
         });
     }

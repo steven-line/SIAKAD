@@ -18,8 +18,7 @@ class Penawaran extends Model
 
     protected $fillable = [
         'kodemk',
-        'semester',
-        'periode',
+        'semester_id',
         'dosen',
         'sesi',
         'keterangan',
@@ -33,44 +32,57 @@ class Penawaran extends Model
     ];
 
     protected $casts = [
-        'mulaipukul' => 'datetime:H:i:s',
-        'selesaipukul' => 'datetime:H:i:s',
         'MBKM' => 'boolean',
     ];
 
+    /*
+    |--------------------------------------------------------------------------
+    | Mata Kuliah
+    |--------------------------------------------------------------------------
+    */
     public function mk()
     {
-        return $this->belongsTo(
-            Mk::class,
-            'kodemk',
-            'kodemk'
-        );
+        return $this->belongsTo(Mk::class, 'kodemk', 'kodemk');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Dosen
+    |--------------------------------------------------------------------------
+    | FIX: pastikan foreign key sesuai field di tabel penawaran
+    */
     public function dosenRelasi()
     {
-        return $this->belongsTo(
-            Dosen::class,
-            'dosen',
-            'nim_dosen'
-        );
-    }
-    
-    public function jurusanRelasi()
-    {
-        return $this->belongsTo(
-            Jurusan::class,
-            'jurusan',
-            'kode_jurusan'
-        );
+        return $this->belongsTo(Dosen::class, 'dosen', 'nim_dosen');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Jurusan
+    |--------------------------------------------------------------------------
+    */
+    public function jurusanRelasi()
+    {
+        return $this->belongsTo(Jurusan::class, 'jurusan', 'kode_jurusan');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Semester
+    |--------------------------------------------------------------------------
+    */
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class, 'semester_id', 'id');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Registrasi
+    |--------------------------------------------------------------------------
+    */
     public function registrasis()
     {
-        return $this->hasMany(
-            Registrasi::class,
-            'kodemk',
-            'kodemk'
-        );
+        return $this->hasMany(Registrasi::class, 'kodemk', 'kodemk');
     }
-}
+}   

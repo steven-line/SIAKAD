@@ -49,19 +49,15 @@
                     <input type="date" class="input w-full" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" />
                     <x-forms.error name="tanggal_lahir" />
                 </div>
-                  <div>
-                    <label class="label font-bold" for="sex">Sex</label>
-                    <select class="select select-bordered w-full" name="sex" required>
-                        <option disabled>Pilih Jenis Kelamin</option>
-                        <option value="L">Laki-laki</option>
-                        <option value="P">Perempuan</option>
-                    </select>
-                    <x-forms.error name="sex" />
-                </div>
+                
 
-                <div>
+              <div>
                     <label class="label font-bold" for="jenis_kelamin">Jenis Kelamin</label>
-                    <input type="text" maxlength="12" class="input w-full" name="jenis_kelamin" value="{{ old('jenis_kelamin') }}" placeholder="Masukkan Jenis Kelamin" required />
+                    <select class="select select-bordered w-full" name="jenis_kelamin" required>
+                        <option disabled>Pilih Jenis Kelamin</option>
+                        <option value="L">L</option>
+                        <option value="P">P</option>
+                    </select>
                     <x-forms.error name="jenis_kelamin" />
                 </div>
 
@@ -413,20 +409,7 @@
                     <x-forms.error name="last_update" />
                 </div>
 
-                <div>
-                    <label class="label font-bold" for="pataum">PATAUM</label>
-                    <div class="flex gap-4 mt-1">
-                        <label class="flex items-center gap-2">
-                            <input type="radio" name="pataum" value="P (Pagi)" {{ old('pataum') == 'P (Pagi)' ? 'checked' : '' }} class="radio radio-primary" />
-                            <span>Pagi</span>
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="radio" name="pataum" value="M (Malam)" {{ old('pataum') == 'M (Malam)' ? 'checked' : '' }} class="radio radio-primary" />
-                            <span>Malam</span>
-                        </label>
-                    </div>
-                    <x-forms.error name="pataum" />
-                </div>
+             
 
                 <div>
                     <label class="label font-bold" for="email">Email</label>

@@ -13,7 +13,7 @@
           <th>nik</th>
           <th>tempat_lahir</th>
           <th>tanggal_lahir</th>
-          <th>sex</th>
+          <th>jenis_kelamin</th>
           <th>tinggi</th>
           <th>berat</th>
           <th>alamat</th>
@@ -30,7 +30,7 @@
               <td>{{ $biodata->nik }}</td>
               <td>{{ $biodata->tempat_lahir }}</td>
               <td>{{ $biodata->tanggal_lahir }}</td>
-              <td>{{ $biodata->sex }}</td>
+              <td>{{ $biodata->jenis_kelamin }}</td>
               <th>{{ $biodata->tinggi }}</th>
               <th>{{ $biodata->berat }}</th>
               <th>{{ $biodata->alamat }}</th>

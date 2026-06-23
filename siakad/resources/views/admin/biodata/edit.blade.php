@@ -53,18 +53,15 @@
                     <x-forms.error name="tanggal_lahir" />
                 </div>
                   <div>
-                    <label class="label font-bold" for="sex">Sex</label>
-                    <select class="select select-bordered w-full" name="sex" required>
-                        <option disabled>Pilih Jenis Kelamin</option>
-                        <option value="L" {{ old('sex', $biodata->sex) == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                        <option value="P" {{ old('sex', $biodata->sex) == 'P' ? 'selected' : '' }}>Perempuan</option>
-                    </select>
-                    <x-forms.error name="sex" />
+                 
                 </div>
-
-                <div>
+                  <div>
                     <label class="label font-bold" for="jenis_kelamin">Jenis Kelamin</label>
-                    <input type="text" maxlength="12" class="input w-full" name="jenis_kelamin" value="{{ old('jenis_kelamin', $biodata->jenis_kelamin) }}" placeholder="Masukkan Jenis Kelamin" required />
+                    <select class="select select-bordered w-full" name="jenis_kelamin" required>
+                        <option disabled>Pilih Jenis Kelamin</option>
+                        <option value="L" {{ old('jenis_kelamin', $biodata->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="P" {{ old('jenis_kelamin', $biodata->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
+                    </select>
                     <x-forms.error name="jenis_kelamin" />
                 </div>
 
@@ -416,20 +413,7 @@
                     <x-forms.error name="last_update" />
                 </div>
 
-                <div>
-                    <label class="label font-bold" for="pataum">PATAUM</label>
-                    <div class="flex gap-4 mt-1">
-                        <label class="flex items-center gap-2">
-                            <input type="radio" name="pataum" value="P" {{ old('pataum', $biodata->pataum) == 'P' ? 'checked' : '' }} class="radio radio-primary" />
-                            <span>Pagi</span>
-                        </label>
-                        <label class="flex items-center gap-2">
-                            <input type="radio" name="pataum" value="M" {{ old('pataum', $biodata->pataum) == 'M ' ? 'checked' : '' }} class="radio radio-primary" />
-                            <span>Malam</span>
-                        </label>
-                    </div>
-                    <x-forms.error name="pataum" />
-                </div>
+               
 
                 <div>
                     <label class="label font-bold" for="email">Email</label>

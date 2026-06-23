@@ -1,6 +1,5 @@
-
 <x-layout>
-    {{-- BACK BUTTON (dynamic previous URL) --}}
+    {{-- BACK BUTTON --}}
     <a class="join-item btn btn-primary mb-4" href="{{ route('users.index') }}">
         ⮜ Previous page
     </a>
@@ -27,7 +26,7 @@
             />
             <x-forms.error name="username"/>
 
-            {{-- Password (disabled) --}}
+            {{-- Password --}}
             <label class="label font-bold" for="password">Password</label>
             <input
                 type="password"
@@ -86,10 +85,8 @@
                 </label>
 
                 <div class="grid grid-cols-2 gap-3 p-2 bg-base-100 rounded-box border">
-
                     @foreach($permissions as $permission)
                         <label class="flex items-center gap-2 cursor-pointer">
-
                             <input
                                 type="checkbox"
                                 name="permissions[]"
@@ -102,10 +99,8 @@
                             <span class="label-text">
                                 {{ $permission->name }}
                             </span>
-
                         </label>
                     @endforeach
-
                 </div>
 
                 <x-forms.error name="permissions"/>
@@ -144,24 +139,24 @@
 
         function applyRolePermissions(roleName) {
             const selectedRole = roleName.toLowerCase();
+            const allowed = rolesData[roleName] || [];
 
+            // reset semua checkbox dulu
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+                cb.classList.remove('default-role-permission');
+            });
+
+            // kalau admin, cukup sembunyikan permission
             if (selectedRole === 'admin') {
                 permWrapper.style.display = 'none';
-
-                checkboxes.forEach(cb => {
-                    cb.classList.remove('default-role-permission');
-                });
-
                 return;
             }
 
             permWrapper.style.display = 'block';
 
-            const allowed = rolesData[roleName] || [];
-
+            // centang sesuai permission role yang dipilih
             checkboxes.forEach(cb => {
-                cb.classList.remove('default-role-permission');
-
                 if (allowed.includes(cb.value)) {
                     cb.checked = true;
                     cb.classList.add('default-role-permission');
@@ -173,10 +168,10 @@
             applyRolePermissions(this.value);
         });
 
-        // Inisialisasi saat halaman edit dibuka
-        applyRolePermissions(roleSelect.value);
+        // inisialisasi saat halaman dibuka
+   
 
-        // Cegah permission bawaan role diubah
+        // cegah permission bawaan role di-uncheck manual
         document.querySelectorAll('.permission-checkbox').forEach(cb => {
             cb.addEventListener('click', function(e) {
                 if (this.classList.contains('default-role-permission')) {
@@ -187,4 +182,3 @@
         });
     </script>
 </x-layout>
-```

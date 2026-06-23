@@ -52,7 +52,7 @@
             <label class="label font-bold mt-4" for="sks">SKS</label>
             <input type="number" class="input w-full" oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="10" value="{{ old('sks') }}" name="sks" placeholder="Contoh: 20" required />
             <x-forms.error name='sks'/>
-
+            
             <!-- PATAUM (khusus mahasiswa) -->
             <div id="pataum-wrapper" style="display: none;">
                 <label class="label font-bold mt-4">Pilih Jadwal (Pagi/Malam)</label>

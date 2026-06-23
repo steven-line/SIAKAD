@@ -43,10 +43,7 @@
                                 data-sks="{{ $mk->sks }}"
                                 @selected(old('kodemk', $penawaran->kodemk) == $mk->kodemk)
                             >
-                                {{ $mk->kodemk }}
-                                -
-                                {{ $mk->nama }}
-                                ({{ $mk->sks }} SKS)
+                                {{ $mk->kodemk }} - {{ $mk->nama }} ({{ $mk->sks }} SKS)
                             </option>
                         @endforeach
                     </select>
@@ -80,32 +77,20 @@
                     </label>
 
                     <select
-                        name="semester"
+                        name="semester_id"
                         class="w-full p-2 mt-1 bg-gray-700 rounded"
                     >
-                        @for($i=1;$i<=8;$i++)
+                        @foreach($semesters as $semester)
                             <option
-                                value="{{ $i }}"
-                                @selected(old('semester', $penawaran->semester) == $i)
+                                value="{{ $semester->id }}"
+                                @selected(old('semester_id', $penawaran->semester_id) == $semester->id)
                             >
-                                {{ $i }}
+                                {{ $semester->periode_id }}
+                                - {{ $semester->jenis }}
+                                {{ $semester->aktif ? '(Aktif)' : '' }}
                             </option>
-                        @endfor
+                        @endforeach
                     </select>
-                </div>
-
-                {{-- PERIODE --}}
-                <div>
-                    <label class="text-sm text-gray-400">
-                        Periode
-                    </label>
-
-                    <input
-                        type="text"
-                        name="periode"
-                        value="{{ old('periode', $penawaran->periode) }}"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded"
-                    >
                 </div>
 
                 {{-- HARI --}}

@@ -45,39 +45,43 @@
         @can('user.manage')
         <li><a href="/users">Master User</a></li>
         @endcan
+           {{-- ROLE & PERMISSION --}}
+           
+        @can('permission.manage')
+        <li><a href="/permissions">Master Permission</a></li>
+        @endcan
+        @can('role.manage')
+        <li><a href="/roles">Master Role</a></li>
+        @endcan
 
         @can('kurikulum.manage')
         <li><a href="/kurikulum">Master Kurikulum</a></li>
         @endcan
-
+        @can('fakultas.manage')
+        <li><a href="/fakultas">Master Fakultas</a></li>
+        @endcan
         @can('mk.manage')
         <li><a href="/matakuliah">Master Mata Kuliah</a></li>
-        @endcan
-
-        @can('dosen.manage')
-        <li><a href="/dosen">Master Dosen</a></li>
         @endcan
 
         @can('prodi.manage')
         <li><a href="/prodi">Master Prodi</a></li>
         @endcan
-
-        @can('fakultas.manage')
-        <li><a href="/fakultas">Master Fakultas</a></li>
+        
+        @can('dosen.manage')
+        <li><a href="/dosen">Master Dosen</a></li>
         @endcan
+
+        @can('mahasiswa.manage')
+        <li><a href="/mahasiswa-admin">Master Mahasiswa</a></li>
+        @endcan
+     
 
         @can('biodata.manage')
         <li><a href="/biodata">Master Biodata</a></li>
         @endcan
 
-        {{-- ROLE & PERMISSION --}}
-        @can('role.manage')
-        <li><a href="/roles">Master Role</a></li>
-        @endcan
-
-        @can('permission.manage')
-        <li><a href="/permissions">Master Permission</a></li>
-        @endcan
+     
 
         {{-- DOSEN INPUT NILAI --}}
         @can('nilai.input')
@@ -86,9 +90,6 @@
 
         {{-- MAHASISWA --}}
          
-        @can('mahasiswa.manage')
-        <li><a href="/mahasiswa-admin">Master Mahasiswa</a></li>
-        @endcan
         @can('biodata.view')
         <li><a href="/mahasiswa/biodata">Biodata</a></li>
         @endcan
@@ -102,7 +103,7 @@
         @endcan
 
         @can('nilai_krs.view')
-        <li><a href="/mahasiswa/nilai-krs">Nilai KRS</a></li>
+        <li><a href="/mahasiswa/nilai_krs">Nilai KRS</a></li>
         @endcan
 
         @can('khs.view')
@@ -110,7 +111,7 @@
         @endcan
 
         @can('transkrip.view')
-        <li><a href="/mahasiswa/transkrip">Transkrip</a></li>
+        <li><a href="/mahasiswa/transkrip">Transkrip Nilai</a></li>
         @endcan
 
         {{-- PERWALIAN --}}

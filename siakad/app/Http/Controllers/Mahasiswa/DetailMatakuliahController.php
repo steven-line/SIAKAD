@@ -5,33 +5,73 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Models\Penawaran;
 use App\Models\Registrasi;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DetailMataKuliahController extends Controller
 {
-    /**
-     * Menampilkan detail mata kuliah berdasarkan kode MK
-     */
     public function show($kode_mk)
     {
-        // Ambil data penawaran + relasi mk
-        $penawaran = Penawaran::with('mk')->where('kodemk', $kode_mk)->first();
+        // ============================================================
+        // 1. DAPATKAN PATAUM USER
+        // ============================================================
+        $pataumUser = session('pataum');
 
-        if (!$penawaran) {
-            abort(404, 'Mata kuliah tidak ditemukan');
+        if (!$pataumUser && Auth::check()) {
+            $user = Auth::user();
+            if ($user && isset($user->pataum)) {
+                $pataumUser = substr($user->pataum, 0, 1);
+                session(['pataum' => $pataumUser]);
+            }
         }
 
-        // Cek akses berdasarkan pataum
-        $pataumUser = session('pataum') ?? (Auth::check() ? substr(Auth::user()->pataum, 0, 1) : null);
-        if ($pataumUser && $penawaran->pataum !== $pataumUser) {
+        // ============================================================
+        // 2. CARI PENAWARAN YANG COCOK DENGAN PATAUM USER
+        // ============================================================
+        $query = Penawaran::with('mk')->where('kodemk', $kode_mk);
+
+        if ($pataumUser) {
+            $penawaran = $query->where('pataum', $pataumUser)->first();
+
+            if (!$penawaran) {
+                $penawaran = Penawaran::with('mk')
+                    ->where('kodemk', $kode_mk)
+                    ->whereNull('pataum')
+                    ->first();
+            }
+        } else {
+            $penawaran = $query->first();
+        }
+
+        if (!$penawaran) {
+            abort(404, 'Mata kuliah tidak ditemukan untuk kelas Anda.');
+        }
+
+        // ============================================================
+        // 3. CEK AKSES (KEAMANAN)
+        // ============================================================
+        if ($penawaran->pataum && $pataumUser && $penawaran->pataum !== $pataumUser) {
             abort(403, 'Anda tidak memiliki akses ke mata kuliah ini.');
         }
 
-        // Ambil NRP mahasiswa yang sedang login
+        // ============================================================
+        // 4. AMBIL NRP DAN STATUS BLOKIR MAHASISWA
+        // ============================================================
         $nrpMahasiswa = session('nrp') ?? (Auth::check() ? Auth::user()->username : null);
-        
-        // Cari apakah mahasiswa sudah terdaftar pada mata kuliah ini
+
+        $statusBlokir = 'BELUM_KRS'; // default
+        if ($nrpMahasiswa) {
+            $mahasiswa = Mahasiswa::where('nrp', $nrpMahasiswa)->first();
+            if ($mahasiswa) {
+                $statusBlokir = $mahasiswa->status_blokir;
+            }
+        }
+
+        // ============================================================
+        // 5. CEK REGISTRASI MAHASISWA UNTUK MATA KULIAH INI
+        // ============================================================
         $id_registrasi = null;
         if ($nrpMahasiswa) {
             $registrasi = Registrasi::where('nrp', $nrpMahasiswa)
@@ -43,7 +83,9 @@ class DetailMataKuliahController extends Controller
             }
         }
 
-        // Susun objek mataKuliah
+        // ============================================================
+        // 6. SUSUN OBJEK MATA KULIAH
+        // ============================================================
         $mataKuliah = (object) [
             'kode_mk'       => $penawaran->kodemk,
             'nama_mk'       => $penawaran->mk ? $penawaran->mk->nama : '-',
@@ -61,7 +103,9 @@ class DetailMataKuliahController extends Controller
             'id_registrasi' => $id_registrasi,
         ];
 
-        // Ambil daftar mahasiswa yang sudah registrasi
+        // ============================================================
+        // 7. AMBIL DAFTAR PESERTA
+        // ============================================================
         $pendaftar = Registrasi::with('mahasiswa')
             ->where('kodemk', $penawaran->kodemk)
             ->where('periode', $penawaran->periode)
@@ -75,6 +119,6 @@ class DetailMataKuliahController extends Controller
                 ];
             });
 
-        return view('mahasiswa.penawaran.show', compact('mataKuliah', 'pendaftar'));
+        return view('mahasiswa.penawaran.show', compact('mataKuliah', 'pendaftar', 'statusBlokir'));
     }
 }

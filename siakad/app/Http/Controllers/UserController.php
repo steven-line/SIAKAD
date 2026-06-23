@@ -46,14 +46,14 @@ public function store(Request $request)
         'permissions' => ['nullable', 'array'],
         'permissions.*' => ['string', 'exists:permissions,name'],
         'sks'      => ['required', 'numeric'],
-        'pataum'   => ['nullable', 'in:P,M'],
+        'pataum'   => ['required_if:role, mahasiswa', 'in:P,M'],
     ]);
 
     $user = User::create([
         'username'   => $validated['username'],
         'password'   => Hash::make($validated['password']),
         'sks'        => $validated['sks'],
-        'pataum'     => $validated['pataum'] ?? null,
+        'pataum'     => $validated['pataum'] ?? 'P',
         'firstlogin' => Carbon::now(),
         'lastlogin'  => Carbon::now(),
     ]);
@@ -98,7 +98,7 @@ public function update(Request $request, User $user)
         'permissions' => ['nullable', 'array'],
         'permissions.*' => ['string', 'exists:permissions,name'],
         'sks'      => ['required', 'numeric'],
-        'pataum'   => ['nullable', 'in:P,M'],
+        'pataum'   => ['required_if:role, mahasiswa', 'in:P,M'],
     ]);
 
     $user->update([
