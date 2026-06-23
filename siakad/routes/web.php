@@ -15,7 +15,8 @@ use App\Http\Controllers\{
     NilaiKrsAnakWali,
     NilaiKrsAnakWaliController,
     MahasiswaAdminController,
-    PeriodeController
+    PeriodeController,
+    SemesterController
 };
 
 use App\Http\Controllers\Admin\{
@@ -326,6 +327,20 @@ Route::middleware('auth')->group(function () {
             Route::patch('/{periode}', [PeriodeController::class, 'update'])->name('update');
             Route::delete('/{periode}', [PeriodeController::class, 'destroy'])->name('destroy');
             Route::get('/{periode}', [PeriodeController::class, 'show'])->name('show');
+            
+        });
+    
+       Route::prefix('semester')
+        ->middleware('permission:semester.manage')
+        ->name('semester.')
+        ->group(function () {
+            Route::get('/', [SemesterController::class, 'index'])->name('index');
+            Route::get('/create', [SemesterController::class, 'create'])->name('create');
+            Route::post('/', [SemesterController::class, 'store'])->name('store');
+            Route::get('/{semester}/edit', [SemesterController::class, 'edit'])->name('edit');
+            Route::patch('/{semester}', [SemesterController::class, 'update'])->name('update');
+            Route::delete('/{semester}', [SemesterController::class, 'destroy'])->name('destroy');
+            Route::get('/{semester}', [SemesterController::class, 'show'])->name('show');
             
         });
         

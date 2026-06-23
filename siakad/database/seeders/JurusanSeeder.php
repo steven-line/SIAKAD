@@ -17,9 +17,8 @@ class JurusanSeeder extends Seeder
                 'kode_jurusan' => 'TI1',
                 'nama_jurusan' => 'Teknik Informatika',
                 'program_pendidikan' => 'S1',
-                'status_prodi' => 'Aktif',
                 'sk_ban' => '001/SK/BAN-PT/2024',
-                'kaprodi' => '001',
+        
                 'keterangan' => null,
                 'fakultas' => 'FTI',
             ],
@@ -27,9 +26,9 @@ class JurusanSeeder extends Seeder
                 'kode_jurusan' => 'SI1',
                 'nama_jurusan' => 'Sistem Informasi',
                 'program_pendidikan' => 'S1',
-                'status_prodi' => 'Aktif',
+           
                 'sk_ban' => '002/SK/BAN-PT/2024',
-                'kaprodi' => '002',
+             
                 'keterangan' => null,
                 'fakultas' => 'FTI',
             ],
@@ -37,9 +36,9 @@ class JurusanSeeder extends Seeder
                 'kode_jurusan' => 'TK1',
                 'nama_jurusan' => 'Teknik Sipil',
                 'program_pendidikan' => 'S1',
-                'status_prodi' => 'Aktif',
+               
                 'sk_ban' => '003/SK/BAN-PT/2024',
-                'kaprodi' => '003',
+         
                 'keterangan' => null,
                 'fakultas' => 'FTE',
             ],
@@ -47,9 +46,9 @@ class JurusanSeeder extends Seeder
                 'kode_jurusan' => 'MM1',
                 'nama_jurusan' => 'Manajemen',
                 'program_pendidikan' => 'S1',
-                'status_prodi' => 'Aktif',
+           
                 'sk_ban' => '004/SK/BAN-PT/2024',
-                'kaprodi' => '004',
+        
                 'keterangan' => null,
                 'fakultas' => 'FEB',
             ],
@@ -57,9 +56,8 @@ class JurusanSeeder extends Seeder
                 'kode_jurusan' => 'AK1',
                 'nama_jurusan' => 'Akuntansi',
                 'program_pendidikan' => 'S1',
-                'status_prodi' => 'Aktif',
+              
                 'sk_ban' => '005/SK/BAN-PT/2024',
-                'kaprodi' => '005',
                 'keterangan' => null,
                 'fakultas' => 'FEB',
             ],

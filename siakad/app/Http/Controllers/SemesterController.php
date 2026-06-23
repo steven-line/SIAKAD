@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\JenisSemester;
 use App\Models\Semester;
 use App\Http\Controllers\Controller;
+use App\Models\Periode;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SemesterController extends Controller
 {
@@ -25,8 +28,8 @@ class SemesterController extends Controller
      */
     public function create()
     {
-        $semesters = Semester::all();
-        return view('admin.semester.create', ['semesters' => $semesters]);
+        $periodes = Periode::all();
+        return view('admin.semester.create', ['periodes' => $periodes]);
     }
 
     /**
@@ -36,9 +39,17 @@ class SemesterController extends Controller
     {
         $request->validate([
             'periode_id' => ['required'],
-            'jenis' => ['required'],
-            'aktif' => [''],
+            'jenis' => ['required', Rule::enum(JenisSemester::class)],
+    
         ]);
+
+        Semester::create([
+            'periode_id' => $request->periode_id,
+            'jenis' => $request->jenis,
+            'aktif' => $request->boolean('aktif')
+        ]);
+
+        return redirect()->route('semester.index');
     }
 
     /**
@@ -47,6 +58,7 @@ class SemesterController extends Controller
     public function show(Semester $semester)
     {
         //
+        return view('admin.semester.show', ['semester' => $semester]);
     }
 
     /**
@@ -54,7 +66,8 @@ class SemesterController extends Controller
      */
     public function edit(Semester $semester)
     {
-        //
+        $periodes = Periode::all();
+        return view('admin.semester.edit', ['semester' => $semester, 'periodes' => $periodes]);
     }
 
     /**
@@ -63,6 +76,19 @@ class SemesterController extends Controller
     public function update(Request $request, Semester $semester)
     {
         //
+         $request->validate([
+            'periode_id' => ['required'],
+            'jenis' => ['required', Rule::enum(JenisSemester::class)],
+         
+        ]);
+
+        $semester->update([
+            'periode_id' => $request->periode_id,
+            'jenis' => $request->jenis,
+            'aktif' => $request->boolean('aktif')
+        ]);
+
+        return redirect()->route('semester.index');
     }
 
     /**
@@ -70,6 +96,8 @@ class SemesterController extends Controller
      */
     public function destroy(Semester $semester)
     {
-        //
+         $semester->delete();
+        return redirect()->route('semester.index')->with('success', 'Semester Dihapus');
+   
     }
 }
