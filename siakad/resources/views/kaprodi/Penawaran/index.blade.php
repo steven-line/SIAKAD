@@ -34,7 +34,10 @@
 
             <tr>
 
-                <td>{{ $loop->iteration }}</td>
+                {{-- NO (AMAN UNTUK PAGINATION) --}}
+                <td>
+                    {{ $loop->iteration + ($penawarans->firstItem() - 1) }}
+                </td>
 
                 {{-- MBKM --}}
                 <td>
@@ -50,13 +53,12 @@
                     {{ $penawaran->mk->kodemk ?? $penawaran->kodemk }}
                 </td>
 
+                {{-- SEMESTER (FIX AMAN) --}}
                 <td>
                     @if($penawaran->semesterRelasi)
-                        {{ $penawaran->semesterRelasi->periode->nama ?? 'Periode ?' }}
-                        -
                         {{ $penawaran->semesterRelasi->jenis }}
                         @if($penawaran->semesterRelasi->aktif)
-                            (Aktif)
+                            <span class="text-green-500">(Aktif)</span>
                         @endif
                     @else
                         <span class="text-red-500">Belum ada semester</span>
@@ -74,7 +76,9 @@
                 </td>
 
                 {{-- HARI --}}
-                <td>{{ $penawaran->hari }}</td>
+                <td>
+                    {{ $penawaran->hari }}
+                </td>
 
                 {{-- JAM --}}
                 <td>
@@ -85,14 +89,18 @@
 
                 {{-- JURUSAN --}}
                 <td>
-                    {{ $penawaran->jurusanRelasi->nama_jurusan ?? $penawaran->jurusan }}
+                    {{ $penawaran->prodiRelasi->nama_prodi ?? $penawaran->prodi }}
                 </td>
 
                 {{-- PAGU --}}
-                <td>{{ $penawaran->pagu }}</td>
+                <td>
+                    {{ $penawaran->pagu }}
+                </td>
 
                 {{-- P/M --}}
-                <td>{{ $penawaran->pataum }}</td>
+                <td>
+                    {{ $penawaran->pataum }}
+                </td>
 
                 {{-- DETAIL --}}
                 <td>
@@ -139,14 +147,13 @@
                                     </button>
                                 </form>
 
-                                <form
-                                    action="{{ route('penawaran.destroy', $penawaran->recno) }}"
-                                    method="POST">
+                                <form action="{{ route('penawaran.destroy', $penawaran->recno) }}"
+                                      method="POST">
                                     @csrf
                                     @method('DELETE')
 
-                                    <button class="btn btn-error">
-                                        Ya, Hapus
+                                    <button type="submit" class="btn btn-error">
+                                        Delete
                                     </button>
                                 </form>
 
@@ -163,7 +170,7 @@
         @empty
 
             <tr>
-                <td colspan="15" class="text-center">
+                <td colspan="12" class="text-center text-gray-400">
                     Tidak ada data penawaran
                 </td>
             </tr>

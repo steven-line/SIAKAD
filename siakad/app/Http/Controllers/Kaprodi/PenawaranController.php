@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Kaprodi;
 use App\Http\Controllers\Controller;
 use App\Models\Mk;
 use App\Models\Dosen;
-use App\Models\Jurusan;
+use App\Models\prodi;
 use App\Models\Semester;
 use App\Models\Penawaran;
 use Illuminate\Http\Request;
@@ -49,6 +49,12 @@ class PenawaranController extends Controller
         return $slots;
     }
 
+
+    public function semesterRelasi()
+    {
+        return $this->belongsTo(Semester::class, 'semester_id', 'id');
+    }
+
     /**
      * FORM INPUT
      */
@@ -56,7 +62,7 @@ class PenawaranController extends Controller
     {
         $matkuls = Mk::orderBy('kodemk')->get();
         $dosens = Dosen::orderBy('nama')->get();
-        $jurusans = Jurusan::orderBy('kode_jurusan')->get();
+        $prodis = prodi::orderBy('kode_prodi')->get();
 
         /**
          * FIX UTAMA:
@@ -72,7 +78,7 @@ class PenawaranController extends Controller
             compact(
                 'matkuls',
                 'dosens',
-                'jurusans',
+                'prodis',
                 'semesters',
                 'jamSlotsPagi',
                 'jamSlotsMalam'
@@ -91,7 +97,7 @@ class PenawaranController extends Controller
         $penawaran = Penawaran::with([
             'mk',
             'dosenRelasi',
-            'jurusanRelasi'
+            'prodiRelasi'
         ])->findOrFail($recno);
 
         return view('kaprodi.penawaran.show', compact('penawaran'));
@@ -99,17 +105,20 @@ class PenawaranController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'kodemk'     => 'required',
             'semester_id' => 'required|exists:semester,id',
             'dosen'      => 'required',
             'hari'       => 'required',
             'mulaipukul' => 'required',
+            'prodi' => 'required|exists:prodi,kode_prodi',
             'pataum'     => 'required',
             'sesi'       => 'required',
             'pagu'       => 'nullable|numeric',
             'keterangan' => 'nullable',
         ]);
+        
 
         $mk = Mk::where('kodemk', $request->kodemk)->firstOrFail();
 
@@ -118,7 +127,7 @@ class PenawaranController extends Controller
         $mulai = Carbon::createFromFormat('H:i', $request->mulaipukul);
         $selesai = $mulai->copy()->addMinutes($durasiMenit);
 
-        $kodeJurusan = $request->input('jurusan');        
+        $kodeprodi = $request->input('prodi');        
         if ($request->sesi == '1') {
             $batasAwal = Carbon::createFromTime(8, 0);
             $batasAkhir = Carbon::createFromTime(17, 10);
@@ -140,7 +149,7 @@ class PenawaranController extends Controller
         }
 
         $bentrok = Penawaran::where('hari', $request->hari)
-            ->where('jurusan', $kodeJurusan)
+            ->where('prodi', $kodeprodi)
             ->where(function ($q) use ($mulai, $selesai) {
 
                 $q->whereBetween('mulaipukul', [
@@ -172,7 +181,7 @@ class PenawaranController extends Controller
             'mulaipukul'   => $mulai->format('H:i:s'),
             'selesaipukul' => $selesai->format('H:i:s'),
             'pataum'       => $request->pataum,
-            'jurusan'      => $request->jurusan, // FIX DI SINI
+            'prodi'        =>  $kodeprodi,            
             'sesi'         => $request->sesi,
             'keterangan'   => $request->keterangan,
             'pagu'         => $request->pagu,
@@ -188,7 +197,7 @@ class PenawaranController extends Controller
     {
         $matkuls = Mk::orderBy('kodemk')->get();
         $dosens = Dosen::orderBy('nama')->get();
-        $jurusans = Jurusan::orderBy('kode_jurusan')->get();
+        $prodis = prodi::orderBy('kode_prodi')->get();
 
         /**
          * FIX UTAMA:
@@ -205,7 +214,7 @@ class PenawaranController extends Controller
                 'penawaran',
                 'matkuls',
                 'dosens',
-                'jurusans',
+                'prodis',
                 'semesters',
                 'jamSlotsPagi',
                 'jamSlotsMalam'
@@ -221,6 +230,7 @@ class PenawaranController extends Controller
             'dosen'      => 'required',
             'hari'       => 'required',
             'mulaipukul' => 'required',
+            'prodi' => 'required|exists:prodi,kode_prodi',
             'pataum'     => 'required',
             'sesi'       => 'required',
             'pagu'       => 'nullable|numeric',
@@ -234,7 +244,7 @@ class PenawaranController extends Controller
         $mulai = Carbon::createFromFormat('H:i', $request->mulaipukul);
         $selesai = $mulai->copy()->addMinutes($durasiMenit);
 
-        $kodeJurusan = $request->input('jurusan');        
+        $kodeprodi = $request->input('prodi');        
         if ($request->sesi == '1') {
             $batasAwal = Carbon::createFromTime(8, 0);
             $batasAkhir = Carbon::createFromTime(17, 10);
@@ -256,7 +266,7 @@ class PenawaranController extends Controller
         }
 
         $bentrok = Penawaran::where('hari', $request->hari)
-            ->where('jurusan', $kodeJurusan)
+            ->where('prodi', $kodeprodi)
             ->where('recno', '!=', $penawaran->recno)
             ->where(function ($q) use ($mulai, $selesai) {
 
@@ -289,7 +299,7 @@ class PenawaranController extends Controller
             'mulaipukul'   => $mulai->format('H:i:s'),
             'selesaipukul' => $selesai->format('H:i:s'),
             'pataum'       => $request->pataum,
-            'jurusan'      => $kodeJurusan,
+            'prodi'      => $kodeprodi,
             'sesi'         => $request->sesi,
             'keterangan'   => $request->keterangan,
             'pagu'         => $request->pagu,

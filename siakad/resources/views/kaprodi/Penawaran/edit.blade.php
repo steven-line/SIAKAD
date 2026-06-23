@@ -165,22 +165,22 @@
                     >
                 </div>
 
-                {{-- JURUSAN --}}
+                {{-- prodi --}}
                 <div>
                     <label class="label font-bold">
-                        Jurusan
+                        prodi
                     </label>
 
                     <select
                         class="select select-bordered w-full"
-                        name="jurusan"
+                        name="prodi"
                     >
-                        @foreach($jurusans as $jurusan)
+                        @foreach($prodis as $prodi)
                             <option
-                                value="{{ $jurusan->kode_jurusan }}"
-                                @selected(old('jurusan', $penawaran->jurusan) == $jurusan->kode_jurusan)
+                                value="{{ $prodi->kode_prodi }}"
+                                @selected(old('prodi', $penawaran->prodi) == $prodi->kode_prodi)
                             >
-                                {{ $jurusan->nama_jurusan }}
+                                {{ $prodi->nama_prodi }}
                             </option>
                         @endforeach
                     </select>

@@ -3,86 +3,49 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Mk;
+use App\Models\Dosen;
+use App\Models\Prodi;
+use App\Models\Semester;
 
 class Penawaran extends Model
 {
     protected $table = 'penawaran';
-
     protected $primaryKey = 'recno';
-
-    public $incrementing = true;
-
-    protected $keyType = 'int';
-
     public $timestamps = false;
 
     protected $fillable = [
         'kodemk',
         'semester_id',
         'dosen',
-        'sesi',
-        'keterangan',
         'hari',
         'mulaipukul',
         'selesaipukul',
-        'jurusan',
-        'pagu',
         'pataum',
-        'MBKM',
+        'prodi',
+        'sesi',
+        'keterangan',
+        'pagu',
+        'MBKM'
     ];
 
-    protected $casts = [
-        'MBKM' => 'boolean',
-    ];
-
-    /*
-    |--------------------------------------------------------------------------
-    | Mata Kuliah
-    |--------------------------------------------------------------------------
-    */
     public function mk()
     {
         return $this->belongsTo(Mk::class, 'kodemk', 'kodemk');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Dosen
-    |--------------------------------------------------------------------------
-    | FIX: pastikan foreign key sesuai field di tabel penawaran
-    */
     public function dosenRelasi()
     {
         return $this->belongsTo(Dosen::class, 'dosen', 'nim_dosen');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Jurusan
-    |--------------------------------------------------------------------------
-    */
-    public function jurusanRelasi()
-    {
-        return $this->belongsTo(Jurusan::class, 'jurusan', 'kode_jurusan');
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Semester
-    |--------------------------------------------------------------------------
-    */
-    public function semester()
+    public function semesterRelasi()
     {
         return $this->belongsTo(Semester::class, 'semester_id', 'id');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Registrasi
-    |--------------------------------------------------------------------------
-    */
-    public function registrasis()
+    public function prodiRelasi()
     {
-        return $this->hasMany(Registrasi::class, 'kodemk', 'kodemk');
+        return $this->belongsTo(Prodi::class, 'prodi', 'kode_prodi');
     }
-}   
+}
