@@ -12,12 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kurikulum', function (Blueprint $table) {
-            $table->string('kode_kurikulum', 15)->primary();
-            $table->string('nama_kurikulum',50);
-            $table->boolean("aktif")->default(false);
-            $table->text("deskripsi");
-            $table->year("tahun_mulai_berlaku");
-            $table->year("tahun_selesai_berlaku");
+            $table->id();
+            $table->timestamps();
         });
     }
 

@@ -15,8 +15,8 @@
                 <div><strong>Semester:</strong> {{ $mataKuliah->semester }}</div>
                 <div><strong>Keterangan :</strong> {{ $mataKuliah->keterangan ?? '-' }}</div>
                 <div><strong>Periode :</strong> {{ $mataKuliah->periode ?? 'GENAP / 2025-2026' }}</div>
-                <div><strong>Aksi Anda :</strong>
-
+                <div>
+                    <strong>Aksi Anda :</strong>
                     @php
                         $nrpMahasiswa = session('nrp') ?? (Auth::check() ? Auth::user()->username : null);
                         $sudahTerdaftar = $pendaftar->contains('nrp', $nrpMahasiswa);
@@ -24,31 +24,30 @@
 
                     @if($nrpMahasiswa)
                         @if($statusBlokir === 'BELUM_KRS')
-                            <div class="absolute top-4 right-4">
-                                @if($sudahTerdaftar)
-                                    <!-- Tombol Batal -->
-                                    <form action="{{ route('mahasiswa.krs.destroy', ['id' => $mataKuliah->id_registrasi]) }}" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pendaftaran mata kuliah ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow">
-                                            Batal
-                                        </button>
-                                    </form>
-                                @else
-                                    <!-- Tombol Daftar -->
-                                    <form action="{{ route('mahasiswa.krs.store') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="penawaran_id" value="{{ $mataKuliah->penawaran_id ?? $mataKuliah->id }}">
-                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow">
-                                            Daftar
-                                        </button>
-                                    </form>
-                                @endif
-                            </div>
+                            @if($sudahTerdaftar)
+                                <!-- Tombol Batal -->
+                                <form action="{{ route('mahasiswa.krs.destroy', ['id' => $mataKuliah->id_registrasi]) }}" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pendaftaran mata kuliah ini?')" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow ml-2">
+                                        Batal
+                                    </button>
+                                </form>
+                            @else
+                                <!-- Tombol Daftar -->
+                                <form action="{{ route('mahasiswa.krs.store') }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <input type="hidden" name="penawaran_id" value="{{ $mataKuliah->penawaran_id ?? $mataKuliah->id }}">
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow ml-2">
+                                        Daftar
+                                    </button>
+                                </form>
+                            @endif
                         @else
+                            <span class="text-gray-500 ml-2">Status KRS: {{ $statusBlokir }} – Tidak dapat melakukan perubahan.</span>
                         @endif
                     @else
-                        <div class="absolute top-4 right-4 text-sm text-gray-500">(Login untuk mendaftar)</div>
+                        <span class="text-gray-500 ml-2">(Login untuk mendaftar)</span>
                     @endif
                 </div>
             </div>

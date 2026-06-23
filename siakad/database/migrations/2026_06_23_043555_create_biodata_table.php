@@ -11,15 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('semester', function (Blueprint $table) {
+        Schema::create('biodata', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('periode_id')->constrained('periode')->onDelete('cascade')->onUpdate('cascade');
-            
-            $table->enum('jenis', ['Ganjil', 'Genap']);
-
-            $table->boolean('aktif')->default(false);
-            
             $table->timestamps();
         });
     }
@@ -29,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('semester');
+        Schema::dropIfExists('biodata');
     }
 };

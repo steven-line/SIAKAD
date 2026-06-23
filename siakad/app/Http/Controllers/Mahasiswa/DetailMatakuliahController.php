@@ -75,8 +75,7 @@ class DetailMataKuliahController extends Controller
         $id_registrasi = null;
         if ($nrpMahasiswa) {
             $registrasi = Registrasi::where('nrp', $nrpMahasiswa)
-                ->where('kodemk', $penawaran->kodemk)
-                ->where('periode', $penawaran->periode)
+                ->where('penawaran_id', $penawaran->recno)
                 ->first();
             if ($registrasi) {
                 $id_registrasi = $registrasi->regkrs;
@@ -96,7 +95,7 @@ class DetailMataKuliahController extends Controller
             'jam_selesai'   => $penawaran->selesaipukul ? date('H:i:s', strtotime($penawaran->selesaipukul)) : '',
             'sks'           => $penawaran->mk ? $penawaran->mk->sks : 0,
             'semester'      => $penawaran->semester ?? '6',
-            'periode'       => $penawaran->periode ?? 'GENAP / 2025-2026',
+            'periode'       => $penawaran->semester_id ?? 'GENAP / 2025-2026',
             'kuota'         => $penawaran->pagu ?? '-',
             'keterangan'    => $penawaran->keterangan ?? '-',
             'penawaran_id'  => $penawaran->recno,
@@ -107,8 +106,7 @@ class DetailMataKuliahController extends Controller
         // 7. AMBIL DAFTAR PESERTA
         // ============================================================
         $pendaftar = Registrasi::with('mahasiswa')
-            ->where('kodemk', $penawaran->kodemk)
-            ->where('periode', $penawaran->periode)
+            ->where('penawaran_id', $penawaran->recno)
             ->get()
             ->map(function ($reg) {
                 return (object) [

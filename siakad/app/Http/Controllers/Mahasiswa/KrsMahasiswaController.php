@@ -30,23 +30,26 @@ class KrsMahasiswaController extends Controller
         // Ambil periode aktif
         $periode = $this->getPeriodeAktif();
 
-        $registrasiQuery = Registrasi::where('nrp', $nrp);
+        // Query registrasi dengan relasi penawaran
+        $registrasiQuery = Registrasi::with('penawaran.mk')
+            ->where('nrp', $nrp);
 
-        // Filter periode jika ada
+        // Filter periode melalui relasi penawaran
         if (!empty($periode)) {
-            $registrasiQuery->where('periode', $periode);
+            $registrasiQuery->whereHas('penawaran', function ($query) use ($periode) {
+                $query->where('periode', $periode);
+            });
         }
 
         $registrasi = $registrasiQuery->get();
 
         // Mapping data
         $krsItems = $registrasi->map(function ($reg) {
+            $penawaran = $reg->penawaran;
             return (object) [
                 'id'            => $reg->regkrs,
-                'kode_mk'       => $reg->kodemk,
-                'nama_mk'       => optional($reg->matkul)->nama_mk
-                                    ?? optional($reg->matkul)->nama
-                                    ?? $reg->kodemk,
+                'kode_mk'       => $penawaran ? $penawaran->kodemk : '-',
+                'nama_mk'       => $penawaran && $penawaran->mk ? $penawaran->mk->nama : '-',
                 'status'        => $reg->status ?? 'BARU',
                 'hari'          => $reg->hari ?? '-',
                 'jam_mulai'     => $reg->mulaipukul ? date('H:i', strtotime($reg->mulaipukul)) : '-',
@@ -102,19 +105,21 @@ class KrsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'Data penawaran tidak ditemukan.');
         }
 
-        // Cek apakah sudah terdaftar
+        // Cek apakah sudah terdaftar (berdasarkan penawaran_id)
         $sudah = Registrasi::where('nrp', $nrp)
-                    ->where('kodemk', $penawaran->kodemk)
-                    ->where('periode', $penawaran->periode)
+                    ->where('penawaran_id', $penawaran->recno)
                     ->exists();
 
         if ($sudah) {
             return redirect()->back()->with('error', 'Anda sudah mendaftar mata kuliah ini.');
         }
 
-        // Hitung total SKS yang sudah diambil
+        // Hitung total SKS yang sudah diambil pada periode yang sama
+        // Gunakan whereHas untuk mengambil registrasi dengan penawaran periode yang sama
         $totalSksTerdaftar = Registrasi::where('nrp', $nrp)
-                            ->where('periode', $penawaran->periode)
+                            ->whereHas('penawaran', function ($query) use ($penawaran) {
+                                $query->where('periode', $penawaran->periode);
+                            })
                             ->sum('sks');
 
         $sksMatkul = $penawaran->mk ? $penawaran->mk->sks : 3;
@@ -124,23 +129,21 @@ class KrsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'Melebihi batas SKS yang diizinkan (maksimal ' . $limitSks . ' SKS).');
         }
 
-        // Simpan registrasi
+        // Simpan registrasi dengan field yang sesuai tabel registrasi
         Registrasi::create([
             'nrp'           => $nrp,
-            'kodemk'        => $penawaran->kodemk,
-            'periode'       => $penawaran->periode,
+            'penawaran_id'  => $penawaran->recno,
             'status'        => 'BARU',
             'sesi'          => $penawaran->sesi,
-            'tanggal'       => now(),
-            'jam'           => now(),
+            'tanggal'       => now()->toDateString(),
+            'jam'           => now()->toTimeString(),
             'validasi'      => 0,
             'hari'          => $penawaran->hari,
             'mulaipukul'    => $penawaran->mulaipukul,
             'selesaipukul'  => $penawaran->selesaipukul,
             'ip_address'    => $request->ip(),
             'sks'           => $sksMatkul,
-            'pataum'        => $penawaran->pataum ?? '1',
-            'dosen'         => $penawaran->dosen
+            'pataum'        => $penawaran->pataum ?? 'P', // default 'P'
         ]);
 
         return redirect()->route('mahasiswa.krs.index')->with('success', 'Berhasil mendaftar mata kuliah.');
