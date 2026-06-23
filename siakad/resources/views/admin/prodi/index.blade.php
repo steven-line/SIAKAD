@@ -11,7 +11,7 @@
         <th>No</th>
         <th>Kode Prodi</th>
         <th>Nama Prodi</th>
-        <th>Kode Fakultas</th>       
+        <th>Kode Jurusan</th>       
         <th colspan="3">Aksi</th>
       </tr>
     </thead>
@@ -23,7 +23,7 @@
            
             <th>{{ $prodi->kode_prodi }}</th>
             <th>{{ $prodi->nama_prodi }}</th>
-            <th>{{ $prodi->kode_fakultas }}</th>
+            <th>{{ $prodi->kode_jurusan }}</th>
 
             <th>
                 <a href="{{ route('prodi.show', $prodi->kode_prodi) }}" class="btn btn-soft btn-primary">Detail</a>

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('prodi', function (Blueprint $table) {
             $table->string('kode_prodi', 15)->primary();
             $table->string('nama_prodi',50);
-		$table->string('kode_fakultas', 3);
-                   $table->foreign('kode_fakultas')->references('kode_fakultas')->on('fakultas')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('kode_jurusan', 3);
+            $table->foreign('kode_jurusan')->references('kode_jurusan')->on('jurusan')->onDelete('cascade')->onUpdate('cascade');
             
         });
     }

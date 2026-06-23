@@ -19,11 +19,10 @@ class DatabaseSeeder extends Seeder
             // User & Role
             RoleAndPermissionsSeeder::class,
             UserSeeder::class,
-           
             FakultasSeeder::class,
+            JurusanSeeder::class,
             ProdiSeeder::class,
             DosenSeeder::class,
-            JurusanSeeder::class,
             KurikulumSeeder::class,
             MkSeeder::class,
             PeriodeSeeder::class,

@@ -17,50 +17,31 @@ class ProdiSeeder extends Seeder
             [
                 'kode_prodi' => 'IF',
                 'nama_prodi' => 'Teknik Informatika',
-                'kode_fakultas' => 'FTI',
+                'kode_jurusan' => 'TI1',
             ],
 
-
             [
-                'kode_prodi' => 'ARS',
-                'nama_prodi' => 'Teknik Arsitektur',
-                'kode_fakultas' => 'FEB',
+                'kode_prodi' => 'SI',
+                'nama_prodi' => 'Sistem Informasi',
+                'kode_jurusan' => 'SI1',
             ],
 
             [
                 'kode_prodi' => 'SP',
                 'nama_prodi' => 'Teknik Sipil',
-                'kode_fakultas' => 'FHU',
-            ],
-
-            [
-                'kode_prodi' => 'EL',
-                'nama_prodi' => 'Teknik Elektro',
-                'kode_fakultas' => 'FTI',
+                'kode_jurusan' => 'TK1',
             ],
 
             [
                 'kode_prodi' => 'MNJ',
-                'nama_prodi' => 'Manajemen Bisnis',
-                'kode_fakultas' => 'FEB',
+                'nama_prodi' => 'Manajemen',
+                'kode_jurusan' => 'MM1',
             ],
 
             [
                 'kode_prodi' => 'AK',
                 'nama_prodi' => 'Akuntansi',
-                'kode_fakultas' => 'FEB',
-            ],
-
-            [
-                'kode_prodi' => 'ING',
-                'nama_prodi' => 'Sastra Inggris',
-                'kode_fakultas' => 'FKP',
-            ],
-
-            [
-                'kode_prodi' => 'MD',
-                'nama_prodi' => 'Bahasa Mandarin',
-                'kode_fakultas' => 'FKP',
+                'kode_jurusan' => 'AK1',
             ],
 
         ]);

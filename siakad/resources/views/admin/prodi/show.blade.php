@@ -15,8 +15,8 @@
                 </div>
                 
                 <div>
-                    <p class="font-semibold text-base-content/70">Kode Fakultas</p>
-                    <p class="text-lg"> {{$prodi->kode_fakultas}}</p>
+                    <p class="font-semibold text-base-content/70">Kode Jurusan</p>
+                    <p class="text-lg"> {{$prodi->kode_jurusan}}</p>
                 </div>
              </div>
     
