@@ -70,5 +70,9 @@ class User extends Authenticatable
              return $this->hasOne(Dosen::class, 'user_id', 'username');
     }
 
-    
+    public function mahasiswa()
+    {
+        return $this->hasOne(Mahasiswa::class, 'nrp', 'username');
+    }
+
 }

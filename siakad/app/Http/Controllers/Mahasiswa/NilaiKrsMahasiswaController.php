@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class NilaiKrsMahasiswaController extends Controller
 {
-    /**
-     * Menampilkan Nilai KRS untuk semester aktif
-     */
     public function index()
     {
         $user = Auth::user();
@@ -20,19 +17,19 @@ class NilaiKrsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'NRP tidak ditemukan.');
         }
 
-        // Periode aktif (sesuaikan format dengan tabel registrasi)
+        // Periode aktif (sesuaikan dengan data Anda)
         $periode = '2025/2026'; // atau ambil dari session / setting
 
         $nilaiKrs = DB::table('registrasi')
+            ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
+            ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
             ->leftJoin('krs', function ($join) {
-                $join->on('registrasi.kodemk', '=', 'krs.kode')
-                     ->on('registrasi.nrp', '=', 'krs.nrp');
+                $join->on('registrasi.nrp', '=', 'krs.registrasi_id')
+                     ->on('penawaran.kodemk', '=', 'krs.kode');
             })
-            ->leftJoin('mk', 'registrasi.kodemk', '=', 'mk.kodemk')
             ->where('registrasi.nrp', $nrp)
-            ->where('registrasi.periode', $periode)
             ->select(
-                'registrasi.kodemk as kode',
+                'penawaran.kodemk as kode',
                 'mk.nama as nama_mk',
                 'mk.sks as sks',
                 'krs.bu',
@@ -43,7 +40,7 @@ class NilaiKrsMahasiswaController extends Controller
                 'krs.lain',
                 'krs.na'
             )
-            ->orderBy('registrasi.kodemk')
+            ->orderBy('penawaran.kodemk')
             ->get();
 
         return view('mahasiswa.nilai_krs.index', compact('nilaiKrs'));

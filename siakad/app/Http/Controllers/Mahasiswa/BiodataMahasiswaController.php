@@ -18,7 +18,7 @@ class BiodataMahasiswaController extends Controller
         }
 
         // Hapus with('dosenwali') karena relasi tidak ada, gunakan find biasa
-        $biodata = Biodata::find($nrp);
+        $biodata = Biodata::where('nrp', $nrp)->first();
 
         if (!$biodata) {
             return back()->with('error', 'Biodata dengan NRP ' . $nrp . ' tidak ditemukan.');

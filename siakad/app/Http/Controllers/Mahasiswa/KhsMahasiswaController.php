@@ -53,20 +53,18 @@ class KhsMahasiswaController extends Controller
         // Ambil data registrasi + nilai
         $data = DB::table('registrasi')
             ->leftJoin('krs', function ($join) {
-                $join->on('registrasi.kodemk', '=', 'krs.kode')
-                     ->on('registrasi.nrp', '=', 'krs.nrp');
+                $join->on('registrasi.penawaran_id', '=', 'krs.kode')
+                     ->on('registrasi.nrp', '=', 'krs.registrasi_id');
             })
-            ->leftJoin('mk', 'registrasi.kodemk', '=', 'mk.kodemk')
+            ->leftJoin('mk', 'registrasi.penawaran_id', '=', 'mk.kodemk')
             ->where('registrasi.nrp', $nrp)
             ->select(
-                'registrasi.periode',
-                'registrasi.kodemk as kode',
+                'registrasi.penawaran_id as kode',
                 'mk.nama as nama_mk',
-                'mk.sks as sks',
+                'registrasi.sks as sks',
                 'krs.na'
             )
-            ->orderBy('registrasi.periode')
-            ->orderBy('registrasi.kodemk')
+            ->orderBy('registrasi.penawaran_id')
             ->get();
 
         if ($data->isEmpty()) {

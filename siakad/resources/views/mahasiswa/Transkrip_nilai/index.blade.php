@@ -19,8 +19,8 @@
                     @forelse ($transkripWithMutu as $index => $row)
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td>{{ $row->periode }}</td>
-                        <td>{{ $row->kode }}</td>
+                        <td>{{ $row->penawaran_id }}</td>
+                        <td>{{ $row->penawaran_id }}</td>
                         <td>{{ $row->nama_mk ?? '-' }}</td>
                         <td>{{ $row->sks ?? '-' }}</td>
                         <td>{{ $row->na ?? '-' }}</td>
