@@ -13,7 +13,7 @@ class DosenSeeder extends Seeder
     public function run(): void
     {
         DB::table('dosen')->updateOrInsert(
-            ['nim_dosen' => 'D001'],
+            ['nim_dosen' => '31120000'],
             [
                 'nama' => 'Yonatan Widianto',
                 'nip' => '19800101',
@@ -24,7 +24,7 @@ class DosenSeeder extends Seeder
         );
 
         DB::table('dosen')->updateOrInsert(
-            ['nim_dosen' => 'D002'],
+            ['nim_dosen' => '31121111'],
             [
                 'nama' => 'Darmanto',
                 'nip' => '19800202',
@@ -35,7 +35,7 @@ class DosenSeeder extends Seeder
         );
 
         DB::table('dosen')->updateOrInsert(
-            ['nim_dosen' => 'D003'],
+            ['nim_dosen' => '31123333'],
             [
                 'nama' => 'Erwin',
                 'nip' => '19800303',

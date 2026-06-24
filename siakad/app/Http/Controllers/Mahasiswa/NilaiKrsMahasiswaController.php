@@ -32,7 +32,7 @@ class NilaiKrsMahasiswaController extends Controller
                 'penawaran.kodemk as kode',
                 'mk.nama as nama_mk',
                 'mk.sks as sks',
-                'krs.bu',
+                'registrasi.status',
                 'krs.ttt1',
                 'krs.ttt2',
                 'krs.uts',

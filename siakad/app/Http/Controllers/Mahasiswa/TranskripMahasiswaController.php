@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class TranskripMahasiswaController extends Controller
 {
-    /**
-     * Helper: Konversi Grade ke Bobot (Mutu)
-     */
     private function getBobot($grade)
     {
         $bobot = [
@@ -25,9 +22,6 @@ class TranskripMahasiswaController extends Controller
         return $bobot[$grade] ?? 0.0;
     }
 
-    /**
-     * Menampilkan Transkrip Nilai (semua semester)
-     */
     public function index()
     {
         $user = Auth::user();
@@ -38,22 +32,22 @@ class TranskripMahasiswaController extends Controller
         }
 
         $transkrip = DB::table('registrasi')
+            ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
+            ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
             ->leftJoin('krs', function ($join) {
-                $join->on('registrasi.penawaran_id', '=', 'krs.kode')
-                     ->on('registrasi.nrp', '=', 'krs.registrasi_id');
+                $join->on('registrasi.nrp', '=', 'krs.registrasi_id')
+                     ->on('penawaran.kodemk', '=', 'krs.kode');
             })
-            ->leftJoin('mk', 'registrasi.penawaran_id', '=', 'mk.kodemk')
             ->where('registrasi.nrp', $nrp)
             ->select(
-                'registrasi.penawaran_id',
+                'penawaran.kodemk as kode',
                 'mk.nama as nama_mk',
                 'registrasi.sks as sks',
                 'krs.na'
             )
-            ->orderBy('registrasi.penawaran_id')
+            ->orderBy('penawaran.kodemk')
             ->get();
 
-        // Tambahkan mutu ke setiap item
         $transkripWithMutu = $transkrip->map(function ($item) {
             $item->mutu = $this->getBobot($item->na) * ($item->sks ?? 0);
             return $item;
