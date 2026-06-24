@@ -36,6 +36,7 @@ class KhsMahasiswaController extends Controller
     {
         $user = Auth::user();
         $nrp = $user->nrp ?? $user->username ?? null;
+        $statusBlokir = $user->mahasiswa->status_blokir;
 
         if (!$nrp) {
             return redirect()->back()->with('error', 'NRP tidak ditemukan.');
@@ -132,7 +133,8 @@ class KhsMahasiswaController extends Controller
             'mahasiswa',
             'dosenWali',
             'periode_aktif',
-            'semester_aktif'
+            'semester_aktif',
+            'statusBlokir'
         ));
     }
 }

@@ -18,7 +18,7 @@ class DetailMataKuliahController extends Controller
         // 1. DAPATKAN PATAUM USER
         // ============================================================
         $pataumUser = session('pataum');
-
+    
         if (!$pataumUser && Auth::check()) {
             $user = Auth::user();
             if ($user && isset($user->pataum)) {
