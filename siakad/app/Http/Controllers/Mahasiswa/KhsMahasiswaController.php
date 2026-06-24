@@ -60,7 +60,7 @@ class KhsMahasiswaController extends Controller
             ->select(
                 'penawaran.kodemk as kode',
                 'mk.nama as nama_mk',
-                'registrasi.sks as sks',
+                'mk.sks as sks',
                 'krs.na'
             )
             ->orderBy('penawaran.kodemk')

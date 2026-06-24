@@ -21,8 +21,8 @@ class DetailMataKuliahController extends Controller
       $sudahAmbil = Registrasi::where('nrp', Auth::user()->mahasiswa->nrp)
     ->where('penawaran_id', $penawaran->recno)
     ->exists();
-           
-    return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil'));
+    $statusBlokir = Auth::user()->mahasiswa->status_blokir;
+    return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil', 'statusBlokir'));
     }
     public function daftar(Penawaran $penawaran)
     {
