@@ -11,19 +11,14 @@ class BiodataMahasiswaController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $nrp = $user->nrp ?? $user->username ?? null;
+        if ($user->hasRole('mahasiswa')) {
+            $nrp = $user->mahasiswa->nrp;
+            $biodata = Biodata::where('nrp', $nrp)->first();
 
-        if (!$nrp) {
-            return back()->with('error', 'Data NRP tidak ditemukan untuk akun Anda.');
         }
 
         // Hapus with('dosenwali') karena relasi tidak ada, gunakan find biasa
-        $biodata = Biodata::find($nrp);
-
-        if (!$biodata) {
-            return back()->with('error', 'Biodata dengan NRP ' . $nrp . ' tidak ditemukan.');
-        }
-
+    
         return view('mahasiswa.biodata.index', compact('biodata'));
     }
 }

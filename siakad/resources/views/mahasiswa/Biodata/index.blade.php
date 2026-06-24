@@ -4,7 +4,15 @@
         <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded shadow-sm">
             <p class="font-semibold">Jika ada data yang tidak sesuai, silakan hubungi bagian kemahasiswaan atau dosen wali Anda.</p>
         </div>
-
+        @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
         <!-- Tabel / Grid Data Diri -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
