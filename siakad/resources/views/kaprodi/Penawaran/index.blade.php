@@ -21,7 +21,7 @@
                 <th>Sesi</th>
                 <th>Hari</th>
                 <th>Jam</th>
-                <th>Jurusan</th>
+                <th>Prodi</th>
                 <th>Pagu</th>
                 <th>P/M</th>
                 <th colspan="3" class="text-center">Aksi</th>

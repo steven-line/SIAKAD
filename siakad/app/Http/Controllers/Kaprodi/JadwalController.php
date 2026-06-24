@@ -28,32 +28,35 @@ class JadwalController extends Controller
     }
 
     /**
-     * QUERY DASAR PENAWARAN
+     * QUERY DASAR JADWAL (FIXED)
      */
     private function getJadwalQuery()
     {
+        $query = Penawaran::with([
+            'mk',
+            'dosenRelasi',
+            'semesterRelasi',
+            'prodiRelasi'
+        ]);
+
+        /**
+         * OPTIONAL FILTER:
+         * hanya filter kalau user adalah DOSEN
+         */
         $user = Auth::user();
 
-        if (!$user || !$user->dosen) {
-            abort(403, 'Data dosen tidak ditemukan.');
+        if ($user && $user->dosen) {
+            $kodeProdi = $user->dosen->prodi;
+
+            $query->where('prodi', $kodeProdi);
         }
 
-        $kodeJurusan = $user->dosen->prodi;
-
-        return Penawaran::with('mk')
-            ->where('jurusan', $kodeJurusan)
-            ->orderByRaw("
-                FIELD(
-                    hari,
-                    'Senin',
-                    'Selasa',
-                    'Rabu',
-                    'Kamis',
-                    'Jumat',
-                    'Sabtu'
-                )
-            ")
-            ->orderBy('mulaipukul');
+        return $query->orderByRaw("
+            FIELD(
+                hari,
+                'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'
+            )
+        ")->orderBy('mulaipukul');
     }
 
     /**
@@ -62,17 +65,13 @@ class JadwalController extends Controller
     public function index()
     {
         $jadwals = $this->getJadwalQuery()->get();
-
         $jamSlots = $this->generateJamSlots();
 
-        return view(
-            'kaprodi.kelola_jadwal.index',
-            compact('jadwals', 'jamSlots')
-        );
+        return view('kaprodi.kelola_jadwal.index', compact('jadwals', 'jamSlots'));
     }
 
     /**
-     * JADWAL SESI PAGI
+     * PAGI
      */
     public function pagi()
     {
@@ -82,14 +81,11 @@ class JadwalController extends Controller
 
         $jamSlots = $this->generateJamSlots();
 
-        return view(
-            'kaprodi.kelola_jadwal.index',
-            compact('jadwals', 'jamSlots')
-        );
+        return view('kaprodi.kelola_jadwal.index', compact('jadwals', 'jamSlots'));
     }
 
     /**
-     * JADWAL SESI MALAM
+     * MALAM
      */
     public function malam()
     {
@@ -99,23 +95,21 @@ class JadwalController extends Controller
 
         $jamSlots = $this->generateJamSlots();
 
-        return view(
-            'kaprodi.kelola_jadwal.index',
-            compact('jadwals', 'jamSlots')
-        );
+        return view('kaprodi.kelola_jadwal.index', compact('jadwals', 'jamSlots'));
     }
 
     /**
-     * DETAIL PENAWARAN/JADWAL
+     * DETAIL
      */
     public function show($recno)
     {
-        $jadwal = Penawaran::with('mk')
-            ->findOrFail($recno);
+        $jadwal = Penawaran::with([
+            'mk',
+            'dosenRelasi',
+            'semesterRelasi',
+            'prodiRelasi'
+        ])->findOrFail($recno);
 
-        return view(
-            'kaprodi.kelola_jadwal.show',
-            compact('jadwal')
-        );
+        return view('kaprodi.kelola_jadwal.show', compact('jadwal'));
     }
 }

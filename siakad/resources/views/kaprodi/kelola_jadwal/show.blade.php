@@ -6,18 +6,28 @@
         Detail Jadwal
     </h1>
 
+    {{-- DETAIL --}}
     <div class="bg-gray-800 p-4 rounded mb-6">
 
-        <div><b>Kode MK:</b> {{ $jadwal->kodemk }}</div>
+        <div>
+            <b>Kode MK:</b>
+            {{ $jadwal->kodemk }}
+        </div>
 
         <div>
             <b>Mata Kuliah:</b>
-            {{ $jadwal->matkul->nama ?? '-' }}
+            {{ $jadwal->mk->nama ?? '-' }}
         </div>
 
-        <div><b>Dosen:</b> {{ $jadwal->dosen }}</div>
+        <div>
+            <b>Dosen:</b>
+            {{ $jadwal->dosenRelasi->nama ?? $jadwal->dosen }}
+        </div>
 
-        <div><b>Hari:</b> {{ $jadwal->hari }}</div>
+        <div>
+            <b>Hari:</b>
+            {{ $jadwal->hari }}
+        </div>
 
         <div>
             <b>Jam:</b>
@@ -28,6 +38,7 @@
 
     </div>
 
+    {{-- MAHASISWA --}}
     <h2 class="text-xl font-bold mb-4">
         Mahasiswa Terdaftar
     </h2>
@@ -45,22 +56,22 @@
 
         <tbody class="bg-gray-900">
 
-            @forelse($jadwal->registrasis as $i => $reg)
+            @forelse(optional($jadwal->registrasis) as $i => $reg)
 
-            <tr>
-                <td class="border p-2">{{ $i+1 }}</td>
-                <td class="border p-2">{{ $reg->nrp }}</td>
-                <td class="border p-2">{{ $reg->status }}</td>
-                <td class="border p-2">{{ $reg->sks }}</td>
-            </tr>
+                <tr>
+                    <td class="border p-2">{{ $i + 1 }}</td>
+                    <td class="border p-2">{{ $reg->nrp ?? '-' }}</td>
+                    <td class="border p-2">{{ $reg->status ?? '-' }}</td>
+                    <td class="border p-2">{{ $reg->sks ?? '-' }}</td>
+                </tr>
 
             @empty
 
-            <tr>
-                <td colspan="4" class="border p-4 text-center text-gray-400">
-                    Belum ada mahasiswa terdaftar
-                </td>
-            </tr>
+                <tr>
+                    <td colspan="4" class="border p-4 text-center text-gray-400">
+                        Belum ada mahasiswa terdaftar
+                    </td>
+                </tr>
 
             @endforelse
 

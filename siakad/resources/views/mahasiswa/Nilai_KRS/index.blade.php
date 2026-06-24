@@ -24,12 +24,12 @@
                     <td>{{ $row->nama_mk ?? '-' }}</td>
                     <td>{{ $row->sks ?? '-' }}</td>
                     <td class="text-center">
-                        @if($row->bu == '1')
-                            <span class="badge bg-green-500 text-white px-2 py-1 rounded">Lulus</span>
-                        @elseif($row->bu == '0')
-                            <span class="badge bg-red-500 text-white px-2 py-1 rounded">Tidak Lulus</span>
+                        @if($row->status == 'B')
+                            <span class="badge bg-green-500 text-white px-2 py-1 rounded">Baru</span>
+                        @elseif($row->status == 'U')
+                            <span class="badge bg-red-500 text-white px-2 py-1 rounded">Ulang</span>
                         @else
-                            {{ $row->bu ?? '-' }}
+                            {{ $row->status ?? '-' }}
                         @endif
                     </td>
                     <td>{{ number_format($row->ttt1, 2) ?? '-' }}</td>

@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class KhsMahasiswaController extends Controller
 {
-    /**
-     * Helper: Konversi Grade ke Bobot (Mutu)
-     */
     private function getBobot($grade)
     {
         $bobot = [
@@ -25,9 +22,6 @@ class KhsMahasiswaController extends Controller
         return $bobot[$grade] ?? 0.0;
     }
 
-    /**
-     * Helper: Tentukan SKS Maksimum Semester Berikutnya berdasarkan IPS
-     */
     private function getMaxSks($ips)
     {
         if ($ips >= 3.00) return 24;
@@ -38,9 +32,6 @@ class KhsMahasiswaController extends Controller
         return 9;
     }
 
-    /**
-     * Menampilkan KHS (Kartu Hasil Studi) per semester
-     */
     public function index()
     {
         $user = Auth::user();
@@ -50,23 +41,28 @@ class KhsMahasiswaController extends Controller
             return redirect()->back()->with('error', 'NRP tidak ditemukan.');
         }
 
-        // Ambil data registrasi + nilai
+        // (Opsional) filter periode jika diperlukan
+        // $periode = '2025/2026';
+
         $data = DB::table('registrasi')
+            // 1. JOIN ke penawaran untuk mendapatkan kodemk & info lainnya
+            ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
+            // 2. JOIN ke mk untuk nama mata kuliah
+            ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
+            // 3. JOIN ke krs untuk nilai (jika ada)
             ->leftJoin('krs', function ($join) {
-                $join->on('registrasi.kodemk', '=', 'krs.kode')
-                     ->on('registrasi.nrp', '=', 'krs.nrp');
+                $join->on('registrasi.nrp', '=', 'krs.registrasi_id')
+                     ->on('penawaran.kodemk', '=', 'krs.kode');
             })
-            ->leftJoin('mk', 'registrasi.kodemk', '=', 'mk.kodemk')
             ->where('registrasi.nrp', $nrp)
+            // ->where('registrasi.periode', $periode) // aktifkan jika perlu
             ->select(
-                'registrasi.periode',
-                'registrasi.kodemk as kode',
+                'penawaran.kodemk as kode',
                 'mk.nama as nama_mk',
-                'mk.sks as sks',
+                'registrasi.sks as sks',
                 'krs.na'
             )
-            ->orderBy('registrasi.periode')
-            ->orderBy('registrasi.kodemk')
+            ->orderBy('penawaran.kodemk')
             ->get();
 
         if ($data->isEmpty()) {
@@ -74,7 +70,7 @@ class KhsMahasiswaController extends Controller
                 'results' => collect(),
                 'ipk' => 0,
                 'total_sks_tempuh' => 0,
-                'mahasiswas' => null,
+                'mahasiswa' => null,
                 'dosenWali' => '-',
                 'periode_aktif' => '-',
                 'semester_aktif' => '-'
@@ -101,7 +97,6 @@ class KhsMahasiswaController extends Controller
         $total_all_mutu = 0;
 
         foreach ($grouped as $periode => $items) {
-            // Tambahkan mutu ke setiap item
             $itemsWithMutu = $items->map(function ($item) {
                 $item->mutu = $this->getBobot($item->na) * ($item->sks ?? 0);
                 return $item;
@@ -127,9 +122,8 @@ class KhsMahasiswaController extends Controller
         $ipk = $total_all_sks > 0 ? $total_all_mutu / $total_all_sks : 0;
         $total_sks_tempuh = $total_all_sks;
 
-        // Data header
         $periode_aktif = $results[0]->periode ?? '-';
-        $semester_aktif = 'GENAP'; // bisa diambil dari tabel setting
+        $semester_aktif = 'GENAP';
 
         return view('mahasiswa.khs.index', compact(
             'results',

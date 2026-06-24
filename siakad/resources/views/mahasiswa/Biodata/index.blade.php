@@ -75,16 +75,6 @@
                     <div class="w-1/3 font-semibold text-gray-700">HANDPHONE</div>
                     <div class="w-2/3 text-gray-900">: {{ $biodata->handphone ?? '-' }}</div>
                 </div>
-
-                <!-- Baris 7 -->
-                <div class="flex border-b pb-2"> 
-                    <div class="w-1/3 font-semibold text-gray-700">Dosen Wali</div>
-                    <div class="w-2/3 text-gray-900">: {{ $biodata->dosenwali_nama ?? '-' }}</div>
-                </div>
-                <div class="flex border-b pb-2">
-                    <div class="w-1/3 font-semibold text-gray-700">Kelas</div>
-                    <div class="w-2/3 text-gray-900">: {{ $biodata->pataum ?? '-' }}</div>
-                </div>
             </div>
         </div>
 

@@ -48,4 +48,13 @@ class Penawaran extends Model
     {
         return $this->belongsTo(Prodi::class, 'prodi', 'kode_prodi');
     }
+    public function getMulaipukulAttribute($value)
+    {
+        return $value ? \Carbon\Carbon::parse($value) : null;
+    }
+
+    public function getSelesaipukulAttribute($value)
+    {
+        return $value ? \Carbon\Carbon::parse($value) : null;
+    }
 }
