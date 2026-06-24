@@ -9,21 +9,16 @@ class Registrasi extends Model
     protected $table = 'registrasi';
     protected $primaryKey = 'regkrs';
     public $timestamps = false;
-
+        public $incrementing = true;
     protected $fillable = [
         'nrp',
         'penawaran_id',
         'status',
-        'sesi',
+     
         'tanggal',
         'jam',
-        'validasi',
-        'hari',
-        'mulaipukul',
-        'selesaipukul',
-        'ip_address',
-        'sks',
-        'pataum',
+    
+     
     ];
 
     protected $casts = [
@@ -54,7 +49,7 @@ class Registrasi extends Model
         return $this->hasOneThrough(
             Mk::class,
             Penawaran::class,
-            'recno',   // Penawaran PK
+
             'kodemk',  // MK PK
             'penawaran_id',
             'kodemk'

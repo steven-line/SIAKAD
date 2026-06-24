@@ -424,9 +424,6 @@ Route::middleware('auth')->group(function () {
             ->name('krs.')
             ->group(function () {
 
-
-
-
                 Route::get('/', [KrsMahasiswaController::class, 'index'])
                     ->middleware('permission:krs.view')
                     ->name('index');
@@ -452,8 +449,18 @@ Route::middleware('auth')->group(function () {
         /*
         | DETAIL MATA KULIAH
         */
-        Route::get('/mata-kuliah/{kode_mk}', [DetailMataKuliahController::class, 'show'])
+    
+
+        Route::get('/mata-kuliah/{penawaran}', [DetailMataKuliahController::class, 'show'])
             ->name('mata_kuliah.show');
+
+        Route::post('/mata-kuliah/{penawaran}/', 
+                [DetailMataKuliahController::class, 'daftar']
+            )->name('mata_kuliah.daftar');
+
+            Route::delete('/mata-kuliah/{penawaran}', 
+    [DetailMataKuliahController::class, 'batal']
+)->name('mata_kuliah.batal');
     });
 
     /*

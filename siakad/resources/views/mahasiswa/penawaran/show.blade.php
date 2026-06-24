@@ -5,54 +5,54 @@
         <!-- Informasi Detail Mata Kuliah + Tombol Aksi -->
         <div class="mb-6 p-4 bg-base-100 rounded-lg shadow">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><strong>Kode MK:</strong> {{ $mataKuliah->kode_mk }}</div>
-                <div><strong>Mata Kuliah:</strong> {{ $mataKuliah->nama_mk }}</div>
-                <div><strong>Dosen:</strong> {{ $mataKuliah->dosen ?? '-' }}</div>
-                <div><strong>Hari:</strong> {{ $mataKuliah->hari }}</div>
-                <div><strong>Jam Mulai:</strong> {{ $mataKuliah->jam_mulai }}</div>
-                <div><strong>Jam Selesai:</strong> {{ $mataKuliah->jam_selesai }}</div>
-                <div><strong>SKS:</strong> {{ $mataKuliah->sks }}</div>
-                <div><strong>Semester:</strong> {{ $mataKuliah->semester }}</div>
-                <div><strong>Keterangan :</strong> {{ $mataKuliah->keterangan ?? '-' }}</div>
-                <div><strong>Periode :</strong> {{ $mataKuliah->periode ?? 'GENAP / 2025-2026' }}</div>
+                <div><strong>Kode MK:</strong> {{ $penawaran->kodemk }}</div>
+                <div><strong>Mata Kuliah:</strong> {{ $penawaran->mk->nama }}</div>
+                <div><strong>Dosen:</strong> {{ $penawaran->dosen ?? '-' }}</div>
+                <div><strong>Hari:</strong> {{ $penawaran->hari }}</div>
+                <div><strong>Jam Mulai:</strong> {{ $penawaran->mulaipukul }}</div>
+                <div><strong>Jam Selesai:</strong> {{ $penawaran->selesaipukul }}</div>
+                <div><strong>SKS:</strong> {{ $penawaran->mk->sks }}</div>
+                <div><strong>Semester:</strong> {{ $penawaran->semester_id }}</div>
+                <div><strong>Keterangan :</strong> {{ $penawaran->keterangan ?? '-' }}</div>
+                <div><strong>Periode :</strong> {{ $penawaran->periode ?? 'GENAP / 2025-2026' }}</div>
                 <div>
                     <strong>Aksi Anda :</strong>
-                    @php
-                        $nrpMahasiswa = session('nrp') ?? (Auth::check() ? Auth::user()->username : null);
-                        $sudahTerdaftar = $pendaftar->contains('nrp', $nrpMahasiswa);
-                    @endphp
+                    
+                  
+                @if($sudahAmbil)
 
-                    @if($nrpMahasiswa)
-                        @if($statusBlokir === 'BELUM_KRS')
-                            @if($sudahTerdaftar)
-                                <!-- Tombol Batal -->
-                                <form action="{{ route('mahasiswa.krs.destroy', ['id' => $mataKuliah->id_registrasi]) }}" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pendaftaran mata kuliah ini?')" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow ml-2">
-                                        Batal
-                                    </button>
-                                </form>
-                            @else
-                                <!-- Tombol Daftar -->
-                                <form action="{{ route('mahasiswa.krs.store') }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    <input type="hidden" name="penawaran_id" value="{{ $mataKuliah->penawaran_id ?? $mataKuliah->id }}">
-                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow ml-2">
-                                        Daftar
-                                    </button>
-                                </form>
-                            @endif
-                        @else
-            
-                        @endif
-                    @else
-                        <span class="text-gray-500 ml-2">(Login untuk mendaftar)</span>
-                    @endif
+                    <form action="{{ route('mahasiswa.mata_kuliah.batal', $penawaran->recno) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-error">
+                            Batalkan KRS
+                        </button>
+                    </form>
+
+                @else
+
+                    <form action="{{ route('mahasiswa.mata_kuliah.daftar', $penawaran->recno) }}" method="POST">
+                        @csrf
+                        <button class="btn btn-soft-primary">
+                            Ambil KRS
+                        </button>
+                    </form>
+
+                @endif
                 </div>
             </div>
         </div>
+        @if(session('success'))
+    <div class="bg-green-500 text-white p-2">
+        {{ session('success') }}
+    </div>
+@endif
 
+@if(session('error'))
+    <div class="bg-red-500 text-white p-2">
+        {{ session('error') }}
+    </div>
+@endif
         <!-- Tabel Daftar Mahasiswa -->
         <h2 class="text-xl font-semibold mb-2">Daftar Mahasiswa Peserta</h2>
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -67,13 +67,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($pendaftar as $index => $mhs)
+                    @forelse ($registrasis as $registrasi)
                         <tr>
-                            <td class="px-4 py-2">{{ $index + 1 }}</td>
-                            <td class="px-4 py-2">{{ $mhs->nrp }}</td>
-                            <td class="px-4 py-2">{{ $mhs->nama }}</td>
-                            <td class="px-4 py-2">{{ $mhs->status }}</td>
-                            <td class="px-4 py-2">{{ $mhs->tanggal_registrasi }}</td>
+                            <td class="px-4 py-2">{{ $loop->index }}</td>
+                            <td class="px-4 py-2">{{ $registrasi->nrp }}</td>
+                            <td class="px-4 py-2">{{ $registrasi->mahasiswa->nama }}</td>
+                            <td class="px-4 py-2">{{ $registrasi->status }}</td>
+                            <td class="px-4 py-2">{{ $registrasi->tanggal }}</td>
                         </tr>
                     @empty
                         <tr>
