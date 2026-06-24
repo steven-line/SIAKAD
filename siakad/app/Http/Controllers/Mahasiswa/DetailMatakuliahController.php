@@ -24,40 +24,40 @@ class DetailMataKuliahController extends Controller
            
     return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil'));
     }
-public function daftar(Penawaran $penawaran)
-{
-    $user = Auth::user();
-    $mahasiswa = $user->mahasiswa;
+    public function daftar(Penawaran $penawaran)
+    {
+        $user = Auth::user();
+        $mahasiswa = $user->mahasiswa;
 
-    if (!$mahasiswa) {
-        return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        if (!$mahasiswa) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+
+        // FIX INI
+        $check = $mahasiswa->status_blokir === 'BELUM_KRS';
+
+        if (!$check) {
+            return back()->with('error', 'Tidak bisa mengambil KRS.');
+        }
+
+        $sudah = Registrasi::where('nrp', $mahasiswa->nrp)
+            ->where('penawaran_id', $penawaran->recno)
+            ->exists();
+
+        if ($sudah) {
+            return back()->with('error', 'Sudah mengambil mata kuliah ini.');
+        }
+
+        Registrasi::create([
+            'nrp' => $mahasiswa->nrp,
+            'penawaran_id' => $penawaran->recno,
+            'status' => 'BARU',
+            'tanggal' => now()->toDateString(),
+            'jam' => now()->toTimeString(),
+        ]);
+    
+        return back()->with('success', 'Berhasil mengambil KRS.');
     }
-
-    // FIX INI
-    $check = $mahasiswa->status_blokir === 'BELUM_KRS';
-
-    if (!$check) {
-        return back()->with('error', 'Tidak bisa mengambil KRS.');
-    }
-
-    $sudah = Registrasi::where('nrp', $mahasiswa->nrp)
-        ->where('penawaran_id', $penawaran->recno)
-        ->exists();
-
-    if ($sudah) {
-        return back()->with('error', 'Sudah mengambil mata kuliah ini.');
-    }
-
-    Registrasi::create([
-        'nrp' => $mahasiswa->nrp,
-        'penawaran_id' => $penawaran->recno,
-        'status' => 'BARU',
-        'tanggal' => now()->toDateString(),
-        'jam' => now()->toTimeString(),
-    ]);
-   
-    return back()->with('success', 'Berhasil mengambil KRS.');
-}
 
 
     public function batal(Penawaran $penawaran)

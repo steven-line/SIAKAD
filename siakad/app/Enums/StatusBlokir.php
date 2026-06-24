@@ -7,6 +7,7 @@ enum StatusBlokir:string
     Case BelumKrs = 'BELUM_KRS';
     Case MenungguValidasi = 'MENUNGGU_VALIDASI';
     Case Disetujui = 'DISETUJUI';
+    Case Terkunci = 'TERKUNCI';
 
      public static function values(): array
     {

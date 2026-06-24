@@ -12,7 +12,7 @@ class NilaiKrsMahasiswaController extends Controller
     {
         $user = Auth::user();
         $nrp = $user->nrp ?? $user->username ?? null;
-
+        $statusBlokir = $user->mahasiswa->status_blokir;
         if (!$nrp) {
             return redirect()->back()->with('error', 'NRP tidak ditemukan.');
         }
@@ -43,6 +43,6 @@ class NilaiKrsMahasiswaController extends Controller
             ->orderBy('penawaran.kodemk')
             ->get();
 
-        return view('mahasiswa.nilai_krs.index', compact('nilaiKrs'));
+        return view('mahasiswa.nilai_krs.index', compact('nilaiKrs', 'statusBlokir'));
     }
 }

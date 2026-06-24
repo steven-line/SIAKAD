@@ -5,7 +5,15 @@
             <h1 class="text-2xl md:text-3xl font-semibold text-white-800">Hello Mahasiswa</h1>
             <p class="text-white-500 text-sm mt-1">Selamat datang kembali. Berikut ringkasan akademik Anda.</p>
         </div>
-
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
         <!-- 4 Kartu Statistik: IPS, IPK, SKS, SKK -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             <!-- Kartu IPS -->

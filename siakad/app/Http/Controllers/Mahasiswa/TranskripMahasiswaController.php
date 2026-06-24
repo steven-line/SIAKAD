@@ -26,7 +26,7 @@ class TranskripMahasiswaController extends Controller
     {
         $user = Auth::user();
         $nrp = $user->nrp ?? $user->username ?? null;
-
+        $statusBlokir = $user->mahasiswa->status_blokir;
         if (!$nrp) {
             return redirect()->back()->with('error', 'NRP tidak ditemukan.');
         }
@@ -57,6 +57,6 @@ class TranskripMahasiswaController extends Controller
         $total_mutu = $transkripWithMutu->sum('mutu');
         $ipk = $total_sks > 0 ? $total_mutu / $total_sks : 0;
 
-        return view('mahasiswa.Transkrip_nilai.index', compact('transkripWithMutu', 'total_sks', 'total_mutu', 'ipk'));
+        return view('mahasiswa.Transkrip_nilai.index', compact('transkripWithMutu', 'total_sks', 'total_mutu', 'ipk', 'statusBlokir'));
     }
 }

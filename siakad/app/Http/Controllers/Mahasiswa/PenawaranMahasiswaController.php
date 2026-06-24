@@ -12,7 +12,7 @@ class PenawaranMahasiswaController extends Controller
     {
         // Ambil pataum dari session
         $pataum = session('pataum');
-
+        $statusBlokir = Auth::user()->mahasiswa->status_blokir;
         // Jika tidak ada di session, ambil dari user (fallback)
         if (!$pataum) {
             $user = Auth::user();
@@ -29,6 +29,6 @@ class PenawaranMahasiswaController extends Controller
 
         $penawaran = $query->get();
 
-        return view('mahasiswa.penawaran.index', compact('penawaran'));
+        return view('mahasiswa.penawaran.index', compact('penawaran', 'statusBlokir'));
     }
 }
