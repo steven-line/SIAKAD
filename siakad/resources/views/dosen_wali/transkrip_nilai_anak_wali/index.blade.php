@@ -36,7 +36,7 @@
 
                             <a
                                 class="btn btn-soft btn-info"
-                                href="{{route('nilai_krs_anak_wali.show', $mhs->nrp)}}">
+                                href="{{route('transkrip_nilai_anak_wali.show', $mhs->nrp)}}">
 
                                 Lihat Nilai
 
