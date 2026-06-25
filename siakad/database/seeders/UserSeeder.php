@@ -70,37 +70,11 @@ class UserSeeder extends Seeder
                 'validasi' => 1,
                 'pataum' => 'P',
             ],
-            [
-                'username' => '31121111',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 0,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P', 
-            ],
-            [
-                'username' => '31123333',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 0,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P',
-            ]
         ];
 
         foreach ($datas as $data) {
             // 1. Buat user
             $user = User::create($data);
-            
-            // 2. Assign role mahasiswa menggunakan Spatie
-            // Pastikan role 'mahasiswa' sudah ada di database/seeder role Anda
-            $user->assignRole('admin');
         }
     }
 }

@@ -29,6 +29,10 @@
                     <strong>Aksi Anda :</strong>
                     
                   
+                @if(in_array($statusBlokir, ['MENUNGGU_VALIDASI', 'DISETUJUI']))
+
+            @else
+
                 @if($sudahAmbil)
 
                     <form action="{{ route('mahasiswa.mata_kuliah.batal', $penawaran->recno) }}" method="POST">
@@ -49,6 +53,8 @@
                     </form>
 
                 @endif
+
+            @endif
                 </div>
             </div>
         </div>
@@ -81,7 +87,7 @@
                         <tr>
                             <td class="px-4 py-2">{{ $loop->index }}</td>
                             <td class="px-4 py-2">{{ $registrasi->nrp }}</td>
-                            <td class="px-4 py-2">{{ $registrasi->mahasiswa->nama }}</td>
+                            <td class="px-4 py-2">{{ $registrasi->mahasiswa->biodata->nama }}</td>
                             <td class="px-4 py-2">{{ $registrasi->status }}</td>
                             <td class="px-4 py-2">{{ $registrasi->tanggal }}</td>
                         </tr>
@@ -96,7 +102,7 @@
 
         <!-- Tombol Kembali -->
         <div class="mt-6">
-            <a href="{{ url()->previous() }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md shadow">
+            <a href="{{ route('mahasiswa.penawaran.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md shadow">
                 ← Kembali
             </a>
         </div>

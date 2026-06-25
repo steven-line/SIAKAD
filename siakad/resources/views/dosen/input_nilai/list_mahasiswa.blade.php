@@ -31,7 +31,7 @@
                 $krs = $reg->krs;
 
                 $nrp = $mhs?->nrp;
-                $nama = $mhs?->nama;
+                $nama = $mhs?->biodata->nama;
 
                 $semester = $reg->penawaran?->semester?->periode?->tahun_ajaran;
                 $jenis = $reg->penawaran?->semester?->jenis;
