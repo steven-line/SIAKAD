@@ -1,5 +1,6 @@
 <x-layout title="Daftar Mahasiswa Anak Wali">
 
+   
 
     <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
 
@@ -36,7 +37,7 @@
 
                             <a
                                 class="btn btn-soft btn-info"
-                                href="{{route('nilai_krs_anak_wali.show', $mhs->nrp)}}">
+                                href="{{route('nilai_khs_anak_wali.show', $mhs->nrp)}}">
 
                                 Lihat Nilai
 
