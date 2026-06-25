@@ -27,8 +27,8 @@
                     @forelse($mahasiswa->registrasi as $i => $reg)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td>{{ $reg->kodemk }}</td>
-                            <td>{{ $reg->matkul->nama ?? '-' }}</td>
+                            <td>{{ $reg->penawaran->kodemk }}</td>
+                            <td>{{ $reg->penawaran->mk->nama ?? '-' }}</td>
                             <td>{{ $reg->sks }}</td>
                             <td>{{ $reg->hari }}</td>
                             <td>

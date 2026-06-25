@@ -15,8 +15,10 @@ use App\Http\Controllers\{
     NilaiKrsAnakWali,
     NilaiKrsAnakWaliController,
     MahasiswaAdminController,
+    NilaiKhsAnakWaliController,
     PeriodeController,
-    SemesterController
+    SemesterController,
+    TranskripNilaiAnakWaliController
 };
 
 use App\Http\Controllers\Admin\{
@@ -297,17 +299,35 @@ Route::middleware('auth')->group(function () {
             Route::post('/{mahasiswa}/lock', [PerwalianController::class, 'lock'])->name('lock');
         });
 
-     Route::prefix('nilai_anak_wali')
+     Route::prefix('nilai_krs_anak_wali')
         ->middleware('permission:perwalian.manage')
-        ->name('nilai_anak_wali.')
+        ->name('nilai_krs_anak_wali.')
         ->group(function () {
 
             Route::get('/', [NilaiKrsAnakWaliController::class, 'index'])->name('index');
             Route::get('/{mahasiswa}', [NilaiKrsAnakWaliController::class, 'show'])->name('show');
 
         });
+       Route::prefix('nilai_khs_anak_wali')
+        ->middleware('permission:perwalian.manage')
+        ->name('nilai_khs_anak_wali.')
+        ->group(function () {
 
-          Route::prefix('mahasiswa-admin')
+            Route::get('/', [NilaiKhsAnakWaliController::class, 'index'])->name('index');
+            Route::get('/{mahasiswa}', [NilaiKhsAnakWaliController::class, 'show'])->name('show');
+
+        });
+
+        Route::prefix('transkrip_nilai_anak_wali')
+        ->middleware('permission:perwalian.manage')
+        ->name('transkrip_nilai_anak_wali.')
+        ->group(function () {
+            Route::get('/', [TranskripNilaiAnakWaliController::class, 'index'])->name('index');
+            Route::get('/{mahasiswa}', [TranskripNilaiAnakWaliController::class, 'show'])->name('show');
+
+        });
+    
+    Route::prefix('mahasiswa-admin')
             ->middleware('permission:mahasiswa.manage')
             ->name('mahasiswa_admin.')
             ->group(function () {
