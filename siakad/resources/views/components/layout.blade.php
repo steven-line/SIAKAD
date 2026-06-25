@@ -13,24 +13,65 @@
 
 <nav class="bg-white shadow-md border-r border-gray-200 h-screen sticky top-0 left-0 min-w-[250px] py-6 px-4 dark:bg-black ">
 
-<div class="flex flex-col h-full ">
+<div class="flex flex-col items-center gap-2">
 
-    <div class="flex flex-col items-center gap-2">
-        <img src="{{ asset('images/boy.png') }}" class="w-20 h-20" alt="user">
-        <span class="font-bold text-lg">
-            @php
-                $user = auth()->user();
-                $displayName = $user->username ?? 'Guest';
-                if ($user && $user->hasRole('mahasiswa')) {
-                    $nama = DB::table('biodata')->where('nrp', $user->username)->value('nama');
-                    if ($nama) {
-                        $displayName = $nama;
-                    }
-                }
-            @endphp
-            {{ $displayName }}
-        </span>
-    </div>
+    @php
+        use Illuminate\Support\Facades\DB;
+
+        $user = auth()->user();
+
+        $displayName = 'Guest';
+        $displayId = '';
+        $displayRole = '';
+
+        if ($user) {
+
+            $displayName = $user->username;
+            $displayId = $user->username;
+
+            // Cari mahasiswa
+            $biodata = DB::table('biodata')
+                ->where('nrp', trim($user->username))
+                ->first();
+
+            if ($biodata) {
+                $displayName = $biodata->nama;
+                $displayId = $biodata->nrp;
+            }
+
+            // Cari dosen
+            $dosen = DB::table('dosen')
+                ->where('nim_dosen', trim($user->username))
+                ->first();
+
+            if ($dosen) {
+                $displayName = $dosen->nama;
+                $displayId = $dosen->nim_dosen;
+            }
+
+            // Ambil role
+            $displayRole = $user->roles->pluck('name')->join(', ');
+        }
+    @endphp
+
+    <img src="{{ asset('images/boy.png') }}"
+         class="w-20 h-20"
+         alt="user">
+
+    <span class="font-bold text-lg text-center">
+        {{ $displayName }}
+    </span>
+
+    <span class="text-sm text-gray-500">
+        {{ $displayId }}
+    </span>
+
+    <span class="badge badge-primary mt-1">
+        {{ ucfirst($displayRole) }}
+    </span>
+
+</div>
+
 
     <hr class="my-6 border-gray-200"/>
 
