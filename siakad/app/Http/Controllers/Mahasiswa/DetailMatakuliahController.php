@@ -56,7 +56,7 @@ class DetailMataKuliahController extends Controller
             'jam' => now()->toTimeString(),
         ]);
     
-        return back()->with('success', 'Berhasil mengambil KRS.');
+        return redirect()->route('mahasiswa.krs.index')->with('success', 'Berhasil mengambil KRS.');
     }
 
 

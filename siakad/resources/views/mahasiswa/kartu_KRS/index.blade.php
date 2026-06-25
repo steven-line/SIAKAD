@@ -60,12 +60,12 @@
                         <tr class="border-b hover:bg-gray-50">
                             <td class="px-4 py-2 text-black">{{ $index + 1 }}</td>
                             <td class="px-4 py-2 text-black">
-                                <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kode_mk) }}">
+                                <a href="{{ route('mahasiswa.mata_kuliah.show',  $item->recno) }}">
                                     {{ $item->kode_mk }}
                                 </a>
                             </td>
                             <td class="px-4 py-2 text-black">
-                                <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kode_mk) }}">
+                                <a href="{{ route('mahasiswa.mata_kuliah.show',  $item->recno) }}">
                                     {{ $item->nama_mk }}
                                 </a>
                             </td>
@@ -73,12 +73,12 @@
                                 <span class="bg-green-500 text-white px-2 py-1 rounded text-sm">{{ $item->status }}</span>
                             </td>
                             <td class="px-4 py-2 text-black">
-                                <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kode_mk) }}">
+                                <a href="{{ route('mahasiswa.mata_kuliah.show',  $item->recno) }}">
                                     {{ $item->hari }}, {{ $item->jam_mulai }}-{{ $item->jam_selesai }}
                                 </a>
                             </td>
                             <td class="px-4 py-2 text-black text-center">
-                                <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kode_mk) }}">
+                                <a href="{{ route('mahasiswa.mata_kuliah.show',  $item->recno) }}">
                                     {{ $item->sks }}
                                 </a>
                             </td>

@@ -28,12 +28,13 @@ class KrsMahasiswaController extends Controller
             $penawaran = $reg->penawaran;
             return (object) [
                 'id'            => $reg->regkrs,
+                'recno'         => $penawaran->recno ?? null, // 🔥 TAMBAHKAN INI
                 'kode_mk'       => $penawaran ? $penawaran->kodemk : '-',
                 'nama_mk'       => $penawaran && $penawaran->mk ? $penawaran->mk->nama : '-',
                 'status'        => $reg->status ?? 'BARU',
-                'hari'          => $reg->hari ?? '-',
-                'jam_mulai'     => $reg->mulaipukul ? date('H:i', strtotime($reg->mulaipukul)) : '-',
-                'jam_selesai'   => $reg->selesaipukul ? date('H:i', strtotime($reg->selesaipukul)) : '-',
+                'hari'          => $reg->penawaran->hari ?? '-',
+                'jam_mulai'     => $reg->penawaran->mulaipukul ? date('H:i', strtotime($reg->penawaran->mulaipukul)) : '-',
+                'jam_selesai'   => $reg->penawaran->selesaipukul ? date('H:i', strtotime($reg->penawaran->selesaipukul)) : '-',
                 'sks'           => $reg->sks ?? 0,
             ];
         });
