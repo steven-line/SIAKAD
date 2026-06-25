@@ -54,7 +54,7 @@
 
 
                 <button class="btn btn-primary mt-6">
-                    Buat Kurikulum
+                    Buat Mahasiswa
                 </button>
 
             </fieldset>
