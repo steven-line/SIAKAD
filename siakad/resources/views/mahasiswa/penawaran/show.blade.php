@@ -29,6 +29,10 @@
                     <strong>Aksi Anda :</strong>
                     
                   
+                @if(in_array($statusBlokir, ['MENUNGGU_VALIDASI', 'DISETUJUI']))
+
+            @else
+
                 @if($sudahAmbil)
 
                     <form action="{{ route('mahasiswa.mata_kuliah.batal', $penawaran->recno) }}" method="POST">
@@ -49,6 +53,8 @@
                     </form>
 
                 @endif
+
+            @endif
                 </div>
             </div>
         </div>

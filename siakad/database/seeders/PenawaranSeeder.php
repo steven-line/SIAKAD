@@ -20,7 +20,7 @@ class PenawaranSeeder extends Seeder
             [
                 'kodemk' => 'IF101001',
                 'semester_id' => $semesterAktif,
-                'dosen' => '31120000',
+                'dosen' => '13524679',
                 'sesi' => '1',
                 'keterangan' => 'Kelas Reguler Pagi',
                 'hari' => 'Senin',
@@ -35,7 +35,7 @@ class PenawaranSeeder extends Seeder
             [
                 'kodemk' => 'IF101002',
                 'semester_id' => $semesterAktif,
-                'dosen' => '31120000',
+                'dosen' => '13524679',
                 'sesi' => '1',
                 'keterangan' => 'Kelas Reguler Pagi',
                 'hari' => 'Selasa',
@@ -50,7 +50,7 @@ class PenawaranSeeder extends Seeder
             [
                 'kodemk' => 'IF101003',
                 'semester_id' => $semesterAktif,
-                'dosen' => '31121111',
+                'dosen' => '12345678',
                 'sesi' => '1',
                 'keterangan' => 'Kelas Reguler Pagi',
                 'hari' => 'Rabu',
@@ -65,7 +65,7 @@ class PenawaranSeeder extends Seeder
             [
                 'kodemk' => 'IF101004',
                 'semester_id' => $semesterAktif,
-                'dosen' => '31123333',
+                'dosen' => '87654321',
                 'sesi' => '1',
                 'keterangan' => 'Kelas Reguler Siang',
                 'hari' => 'Kamis',
@@ -80,7 +80,7 @@ class PenawaranSeeder extends Seeder
             [
                 'kodemk' => 'IF101005',
                 'semester_id' => $semesterAktif,
-                'dosen' => '31123333',
+                'dosen' => '87654321',
                 'sesi' => '1',
                 'keterangan' => 'Kelas MBKM',
                 'hari' => 'Jumat',
