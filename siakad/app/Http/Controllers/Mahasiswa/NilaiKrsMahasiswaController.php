@@ -24,7 +24,7 @@ class NilaiKrsMahasiswaController extends Controller
             ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
             ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
             ->leftJoin('krs', function ($join) {
-                $join->on('registrasi.nrp', '=', 'krs.registrasi_id')
+                $join->on('registrasi.regkrs', '=', 'krs.registrasi_id')
                      ->on('penawaran.kodemk', '=', 'krs.kode');
             })
             ->where('registrasi.nrp', $nrp)

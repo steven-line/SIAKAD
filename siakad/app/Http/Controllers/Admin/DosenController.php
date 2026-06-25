@@ -22,9 +22,9 @@ class DosenController extends Controller
 
     public function create()
     {
-        $users = User::whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'admin');
-        })->whereDoesntHave('dosen')->get();
+      $users = User::whereDoesntHave('roles', function ($query) {
+        $query->whereIn('name', ['admin', 'mahasiswa']);
+    })->whereDoesntHave('dosen')->whereDoesntHave('mahasiswa')->get();
 
         $prodis = Prodi::all();
 
@@ -68,12 +68,15 @@ class DosenController extends Controller
 
     public function edit(Dosen $dosen)
     {
-        $users = User::whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'admin');
-        })->where(function ($query) use ($dosen) {
+      $users = User::whereDoesntHave('roles', function ($query) {
+            $query->whereIn('name', ['admin', 'mahasiswa']);
+        })
+        ->where(function ($query) use ($dosen) {
             $query->whereDoesntHave('dosen')
                   ->orWhere('username', $dosen->user_id);
-        })->get();
+        })
+        ->whereDoesntHave('mahasiswa')
+        ->get();
 
         $prodis = Prodi::all();
 

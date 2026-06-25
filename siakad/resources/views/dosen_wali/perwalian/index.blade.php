@@ -18,7 +18,7 @@
         <tr>
             <td>{{$loop->index}}</td>
             <td>{{$mahasiswa->nrp}}</td>
-            <td>{{$mahasiswa->biodata->nama}}</td>
+            <td>{{$mahasiswa->biodata->nama ?? '-'}}</td>
             <td>{{$mahasiswa->dosen_wali}}</td>
             <td>
               {{ $mahasiswa->status_blokir }}

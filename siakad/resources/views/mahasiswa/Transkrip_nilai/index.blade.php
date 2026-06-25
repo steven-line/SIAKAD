@@ -15,7 +15,6 @@
                 <thead class="bg-blue-500 text-white">
                     <tr>
                         <th>No</th>
-                        <th>Periode</th>
                         <th>Kode</th>
                         <th>Mata Kuliah</th>
                         <th>SKS</th>

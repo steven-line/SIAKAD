@@ -15,50 +15,15 @@ class RegistrasiSeeder extends Seeder
         DB::table('registrasi')->insert([
 
             [
-                'nrp' => '31129999',
+                'nrp' => '31128888',
                
                 'penawaran_id' => 1,
-                'status' => 'AMBIL',
+                'status' => 'BARU',
                 'tanggal' => now()->toDateString(),
                 'jam' => now()->toTimeString(),
        
 
               
-            ],
-
-            [
-                'nrp' => '31129999',
-              
-                'penawaran_id' => 2,
-                'status' => 'AMBIL',
-  
-                'tanggal' => now()->toDateString(),
-                'jam' => now()->toTimeString(),
-               
-              
-            ],
-
-            [
-                'nrp' => '31128888',
-   
-                'penawaran_id' => 1,
-                'status' => 'AMBIL',
-          
-                'tanggal' => now()->toDateString(),
-                'jam' => now()->toTimeString(),
-        
-              
-            ],
-
-            [
-                'nrp' => '31127777',
-         
-                'penawaran_id' => 5,
-                'status' => 'AMBIL',
-              
-                'tanggal' => now()->toDateString(),
-                'jam' => now()->toTimeString(),
-               
             ],
 
         ]);

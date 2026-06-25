@@ -27,7 +27,7 @@
 
                         <td>{{ $mhs->nrp }}</td>
 
-                        <td>{{ $mhs->biodata->nama }}</td>
+                        <td>{{ $mhs->biodata->nama ?? '-'}}</td>
 
                         <td>{{ $mhs->prodi }}</td>
 

@@ -139,7 +139,10 @@ class RoleAndPermissionsSeeder extends Seeder
         // ASSIGN ADMIN USER
         // ======================
         $userAdmin = User::where('username', '31123019')->first();
-
+                     User::where('username', '31127777')->first()->syncRoles(['dosen-wali']);
+                     User::where('username', '31128888')->first()->syncRoles(['mahasiswa']);
+                     User::where('username', '31129999')->first()->syncRoles(['kaprodi']);
+                     User::where('username', '31120000')->first()->syncRoles(['dosen']);
         if ($userAdmin) {
             // lebih aman dari assignRole
             $userAdmin->syncRoles(['admin']);
