@@ -28,7 +28,7 @@ class MahasiswaAdminController extends Controller
      */
     public function create()
     {
-        $users = User::role('mahasiswa')->get();
+        $users = User::role('mahasiswa')->whereDoesntHave('dosen')->whereDoesntHave('mahasiswa')->get();
         $dosens = Dosen::all();
         $prodis = Prodi::all();
         return view('admin.mahasiswas.create', ['users' => $users, 'dosens' => $dosens, 'prodis' => $prodis]);
@@ -71,7 +71,11 @@ class MahasiswaAdminController extends Controller
     public function edit(Mahasiswa $mahasiswa)
     {
 
-        $users = User::role('mahasiswa')->get();
+        $users =  User::role('mahasiswa')
+        ->whereDoesntHave('dosen')
+        ->whereDoesntHave('mahasiswa')
+        ->where('username', $mahasiswa->nrp)
+        ->get();
         $dosens = Dosen::all();
         $prodis = Prodi::all();
         return view('admin.mahasiswas.edit', ['users' => $users, 'dosens' => $dosens, 'prodis' => $prodis, 'mahasiswa' => $mahasiswa]);

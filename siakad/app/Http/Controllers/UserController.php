@@ -17,11 +17,10 @@ class UserController extends Controller
      * LIST USER
      */
     public function index()
-{
-    $users = User::with(['roles', 'permissions'])->paginate(10);
-
-    return view('admin.users.index', compact('users'));
-}
+    {
+        $users = User::with(['roles', 'permissions'])->paginate(10);
+        return view('admin.users.index', compact('users'));
+    }
 
 /**
  * FORM CREATE
