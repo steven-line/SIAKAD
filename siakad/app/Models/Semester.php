@@ -6,11 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Semester extends Model
 {
-     protected $table = 'semester';
-     protected $fillable = [
+    protected $table = 'semester';
+
+    protected $fillable = [
         'periode_id',
         'jenis',
         'aktif'
-     ];
-   public $casts = ['aktif' => 'boolean'];
+    ];
+
+    /**
+     * Relasi ke Periode
+     */
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class, 'periode_id');
+    }
 }

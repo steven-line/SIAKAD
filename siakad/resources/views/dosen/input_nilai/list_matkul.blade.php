@@ -33,7 +33,7 @@
 
      
 
-                <td>{{ $mk->periode }}</td>
+                <td>{{ $mk->semester_id }}</td>
 
                 <td>{{ $mk->sesi }}</td>
 

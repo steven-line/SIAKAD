@@ -37,31 +37,43 @@
                         <tr>
                             <td class="px-4 py-2 text-left">{{ $index + 1 }}</td>
                             <td class="px-4 py-2 text-left">
+<<<<<<< HEAD
                                 <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kodemk) }}" class="dark:text-white">
+=======
+                                <a href="{{ route('mahasiswa.mata_kuliah.show',  $item->recno) }}" class="text-white">
+>>>>>>> bde78129a7ba144547acffaadd2b12ba9135f0e4
                                 {{ $item->kodemk }}
                                 </a>
                             </td>
                             <td class="px-4 py-2 text-left">
+<<<<<<< HEAD
                                 <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kodemk) }}" class="dark:text-white">
+=======
+                                <a href="{{ route('mahasiswa.mata_kuliah.show', $item->recno) }}" class="text-white">
+>>>>>>> bde78129a7ba144547acffaadd2b12ba9135f0e4
                                 {{ $item->mk->nama ?? '-' }}
                                 </a>
                             </td>
                             <td class="px-4 py-2 text-left">
+<<<<<<< HEAD
                                 <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kodemk) }}" class="dark:text-white">
+=======
+                                <a href="{{ route('mahasiswa.mata_kuliah.show',  $item->recno) }}" class="text-white">
+>>>>>>> bde78129a7ba144547acffaadd2b12ba9135f0e4
                                 {{ $item->hari }}
                                 </a>
                             </td>
                             <td class="px-4 py-2 text-left">
-                                <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kodemk) }}" class="dark:text-white">
+                                <a href="{{ route('mahasiswa.mata_kuliah.show',  $item->recno) }}" class="text-white">
                                     {{ $item->mulaipukul->format('H:i') }} - {{ $item->selesaipukul->format('H:i') }}
                                 </a>
                             </td>
-                            <td class="px-4 py-2 text-left"> <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kodemk) }}" class="dark:text-white">
+                            <td class="px-4 py-2 text-left"> <a href="{{ route('mahasiswa.mata_kuliah.show', $item->recno) }}" class="text-white">
                                 {{ $item->status ?? 'Tersedia' }}
                                 </a>
                             </td>
                             <td class="px-4 py-2 text-center"> 
-                                <a href="{{ route('mahasiswa.mata_kuliah.show', $item->kodemk) }}" class="dark:text-white">
+                                <a href="{{ route('mahasiswa.mata_kuliah.show', $item->recno) }}" class="text-white">
                                 {{ $item->mk->sks ?? '-' }}
                                 </a>
                             </td>

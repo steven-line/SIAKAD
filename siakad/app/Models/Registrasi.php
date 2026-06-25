@@ -3,27 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Penawaran;
+use App\Models\Mahasiswa;
+use App\Models\Mk;
+use App\Models\Krs;
 
 class Registrasi extends Model
 {
     protected $table = 'registrasi';
-    protected $primaryKey = 'regkrs';
-    public $timestamps = false;
 
+    protected $primaryKey = 'regkrs';
+
+    public $timestamps = false;
+        public $incrementing = true;
     protected $fillable = [
         'nrp',
         'penawaran_id',
         'status',
-        'sesi',
+     
         'tanggal',
         'jam',
-        'validasi',
-        'hari',
-        'mulaipukul',
-        'selesaipukul',
-        'ip_address',
-        'sks',
-        'pataum',
+    
+     
     ];
 
     protected $casts = [
@@ -31,33 +32,49 @@ class Registrasi extends Model
     ];
 
     /**
-     * RELASI KE PENAWARAN
+     * Relasi ke Penawaran
      */
     public function penawaran()
     {
-        return $this->belongsTo(Penawaran::class, 'penawaran_id', 'recno');
+        return $this->belongsTo(
+            Penawaran::class,
+            'penawaran_id',
+            'recno'
+        );
     }
 
     /**
-     * RELASI KE MAHASISWA
+     * Relasi ke Mahasiswa
      */
     public function mahasiswa()
     {
-        return $this->belongsTo(Mahasiswa::class, 'nrp', 'nrp');
+        return $this->belongsTo(
+            Mahasiswa::class,
+            'nrp',
+            'nrp'
+        );
     }
 
     /**
-     * RELASI MK (LEBIH AMAN LEWAT PENAWARAN)
+     * Relasi ke Mata Kuliah melalui Penawaran
      */
     public function mk()
     {
         return $this->hasOneThrough(
             Mk::class,
             Penawaran::class,
-            'recno',   // Penawaran PK
+
             'kodemk',  // MK PK
             'penawaran_id',
             'kodemk'
         );
+    }
+
+    /**
+     * Relasi ke KRS (nilai)
+     */
+    public function krs()
+    {
+        return $this->hasOne(Krs::class, 'registrasi_id', 'regkrs');
     }
 }

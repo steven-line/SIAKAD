@@ -57,4 +57,9 @@ class Penawaran extends Model
     {
         return $value ? \Carbon\Carbon::parse($value) : null;
     }
+
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class, 'semester_id');
+    }
 }

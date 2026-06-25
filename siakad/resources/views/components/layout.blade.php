@@ -34,7 +34,7 @@
 
     <hr class="my-6 border-gray-200"/>
 
-    <ul class="flex-1 [&>li]:py-2 [&>li]:hover:bg-gray-200 overflow-y-auto">
+    <ul class="flex-1 [&>li]:py-2 [&>li]: overflow-y-auto">
 
         {{-- DASHBOARD (SEMUA USER) --}}
         <li>

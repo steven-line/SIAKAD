@@ -19,16 +19,11 @@ class RegistrasiSeeder extends Seeder
                
                 'penawaran_id' => 1,
                 'status' => 'AMBIL',
-                'sesi' => 'A',
                 'tanggal' => now()->toDateString(),
                 'jam' => now()->toTimeString(),
-                'validasi' => 1,
-                'hari' => 'Senin',
-                'mulaipukul' => '08:00:00',
-                'selesaipukul' => '10:30:00',
-                'ip_address' => '127.0.0.1',
-                'sks' => 3,
-                'pataum' => 'P',
+       
+
+              
             ],
 
             [
@@ -36,16 +31,11 @@ class RegistrasiSeeder extends Seeder
               
                 'penawaran_id' => 2,
                 'status' => 'AMBIL',
-                'sesi' => 'A',
+  
                 'tanggal' => now()->toDateString(),
                 'jam' => now()->toTimeString(),
-                'validasi' => 1,
-                'hari' => 'Selasa',
-                'mulaipukul' => '08:00:00',
-                'selesaipukul' => '10:30:00',
-                'ip_address' => '127.0.0.1',
-                'sks' => 3,
-                'pataum' => 'P',
+               
+              
             ],
 
             [
@@ -53,16 +43,11 @@ class RegistrasiSeeder extends Seeder
    
                 'penawaran_id' => 1,
                 'status' => 'AMBIL',
-                'sesi' => 'A',
+          
                 'tanggal' => now()->toDateString(),
                 'jam' => now()->toTimeString(),
-                'validasi' => 0,
-                'hari' => 'Senin',
-                'mulaipukul' => '08:00:00',
-                'selesaipukul' => '10:30:00',
-                'ip_address' => '127.0.0.1',
-                'sks' => 3,
-                'pataum' => 'P',
+        
+              
             ],
 
             [
@@ -70,16 +55,10 @@ class RegistrasiSeeder extends Seeder
          
                 'penawaran_id' => 5,
                 'status' => 'AMBIL',
-                'sesi' => 'A',
+              
                 'tanggal' => now()->toDateString(),
                 'jam' => now()->toTimeString(),
-                'validasi' => 1,
-                'hari' => 'Jumat',
-                'mulaipukul' => '09:00:00',
-                'selesaipukul' => '11:30:00',
-                'ip_address' => '127.0.0.1',
-                'sks' => 3,
-                'pataum' => 'M',
+               
             ],
 
         ]);

@@ -12,111 +12,66 @@ use Illuminate\Support\Facades\Log;
 
 class DetailMataKuliahController extends Controller
 {
-    public function show($kode_mk)
+    public function show(Penawaran $penawaran)
     {
         // ============================================================
-        // 1. DAPATKAN PATAUM USER
-        // ============================================================
-        $pataumUser = session('pataum');
+        // 1. DAPATKAN PATAUM USER & SEMESTER AKTIF
     
-        if (!$pataumUser && Auth::check()) {
-            $user = Auth::user();
-            if ($user && isset($user->pataum)) {
-                $pataumUser = substr($user->pataum, 0, 1);
-                session(['pataum' => $pataumUser]);
-            }
+    $registrasis = Registrasi::where('penawaran_id', $penawaran->recno)->get();
+      $sudahAmbil = Registrasi::where('nrp', Auth::user()->mahasiswa->nrp)
+    ->where('penawaran_id', $penawaran->recno)
+    ->exists();
+    $statusBlokir = Auth::user()->mahasiswa->status_blokir;
+    return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil', 'statusBlokir'));
+    }
+    public function daftar(Penawaran $penawaran)
+    {
+        $user = Auth::user();
+        $mahasiswa = $user->mahasiswa;
+
+        if (!$mahasiswa) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
         }
 
-        // ============================================================
-        // 2. CARI PENAWARAN YANG COCOK DENGAN PATAUM USER
-        // ============================================================
-        $query = Penawaran::with('mk')->where('kodemk', $kode_mk);
+        // FIX INI
+        $check = $mahasiswa->status_blokir === 'BELUM_KRS';
 
-        if ($pataumUser) {
-            $penawaran = $query->where('pataum', $pataumUser)->first();
-
-            if (!$penawaran) {
-                $penawaran = Penawaran::with('mk')
-                    ->where('kodemk', $kode_mk)
-                    ->whereNull('pataum')
-                    ->first();
-            }
-        } else {
-            $penawaran = $query->first();
+        if (!$check) {
+            return back()->with('error', 'Tidak bisa mengambil KRS.');
         }
 
-        if (!$penawaran) {
-            abort(404, 'Mata kuliah tidak ditemukan untuk kelas Anda.');
-        }
-
-        // ============================================================
-        // 3. CEK AKSES (KEAMANAN)
-        // ============================================================
-        if ($penawaran->pataum && $pataumUser && $penawaran->pataum !== $pataumUser) {
-            abort(403, 'Anda tidak memiliki akses ke mata kuliah ini.');
-        }
-
-        // ============================================================
-        // 4. AMBIL NRP DAN STATUS BLOKIR MAHASISWA
-        // ============================================================
-        $nrpMahasiswa = session('nrp') ?? (Auth::check() ? Auth::user()->username : null);
-
-        $statusBlokir = 'BELUM_KRS'; // default
-        if ($nrpMahasiswa) {
-            $mahasiswa = Mahasiswa::where('nrp', $nrpMahasiswa)->first();
-            if ($mahasiswa) {
-                $statusBlokir = $mahasiswa->status_blokir;
-            }
-        }
-
-        // ============================================================
-        // 5. CEK REGISTRASI MAHASISWA UNTUK MATA KULIAH INI
-        // ============================================================
-        $id_registrasi = null;
-        if ($nrpMahasiswa) {
-            $registrasi = Registrasi::where('nrp', $nrpMahasiswa)
-                ->where('penawaran_id', $penawaran->recno)
-                ->first();
-            if ($registrasi) {
-                $id_registrasi = $registrasi->regkrs;
-            }
-        }
-
-        // ============================================================
-        // 6. SUSUN OBJEK MATA KULIAH
-        // ============================================================
-        $mataKuliah = (object) [
-            'kode_mk'       => $penawaran->kodemk,
-            'nama_mk'       => $penawaran->mk ? $penawaran->mk->nama : '-',
-            'dosen'         => $penawaran->dosen ?? '-',
-            'kelas'         => $penawaran->sesi ?? 'A',
-            'hari'          => $penawaran->hari,
-            'jam_mulai'     => $penawaran->mulaipukul ? date('H:i:s', strtotime($penawaran->mulaipukul)) : '',
-            'jam_selesai'   => $penawaran->selesaipukul ? date('H:i:s', strtotime($penawaran->selesaipukul)) : '',
-            'sks'           => $penawaran->mk ? $penawaran->mk->sks : 0,
-            'semester'      => $penawaran->semester ?? '6',
-            'periode'       => $penawaran->semester_id ?? 'GENAP / 2025-2026',
-            'kuota'         => $penawaran->pagu ?? '-',
-            'keterangan'    => $penawaran->keterangan ?? '-',
-            'penawaran_id'  => $penawaran->recno,
-            'id_registrasi' => $id_registrasi,
-        ];
-
-        // ============================================================
-        // 7. AMBIL DAFTAR PESERTA
-        // ============================================================
-        $pendaftar = Registrasi::with('mahasiswa')
+        $sudah = Registrasi::where('nrp', $mahasiswa->nrp)
             ->where('penawaran_id', $penawaran->recno)
-            ->get()
-            ->map(function ($reg) {
-                return (object) [
-                    'nrp'                => $reg->nrp,
-                    'nama'               => $reg->mahasiswa ? $reg->mahasiswa->nama : '-',
-                    'status'             => $reg->status,
-                    'tanggal_registrasi' => $reg->tanggal ? $reg->tanggal->format('d-m-Y') : '-',
-                ];
-            });
+            ->exists();
 
-        return view('mahasiswa.penawaran.show', compact('mataKuliah', 'pendaftar', 'statusBlokir'));
+        if ($sudah) {
+            return back()->with('error', 'Sudah mengambil mata kuliah ini.');
+        }
+
+        Registrasi::create([
+            'nrp' => $mahasiswa->nrp,
+            'penawaran_id' => $penawaran->recno,
+            'status' => 'BARU',
+            'tanggal' => now()->toDateString(),
+            'jam' => now()->toTimeString(),
+        ]);
+    
+        return back()->with('success', 'Berhasil mengambil KRS.');
+    }
+
+
+    public function batal(Penawaran $penawaran)
+    {
+        $mahasiswa = auth()->user()->mahasiswa;
+
+        if (!$mahasiswa) {
+            return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+
+        Registrasi::where('nrp', $mahasiswa->nrp)
+            ->where('penawaran_id', $penawaran->recno)
+            ->delete();
+
+        return back()->with('success', 'Berhasil membatalkan KRS.');
     }
 }
