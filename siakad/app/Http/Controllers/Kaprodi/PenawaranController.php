@@ -120,7 +120,7 @@ class PenawaranController extends Controller
             'prodi' => 'required|exists:prodi,kode_prodi',
             'pataum'     => 'required',
             'sesi'       => 'required',
-            'pagu'       => 'nullable|numeric',
+            'pagu' => 'required|integer|between:1,99',
             'keterangan' => 'nullable',
         ]);
         
@@ -238,7 +238,7 @@ class PenawaranController extends Controller
             'prodi' => 'required|exists:prodi,kode_prodi',
             'pataum'     => 'required',
             'sesi'       => 'required',
-            'pagu'       => 'nullable|numeric',
+            'pagu' => 'required|integer|between:1,99',
             'keterangan' => 'nullable',
         ]);
 

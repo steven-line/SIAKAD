@@ -11,71 +11,75 @@
 
 <body class="flex min-h-screen">
 
-<nav class="bg-white shadow-md border-r border-gray-200 h-screen sticky top-0 left-0 min-w-[250px] py-6 px-4 dark:bg-black ">
+<nav class="bg-white shadow-md border-r border-gray-200
+            h-screen sticky top-0 left-0
+            min-w-[250px] dark:bg-black">
 
-<div class="flex flex-col items-center gap-2">
+    <div class="flex flex-col h-full">
 
-    @php
-        use Illuminate\Support\Facades\DB;
+        {{-- PROFILE --}}
+        <div class="py-6 px-4 flex flex-col items-center gap-2">
 
-        $user = auth()->user();
+            @php
+                use Illuminate\Support\Facades\DB;
 
-        $displayName = 'Guest';
-        $displayId = '';
-        $displayRole = '';
+                $user = auth()->user();
 
-        if ($user) {
+                $displayName = 'Guest';
+                $displayId = '';
+                $displayRole = '';
 
-            $displayName = $user->username;
-            $displayId = $user->username;
+                if ($user) {
 
-            // Cari mahasiswa
-            $biodata = DB::table('biodata')
-                ->where('nrp', trim($user->username))
-                ->first();
+                    $displayName = $user->username;
+                    $displayId = $user->username;
 
-            if ($biodata) {
-                $displayName = $biodata->nama;
-                $displayId = $biodata->nrp;
-            }
+                    $biodata = DB::table('biodata')
+                        ->where('nrp', trim($user->username))
+                        ->first();
 
-            // Cari dosen
-            $dosen = DB::table('dosen')
-                ->where('nim_dosen', trim($user->username))
-                ->first();
+                    if ($biodata) {
+                        $displayName = $biodata->nama;
+                        $displayId = $biodata->nrp;
+                    }
 
-            if ($dosen) {
-                $displayName = $dosen->nama;
-                $displayId = $dosen->nim_dosen;
-            }
+                    $dosen = DB::table('dosen')
+                        ->where('nim_dosen', trim($user->username))
+                        ->first();
 
-            // Ambil role
-            $displayRole = $user->roles->pluck('name')->join(', ');
-        }
-    @endphp
+                    if ($dosen) {
+                        $displayName = $dosen->nama;
+                        $displayId = $dosen->nim_dosen;
+                    }
 
-    <img src="{{ asset('images/boy.png') }}"
-         class="w-20 h-20"
-         alt="user">
+                    $displayRole = $user->roles->pluck('name')->join(', ');
+                }
+            @endphp
 
-    <span class="font-bold text-lg text-center">
-        {{ $displayName }}
-    </span>
+            <img src="{{ asset('images/boy.png') }}"
+                 class="w-20 h-20"
+                 alt="user">
 
-    <span class="text-sm text-gray-500">
-        {{ $displayId }}
-    </span>
+            <span class="font-bold text-lg text-center">
+                {{ $displayName }}
+            </span>
 
-    <span class="badge badge-primary mt-1">
-        {{ ucfirst($displayRole) }}
-    </span>
+            <span class="text-sm text-gray-500">
+                {{ $displayId }}
+            </span>
 
-</div>
+            <span class="badge badge-primary mt-1">
+                {{ ucfirst($displayRole) }}
+            </span>
 
+        </div>
 
-    <hr class="my-6 border-gray-200"/>
+        <hr class="border-gray-200">
 
-    <ul class="flex-1 [&>li]:py-2 [&>li]: overflow-y-auto">
+        {{-- MENU --}}
+        <div class="flex-1 overflow-y-auto px-4 py-4">
+
+            <ul class="[&>li]:py-2">
 
         {{-- DASHBOARD (SEMUA USER) --}}
         <li>
@@ -180,25 +184,30 @@
         <li><a href="/penawaran">Penawaran</a></li>
         @endcan
 
+            </ul>
+
+        </div>
+
         {{-- LOGOUT --}}
         @auth
-        <hr class="my-4 border-gray-200" />
+        <div class="border-t border-gray-200 p-4">
 
-        <form action="/logout" method="POST">
-            @csrf
-            @method('DELETE')
+            <form action="/logout" method="POST">
+                @csrf
+                @method('DELETE')
 
-            <li class="text-red-600 hover:bg-red-100 rounded">
-                <button class="w-full text-left px-2 py-2">
+                <button
+                    type="submit"
+                    class="w-full rounded-lg bg-red-500 hover:bg-red-600 text-white py-2 transition">
                     Logout
                 </button>
-            </li>
-        </form>
+
+            </form>
+
+        </div>
         @endauth
 
-    </ul>
-
-</div>
+    </div>
 
 </nav>
 

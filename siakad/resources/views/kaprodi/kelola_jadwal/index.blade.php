@@ -52,7 +52,7 @@
 
                     <tbody class="bg-gray-900">
 
-                        @foreach($dataHari->values() as $i => $item)
+                        @foreach($dataHari as $i => $item)
 
                         <tr class="hover:bg-gray-800">
 
@@ -93,7 +93,7 @@
 
                             {{-- DOSEN --}}
                             <td class="p-2 border">
-                                {{ $item->dosen }}
+                                {{ $item->dosenRelasi->nama }}
                             </td>
 
                             {{-- HARI --}}
@@ -119,7 +119,9 @@
 
                             {{-- SEMESTER --}}
                             <td class="p-2 border text-center">
-                                {{ $item->semester }}
+                                {{ $item->semester->periode->tahun_ajaran ?? '-' }}
+                                -
+                                {{ $item->semester->jenis ?? '-' }}
                             </td>
 
                             {{-- KELAS --}}

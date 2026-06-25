@@ -214,11 +214,14 @@
                         Pagu
                     </label>
 
-                    <input
-                        type="number"
-                        name="pagu"
-                        value="{{ old('pagu', $penawaran->pagu) }}"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded"
+                        <input
+                            type="number"
+                            name="pagu"
+                            min="1"
+                            max="99"
+                            value="{{ old('pagu') }}"
+                            oninput="if(this.value > 99) this.value = 99"
+                            class="w-full p-2 mt-1 bg-gray-700 rounded"
                     >
                 </div>
 

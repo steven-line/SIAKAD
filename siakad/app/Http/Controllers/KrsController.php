@@ -39,10 +39,13 @@ class KrsController extends Controller
         $mahasiswas = Registrasi::with([
             'mahasiswa',
             'penawaran.semester.periode',
-            'krs' // penting untuk cek nilai
+            'krs'
         ])
         ->whereHas('penawaran', function ($q) use ($mk) {
             $q->where('kodemk', $mk->kodemk);
+        })
+        ->whereHas('mahasiswa', function ($q) {
+            $q->where('status_blokir', 'DISETUJUI');
         })
         ->get();
 

@@ -115,10 +115,13 @@
                 </div>
 
                 {{-- PAGU --}}
-                <div>
-                    <label class="text-sm text-gray-400">Pagu</label>
-                    <input type="number" name="pagu" class="w-full p-2 mt-1 bg-gray-700 rounded">
-                </div>
+                <input type="number"
+                    name="pagu"
+                    min="1"
+                    max="99"
+                    maxlength="2"
+                    oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)"
+                    class="w-full p-2 mt-1 bg-gray-700 rounded">
 
                 {{-- MBKM --}}
                 <div>
