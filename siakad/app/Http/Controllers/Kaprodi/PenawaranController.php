@@ -65,7 +65,12 @@ class PenawaranController extends Controller
      */
     public function create()
     {
-        $matkuls = Mk::orderBy('kodemk')->get();
+        $matkuls = Mk::where('aktif', '1')
+            ->whereHas('kurikulum', function ($query) {
+                $query->where('aktif', '1');
+            })
+            ->orderBy('kodemk')
+            ->get();        
         $dosens = Dosen::orderBy('nama')->get();
         $prodis = prodi::orderBy('kode_prodi')->get();
 

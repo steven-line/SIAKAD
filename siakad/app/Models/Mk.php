@@ -41,4 +41,9 @@ class Mk extends Model
         protected $casts = [
         'aktif' => 'boolean',
     ];
+
+      public function kurikulum()
+    {
+        return $this->belongsTo(Kurikulum::class, 'kode_kurikulum');
+    }
 }

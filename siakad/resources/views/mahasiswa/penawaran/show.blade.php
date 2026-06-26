@@ -19,8 +19,8 @@
                 <div><strong>Mata Kuliah:</strong> {{ $penawaran->mk->nama }}</div>
                 <div><strong>Dosen:</strong> {{ $penawaran->dosen ?? '-' }}</div>
                 <div><strong>Hari:</strong> {{ $penawaran->hari }}</div>
-                <div><strong>Jam Mulai:</strong> {{ $penawaran->mulaipukul }}</div>
-                <div><strong>Jam Selesai:</strong> {{ $penawaran->selesaipukul }}</div>
+                <div><strong>Jam Mulai:</strong> {{ $penawaran->mulaipukul->format('H:i') }}</div>
+                <div><strong>Jam Selesai:</strong> {{ $penawaran->selesaipukul->format('H:i') }}</div>
                 <div><strong>SKS:</strong> {{ $penawaran->mk->sks }}</div>
                 <div><strong>Semester:</strong> {{ $penawaran->semester_id }}</div>
                 <div><strong>Keterangan :</strong> {{ $penawaran->keterangan ?? '-' }}</div>

@@ -3,7 +3,7 @@
         <a class="btn btn-primary" href="{{ route('biodata.index') }}">
             ⮜ Previous page
         </a>
-        <a class="btn btn-warning" href="{{ route('biodata.edit', $biodata->nrp) }}">
+        <a class="btn btn-warning" href="{{ route('biodata.edit', $biodata->id) }}">
             Edit Data ⮞
         </a>
     </div>

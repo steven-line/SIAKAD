@@ -49,14 +49,14 @@
                     name="kode_jurusan"
                     required
                 >
-                    <option disabled>Pilih Fakultas</option>
+                    <option disabled>Pilih Jurusan</option>
 
-                    @foreach ($fakultass as $fakultas)
+                    @foreach ($jurusans as $jurusan)
                         <option
-                            value="{{ $fakultas->kode_jurusan }}"
-                            @selected(old('kode_jurusan', $prodi->kode_jurusan) == $fakultas->kode_jurusan)
+                            value="{{ $jurusan->kode_jurusan }}"
+                            @selected(old('kode_jurusan', $prodi->kode_jurusan) == $prodi->kode_jurusan)
                         >
-                            {{ $fakultas->kode_jurusan }} - {{ $fakultas->nama_fakultas }}
+                            {{ $prodi->kode_jurusan }} 
                         </option>
                     @endforeach
 

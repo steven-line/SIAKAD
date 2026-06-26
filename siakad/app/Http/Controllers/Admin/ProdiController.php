@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Prodi;
 use App\Http\Controllers\Controller;
 use App\Models\Fakultas;
+use App\Models\Jurusan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -24,8 +25,8 @@ class ProdiController extends Controller
      */
     public function create()
     {
-        $fakultass = Fakultas::orderBy('kode_jurusan')->get();
-        return view('admin.prodi.create', ['fakultass' => $fakultass]);
+        $jurusans = Jurusan::all();
+        return view('admin.prodi.create', ['jurusans' => $jurusans]);
     }
 
     /**
@@ -58,11 +59,11 @@ class ProdiController extends Controller
      */
     public function edit(Prodi $prodi)
     {
-        $fakultass = Fakultas::orderBy('kode_jurusan')->get();
+        $jurusans = Jurusan::all();
 
         return view('admin.prodi.edit', [
             'prodi' => $prodi,
-            'fakultass' => $fakultass
+            'jurusans' => $jurusans
         ]);
     }
      public function show(Prodi $prodi)

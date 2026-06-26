@@ -58,7 +58,7 @@
                     <select name="semester_id" class="w-full p-2 mt-1 bg-gray-700 rounded">
                         @foreach($semesters as $s)
                             <option value="{{ $s->id }}">
-                                {{ $s->jenis }} - {{ $s->aktif ? 'Aktif' : 'Non Aktif' }}
+                                {{$s->periode->tahun_ajaran}} {{ $s->jenis }} - {{ $s->aktif ? 'Aktif' : 'Non Aktif' }}
                             </option>
                         @endforeach
                     </select>
@@ -115,6 +115,8 @@
                 </div>
 
                 {{-- PAGU --}}
+            <div>    
+                <label class="text-sm text-gray-400">Pagu</label>
                 <input type="number"
                     name="pagu"
                     min="1"
@@ -122,7 +124,7 @@
                     maxlength="2"
                     oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)"
                     class="w-full p-2 mt-1 bg-gray-700 rounded">
-
+                </div> 
                 {{-- MBKM --}}
                 <div>
                     <label class="text-sm text-gray-400">MBKM</label>

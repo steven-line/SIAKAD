@@ -7,7 +7,7 @@
     {!! implode('', $errors->all('<div>:message</div>')) !!}
 @endif
 
-    <form action="{{ route('biodata.update', $biodata->nrp) }}" method="POST">
+    <form action="{{ route('biodata.update', $biodata->id) }}" method="POST">
         @csrf
         @method('PATCH')
 

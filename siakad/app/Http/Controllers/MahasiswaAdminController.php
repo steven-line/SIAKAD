@@ -73,8 +73,8 @@ class MahasiswaAdminController extends Controller
 
         $users =  User::role('mahasiswa')
         ->whereDoesntHave('dosen')
-        ->whereDoesntHave('mahasiswa')
-        ->where('username', $mahasiswa->nrp)
+        ->whereDoesntHave('mahasiswa')->orWhere('username', '=', $mahasiswa->nrp)
+    
         ->get();
         $dosens = Dosen::all();
         $prodis = Prodi::all();

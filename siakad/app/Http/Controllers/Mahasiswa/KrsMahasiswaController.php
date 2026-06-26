@@ -35,7 +35,7 @@ class KrsMahasiswaController extends Controller
                 'hari'          => $reg->penawaran->hari ?? '-',
                 'jam_mulai'     => $reg->penawaran->mulaipukul ? date('H:i', strtotime($reg->penawaran->mulaipukul)) : '-',
                 'jam_selesai'   => $reg->penawaran->selesaipukul ? date('H:i', strtotime($reg->penawaran->selesaipukul)) : '-',
-                'sks'           => $reg->sks ?? 0,
+                'sks'           => $reg->penawaran->mk->sks ?? 0,
             ];
         });
 

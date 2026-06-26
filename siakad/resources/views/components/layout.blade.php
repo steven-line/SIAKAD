@@ -35,7 +35,7 @@
                     $displayId = $user->username;
 
                     $biodata = DB::table('biodata')
-                        ->where('nrp', trim($user->username))
+                        ->where('nrp', $user->username)
                         ->first();
 
                     if ($biodata) {

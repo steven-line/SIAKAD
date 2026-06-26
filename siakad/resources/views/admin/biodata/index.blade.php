@@ -36,25 +36,25 @@
               <th>{{ $biodata->alamat }}</th>
 
               <td>
-                <a class="btn btn-soft btn-info" href="{{ route('biodata.show', $biodata->nrp) }}">
+                <a class="btn btn-soft btn-info" href="{{ route('biodata.show', $biodata->id) }}">
                   Detail
                 </a>
               </td>
 
               <td>
                 <a class="btn btn-soft btn-warning"
-                   href="{{ route('biodata.edit', $biodata->nrp) }}">
+                   href="{{ route('biodata.edit', $biodata->id) }}">
                   Edit
                 </a>
               </td>
 
               <td>
                 <button class="btn btn-soft btn-error"
-                        onclick="deleteBox_{{ $biodata->nrp }}.showModal()">
+                        onclick="deleteBox_{{ $biodata->id }}.showModal()">
                   Delete
                 </button>
 
-                <dialog id="deleteBox_{{ $biodata->nrp }}" class="modal modal-bottom sm:modal-middle">
+                <dialog id="deleteBox_{{ $biodata->id }}" class="modal modal-bottom sm:modal-middle">
                   <div class="modal-box">
                     <h3 class="text-lg font-bold">Peringatan Penghapusan</h3>
                     <p class="py-4">Apa anda yakin ingin menghapus?</p>
@@ -62,7 +62,7 @@
                     <div class="modal-action">
                       <form method="dialog">
                         <button class="btn btn-primary"
-                                form="delete-biodata-form-{{ $biodata->nrp }}">
+                                form="delete-biodata-form-{{ $biodata->id }}">
                           Ya
                         </button>
                         <button class="btn btn-neutral">Tidak</button>
@@ -73,8 +73,8 @@
               </td>
           </tr>
 
-          <form id="delete-biodata-form-{{ $biodata->nrp }}"
-                action="{{ route('biodata.destroy', $biodata->nrp) }}"
+          <form id="delete-biodata-form-{{ $biodata->id }}"
+                action="{{ route('biodata.destroy', $biodata->id) }}"
                 method="POST">
               @csrf
               @method('DELETE')
