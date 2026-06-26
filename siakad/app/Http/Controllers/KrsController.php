@@ -85,13 +85,13 @@ class KrsController extends Controller
             })
             ->firstOrFail();
 
-    $krs = Krs::with([
-        'registrasi.mahasiswa',
-        'registrasi.penawaran.semester.periode'
-    ])
-    ->where('registrasi_id', $registrasi->regkrs)
-    ->where('kode', $mk->kodemk)
-    ->first();
+        $krs = Krs::with([
+            'registrasi.mahasiswa',
+            'registrasi.penawaran.mk',
+            'registrasi.penawaran.semester.periode'
+        ])
+        ->where('registrasi_id', $registrasi->regkrs)
+        ->first(); // ❌ HAPUS where('kode')
 
         return view('dosen.input_nilai.show', [
             'krs' => $krs,
@@ -187,7 +187,7 @@ public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
     Krs::updateOrCreate(
     [
         'registrasi_id' => $registrasi->regkrs,
-        'kode' => $mk->kodemk,
+
     ],
     [        'kelas' => $validated['kelas'],
         'bu' => $validated['bu'],
@@ -208,7 +208,6 @@ public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
         ->with('success', 'Nilai berhasil disimpan.');
 
     }
-
     public function edit(Mahasiswa $mahasiswa, Mk $mk)
     {
         $registrasi = Registrasi::with('penawaran.semester.periode')
@@ -219,7 +218,6 @@ public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
             ->firstOrFail();
 
         $krs = Krs::where('registrasi_id', $registrasi->regkrs)
-            ->where('kode', $mk->kodemk)
             ->firstOrFail();
 
         $semester = $registrasi->penawaran->semester;
@@ -231,8 +229,7 @@ public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
             'semester' => $semester,
         ]);
     }
-
-    public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
+public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
 {
     $validated = $request->validate([
         'kelas' => [
@@ -241,57 +238,48 @@ public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
             'size:1',
             'in:A,B,C',
         ],
-
         'bu' => [
             'nullable',
             'string',
             'size:1',
             'in:Y,N',
         ],
-
         'ttt1' => [
             'nullable',
             'numeric',
             'between:0,100',
         ],
-
         'ttt2' => [
             'nullable',
             'numeric',
             'between:0,100',
         ],
-
         'ttt3' => [
             'nullable',
             'numeric',
             'between:0,100',
         ],
-
         'lain' => [
             'nullable',
             'numeric',
             'between:0,100',
         ],
-
         'uts' => [
             'nullable',
             'numeric',
             'between:0,100',
         ],
-
         'uas' => [
             'nullable',
             'numeric',
             'between:0,100',
         ],
-
         'na' => [
             'nullable',
             'string',
             'max:2',
             'in:A,A-,B+,B,B-,C+,C,C-,D,E',
         ],
-
         'survey' => [
             'required',
             'boolean',
@@ -305,27 +293,20 @@ public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
         ->firstOrFail();
 
     $krs = Krs::where('registrasi_id', $registrasi->regkrs)
-        ->where('kode', $mk->kodemk)
         ->firstOrFail();
 
     $krs->update([
-        'kelas' => $validated['kelas'],
-        'bu' => $validated['bu'],
-
-        'ttt1' => $validated['ttt1'],
-        'ttt2' => $validated['ttt2'],
-        'ttt3' => $validated['ttt3'],
-
-        'lain' => $validated['lain'],
-
-        'uts' => $validated['uts'],
-        'uas' => $validated['uas'],
-
-        'na' => $validated['na'],
-
-        'sks' => $mk->sks,
-
-        'survey' => $validated['survey'],
+        'kelas'   => $validated['kelas'],
+        'bu'      => $validated['bu'],
+        'ttt1'    => $validated['ttt1'],
+        'ttt2'    => $validated['ttt2'],
+        'ttt3'    => $validated['ttt3'],
+        'lain'    => $validated['lain'],
+        'uts'     => $validated['uts'],
+        'uas'     => $validated['uas'],
+        'na'      => $validated['na'],
+        'sks'     => $mk->sks,
+        'survey'  => $validated['survey'],
     ]);
 
     return redirect()
