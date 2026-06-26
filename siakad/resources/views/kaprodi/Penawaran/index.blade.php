@@ -1,186 +1,186 @@
-<x-layout title="Data Penawaran">
+    <x-layout title="Data Penawaran">
 
-<div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
 
-    <div class="p-4">
-        <a class="btn btn-primary text-white mb-4"
-           href="{{ route('penawaran.create') }}">
-            Create Penawaran
-        </a>
-    </div>
+        <div class="p-4">
+            <a class="btn btn-primary text-white mb-4"
+            href="{{ route('penawaran.create') }}">
+                Create Penawaran
+            </a>
+        </div>
 
-    <table class="table table-zebra">
+        <table class="table table-zebra">
 
-        <thead class="bg-blue-500 text-white">
-            <tr>
-                <th>No</th>
-                <th>MBKM</th>
-                <th>Kode MK</th>
-                <th>Semester</th>
-                <th>Dosen</th>
-                <th>Sesi</th>
-                <th>Hari</th>
-                <th>Jam</th>
-                <th>Prodi</th>
-                <th>Pagu</th>
-                <th>P/M</th>
-                <th colspan="3" class="text-center">Aksi</th>
-            </tr>
-        </thead>
+            <thead class="bg-blue-500 text-white">
+                <tr>
+                    <th>No</th>
+                    <th>MBKM</th>
+                    <th>Kode MK</th>
+                    <th>Semester</th>
+                    <th>Dosen</th>
+                    <th>Sesi</th>
+                    <th>Hari</th>
+                    <th>Jam</th>
+                    <th>Prodi</th>
+                    <th>Pagu</th>
+                    <th>P/M</th>
+                    <th colspan="3" class="text-center">Aksi</th>
+                </tr>
+            </thead>
 
-        <tbody>
+            <tbody>
 
-        @forelse($penawarans as $penawaran)
+            @forelse($penawarans as $penawaran)
 
-            <tr>
+                <tr>
 
-                {{-- NO (AMAN UNTUK PAGINATION) --}}
-                <td>
-                    {{ $loop->iteration + ($penawarans->firstItem() - 1) }}
-                </td>
+                    {{-- NO (AMAN UNTUK PAGINATION) --}}
+                    <td>
+                        {{ $loop->iteration + ($penawarans->firstItem() - 1) }}
+                    </td>
 
-                {{-- MBKM --}}
-                <td>
-                    @if($penawaran->MBKM)
-                        <span class="badge badge-success">Ya</span>
-                    @else
-                        <span class="badge badge-error">Tidak</span>
-                    @endif
-                </td>
-
-                {{-- MK --}}
-                <td>
-                    {{ $penawaran->mk->kodemk ?? $penawaran->kodemk }}
-                </td>
-
-                {{-- SEMESTER (FIX AMAN) --}}
-                <td>
-                    @if($penawaran->semesterRelasi)
-                        {{ $penawaran->semesterRelasi->jenis }}
-                        @if($penawaran->semesterRelasi->aktif)
-                            <span class="text-green-500">(Aktif)</span>
+                    {{-- MBKM --}}
+                    <td>
+                        @if($penawaran->MBKM)
+                            <span class="badge badge-success">Ya</span>
+                        @else
+                            <span class="badge badge-error">Tidak</span>
                         @endif
-                    @else
-                        <span class="text-red-500">Belum ada semester</span>
-                    @endif
-                </td>
+                    </td>
 
-                {{-- DOSEN --}}
-                <td>
-                    {{ $penawaran->dosenRelasi->nama ?? $penawaran->dosen }}
-                </td>
+                    {{-- MK --}}
+                    <td>
+                        {{ $penawaran->mk->kodemk ?? $penawaran->kodemk }}
+                    </td>
 
-                {{-- SESI --}}
-                <td>
-                    Sesi {{ $penawaran->sesi }}
-                </td>
+                    {{-- SEMESTER (FIX AMAN) --}}
+                    <td>
+                        @if($penawaran->semesterRelasi)
+                            {{ $penawaran->semesterRelasi->jenis }}
+                            @if($penawaran->semesterRelasi->aktif)
+                                <span class="text-green-500">(Aktif)</span>
+                            @endif
+                        @else
+                            <span class="text-red-500">Belum ada semester</span>
+                        @endif
+                    </td>
 
-                {{-- HARI --}}
-                <td>
-                    {{ $penawaran->hari }}
-                </td>
+                    {{-- DOSEN --}}
+                    <td>
+                        {{ $penawaran->dosenRelasi->nama ?? $penawaran->dosen }}
+                    </td>
 
-                {{-- JAM --}}
-                <td>
-                    {{ \Carbon\Carbon::parse($penawaran->mulaipukul)->format('H:i') }}
-                    -
-                    {{ \Carbon\Carbon::parse($penawaran->selesaipukul)->format('H:i') }}
-                </td>
+                    {{-- SESI --}}
+                    <td>
+                        Sesi {{ $penawaran->sesi }}
+                    </td>
 
-                {{-- JURUSAN --}}
-                <td>
-                    {{ $penawaran->prodiRelasi->nama_prodi ?? $penawaran->prodi }}
-                </td>
+                    {{-- HARI --}}
+                    <td>
+                        {{ $penawaran->hari }}
+                    </td>
 
-                {{-- PAGU --}}
-                <td>
-                    {{ $penawaran->pagu }}
-                </td>
+                    {{-- JAM --}}
+                    <td>
+                        {{ \Carbon\Carbon::parse($penawaran->mulaipukul)->format('H:i') }}
+                        -
+                        {{ \Carbon\Carbon::parse($penawaran->selesaipukul)->format('H:i') }}
+                    </td>
 
-                {{-- P/M --}}
-                <td>
-                    {{ $penawaran->pataum }}
-                </td>
+                    {{-- JURUSAN --}}
+                    <td>
+                        {{ $penawaran->prodiRelasi->nama_prodi ?? $penawaran->prodi }}
+                    </td>
 
-                {{-- DETAIL --}}
-                <td>
-                    <a class="btn btn-soft btn-info"
-                       href="{{ route('penawaran.show', $penawaran->recno) }}">
-                        Detail
-                    </a>
-                </td>
+                    {{-- PAGU --}}
+                    <td>
+                        {{ $penawaran->pagu }}
+                    </td>
 
-                {{-- EDIT --}}
-                <td>
-                    <a class="btn btn-soft btn-warning"
-                       href="{{ route('penawaran.edit', $penawaran->recno) }}">
-                        Edit
-                    </a>
-                </td>
+                    {{-- P/M --}}
+                    <td>
+                        {{ $penawaran->pataum }}
+                    </td>
 
-                {{-- DELETE --}}
-                <td>
+                    {{-- DETAIL --}}
+                    <td>
+                        <a class="btn btn-soft btn-info"
+                        href="{{ route('penawaran.show', $penawaran->recno) }}">
+                            Detail
+                        </a>
+                    </td>
 
-                    <button class="btn btn-soft btn-error"
-                        onclick="document.getElementById('deleteBox_{{ $penawaran->recno }}').showModal()">
-                        Delete
-                    </button>
+                    {{-- EDIT --}}
+                    <td>
+                        <a class="btn btn-soft btn-warning"
+                        href="{{ route('penawaran.edit', $penawaran->recno) }}">
+                            Edit
+                        </a>
+                    </td>
 
-                    <dialog id="deleteBox_{{ $penawaran->recno }}"
-                            class="modal modal-bottom sm:modal-middle">
+                    {{-- DELETE --}}
+                    <td>
 
-                        <div class="modal-box">
+                        <button class="btn btn-soft btn-error"
+                            onclick="document.getElementById('deleteBox_{{ $penawaran->recno }}').showModal()">
+                            Delete
+                        </button>
 
-                            <h3 class="text-lg font-bold">
-                                Peringatan Penghapusan
-                            </h3>
+                        <dialog id="deleteBox_{{ $penawaran->recno }}"
+                                class="modal modal-bottom sm:modal-middle">
 
-                            <p class="py-4">
-                                Apakah Anda yakin ingin menghapus data ini?
-                            </p>
+                            <div class="modal-box">
 
-                            <div class="modal-action">
+                                <h3 class="text-lg font-bold">
+                                    Peringatan Penghapusan
+                                </h3>
 
-                                <form method="dialog">
-                                    <button class="btn btn-neutral">
-                                        Tidak
-                                    </button>
-                                </form>
+                                <p class="py-4">
+                                    Apakah Anda yakin ingin menghapus data ini?
+                                </p>
 
-                                <form action="{{ route('penawaran.destroy', $penawaran->recno) }}"
-                                      method="POST">
-                                    @csrf
-                                    @method('DELETE')
+                                <div class="modal-action">
 
-                                    <button type="submit" class="btn btn-error">
-                                        Delete
-                                    </button>
-                                </form>
+                                    <form method="dialog">
+                                        <button class="btn btn-neutral">
+                                            Tidak
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('penawaran.destroy', $penawaran->recno) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit" class="btn btn-error">
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                </div>
 
                             </div>
 
-                        </div>
+                        </dialog>
 
-                    </dialog>
+                    </td>
 
-                </td>
+                </tr>
 
-            </tr>
+            @empty
 
-        @empty
+                <tr>
+                    <td colspan="12" class="text-center text-gray-400">
+                        Tidak ada data penawaran
+                    </td>
+                </tr>
 
-            <tr>
-                <td colspan="12" class="text-center text-gray-400">
-                    Tidak ada data penawaran
-                </td>
-            </tr>
+            @endforelse
 
-        @endforelse
+            </tbody>
 
-        </tbody>
+        </table>
 
-    </table>
+    </div>
 
-</div>
-
-</x-layout>
+    </x-layout>

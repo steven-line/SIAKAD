@@ -74,39 +74,69 @@ class PenawaranController extends Controller
         $jamSlotsPagi = $this->generateJamSlotsPagi();
         $jamSlotsMalam = $this->generateJamSlotsMalam();
 
-        // Ambil prodi kaprodi yang login
-        $prodiLogin = null;
-
-        if (Auth::user()->dosen) {
-            $prodiLogin = Auth::user()->dosen->prodi;
-        }
-
         return view('kaprodi.penawaran.create', compact(
             'matkuls',
             'dosens',
             'semesters',
             'jamSlotsPagi',
-            'jamSlotsMalam',
-            'prodiLogin'
+            'jamSlotsMalam'
         ));
     }
 
     public function index()
     {
-        $penawarans = Penawaran::paginate(15);
-        return view('kaprodi.penawaran.index', ['penawarans' => $penawarans]);
-        
+        $query = Penawaran::with([
+            'mk',
+            'dosenRelasi',
+            'semesterRelasi.periode',
+        ]);
+
+        $user = auth()->user();
+
+        if ($user && $user->dosen) {
+
+            $prodiLogin = $user->dosen->prodi;
+
+            $query->whereHas('dosenRelasi', function ($q) use ($prodiLogin) {
+                $q->where('prodi', $prodiLogin);
+            });
+        }
+
+        $penawarans = $query
+            ->orderBy('hari')
+            ->paginate(10);
+
+        return view(
+            'kaprodi.penawaran.index',
+            compact('penawarans')
+        );
     }
 
     public function show($recno)
     {
-        $penawaran = Penawaran::with([
+        $query = Penawaran::with([
             'mk',
             'dosenRelasi',
-            'prodiRelasi'
-        ])->findOrFail($recno);
+            'semesterRelasi.periode',
+        ]);
 
-        return view('kaprodi.penawaran.show', compact('penawaran'));
+        $user = auth()->user();
+
+        if ($user && $user->dosen) {
+
+            $prodiLogin = $user->dosen->prodi;
+
+            $query->whereHas('dosenRelasi', function ($q) use ($prodiLogin) {
+                $q->where('prodi', $prodiLogin);
+            });
+        }
+
+        $penawaran = $query->findOrFail($recno);
+
+        return view(
+            'kaprodi.penawaran.show',
+            compact('penawaran')
+        );
     }
 
     public function store(Request $request)
@@ -118,7 +148,6 @@ class PenawaranController extends Controller
             'dosen'      => 'required',
             'hari'       => 'required',
             'mulaipukul' => 'required',
-            'prodi' => 'required|exists:prodi,kode_prodi',
             'pataum'     => 'required',
             'sesi'       => 'required',
             'pagu' => 'required|integer|between:1,99',
@@ -153,25 +182,33 @@ class PenawaranController extends Controller
                 'jam' => 'Durasi mata kuliah melebihi batas sesi'
             ])->withInput();
         }
+    $dosen = Dosen::findOrFail($request->dosen);
 
-        $bentrok = Penawaran::where('hari', $request->hari)
-            ->where('prodi', $kodeprodi)
-            ->where(function ($q) use ($mulai, $selesai) {
+    $bentrok = Penawaran::where('hari', $request->hari)
+        ->whereHas('dosenRelasi', function ($q) use ($dosen) {
+            $q->where('prodi', $dosen->prodi);
+        })
+        ->where(function ($q) use ($mulai, $selesai) {
 
-                $q->whereBetween('mulaipukul', [
-                    $mulai->format('H:i:s'),
-                    $selesai->format('H:i:s')
-                ])
-                ->orWhereBetween('selesaipukul', [
-                    $mulai->format('H:i:s'),
-                    $selesai->format('H:i:s')
-                ])
-                ->orWhere(function ($q2) use ($mulai, $selesai) {
-                    $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
-                       ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
-                });
-            })
-            ->exists();
+            $q->whereBetween('mulaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+
+            ->orWhereBetween('selesaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+
+            ->orWhere(function ($q2) use ($mulai, $selesai) {
+
+                $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
+                ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
+
+            });
+
+        })
+        ->exists();
 
         if ($bentrok) {
             return back()->withErrors([
@@ -179,53 +216,47 @@ class PenawaranController extends Controller
             ])->withInput();
         }
 
-        Penawaran::create([
-            'kodemk'       => $request->kodemk,
-            'semester_id'  => $request->semester_id,
-            'dosen'        => $request->dosen,
-            'hari'         => $request->hari,
-            'mulaipukul'   => $mulai->format('H:i:s'),
-            'selesaipukul' => $selesai->format('H:i:s'),
-            'pataum'       => $request->pataum,
-            'prodi'        =>  $kodeprodi,            
-            'sesi'         => $request->sesi,
-            'keterangan'   => $request->keterangan,
-            'pagu'         => $request->pagu,
-            'MBKM'         => $request->has('MBKM'),
-        ]);
+            Penawaran::create([
+                'kodemk'       => $request->kodemk,
+                'semester_id'  => $request->semester_id,
+                'dosen'        => $request->dosen,
+                'hari'         => $request->hari,
+                'mulaipukul'   => $request->mulaipukul,
+                'selesaipukul' => $request->selesaipukul,
+                'sesi'         => $request->sesi,
+                'pataum'       => $request->pataum,
+                'pagu'         => $request->pagu,
+                'MBKM'         => $request->has('MBKM'),
+                'keterangan'   => $request->keterangan,
+            ]);
 
         return redirect()
             ->route('penawaran.index')
             ->with('success', 'Penawaran berhasil ditambahkan');
     }
-    
-    public function edit(Penawaran $penawaran)
+
+    public function edit($recno)
     {
-        $matkuls = Mk::orderBy('kodemk')->get();
-        $dosens = Dosen::orderBy('nama')->get();
-        $semesters = Semester::orderByDesc('aktif')->get();
+        $query = Penawaran::with([
+            'mk',
+            'dosenRelasi',
+            'semesterRelasi'
+        ]);
 
-        $jamSlotsPagi = $this->generateJamSlotsPagi();
-        $jamSlotsMalam = $this->generateJamSlotsMalam();
+        $user = auth()->user();
 
-        $prodiLogin = null;
+        if ($user && $user->dosen) {
 
-        if (Auth::user()->dosen) {
-            $prodiLogin = Auth::user()->dosen->prodi;
+            $prodiLogin = $user->dosen->prodi;
+
+            $query->whereHas('dosenRelasi', function ($q) use ($prodiLogin) {
+                $q->where('prodi', $prodiLogin);
+            });
         }
 
-        return view(
-            'kaprodi.penawaran.edit',
-            compact(
-                'penawaran',
-                'matkuls',
-                'dosens',
-                'semesters',
-                'jamSlotsPagi',
-                'jamSlotsMalam',
-                'prodiLogin'
-            )
-        );
+        $penawaran = $query->findOrFail($recno);
+
+        // data lain...
     }
 
     public function update(Request $request, Penawaran $penawaran)
@@ -236,7 +267,6 @@ class PenawaranController extends Controller
             'dosen'      => 'required',
             'hari'       => 'required',
             'mulaipukul' => 'required',
-            'prodi' => 'required|exists:prodi,kode_prodi',
             'pataum'     => 'required',
             'sesi'       => 'required',
             'pagu' => 'required|integer|between:1,99',
@@ -249,8 +279,7 @@ class PenawaranController extends Controller
 
         $mulai = Carbon::createFromFormat('H:i', $request->mulaipukul);
         $selesai = $mulai->copy()->addMinutes($durasiMenit);
-
-        $kodeprodi = $request->input('prodi');        
+    
         if ($request->sesi == '1') {
             $batasAwal = Carbon::createFromTime(8, 0);
             $batasAkhir = Carbon::createFromTime(17, 10);
@@ -271,25 +300,34 @@ class PenawaranController extends Controller
             ])->withInput();
         }
 
-        $bentrok = Penawaran::where('hari', $request->hari)
-            ->where('prodi', $kodeprodi)
-            ->where('recno', '!=', $penawaran->recno)
-            ->where(function ($q) use ($mulai, $selesai) {
+    $dosen = Dosen::findOrFail($request->dosen);
 
-                $q->whereBetween('mulaipukul', [
-                    $mulai->format('H:i:s'),
-                    $selesai->format('H:i:s')
-                ])
-                ->orWhereBetween('selesaipukul', [
-                    $mulai->format('H:i:s'),
-                    $selesai->format('H:i:s')
-                ])
-                ->orWhere(function ($q2) use ($mulai, $selesai) {
-                    $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
-                       ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
-                });
-            })
-            ->exists();
+    $bentrok = Penawaran::where('hari', $request->hari)
+        ->where('recno', '!=', $penawaran->recno)
+        ->whereHas('dosenRelasi', function ($q) use ($dosen) {
+            $q->where('prodi', $dosen->prodi);
+        })
+        ->where(function ($q) use ($mulai, $selesai) {
+
+            $q->whereBetween('mulaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+
+            ->orWhereBetween('selesaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+
+            ->orWhere(function ($q2) use ($mulai, $selesai) {
+
+                $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
+                ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
+
+            });
+
+        })
+        ->exists();
 
         if ($bentrok) {
             return back()->withErrors([
@@ -305,7 +343,6 @@ class PenawaranController extends Controller
             'mulaipukul'   => $mulai->format('H:i:s'),
             'selesaipukul' => $selesai->format('H:i:s'),
             'pataum'       => $request->pataum,
-            'prodi'      => $kodeprodi,
             'sesi'         => $request->sesi,
             'keterangan'   => $request->keterangan,
             'pagu'         => $request->pagu,

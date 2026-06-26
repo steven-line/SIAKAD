@@ -34,5 +34,10 @@ class Dosen extends Model
     public function user() {
         return $this->hasOne(User::class, 'username', 'user_id');
     }
+
+    public function penawaran()
+{
+    return $this->hasMany(Penawaran::class, 'dosen', 'nim_dosen');
+}
     
 }

@@ -22,7 +22,6 @@ class Penawaran extends Model
         'mulaipukul',
         'selesaipukul',
         'pataum',
-        'prodi',
         'sesi',
         'keterangan',
         'pagu',

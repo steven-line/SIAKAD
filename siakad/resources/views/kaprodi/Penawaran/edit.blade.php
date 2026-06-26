@@ -85,9 +85,10 @@
                                 value="{{ $semester->id }}"
                                 @selected(old('semester_id', $penawaran->semester_id) == $semester->id)
                             >
-                                {{ $semester->periode_id }}
-                                - {{ $semester->jenis }}
-                                {{ $semester->aktif ? '(Aktif)' : '' }}
+                        {{ $semester->periode->tahun_ajaran }}
+                        {{ $semester->jenis }}
+                        -
+                        {{ $semester->aktif ? 'Aktif' : 'Non Aktif' }}
                             </option>
                         @endforeach
                     </select>
@@ -158,33 +159,30 @@
                     </label>
 
                     <input
-                        type="text"
+                        type="time"
                         id="selesaipukul"
-                        readonly
-                        class="w-full p-2 mt-1 bg-gray-700 rounded text-gray-300"
-                    >
-                </div>
-
-                {{-- prodi --}}
-                <div>
-                    <label class="text-sm text-gray-400">
-                        Prodi
-                    </label>
-
-                    {{-- hanya ditampilkan --}}
-                    <input
-                        type="text"
-                        value="{{ $prodiLogin }}"
                         class="w-full p-2 mt-1 bg-gray-600 rounded text-gray-300 cursor-not-allowed"
                         readonly
                         disabled
                     >
 
-                    {{-- yang dikirim ke controller --}}
                     <input
                         type="hidden"
-                        name="prodi"
-                        value="{{ $prodiLogin }}"
+                        name="selesaipukul"
+                        id="selesaipukul_hidden"
+                        value="{{ old('selesaipukul', \Carbon\Carbon::parse($penawaran->selesaipukul)->format('H:i')) }}"
+                    >
+                </div>
+
+                {{-- PRODI --}}
+                <div>
+                    <label class="text-sm text-gray-400">Prodi</label>
+
+                    <input
+                        type="text"
+                        value="{{ auth()->user()->dosen->prodi }}"
+                        class="w-full p-2 mt-1 bg-gray-600 rounded text-gray-300"
+                        readonly
                     >
                 </div>
 
@@ -221,7 +219,7 @@
                             name="pagu"
                             min="1"
                             max="99"
-                            value="{{ old('pagu') }}"
+                            value="{{ old('pagu', $penawaran->pagu) }}"                            
                             oninput="if(this.value > 99) this.value = 99"
                             class="w-full p-2 mt-1 bg-gray-700 rounded"
                     >
@@ -289,6 +287,7 @@
     const sesiSelect = document.getElementById('sesi');
     const mkSelect = document.getElementById('kodemk');
     const mulaiSelect = document.getElementById('mulaipukul');
+    const selesaiHidden = document.getElementById('selesaipukul_hidden');
     const selesaiInput = document.getElementById('selesaipukul');
 
     const jamPagi = @json($jamSlotsPagi);

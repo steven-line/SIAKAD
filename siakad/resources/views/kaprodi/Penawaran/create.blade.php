@@ -120,20 +120,11 @@
                 <div>
                     <label class="text-sm text-gray-400">Prodi</label>
 
-                    {{-- hanya ditampilkan --}}
                     <input
                         type="text"
-                        value="{{ $prodiLogin }}"
-                        class="w-full p-2 mt-1 b    g-gray-600 rounded text-gray-300 cursor-not-allowed"
+                        value="{{ auth()->user()->dosen->prodi }}"
+                        class="w-full p-2 mt-1 bg-gray-600 rounded text-gray-300"
                         readonly
-                        disabled
-                    >
-
-                    {{-- yang dikirim ke controller --}}
-                    <input
-                        type="hidden"
-                        name="prodi"
-                        value="{{ $prodiLogin }}"
                     >
                 </div>
 
