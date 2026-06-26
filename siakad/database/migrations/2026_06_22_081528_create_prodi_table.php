@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('kode_prodi', 15)->primary();
             $table->string('nama_prodi',50);
             $table->string('kode_jurusan', 3);
+            $table->char('kode_prodi_dikti',5);
             $table->foreign('kode_jurusan')->references('kode_jurusan')->on('jurusan')->onDelete('cascade')->onUpdate('cascade');
             
         });

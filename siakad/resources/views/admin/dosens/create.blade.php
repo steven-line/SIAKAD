@@ -20,7 +20,7 @@
 
             <label class="label font-bold">NIM DOSEN</label>
             <input type="text" class="input w-full" name="nim_dosen"
-                   placeholder="Masukkan NIM Dosen" required maxlength="15" value="{{ old('nim_dosen') }}"/>
+                   placeholder="Masukkan NIM Dosen"  required maxlength="15" value="{{ old('nim_dosen') }}"/>
             <x-forms.error name="nim_dosen"/>
 
             <label class="label font-bold mt-2">NIP</label>

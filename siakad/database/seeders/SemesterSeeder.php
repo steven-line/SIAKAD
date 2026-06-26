@@ -15,6 +15,7 @@ class SemesterSeeder extends Seeder
         DB::table('semester')->insert([
             [
                 'periode_id' => 1,
+                'nama' => '1',
                 'jenis' => 'Ganjil',
                 'aktif' => false,
                 'created_at' => now(),
@@ -22,6 +23,7 @@ class SemesterSeeder extends Seeder
             ],
             [
                 'periode_id' => 2,
+                'nama' => '2',
                 'jenis' => 'Genap',
                 'aktif' => false,
                 'created_at' => now(),
@@ -29,6 +31,7 @@ class SemesterSeeder extends Seeder
             ],
             [
                 'periode_id' => 3,
+                'nama' => '3',
                 'jenis' => 'Ganjil',
                 'aktif' => true,
                 'created_at' => now(),
@@ -36,6 +39,7 @@ class SemesterSeeder extends Seeder
             ],
             [
                 'periode_id' => 4,
+                'nama' => '4',
                 'jenis' => 'Genap',
                 'aktif' => false,
                 'created_at' => now(),

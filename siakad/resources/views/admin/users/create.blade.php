@@ -11,7 +11,7 @@
 
             <!-- Username -->
             <label class="label font-bold" for="username">Username</label>
-            <input type="number" class="input w-full" maxlength="15" value="{{ old('username') }}" name="username" placeholder="Username/NRP" required />
+            <input type="text" class="input w-full" maxlength="15" value="{{ old('username') }}" name="username" placeholder="Username/NRP" required />
             <x-forms.error name='username'/>
 
             <!-- Password -->

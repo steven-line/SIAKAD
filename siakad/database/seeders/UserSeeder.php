@@ -70,6 +70,28 @@ class UserSeeder extends Seeder
                 'validasi' => 1,
                 'pataum' => 'P',
             ],
+            [
+                'username' => '31126666',
+                'password' => Hash::make('hello12346'),
+                'firstlogin' => Carbon::now(),
+                'lastlogin' => Carbon::now(),
+                'aksesnilai' => 0,
+                'aktif' => 0,
+                'sks' => 110,
+                'validasi' => 1,
+                'pataum' => 'P',
+            ],
+            [
+                'username' => '31125555',
+                'password' => Hash::make('hello12346'),
+                'firstlogin' => Carbon::now(),
+                'lastlogin' => Carbon::now(),
+                'aksesnilai' => 0,
+                'aktif' => 0,
+                'sks' => 110,
+                'validasi' => 1,
+                'pataum' => 'P',
+            ],
         ];
 
         foreach ($datas as $data) {

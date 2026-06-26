@@ -27,11 +27,10 @@ class MkController extends Controller
 
   
         $request->validate([
-            'kodemk' => ['required', 'unique:mk', 'max:8'],
+            'kodemk' => ['required', 'unique:mk', 'max:8',  'regex:/^[A-Za-z0-9\-]+$/'],
             'nama' => ['required', 'max:50'],
             'sks' => ['required','max:3'],
             'nm_jenj_didik' => ['required', 'max:2'],
-            'kode_prodi_dikti' => ['required', 'max:5'],
             'kode_kurikulum' => ['required', 'max:10'],
             'prasyaratsks' => ['required', 'max:3'],
             'prasyarat1' => ['required', 'max:8'],
@@ -53,7 +52,6 @@ class MkController extends Controller
             'nama' => $request->nama,
             'sks' => $request->sks,
             'nm_jenj_didik' => $request->nm_jenj_didik,
-            'kode_prodi_dikti' => $request->kode_prodi_dikti,
             'kode_kurikulum' => $request->kode_kurikulum,
             'prasyaratsks' => $request->prasyaratsks,
             'prasyarat1' => $request->prasyarat1,
@@ -90,11 +88,10 @@ class MkController extends Controller
     public function update(Request $request, Mk $mk)
     {
          $request->validate([
-            'kodemk' => ['required', 'max:8', Rule::unique('mk')->ignore($mk)],
+            'kodemk' => ['required', 'max:8', Rule::unique('mk')->ignore($mk),  'regex:/^[A-Za-z0-9\-]+$/'],
             'nama' => ['required', 'max:50'],
             'sks' => ['required','max:3'],
             'nm_jenj_didik' => ['required', 'max:2'],
-            'kode_prodi_dikti' => ['required', 'max:5'],
             'kode_kurikulum' => ['required', 'max:10'],
             'prasyaratsks' => ['required', 'max:3'],
             'prasyarat1' => ['required', 'max:8'],
@@ -116,7 +113,6 @@ class MkController extends Controller
             'nama' => $request->nama,
             'sks' => $request->sks,
             'nm_jenj_didik' => $request->nm_jenj_didik,
-            'kode_prodi_dikti' => $request->kode_prodi_dikti,
             'kode_kurikulum' => $request->kode_kurikulum,
             'prasyaratsks' => $request->prasyaratsks,
             'prasyarat1' => $request->prasyarat1,

@@ -37,12 +37,6 @@
                 </div>
 
                 <div>
-                    <label class="label font-bold" for="kode_prodi_dikti">Kode Prodi Dikti</label>
-                    <input type="text" class="input" maxlength="5" name="kode_prodi_dikti" value="{{old('kode_prodi_dikti')}}"/>
-                    <x-forms.error name='kode_prodi_dikti'/>
-                </div>
-
-                <div>
                     <label class="label font-bold" for="kode_kurikulum">Kurikulum</label>
                     <select class="select select-bordered w-full" name="kode_kurikulum" required>
                         <option disabled selected>Select Kurikulum</option>

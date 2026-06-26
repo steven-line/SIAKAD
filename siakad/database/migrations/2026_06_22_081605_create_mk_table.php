@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama',50)->default('');
             $table->char('sks',3)->default('0');
             $table->char('nm_jenj_didik', 2);
-            $table->char('kode_prodi_dikti',5);
+           
             $table->string('prasyaratsks', 3)->default('0');
 
             $table->string('prasyarat1',8)->default('');

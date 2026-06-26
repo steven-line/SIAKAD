@@ -36,7 +36,14 @@
                             {{ $kurikulum->nama_kurikulum }}
                         </p>
                     </div>
-
+                       <div>
+                        <p class="font-semibold text-base-content/70">
+                            Kode Prodi
+                        </p>
+                        <p class="text-lg">
+                            {{ $kurikulum->kode_prodi }}
+                        </p>
+                    </div>
                     {{-- Status Aktif --}}
                     <div>
                         <p class="font-semibold text-base-content/70">

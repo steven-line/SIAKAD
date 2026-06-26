@@ -16,16 +16,25 @@ class RegistrasiSeeder extends Seeder
 
             [
                 'nrp' => '31128888',
-               
                 'penawaran_id' => 1,
                 'status' => 'BARU',
                 'tanggal' => now()->toDateString(),
                 'jam' => now()->toTimeString(),
-       
-
-              
             ],
-
+            [
+                'nrp' => '31126666',
+                'penawaran_id' => 2,
+                'status' => 'BARU',
+                'tanggal' => now()->toDateString(),
+                'jam' => now()->toTimeString(),
+            ],
+            [
+                'nrp' => '31125555',
+                'penawaran_id' => 3,
+                'status' => 'BARU',
+                'tanggal' => now()->toDateString(),
+                'jam' => now()->toTimeString(),
+            ],
         ]);
     }
 }

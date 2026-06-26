@@ -37,7 +37,7 @@ class DosenController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nim_dosen' => ['required', 'min:8', 'unique:dosen,nim_dosen', 'max:15'],
+            'nim_dosen' => ['required', 'min:8', 'unique:dosen,nim_dosen', 'max:15',   'regex:/^[A-Za-z0-9\-]+$/'],
             'nip' => ['required', 'min:8', 'unique:dosen,nip', 'max:21'],
             'nama' => ['required', 'max:50'],
             'user_id' => ['required', 'unique:dosen,user_id'],
@@ -93,6 +93,7 @@ class DosenController extends Controller
             'nim_dosen' => [
                 'required',
                 'max:15',
+                'regex:/^[A-Za-z0-9\-]+$/',
                 Rule::unique('dosen', 'nim_dosen')->ignore($dosen->nim_dosen, 'nim_dosen')
             ],
             'nip' => [

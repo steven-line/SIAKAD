@@ -15,7 +15,6 @@
                 <th>kodemk</th>
                 <th>nama</th>
                 <th>nm_jenj_didik</th>
-                <th>kode_prodi_dikti</th>
                 <th>kode_kurikulum</th>
                 <th>aktif</th>
                 <th colspan="3">Aksi</th>
@@ -32,7 +31,6 @@
                 <td class="text-center">{{ $mk->kodemk }}</td>
                 <td class="text-center">{{ $mk->nama }}</td>
                 <td class="text-center">{{ $mk->nm_jenj_didik }}</td>
-                <td class="text-center">{{ $mk->kode_prodi_dikti }}</td>
                 <td class="text-center">{{ $mk->kode_kurikulum }}</td>
 
                 <td>

@@ -19,7 +19,7 @@ class JurusanSeeder extends Seeder
                 'program_pendidikan' => 'S1',
                 'sk_ban' => '001/SK/BAN-PT/2024',                
                 'keterangan' => null,
-                'fakultas' => 'FTI',
+                'fakultas_id' => '2',
             ],
             [
                 'kode_jurusan' => 'SI1',
@@ -27,7 +27,7 @@ class JurusanSeeder extends Seeder
                 'program_pendidikan' => 'S1',
                 'sk_ban' => '002/SK/BAN-PT/2024',
                 'keterangan' => null,
-                'fakultas' => 'FTI',
+                'fakultas_id' => '2',
             ],
             [
                 'kode_jurusan' => 'TK1',
@@ -35,7 +35,7 @@ class JurusanSeeder extends Seeder
                 'program_pendidikan' => 'S1',
                 'sk_ban' => '003/SK/BAN-PT/2024',
                 'keterangan' => null,
-                'fakultas' => 'FTE',
+                'fakultas_id' => '2',
             ],
             [
                 'kode_jurusan' => 'MM1',
@@ -43,7 +43,7 @@ class JurusanSeeder extends Seeder
                 'program_pendidikan' => 'S1',
                 'sk_ban' => '004/SK/BAN-PT/2024',
                 'keterangan' => null,
-                'fakultas' => 'FEB',
+                'fakultas_id' => '3',
             ],
             [
                 'kode_jurusan' => 'AK1',
@@ -51,7 +51,7 @@ class JurusanSeeder extends Seeder
                 'program_pendidikan' => 'S1',
                 'sk_ban' => '005/SK/BAN-PT/2024',
                 'keterangan' => null,
-                'fakultas' => 'FEB',
+                'fakultas_id' => '3',
             ],
         ]);
     }

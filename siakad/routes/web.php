@@ -10,6 +10,7 @@ use App\Http\Controllers\{
     PerwalianController,
     UbahPasswordController,
     FakultasController,
+    JurusanController,
     KurikulumController,
     KrsController,
     NilaiKrsAnakWali,
@@ -354,7 +355,19 @@ Route::middleware('auth')->group(function () {
             Route::get('/{periode}', [PeriodeController::class, 'show'])->name('show');
             
         });
-    
+     Route::prefix('jurusan')
+        ->middleware('permission:jurusan.manage')
+        ->name('jurusan.')
+        ->group(function () {
+            Route::get('/', [JurusanController::class, 'index'])->name('index');
+            Route::get('/create', [JurusanController::class, 'create'])->name('create');
+            Route::post('/', [JurusanController::class, 'store'])->name('store');
+            Route::get('/{jurusan}/edit', [JurusanController::class, 'edit'])->name('edit');
+            Route::patch('/{jurusan}', [JurusanController::class, 'update'])->name('update');
+            Route::delete('/{jurusan}', [JurusanController::class, 'destroy'])->name('destroy');
+            Route::get('/{jurusan}', [JurusanController::class, 'show'])->name('show');
+            
+        });
        Route::prefix('semester')
         ->middleware('permission:semester.manage')
         ->name('semester.')

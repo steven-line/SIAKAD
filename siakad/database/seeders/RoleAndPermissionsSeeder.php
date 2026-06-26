@@ -47,6 +47,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'biodata.manage',
             'role.manage',
             'permission.manage',
+            'mahasiswa.manage',
 
             // PENAWARAN
             'penawaran.view',
@@ -70,6 +71,10 @@ class RoleAndPermissionsSeeder extends Seeder
 
             // DOSEN WALI
             'perwalian.manage',
+
+            // PERIODE
+            'periode.manage',
+            'semester.manage'
         ];
 
         foreach ($permissions as $permission) {
@@ -133,6 +138,10 @@ class RoleAndPermissionsSeeder extends Seeder
             'biodata.manage',
             'role.manage',
             'permission.manage',
+            'mahasiswa.manage',
+            'semester.manage',
+            'periode.manage',
+            'jurusan.manage',
         ]);
 
         // ======================
@@ -140,6 +149,8 @@ class RoleAndPermissionsSeeder extends Seeder
         // ======================
         $userAdmin = User::where('username', '31123019')->first();
                      User::where('username', '31127777')->first()->syncRoles(['dosen-wali']);
+                     User::where('username', '31126666')->first()->syncRoles(['mahasiswa']);
+                     User::where('username', '31125555')->first()->syncRoles(['mahasiswa']);
                      User::where('username', '31128888')->first()->syncRoles(['mahasiswa']);
                      User::where('username', '31129999')->first()->syncRoles(['kaprodi']);
                      User::where('username', '31120000')->first()->syncRoles(['dosen']);

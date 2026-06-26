@@ -11,7 +11,8 @@
         <tr>
             <th>No</th>
             <th>Id</th>
-            <th>Periode Id</th>
+            <th>Semester</th>
+            <th>Periode</th>
             <th>Jenis</th>
             <th>Aktif </th>
             <th>Created At</th>
@@ -25,7 +26,8 @@
             <tr>
                 <th>{{ $loop->index }}</th>
                 <th>{{$semester->id}}</th>
-                <th>{{ $semester->periode_id }}</th>
+                <th>{{$semester->nama}}</th>
+                <th>{{ $semester->periode->tahun_ajaran}}</th>
                 <th>{{ $semester->jenis }}</th>
                 <th>{{ $semester->aktif  ? 'Aktif': 'Tidak Aktif'}}</th>
                 <th>{{ $semester->created_at }}</th>

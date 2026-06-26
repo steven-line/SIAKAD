@@ -2,9 +2,10 @@
 
     <div class="p-6">
 
-       <a class="join-item btn btn-primary mb-4" href="{{ route('kurikulum.index') }}">
-        ⮜ Previous page
-    </a>
+        <a class="join-item btn btn-primary mb-4" href="{{ route('kurikulum.index') }}">
+            ⮜ Previous page
+        </a>
+
         <form action="{{ route('kurikulum.store') }}" method="POST">
             @csrf
 
@@ -22,6 +23,7 @@
                     name="kode_kurikulum"
                     maxlength="15"
                     class="input input-bordered w-full"
+                    value="{{ old('kode_kurikulum') }}"
                 />
                 <x-forms.error name="kode_kurikulum"/>
 
@@ -33,8 +35,22 @@
                     name="nama_kurikulum"
                     maxlength="50"
                     class="input input-bordered w-full"
+                    value="{{ old('nama_kurikulum') }}"
                 />
                 <x-forms.error name="nama_kurikulum"/>
+
+                <label class="label font-bold mt-2" for="kode_prodi">
+                    Kode Prodi
+                </label>
+                <select class="select select-bordered w-full" name="kode_prodi" required>
+                    <option disabled {{ old('kode_prodi') ? '' : 'selected' }}>Pilih Prodi</option>
+                    @foreach ($prodis as $prodi)
+                        <option value="{{ $prodi->kode_prodi }}" {{ old('kode_prodi') == $prodi->kode_prodi ? 'selected' : '' }}>
+                            {{ $prodi->kode_prodi }}
+                        </option>
+                    @endforeach
+                </select>
+                <x-forms.error name="kode_prodi"/>
 
                 <label class="label font-bold">
                     Aktif
@@ -43,6 +59,7 @@
                     type="checkbox"
                     name="aktif"
                     class="checkbox"
+                    {{ old('aktif') ? 'checked' : '' }}
                 />
                 <x-forms.error name="aktif"/>
 
@@ -53,7 +70,7 @@
                     name="deskripsi"
                     maxlength="255"
                     class="textarea textarea-bordered w-full min-h-32"
-                ></textarea>
+                >{{ old('deskripsi') }}</textarea>
                 <x-forms.error name="deskripsi"/>
 
                 <label class="label font-bold">
@@ -63,9 +80,9 @@
                     type="number"
                     name="tahun_mulai_berlaku"
                     min="2000"
-                  
-                    max="2100"
+                    max="3000"
                     class="input input-bordered w-full"
+                    value="{{ old('tahun_mulai_berlaku') }}"
                 />
                 <x-forms.error name="tahun_mulai_berlaku"/>
 
@@ -76,9 +93,9 @@
                     type="number"
                     name="tahun_selesai_berlaku"
                     min="2000"
-        
-                    max="2100"
+                    max="3000"
                     class="input input-bordered w-full"
+                    value="{{ old('tahun_selesai_berlaku') }}"
                 />
                 <x-forms.error name="tahun_selesai_berlaku"/>
 
@@ -93,6 +110,7 @@
     </div>
 
 </x-layout>
+
 <script>
   function checkNumberFieldLength(elem){
     if (elem.value.length > 4) {

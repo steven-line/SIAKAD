@@ -3,16 +3,12 @@
           ⮜ Previous page
       </a>
 
-    <form class="flex h-screen"
+    <form class="flex"
           action="{{ route('fakultas.store') }}"
           method="POST">
     @csrf
 
-    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs h-80 border p-4 mx-auto">
-
-        <label class="label font-bold" for="kode_fakultas">kode_fakultas</label>
-        <input type="text" maxlength="3" value="{{ old('kode_fakultas') }}" class="input" name="kode_fakultas" placeholder="" />
-        <x-forms.error name='kode_fakultas'/>
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs  border p-4 mx-auto">
 
         <label class="label font-bold" for="nama_fakultas">nama_fakultas</label>
         <input type="text" maxlength="50" value="{{ old('nama_fakultas') }}" class="input" name="nama_fakultas" placeholder="" />

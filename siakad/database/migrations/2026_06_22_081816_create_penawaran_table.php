@@ -23,12 +23,9 @@ return new class extends Migration
             $table->string('hari',6)->default('');
             $table->time('mulaipukul');
             $table->time('selesaipukul');
-            $table->string('prodi',3);
             $table->string('pagu',3)->default('0');
             $table->enum('pataum', ['P', 'M'])->default('P');
             $table->foreign('kodemk')->references('kodemk')->on('mk')
-                  ->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('prodi')->references('kode_prodi')->on('prodi')
                   ->onDelete('cascade')->onUpdate('cascade');
             $table->boolean("MBKM")->default(false);
 

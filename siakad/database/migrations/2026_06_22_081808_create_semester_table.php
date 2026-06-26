@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('semester', function (Blueprint $table) {
             $table->id();
 
+            $table->integer('nama');
+
             $table->foreignId('periode_id')->constrained('periode')->onDelete('cascade')->onUpdate('cascade');
             
             $table->enum('jenis', ['Ganjil', 'Genap']);

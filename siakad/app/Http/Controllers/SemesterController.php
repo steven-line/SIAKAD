@@ -40,13 +40,14 @@ class SemesterController extends Controller
         $request->validate([
             'periode_id' => ['required'],
             'jenis' => ['required', Rule::enum(JenisSemester::class)],
-    
+            'nama' => ['required', 'integer', 'min:1', 'max:8'],
         ]);
 
         Semester::create([
             'periode_id' => $request->periode_id,
             'jenis' => $request->jenis,
-            'aktif' => $request->boolean('aktif')
+            'aktif' => $request->boolean('aktif'),
+            'nama' => $request->nama
         ]);
 
         return redirect()->route('semester.index');
@@ -79,13 +80,15 @@ class SemesterController extends Controller
          $request->validate([
             'periode_id' => ['required'],
             'jenis' => ['required', Rule::enum(JenisSemester::class)],
+            'nama' => ['required', 'integer', 'min:1', 'max:8'],
          
         ]);
 
         $semester->update([
             'periode_id' => $request->periode_id,
             'jenis' => $request->jenis,
-            'aktif' => $request->boolean('aktif')
+            'aktif' => $request->boolean('aktif'),
+            'nama' => $request->nama
         ]);
 
         return redirect()->route('semester.index');

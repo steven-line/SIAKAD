@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreign('registrasi_id')->references('regkrs')->on('registrasi')->onDelete('cascade')->onUpdate('cascade');
 
             // Relasi ke mata kuliah
-            $table->string('kode', 8);
 
             $table->char('bu', 1)->nullable();
 
@@ -43,12 +42,6 @@ return new class extends Migration
             $table->boolean('survey')->default(false)
                   ->comment('0 = Belum, 1 = Sudah');
 
-
-            $table->foreign('kode')
-                ->references('kodemk')
-                ->on('mk')
-                ->onDelete('cascade')
-		->onUpdate('cascade');
         });
     }
 
