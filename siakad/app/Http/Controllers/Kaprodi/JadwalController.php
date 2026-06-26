@@ -12,6 +12,7 @@ class JadwalController extends Controller
     /**
      * SLOT JAM
      */
+    
     private function generateJamSlots()
     {
         $slots = [];
@@ -65,8 +66,9 @@ class JadwalController extends Controller
     public function index()
     {
         $jadwals = $this->getJadwalQuery()->get();
+       
         $jamSlots = $this->generateJamSlots();
-
+      
         return view('kaprodi.kelola_jadwal.index', compact('jadwals', 'jamSlots'));
     }
 
@@ -80,7 +82,7 @@ class JadwalController extends Controller
             ->get();
 
         $jamSlots = $this->generateJamSlots();
-
+        
         return view('kaprodi.kelola_jadwal.index', compact('jadwals', 'jamSlots'));
     }
 

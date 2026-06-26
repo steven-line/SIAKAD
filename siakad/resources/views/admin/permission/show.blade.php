@@ -29,7 +29,6 @@
     
         <div class="mt-5">
             <a class="btn btn-primary" href="{{route('permissions.index')}}">Kembali</a>
-            <a class="btn btn-warning" href="{{route('permissions.edit', $permission->id)}}">Edit</a>
        </div> 
      
         </div>

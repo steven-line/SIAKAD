@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Mk;
 use App\Models\Dosen;
 use App\Models\prodi;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Semester;
 use App\Models\Penawaran;
 use Illuminate\Http\Request;
@@ -65,41 +66,36 @@ class PenawaranController extends Controller
      */
     public function create()
     {
-        $matkuls = Mk::where('aktif', '1')
-            ->whereHas('kurikulum', function ($query) {
-                $query->where('aktif', '1');
-            })
-            ->orderBy('kodemk')
-            ->get();        
+        $matkuls = Mk::orderBy('nama')->get();
         $dosens = Dosen::orderBy('nama')->get();
-        $prodis = prodi::orderBy('kode_prodi')->get();
+        $semesters = Semester::with('periode')->get();
 
-        /**
-         * FIX UTAMA:
-         * HAPUS ->with('periode') karena relasi sudah tidak ada
-         */
-        $semesters = Semester::orderByDesc('aktif')->get();
-
+        // PERBAIKI BAGIAN INI
         $jamSlotsPagi = $this->generateJamSlotsPagi();
         $jamSlotsMalam = $this->generateJamSlotsMalam();
 
-        return view(
-            'kaprodi.penawaran.create',
-            compact(
-                'matkuls',
-                'dosens',
-                'prodis',
-                'semesters',
-                'jamSlotsPagi',
-                'jamSlotsMalam'
-            )
-        );
+        // Ambil prodi kaprodi yang login
+        $prodiLogin = null;
+
+        if (Auth::user()->dosen) {
+            $prodiLogin = Auth::user()->dosen->prodi;
+        }
+
+        return view('kaprodi.penawaran.create', compact(
+            'matkuls',
+            'dosens',
+            'semesters',
+            'jamSlotsPagi',
+            'jamSlotsMalam',
+            'prodiLogin'
+        ));
     }
 
     public function index()
     {
         $penawarans = Penawaran::paginate(15);
         return view('kaprodi.penawaran.index', ['penawarans' => $penawarans]);
+        
     }
 
     public function show($recno)
@@ -202,21 +198,21 @@ class PenawaranController extends Controller
             ->route('penawaran.index')
             ->with('success', 'Penawaran berhasil ditambahkan');
     }
-
+    
     public function edit(Penawaran $penawaran)
     {
         $matkuls = Mk::orderBy('kodemk')->get();
         $dosens = Dosen::orderBy('nama')->get();
-        $prodis = prodi::orderBy('kode_prodi')->get();
-
-        /**
-         * FIX UTAMA:
-         * HAPUS ->with('periode')
-         */
         $semesters = Semester::orderByDesc('aktif')->get();
 
         $jamSlotsPagi = $this->generateJamSlotsPagi();
         $jamSlotsMalam = $this->generateJamSlotsMalam();
+
+        $prodiLogin = null;
+
+        if (Auth::user()->dosen) {
+            $prodiLogin = Auth::user()->dosen->prodi;
+        }
 
         return view(
             'kaprodi.penawaran.edit',
@@ -224,10 +220,10 @@ class PenawaranController extends Controller
                 'penawaran',
                 'matkuls',
                 'dosens',
-                'prodis',
                 'semesters',
                 'jamSlotsPagi',
-                'jamSlotsMalam'
+                'jamSlotsMalam',
+                'prodiLogin'
             )
         );
     }

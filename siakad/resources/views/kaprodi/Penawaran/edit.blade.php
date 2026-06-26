@@ -167,23 +167,25 @@
 
                 {{-- prodi --}}
                 <div>
-                    <label class="label font-bold">
-                        prodi
+                    <label class="text-sm text-gray-400">
+                        Prodi
                     </label>
 
-                    <select
-                        class="select select-bordered w-full"
-                        name="prodi"
+                    {{-- hanya ditampilkan --}}
+                    <input
+                        type="text"
+                        value="{{ $prodiLogin }}"
+                        class="w-full p-2 mt-1 bg-gray-600 rounded text-gray-300 cursor-not-allowed"
+                        readonly
+                        disabled
                     >
-                        @foreach($prodis as $prodi)
-                            <option
-                                value="{{ $prodi->kode_prodi }}"
-                                @selected(old('prodi', $penawaran->prodi) == $prodi->kode_prodi)
-                            >
-                                {{ $prodi->nama_prodi }}
-                            </option>
-                        @endforeach
-                    </select>
+
+                    {{-- yang dikirim ke controller --}}
+                    <input
+                        type="hidden"
+                        name="prodi"
+                        value="{{ $prodiLogin }}"
+                    >
                 </div>
 
                 {{-- KELAS --}}

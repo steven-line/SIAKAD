@@ -86,23 +86,55 @@
                     </select>
                 </div>
 
-                {{-- JAM MULAI --}}
+                                {{-- JAM MULAI --}}
                 <div>
                     <label class="text-sm text-gray-400">Jam Mulai</label>
-                    <select name="mulaipukul" id="mulaipukul" class="w-full p-2 mt-1 bg-gray-700 rounded"></select>
+                    <select name="mulaipukul"
+                            id="mulaipukul"
+                            class="w-full p-2 mt-1 bg-gray-700 rounded">
+                    </select>
+                </div>
+
+                {{-- JAM SELESAI --}}
+                <div>
+                    <label class="text-sm text-gray-400">Jam Selesai</label>
+
+                    {{-- hanya untuk ditampilkan --}}
+                    <input
+                        type="time"
+                        id="selesaipukul"
+                        class="w-full p-2 mt-1 bg-gray-600 rounded text-gray-300 cursor-not-allowed"
+                        readonly
+                        disabled
+                    >
+
+                    {{-- yang akan dikirim ke controller --}}
+                    <input
+                        type="hidden"
+                        name="selesaipukul"
+                        id="selesaipukul_hidden"
+                    >
                 </div>
 
                 {{-- PRODI --}}
                 <div>
                     <label class="text-sm text-gray-400">Prodi</label>
-                    <select name="prodi" class="w-full p-2 mt-1 bg-gray-700 rounded" required>
-                        <option disabled selected>Pilih Prodi</option>
-                        @foreach($prodis as $p)
-                            <option value="{{ $p->kode_prodi }}">
-                                {{ $p->kode_prodi }} - {{ $p->nama_prodi }}
-                            </option>
-                        @endforeach
-                    </select>
+
+                    {{-- hanya ditampilkan --}}
+                    <input
+                        type="text"
+                        value="{{ $prodiLogin }}"
+                        class="w-full p-2 mt-1 b    g-gray-600 rounded text-gray-300 cursor-not-allowed"
+                        readonly
+                        disabled
+                    >
+
+                    {{-- yang dikirim ke controller --}}
+                    <input
+                        type="hidden"
+                        name="prodi"
+                        value="{{ $prodiLogin }}"
+                    >
                 </div>
 
                 {{-- KELAS --}}
@@ -152,7 +184,9 @@
 const sesiSelect = document.getElementById('sesi');
 const mkSelect = document.getElementById('kodemk');
 const mulaiSelect = document.getElementById('mulaipukul');
+
 const selesaiInput = document.getElementById('selesaipukul');
+const selesaiHidden = document.getElementById('selesaipukul_hidden');
 
 const jamPagi = @json($jamSlotsPagi);
 const jamMalam = @json($jamSlotsMalam);
@@ -171,10 +205,23 @@ function addMinutes(time, minutes){
 }
 
 function hitung(){
-    const sks = mkSelect.options[mkSelect.selectedIndex].dataset.sks;
+
+    const sks = parseInt(
+        mkSelect.options[mkSelect.selectedIndex].dataset.sks
+    );
+
     const jam = mulaiSelect.value;
-    if(!sks || !jam) return;
-    selesaiInput.value = addMinutes(jam, sks*50);
+
+    if(!sks || !jam){
+        selesaiInput.value = "";
+        selesaiHidden.value = "";
+        return;
+    }
+
+    const selesai = addMinutes(jam, sks * 50);
+
+    selesaiInput.value = selesai;
+    selesaiHidden.value = selesai;
 }
 
 function updateJam(){
