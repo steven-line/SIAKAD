@@ -53,7 +53,7 @@ class KhsMahasiswaController extends Controller
             // 3. JOIN ke krs untuk nilai (jika ada)
             ->leftJoin('krs', function ($join) {
                 $join->on('registrasi.regkrs', '=', 'krs.registrasi_id')
-                     ->on('penawaran.kodemk', '=', 'krs.kode');
+                     ->on('penawaran.kodemk', '=', 'krs.registrasi_id');
             })
             ->where('registrasi.nrp', $nrp)
             // ->where('registrasi.periode', $periode) // aktifkan jika perlu

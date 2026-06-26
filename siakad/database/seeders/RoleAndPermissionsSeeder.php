@@ -75,7 +75,7 @@ class RoleAndPermissionsSeeder extends Seeder
             // PERIODE
             'periode.manage',
             'semester.manage',
-            'jurusan.manage',
+            'jurusan.manage'
         ];
 
         foreach ($permissions as $permission) {

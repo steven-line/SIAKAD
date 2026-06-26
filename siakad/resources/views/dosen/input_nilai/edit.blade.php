@@ -30,13 +30,7 @@
                         <x-forms.error name="kelas" />
                     </div>
 
-                {{-- SEMESTER (READ ONLY) --}}
-                <div>
-                    <label class="label font-bold">Semester</label>
-
-                    <input type="text" class="input w-full" disabled
-                        value="{{ $semester->periode->tahun_ajaran ?? '-' }} - {{ $semester->jenis ?? '-' }}">
-                </div>
+                
 
                     {{-- BU --}}
                     <div>
