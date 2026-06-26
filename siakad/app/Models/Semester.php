@@ -11,7 +11,8 @@ class Semester extends Model
     protected $fillable = [
         'periode_id',
         'jenis',
-        'aktif'
+        'aktif',
+        'nama'
     ];
 
     /**

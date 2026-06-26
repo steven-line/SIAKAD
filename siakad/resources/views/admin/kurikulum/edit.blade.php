@@ -45,7 +45,27 @@
                     maxlength="50"
                 />
                 <x-forms.error name="nama_kurikulum"/>
+                
+                <label class="label font-bold mt-2" for="kode_prodi">
+                    Kode Prodi
+                </label>
+                <select
+                        class="select select-bordered w-full"
+                        name="kode_prodi"
+                        required
+                    >
+                        <option disabled>Pilih Prodi</option>
 
+                        @foreach ($prodis as $prodi)
+                            <option
+                                value="{{ $prodi->kode_prodi }}"
+                                @selected(old('kode_prodi', $prodi->kode_prodi) == $prodi->kode_prodi)
+                            >
+                                {{ $prodi->kode_prodi }} 
+                            </option>
+                        @endforeach
+
+                <x-forms.error name="kode_prodi"/>
                 {{-- Aktif --}}
                 <label class="label font-bold">
                     Aktif

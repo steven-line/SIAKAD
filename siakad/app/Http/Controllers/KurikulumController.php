@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kurikulum;
+use App\Models\Prodi;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -25,7 +26,8 @@ class KurikulumController extends Controller
      */
     public function create()
     {
-        return view('admin.kurikulum.create');
+        $prodis = Prodi::all();
+        return view('admin.kurikulum.create', ['prodis' => $prodis]);
     }
 
     /**
@@ -34,11 +36,12 @@ class KurikulumController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_kurikulum' => ['required', 'min:3', 'max:15', 'unique:kurikulum'],
+            'kode_kurikulum' => ['required', 'min:3', 'max:15', 'unique:kurikulum',   'regex:/^[A-Za-z0-9\-]+$/'],
             'nama_kurikulum' => ['required', 'min:4', 'max:50'],
             'deskripsi' => ['required', 'min:20'],
             'tahun_mulai_berlaku' => ['required',  'integer', 'max:'.date('Y')+10],
             'tahun_selesai_berlaku' => ['required',  'integer', 'max:9999'],
+            'kode_prodi' => ['required']
         ]);
 
         Kurikulum::create([
@@ -48,6 +51,7 @@ class KurikulumController extends Controller
             'deskripsi' => $request->deskripsi,
             'tahun_mulai_berlaku' => $request->tahun_mulai_berlaku,
             'tahun_selesai_berlaku' => $request->tahun_selesai_berlaku,
+            'kode_prodi' => $request->kode_prodi
         ]);
 
         return redirect()->route('kurikulum.index');
@@ -68,8 +72,10 @@ class KurikulumController extends Controller
      */
     public function edit(Kurikulum $kurikulum)
     {
+        $prodis = Prodi::all();
         return view('admin.kurikulum.edit', [
-            'kurikulum' => $kurikulum
+            'kurikulum' => $kurikulum,
+            'prodis' => $prodis
         ]);
     }
 
@@ -79,11 +85,12 @@ class KurikulumController extends Controller
     public function update(Request $request, Kurikulum $kurikulum)
     {
         $request->validate([
-            'kode_kurikulum' => ['required', 'min:3', 'max:15', Rule::unique('kurikulum')->ignore($kurikulum)],
+            'kode_kurikulum' => ['required', 'min:3', 'max:15', Rule::unique('kurikulum')->ignore($kurikulum),  'regex:/^[A-Za-z0-9\-]+$/'],
             'nama_kurikulum' => ['required', 'min:4', 'max:50'],
             'deskripsi' => ['required', 'min:20'],
             'tahun_mulai_berlaku' => ['required',  'integer', 'max:'.date('Y')+10],
             'tahun_selesai_berlaku' => ['required',  'integer', 'max:9999'],
+            'kode_prodi' => ['required']
         ]);
 
         $kurikulum->update([
@@ -93,6 +100,7 @@ class KurikulumController extends Controller
             'deskripsi' => $request->deskripsi,
             'tahun_mulai_berlaku' => $request->tahun_mulai_berlaku,
             'tahun_selesai_berlaku' => $request->tahun_selesai_berlaku,
+            'kode_prodi' => $request->kode_prodi
         ]);
 
         return redirect()->route('kurikulum.index');

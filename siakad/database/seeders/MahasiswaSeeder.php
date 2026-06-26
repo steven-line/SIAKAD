@@ -20,7 +20,19 @@ class MahasiswaSeeder extends Seeder
             'status_blokir' => 'BELUM_KRS',
             'prodi' => 'IF'
         ]);
-        
 
+        Mahasiswa::create([
+            'nrp' => '31126666',
+            'dosen_wali' => '12345678',
+            'status_blokir' => 'BELUM_KRS',
+            'prodi' => 'IF'
+        ]);
+
+        Mahasiswa::create([
+            'nrp' => '31125555',
+            'dosen_wali' => '12345678',
+            'status_blokir' => 'BELUM_KRS',
+            'prodi' => 'SI'
+        ]);
     }
 }

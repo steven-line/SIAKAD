@@ -6,12 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fakultas extends Model
 {
-      public $incrementing = false;
       public $timestamps = false;
       protected $table = 'fakultas';
-      protected $primaryKey = 'kode_fakultas';
-      protected $fillable = [
-          'kode_fakultas',
+           protected $fillable = [
           'nama_fakultas'
         ];
       public function jurusans()

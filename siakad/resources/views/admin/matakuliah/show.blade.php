@@ -32,11 +32,6 @@
                 </tr>
 
                 <tr>
-                    <th>Kode Prodi Dikti</th>
-                    <td>{{ $mk->kode_prodi_dikti }}</td>
-                </tr>
-
-                <tr>
                     <th>Kode Kurikulum</th>
                     <td>{{ $mk->kode_kurikulum }}</td>
                 </tr>

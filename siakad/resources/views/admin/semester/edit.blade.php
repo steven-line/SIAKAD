@@ -14,13 +14,26 @@
                 <legend class="fieldset-legend text-lg font-bold">
                     Ubah Semester
                 </legend>
-
-                 <label class="label font-bold mt-2" for="periode_id">Periode Id</label>
+                    <label class="label font-bold" for="nama">
+                   Semester
+                </label>
+                
+                <input
+                            type="number"
+                            class="input input-bordered w-full"
+                            name="nama"
+                            maxlength="1"
+                            value="{{ old('nama', $semester->nama) }}"
+                            oninput="this.value=this.value.slice(0,this.maxLength)"
+                            
+                        />
+                <x-forms.error name="nama"/>
+                 <label class="label font-bold mt-2" for="periode_id">Periode</label>
                  <select class="select select-bordered w-full" name="periode_id" required>
                     <option disabled selected>Pilih Periode</option>
                     @foreach ($periodes as $periode)
                         <option value="{{ $periode->id }}" @selected(old('periode', $semester->periode_id) == $periode->id)>
-                            {{ $periode->id }}
+                            {{ $periode->tahun_ajaran }}
                         </option>
                     @endforeach
                 </select>

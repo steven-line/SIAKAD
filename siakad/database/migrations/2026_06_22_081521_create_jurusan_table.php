@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Fakultas;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,8 +18,7 @@ return new class extends Migration
             $table->string('program_pendidikan',50);
             $table->string('sk_ban',50);
             $table->text('keterangan')->nullable();
-            $table->string('fakultas',3);  
-            $table->foreign('fakultas')->references('kode_fakultas')->on('fakultas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignIdFor(Fakultas::class)->constrained()->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

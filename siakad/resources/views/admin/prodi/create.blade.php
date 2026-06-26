@@ -29,7 +29,19 @@
             </select>
 
             <x-forms.error name='kode_jurusan'/>
-
+               <label class="label font-bold" for="kode_prodi_dikti">
+                    Kode Prodi Dikti
+                </label>
+                
+           <input
+                    type="text"
+                    class="input input-bordered w-full"
+                    name="kode_prodi_dikti"
+                    minlength="5"
+                    maxlength="5"
+                    
+                />
+                <x-forms.error name="kode_prodi_dikti"/>
             <button class="btn btn-primary mt-4">Buat Prodi</button>
         </fieldset>
 

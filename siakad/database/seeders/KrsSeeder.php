@@ -16,7 +16,6 @@ class KrsSeeder extends Seeder
 
             [
                 'registrasi_id' => 1,
-                'kode' => 'IF101001',
                 'bu' => 'B',
                 'ttt1' => 80,
                 'ttt2' => 85,

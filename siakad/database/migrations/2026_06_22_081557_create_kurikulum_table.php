@@ -18,6 +18,8 @@ return new class extends Migration
             $table->text("deskripsi");
             $table->year("tahun_mulai_berlaku");
             $table->year("tahun_selesai_berlaku");
+            $table->string('kode_prodi', 15);
+            $table->foreign('kode_prodi')->references('kode_prodi')->on('prodi')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

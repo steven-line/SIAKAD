@@ -39,7 +39,7 @@ public function create()
 public function store(Request $request)
 {
     $validated = $request->validate([
-        'username' => ['required', 'string', 'max:255', 'unique:users'],
+        'username' => ['required', 'string', 'max:255', 'unique:users',  'regex:/^[A-Za-z0-9\-]+$/'],
         'password' => ['required', Password::default()],
         'role'     => ['required', 'exists:roles,name'],
         'permissions' => ['nullable', 'array'],
@@ -92,7 +92,7 @@ public function show(User $user)
 public function update(Request $request, User $user)    
 {
     $validated = $request->validate([
-        'username' => ['required', 'string', 'max:255',  Rule::unique('users')->ignoreModel($user)],
+        'username' => ['required', 'string', 'max:255',    'regex:/^[A-Za-z0-9\-]+$/',Rule::unique('users')->ignoreModel($user)],
         'role'     => ['required', 'exists:roles,name', ],
         'permissions' => ['nullable', 'array'],
         'permissions.*' => ['string', 'exists:permissions,name'],

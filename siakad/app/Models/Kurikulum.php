@@ -18,6 +18,7 @@ class Kurikulum extends Model
           'deskripsi',
           'tahun_mulai_berlaku',
           'tahun_selesai_berlaku',
+          'kode_prodi'
         ];
 
     protected $casts = [

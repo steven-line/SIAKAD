@@ -126,6 +126,10 @@
           <li><a href="/biodata">Master Biodata</a></li>
         @endcan
 
+        @can('jurusan.manage')
+          <li><a href="/jurusan">Master Jurusan</a></li>
+        @endcan
+
         @can('periode.manage')
             <li><a href="/periode">Master Periode</a></li>
         @endcan

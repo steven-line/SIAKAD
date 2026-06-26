@@ -20,6 +20,7 @@ class KurikulumSeeder extends Seeder
                 'deskripsi' => 'Kurikulum akademik yang berlaku mulai tahun 2018.',
                 'tahun_mulai_berlaku' => 2018,
                 'tahun_selesai_berlaku' => 2021,
+                'kode_prodi' => 'SI'
             ],
             [
                 'kode_kurikulum' => 'KUR2022',
@@ -28,6 +29,7 @@ class KurikulumSeeder extends Seeder
                 'deskripsi' => 'Kurikulum berbasis Merdeka Belajar.',
                 'tahun_mulai_berlaku' => 2022,
                 'tahun_selesai_berlaku' => 2024,
+                'kode_prodi' => 'IF'
             ],
             [
                 'kode_kurikulum' => 'KUR2025',
@@ -36,6 +38,7 @@ class KurikulumSeeder extends Seeder
                 'deskripsi' => 'Kurikulum terbaru yang saat ini digunakan.',
                 'tahun_mulai_berlaku' => 2025,
                 'tahun_selesai_berlaku' => 2030,
+                'kode_prodi' => 'MNJ'
             ],
         ]);
     }

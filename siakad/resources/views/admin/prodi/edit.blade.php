@@ -63,7 +63,18 @@
                 </select>
 
                 <x-forms.error name="kode_jurusan"/>
-
+                <label class="label font-bold" for="kode_prodi_dikti">
+                    Kode Prodi Dikti
+                </label>
+                <input
+                    type="text"
+                    class="input input-bordered w-full"
+                    name="kode_prodi_dikti"
+                    minlength="5"
+                    maxlength="5"
+                    value="{{ old('kode_prodi_dikti', $prodi->kode_prodi_dikti) }}"
+                />
+                <x-forms.error name="kode_prodi_dikti"/>
                 <button class="btn btn-primary mt-6">
                     Ubah Prodi
                 </button>

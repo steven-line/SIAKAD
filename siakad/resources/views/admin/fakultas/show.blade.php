@@ -7,7 +7,7 @@
             <div class="grid grid-cols-2 gap-2">
                 <div>
                     <p class="font-semibold text-base-content/70">Kode Fakultas</p>
-                    <p class="text-lg"> {{$fakultas->kode_fakultas}}</p>
+                    <p class="text-lg"> {{$fakultas->id}}</p>
                 </div>
                   <div>
                     <p class="font-semibold text-base-content/70">Nama Fakultas</p>
@@ -18,7 +18,7 @@
     
         <div class="mt-5">
             <a class="btn btn-primary" href="{{route('fakultas.index')}}">Kembali</a>
-            <a class="btn btn-warning" href="{{route('fakultas.edit', $fakultas->kode_fakultas)}}">Edit</a>
+            <a class="btn btn-warning" href="{{route('fakultas.edit', $fakultas->id)}}">Edit</a>
        </div> 
      
         </div>

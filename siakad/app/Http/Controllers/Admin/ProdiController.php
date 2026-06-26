@@ -35,15 +35,18 @@ class ProdiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_prodi' => ['required', 'min:3', 'unique:prodi', 'max:15'],
+            'kode_prodi' => ['required', 'min:3', 'unique:prodi', 'max:15'],  'regex:/^[A-Za-z0-9\-]+$/',
             'nama_prodi' => ['required', 'min:4', 'max:50'],
-            'kode_jurusan' => ['required', 'max:3']
+            'kode_jurusan' => ['required', 'max:3'],
+            'kode_prodi_dikti' => ['required', 'size:5']
         ]);
 
         Prodi::create([
             'kode_prodi' => $request->kode_prodi,
             'nama_prodi' => $request->nama_prodi,
             'kode_jurusan' => $request->kode_jurusan,
+            'kode_prodi_dikti' => $request->kode_prodi_dikti
+
         ]);
 
         return redirect()->route('prodi.index')
@@ -83,14 +86,16 @@ class ProdiController extends Controller
     public function update(Request $request, Prodi $prodi)
     {
         $request->validate([
-            'kode_prodi' => ['required', 'min:3', Rule::unique('prodi')->ignore($prodi), 'max:15'],
+            'kode_prodi' => ['required', 'min:3', Rule::unique('prodi')->ignore($prodi), 'max:15',  'regex:/^[A-Za-z0-9\-]+$/'],
             'nama_prodi' => ['required', 'min:4', 'max:50'],
-            'kode_jurusan' => ['required', 'max:3']
+            'kode_jurusan' => ['required', 'max:3'],
+            'kode_prodi_dikti' => ['required', 'size:5']
         ]);
         $prodi->update([
             'kode_prodi' => $request->kode_prodi,
             'nama_prodi' => $request->nama_prodi,
             'kode_jurusan' => $request->kode_jurusan,
+            'kode_prodi_dikti' => $request->kode_prodi_dikti
         ]);
 
         return redirect()->route('prodi.index')
