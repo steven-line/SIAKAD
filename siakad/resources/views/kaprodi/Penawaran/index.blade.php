@@ -56,10 +56,8 @@
                     {{-- SEMESTER (FIX AMAN) --}}
                     <td>
                         @if($penawaran->semesterRelasi)
+                            {{ $penawaran->semesterRelasi->nama }} - 
                             {{ $penawaran->semesterRelasi->jenis }}
-                            @if($penawaran->semesterRelasi->aktif)
-                                <span class="text-green-500">(Aktif)</span>
-                            @endif
                         @else
                             <span class="text-red-500">Belum ada semester</span>
                         @endif

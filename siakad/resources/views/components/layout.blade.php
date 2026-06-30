@@ -66,9 +66,16 @@ if ($user) {
             {{ $displayName }}
         </span>
 
+<<<<<<< HEAD
         <span class="text-sm text-gray-500">
             {{ $displayId }}
         </span>
+=======
+                $displayName = 'Guest';
+                $displayId = '';
+                $displayRole = '';
+                $displayRoleDetail = '';
+>>>>>>> be98930101cbe884f31f4911988d5f364687a389
 
         <span class="badge badge-primary mt-1">
             {{ $displayRole !== '' ? $displayRole : 'Guest' }}
@@ -110,9 +117,19 @@ if ($user) {
                 <li><a href="/fakultas">Master Fakultas</a></li>
             @endcan
 
+<<<<<<< HEAD
             @can('mk.manage')
                 <li><a href="/matakuliah">Master Mata Kuliah</a></li>
             @endcan
+=======
+            @if($displayRoleDetail)
+                <span class="text-xs text-gray-500 text-center mt-1">
+                    {{ $displayRoleDetail }}
+                </span>
+            @endif
+
+        </div>
+>>>>>>> be98930101cbe884f31f4911988d5f364687a389
 
             @can('prodi.manage')
                 <li><a href="/prodi">Master Prodi</a></li>
