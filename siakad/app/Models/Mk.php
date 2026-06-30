@@ -42,8 +42,12 @@ class Mk extends Model
         'aktif' => 'boolean',
     ];
 
-      public function kurikulum()
+    public function kurikulum()
     {
-        return $this->belongsTo(Kurikulum::class, 'kode_kurikulum');
+        return $this->belongsTo(
+            Kurikulum::class,
+            'kode_kurikulum',
+            'kode_kurikulum'
+        );
     }
 }
