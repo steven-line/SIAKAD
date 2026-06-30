@@ -18,6 +18,16 @@
             <a href="#" class="text-blue-600 underline mx-1">Dosen Wali</a> anda.
         </div>
 
+        <div class="bg-white p-4 rounded-lg shadow mb-4 text-black">
+            <div class="grid grid-cols-2 gap-4">
+                <div><strong>NRP</strong> : {{ $nrp }}</div>
+
+                <div><strong>Nama</strong> : {{ $mahasiswa->biodata->nama ?? '-' }}</div>
+
+                <div><strong>Program Studi</strong> : {{ $mahasiswa->prodiRel->nama ?? '-' }}</div>
+                <div><strong>Dosen Wali</strong> : {{ $mahasiswa->dosenWali->nama ?? '-' }}</div>
+            </div>
+        </div>
         
 
             <!-- Status Validasi dan Cetak KRS -->

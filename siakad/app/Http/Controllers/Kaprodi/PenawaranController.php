@@ -240,7 +240,7 @@ class PenawaranController extends Controller
         $query = Penawaran::with([
             'mk',
             'dosenRelasi',
-            'semesterRelasi'
+            'semesterRelasi.periode',
         ]);
 
         $user = auth()->user();
@@ -256,7 +256,25 @@ class PenawaranController extends Controller
 
         $penawaran = $query->findOrFail($recno);
 
-        // data lain...
+        $matkuls = Mk::orderBy('nama')->get();
+
+        $dosens = Dosen::where('prodi', $user->dosen->prodi)
+                        ->orderBy('nama')
+                        ->get();
+
+        $semesters = Semester::with('periode')->get();
+
+        $jamSlotsPagi = $this->generateJamSlotsPagi();
+        $jamSlotsMalam = $this->generateJamSlotsMalam();
+
+        return view('kaprodi.penawaran.edit', compact(
+            'penawaran',
+            'matkuls',
+            'dosens',
+            'semesters',
+            'jamSlotsPagi',
+            'jamSlotsMalam'
+        ));
     }
 
     public function update(Request $request, Penawaran $penawaran)

@@ -58,7 +58,7 @@
                     <select name="semester_id" class="w-full p-2 mt-1 bg-gray-700 rounded">
                         @foreach($semesters as $s)
                             <option value="{{ $s->id }}">
-                                {{$s->periode->tahun_ajaran}} {{ $s->jenis }} - {{ $s->aktif ? 'Aktif' : 'Non Aktif' }}
+                               {{ $s->nama }}       
                             </option>
                         @endforeach
                     </select>
@@ -101,7 +101,7 @@
 
                     {{-- hanya untuk ditampilkan --}}
                     <input
-                        type="time"
+                        type="text"
                         id="selesaipukul"
                         class="w-full p-2 mt-1 bg-gray-600 rounded text-gray-300 cursor-not-allowed"
                         readonly
