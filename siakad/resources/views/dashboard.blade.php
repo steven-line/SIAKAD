@@ -1,6 +1,3 @@
 <x-layout>
-
-<p>Dashboard</p>
-
-
+hello
 </x-layout>

@@ -72,25 +72,18 @@
 
                 {{-- SEMESTER --}}
                 <div>
-                    <label class="text-sm text-gray-400">
-                        Semester
-                    </label>
+                    <label class="text-sm text-gray-400">Semester</label>
 
-                    <select
-                        name="semester_id"
-                        class="w-full p-2 mt-1 bg-gray-700 rounded"
-                    >
-                        @foreach($semesters as $semester)
-                            <option
-                                value="{{ $semester->id }}"
-                                @selected(old('semester_id', $penawaran->semester_id) == $semester->id)
-                            >
-                        {{ $semester->periode->tahun_ajaran }}
-                        {{ $semester->jenis }}
-                        -
-                        {{ $semester->aktif ? 'Aktif' : 'Non Aktif' }}
+                    <select name="semester_id" class="w-full p-2 mt-1 bg-gray-700 rounded">
+                        @forelse($semesters as $s)
+                            <option value="{{ $s->id }}">
+                                {{ $s->nama }}
+                                - {{ $s->periode->tahun_ajaran }}
+                                {{ $s->jenis }}
                             </option>
-                        @endforeach
+                        @empty
+                            <option disabled>Tidak ada semester aktif</option>
+                        @endforelse
                     </select>
                 </div>
 

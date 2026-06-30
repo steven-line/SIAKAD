@@ -28,6 +28,7 @@
                 $displayName = 'Guest';
                 $displayId = '';
                 $displayRole = '';
+                $displayRoleDetail = '';
 
                 if ($user) {
 
@@ -53,6 +54,10 @@
                     }
 
                     $displayRole = $user->roles->pluck('name')->join(', ');
+                    // Jika Kaprodi, tampilkan juga nama prodinya
+                        if ($user->hasRole('kaprodi') && $dosen) {
+                            $displayRoleDetail = 'Program Studi ' . $dosen->prodi;
+                        }
                 }
             @endphp
 
@@ -71,6 +76,12 @@
             <span class="badge badge-primary mt-1">
                 {{ ucfirst($displayRole) }}
             </span>
+
+            @if($displayRoleDetail)
+                <span class="text-xs text-gray-500 text-center mt-1">
+                    {{ $displayRoleDetail }}
+                </span>
+            @endif
 
         </div>
 
