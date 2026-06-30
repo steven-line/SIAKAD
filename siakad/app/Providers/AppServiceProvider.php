@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -20,7 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Fix MariaDB/MySQL lama (utf8 string limit issue)
-        Schema::defaultStringLength(191);
+        Model::automaticallyEagerLoadRelationships();
     }
 }
