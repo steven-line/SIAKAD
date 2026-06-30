@@ -3,7 +3,11 @@
       <a class="btn btn-primary text-white mb-6" href="{{ route('biodata.create') }}">
         Create Biodata
       </a>
-
+      <form action="{{route('biodata.upload')}}" class="mb-10" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="file"  accept=".csv, .xlsx, .xls" class="file-input">
+          <input type="submit" value="Upload File" class="btn btn-primary">
+      </form>
     <table class="table">
       <thead class="bg-blue-500 text-white">
         <tr>
