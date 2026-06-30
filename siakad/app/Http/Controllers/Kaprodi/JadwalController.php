@@ -33,20 +33,19 @@ class JadwalController extends Controller
     private function getJadwalQuery()
     {
         $query = Penawaran::with([
-            'mk',
+            'mk.kurikulum',
             'dosenRelasi',
             'semesterRelasi.periode',
         ]);
 
         $user = Auth::user();
 
-        // Filter hanya jadwal prodi Kaprodi
         if ($user && $user->dosen) {
 
-            $prodi = $user->dosen->prodi;
+            $prodiLogin = $user->dosen->prodi;
 
-            $query->whereHas('dosenRelasi', function ($q) use ($prodi) {
-                $q->where('prodi', $prodi);
+            $query->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
+                $q->where('kode_prodi', $prodiLogin);
             });
         }
 
@@ -64,7 +63,6 @@ class JadwalController extends Controller
             ")
             ->orderBy('mulaipukul');
     }
-
     /**
      * Semua jadwal
      */
@@ -130,9 +128,8 @@ class JadwalController extends Controller
         if ($user && $user->dosen) {
 
             $prodi = $user->dosen->prodi;
-
-            $query->whereHas('dosenRelasi', function ($q) use ($prodi) {
-                $q->where('prodi', $prodi);
+            $query->whereHas('mk.kurikulum', function ($q) use ($prodi) {
+                $q->where('kode_prodi', $prodi);
             });
         }
 
