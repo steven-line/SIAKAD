@@ -192,7 +192,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [BiodataAdminController::class, 'index'])->name('index');
             Route::get('/create', [BiodataAdminController::class, 'create'])->name('create');
             Route::get('/{biodata}', [BiodataAdminController::class, 'show'])->name('show');
-            Route::post('/', [BiodataAdminController::class, 'store'])->name('store');
+            Route::post('/', [BiodataAdminController::class,'store'])->name('store');
+            Route::post('/upload', [BiodataAdminController::class, 'upload'])->name('upload');
             Route::get('/{biodata}/edit', [BiodataAdminController::class, 'edit'])->name('edit');
             Route::patch('/{biodata}', [BiodataAdminController::class, 'update'])->name('update');
             Route::delete('/{biodata}', [BiodataAdminController::class, 'destroy'])->name('destroy');

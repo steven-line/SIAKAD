@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Imports\BiodatasImport;
 use App\Models\Biodata;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Excel;
 
 class BiodataAdminController extends Controller
 {
@@ -27,7 +29,20 @@ class BiodataAdminController extends Controller
             'mahasiswas' => $mahasiswas,
         ]);
     }
+    
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:csv,xlsx,xls'
+        ]);
 
+        Excel::import(new BiodatasImport, $request->file('file'));
+
+        return redirect()
+            ->route('biodata.index')
+            ->with('success', 'Import berhasil.'); 
+    }
+        
     public function show(Biodata $biodata)
     {
         return view('admin.biodata.show', [

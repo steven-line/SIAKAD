@@ -55,12 +55,17 @@
                 {{-- SEMESTER --}}
                 <div>
                     <label class="text-sm text-gray-400">Semester</label>
+
                     <select name="semester_id" class="w-full p-2 mt-1 bg-gray-700 rounded">
-                        @foreach($semesters as $s)
+                        @forelse($semesters as $s)
                             <option value="{{ $s->id }}">
-                               {{ $s->nama }}       
+                                {{ $s->nama }}
+                                - {{ $s->periode->tahun_ajaran }}
+                                {{ $s->jenis }}
                             </option>
-                        @endforeach
+                        @empty
+                            <option disabled>Tidak ada semester aktif</option>
+                        @endforelse
                     </select>
                 </div>
 
@@ -86,7 +91,7 @@
                     </select>
                 </div>
 
-                                {{-- JAM MULAI --}}
+                {{-- JAM MULAI --}}
                 <div>
                     <label class="text-sm text-gray-400">Jam Mulai</label>
                     <select name="mulaipukul"
