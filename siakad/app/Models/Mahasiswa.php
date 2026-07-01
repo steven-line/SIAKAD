@@ -30,4 +30,9 @@ class Mahasiswa extends Model
      public function registrasi() {
          return $this->hasMany(Registrasi::class, 'nrp', 'nrp');
      }
+
+     public function prodiRel()
+     {
+         return $this->belongsTo(Prodi::class, 'prodi', 'kode_prodi');
+     }
 }

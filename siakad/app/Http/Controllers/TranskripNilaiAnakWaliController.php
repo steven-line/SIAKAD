@@ -23,6 +23,7 @@ class TranskripNilaiAnakWaliController extends Controller
             return view('dosen_wali.transkrip_nilai_anak_wali.index', [
                 'mahasiswas' => $mahasiswas,
             ]);
+
         }
 
     

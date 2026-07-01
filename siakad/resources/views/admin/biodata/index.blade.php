@@ -1,4 +1,28 @@
 <x-layout title="index">
+  {{-- NOTIFIKASI SUCCESS --}}
+    @if (session('success'))
+        <div class="alert alert-success mb-4">
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    {{-- NOTIFIKASI ERROR --}}
+    @if (session('error'))
+        <div class="alert alert-error mb-4">
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    {{-- VALIDATION ERROR --}}
+    @if ($errors->any())
+        <div class="alert alert-error mb-4">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>• {{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
   <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
       <a class="btn btn-primary text-white mb-6" href="{{ route('biodata.create') }}">
         Create Biodata
@@ -8,6 +32,7 @@
         <input type="file" name="file"  accept=".csv, .xlsx, .xls" class="file-input">
           <input type="submit" value="Upload File" class="btn btn-primary">
       </form>
+       <a href=" {{ asset('document/template_import_biodata.xlsx') }}" download class="btn btn-success mb-5">Download Template</a>
     <table class="table">
       <thead class="bg-blue-500 text-white">
         <tr>

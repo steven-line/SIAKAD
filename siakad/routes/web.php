@@ -299,6 +299,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{mahasiswa}', [PerwalianController::class, 'show'])->name('show');
             Route::post('/{mahasiswa}/validasi', [PerwalianController::class, 'validasi'])->name('validasi');
             Route::post('/{mahasiswa}/lock', [PerwalianController::class, 'lock'])->name('lock');
+            Route::post('/{mahasiswa}/unlock', [PerwalianController::class, 'unlock'])->name('unlock');
         });
 
      Route::prefix('nilai_krs_anak_wali')

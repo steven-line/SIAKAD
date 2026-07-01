@@ -106,7 +106,7 @@
 
                     {{-- hanya untuk ditampilkan --}}
                     <input
-                        type="time"
+                        type="text"
                         id="selesaipukul"
                         class="w-full p-2 mt-1 bg-gray-600 rounded text-gray-300 cursor-not-allowed"
                         readonly

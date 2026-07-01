@@ -33,13 +33,20 @@
           @endif
           </td>
 
-          <td>
-        
-              <button class="btn btn-soft btn-warning"
-                      form="lock-mahasiswa-form-{{$mahasiswa->nrp}}">
-                  Lock
-              </button>
-        
+          <td class="flex gap-2">
+              @if($mahasiswa->status_blokir == 'BELUM_KRS')
+                  <button class="btn btn-soft btn-warning"
+                          form="lock-mahasiswa-form-{{$mahasiswa->nrp}}">
+                      Lock
+                  </button>
+              @endif
+
+              @if($mahasiswa->status_blokir == 'TERKUNCI')
+                  <button class="btn btn-soft btn-success"
+                          form="unlock-mahasiswa-form-{{$mahasiswa->nrp}}">
+                      Unlock
+                  </button>
+              @endif
           </td>
 
 
@@ -55,6 +62,11 @@
       <form id="lock-mahasiswa-form-{{$mahasiswa->nrp}}" action="{{ route('perwalian.lock', $mahasiswa->nrp) }}" method='POST'>
             @csrf        
        </form>
+      <form id="unlock-mahasiswa-form-{{$mahasiswa->nrp}}"
+            action="{{ route('perwalian.unlock', $mahasiswa->nrp) }}"
+            method="POST">
+          @csrf
+      </form>
         
       @empty
       <tr>

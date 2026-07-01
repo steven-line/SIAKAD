@@ -3,10 +3,12 @@
 namespace App\Imports;
 
 use App\Models\Biodata;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Maatwebsite\Excel\Validators\Failure;
 class BiodatasImport implements ToModel, WithValidation, WithHeadingRow
 {
     /**
@@ -14,77 +16,109 @@ class BiodatasImport implements ToModel, WithValidation, WithHeadingRow
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
+    
+    public function prepareForValidation($data, $index)
+    {
+        // tanggal_lahir
+        if (isset($data['tanggal_lahir'])) {
+            $data['tanggal_lahir'] = $this->parseExcelDate($data['tanggal_lahir']);
+        }
+
+        // last_update
+        if (isset($data['last_update'])) {
+            $data['last_update'] = $this->parseExcelDate($data['last_update']);
+        }
+
+        return $data;
+    }
+
+    private function parseExcelDate($value)
+    {
+        try {
+            // Kalau format Excel SERIAL NUMBER
+            if (is_numeric($value)) {
+                return Carbon::instance(Date::excelToDateTimeObject($value))
+                    ->format('Y-m-d');
+            }
+
+            // Kalau sudah string (bebas format)
+            return Carbon::parse($value)->format('Y-m-d');
+
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
     public function model(array $row)
     {
         return new Biodata([
-                'nrp' => $row['nrp']->nrp,
-                'nama' => $row['nama']->nama,
-                'nik' => $row['nik']->nik,
-                'tempat_lahir' => $row['tempat_lahir']->tempat_lahir,
-                'tanggal_lahir' => $row['tanggal_lahir']->tanggal_lahir,
+                'nrp' => $row['nrp'],
+                'nama' => $row['nama'],
+                'nik' => $row['nik'],
+                'tempat_lahir' => $row['tempat_lahir'],
+                'tanggal_lahir' =>  $row['tanggal_lahir'],
 
-                'tinggi' => $row['tinggi']->tinggi,
-                'berat' => $row['berat']->berat,
-                'alamat' => $row['alamat']->alamat,
-                'kecamatan' => $row['kecamatan']->kecamatan,
-                'kelurahan' => $row['kelurahan']->kelurahan,
-                'kota' => $row['kota']->kota,
-                'kodepos' => $row['kodepos']->kodepos,
-                'no_telp' => $row['no_telp']->no_telp,
-                'handphone' => $row['handphone']->handphone,
-                'hobby' => $row['hobby']->hobby,
-                'agama' => $row['agama']->agama,
-                'warganegara' => $row['warganegara']->warganegara,
-                'status_kawin' => $row['status_kawin']->status_kawin,
-                'gol_darah' => $row['gol_darah']->gol_darah,
-                'anak_ke' => $row['anak_ke']->anak_ke,
-                'jml_saudara' => $row['jml_saudara']->jml_saudara,
-                'jml_saudara_tanggungan' => $row['jml_saudara_tanggungan']->jml_saudara_tanggungan,
-                'sumber_biaya' => $row['sumber_biaya']->sumber_biaya,
-                'jenis_rmh' => $row['jenis_rmh']->jenis_rmh,
-                'asal_smu' => $row['asal_smu']->asal_smu,
-                'lulus_smu' => $row['lulus_smu']->lulus_smu,
-                'transportasi' => $row['transportasi']->transportasi,
-                'nama_ayah' => $row['nama_ayah']->nama_ayah,
-                'alamat_ayah' => $row['alamat_ayah']->alamat_ayah,
-                'no_telp_ayah' => $row['no_telp_ayah']->no_telp_ayah,
-                'kota_ayah' => $row['kota_ayah']->kota_ayah,
-                'kodepos_ayah' => $row['kodepos_ayah']->kodepos_ayah,
-                'handphone_ayah' => $row['handphone_ayah']->handphone_ayah,
-                'agama_ayah' => $row['agama_ayah']->agama_ayah,
-                'pekerjaan_ayah' => $row['pekerjaan_ayah']->pekerjaan_ayah,
-                'pendidikan_ayah' => $row['pendidikan_ayah']->pendidikan_ayah,
-                'warganegara_ayah' => $row['warganegara_ayah']->warganegara_ayah,
-                'nama_ibu' => $row['nama_ibu']->nama_ibu,
-                'alamat_ibu' => $row['alamat_ibu']->alamat_ibu,
-                'kota_ibu' => $row['kota_ibu']->kota_ibu,
-                'kodepos_ibu' => $row['kodepos_ibu']->kodepos_ibu,
-                'no_telp_ibu' => $row['no_telp_ibu']->no_telp_ibu,
-                'handphone_ibu' => $row['handphone_ibu']->handphone_ibu,
-                'agama_ibu' => $row['agama_ibu']->agama_ibu,
-                'pekerjaan_ibu' => $row['pekerjaan_ibu']->pekerjaan_ibu,
-                'pendidikan_ibu' => $row['pendidikan_ibu']->pendidikan_ibu,
-                'warganegara_ibu' => $row['warganegara_ibu']->warganegara_ibu,
-                'nama_wali' => $row['nama_wali']->nama_wali,
-                'alamat_wali' => $row['alamat_wali']->alamat_wali,
-                'kota_wali' => $row['kota_wali']->kota_wali,
-                'kodepos_wali' => $row['kodepos_wali']->kodepos_wali,
-                'no_telp_wali' => $row['no_telp_wali']->no_telp_wali,
-                'handphone_wali' => $row['handphone_wali']->handphone_wali,
-                'agama_wali' => $row['ágama_wali']->agama_wali,
-                'pekerjaan_wali' => $row['pekerjaan_wali']->pekerjaan_wali,
-                'pendidikan_wali' => $row['pendidikan_wali']->pendidikan_wali,
-                'warganegara_wali' => $row['warganegara_wali']->warganegara_wali,
-                'special_need' => $row['special_need']->special_need,
-                'kps' => $row['kps']->kps,
-                'status_pendidikan' => $row['status_pendidikan']->status_pendidikan,
-                'kebutuhan_ayah' => $row['kebutuhan_ayah']->kebutuhan_ayah,
-                'kebutuhan_ibu' => $row['kebutuhan_ibu']->kebutuhan_ibu,
-                'last_update' => $row['last_update']->last_update,
+                'tinggi' => $row['tinggi'],
+                'berat' => $row['berat'],
+                'alamat' => $row['alamat'],
+                'kecamatan' => $row['kecamatan'],
+                'kelurahan' => $row['kelurahan'],
+                'kota' => $row['kota'],
+                'kodepos' => $row['kodepos'],
+                'no_telp' => $row['no_telp'],
+                'handphone' => $row['handphone'],
+                'hobby' => $row['hobby'],
+                'agama' => $row['agama'],
+                'warganegara' => $row['warganegara'],
+                'status_kawin' => $row['status_kawin'],
+                'gol_darah' => $row['gol_darah'],
+                'anak_ke' => $row['anak_ke'],
+                'jml_saudara' => $row['jml_saudara'],
+                'jml_saudara_tanggungan' => $row['jml_saudara_tanggungan'],
+                'sumber_biaya' => $row['sumber_biaya'],
+                'jenis_rmh' => $row['jenis_rmh'],
+                'asal_smu' => $row['asal_smu'],
+                'lulus_smu' => $row['lulus_smu'],
+                'transportasi' => $row['transportasi'],
+                'nama_ayah' => $row['nama_ayah'],
+                'alamat_ayah' => $row['alamat_ayah'],
+                'no_telp_ayah' => $row['no_telp_ayah'],
+                'kota_ayah' => $row['kota_ayah'],
+                'kodepos_ayah' => $row['kodepos_ayah'],
+                'handphone_ayah' => $row['handphone_ayah'],
+                'agama_ayah' => $row['agama_ayah'],
+                'pekerjaan_ayah' => $row['pekerjaan_ayah'],
+                'pendidikan_ayah' => $row['pendidikan_ayah'],
+                'warganegara_ayah' => $row['warganegara_ayah'],
+                'nama_ibu' => $row['nama_ibu'],
+                'alamat_ibu' => $row['alamat_ibu'],
+                'kota_ibu' => $row['kota_ibu'],
+                'kodepos_ibu' => $row['kodepos_ibu'],
+                'no_telp_ibu' => $row['no_telp_ibu'],
+                'handphone_ibu' => $row['handphone_ibu'],
+                'agama_ibu' => $row['agama_ibu'],
+                'pekerjaan_ibu' => $row['pekerjaan_ibu'],
+                'pendidikan_ibu' => $row['pendidikan_ibu'],
+                'warganegara_ibu' => $row['warganegara_ibu'],
+                'nama_wali' => $row['nama_wali'],
+                'alamat_wali' => $row['alamat_wali'],
+                'kota_wali' => $row['kota_wali'],
+                'kodepos_wali' => $row['kodepos_wali'],
+                'no_telp_wali' => $row['no_telp_wali'],
+                'handphone_wali' => $row['handphone_wali'],
+                'agama_wali' => $row['agama_wali'],
+                'pekerjaan_wali' => $row['pekerjaan_wali'],
+                'pendidikan_wali' => $row['pendidikan_wali'],
+                'warganegara_wali' => $row['warganegara_wali'],
+                'special_need' => $row['special_need'],
+                'kps' => $row['kps'],
+                'status_pendidikan' => $row['status_pendidikan'],
+                'kebutuhan_ayah' => $row['kebutuhan_ayah'],
+                'kebutuhan_ibu' => $row['kebutuhan_ibu'],
+                'last_update'   => $row['last_update'],
                
-                'email' => $row['email']->email,
-                'jenis_kelamin' => $row['jenis_kelamin']->jenis_kelamin, // tetap menyimpan nilai asli
-                'nisn' => $row['nisn']->nisn,
+                'email' => $row['email'],
+                'jenis_kelamin' => $row['jenis_kelamin'], // tetap menyimpan nilai asli
+                'nisn' => $row['nisn'],
         ]);
     }
 
