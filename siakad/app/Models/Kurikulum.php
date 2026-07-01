@@ -24,4 +24,13 @@ class Kurikulum extends Model
     protected $casts = [
         'aktif' => 'boolean',
     ];
+
+    public function prodi()
+    {
+        return $this->belongsTo(
+            Prodi::class,
+            'kode_prodi',
+            'kode_prodi'
+        );
+    }
 }

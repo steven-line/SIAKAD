@@ -41,7 +41,8 @@ class KrsMahasiswaController extends Controller
 
         $totalSks = $krsItems->sum('sks');
 
-        $mahasiswa = Mahasiswa::where('nrp', $nrp)->first();
+        $mahasiswa = Mahasiswa::with(['dosenWali', 'prodiRel'])->where('nrp', $nrp)->first();
+
         $statusBlokir = $mahasiswa?->status_blokir ?? 'BELUM_KRS';
 
         $ipsTerakhir  = 3.813;
@@ -57,7 +58,8 @@ class KrsMahasiswaController extends Controller
             'toleransiSks',
             'sisaLimit',
             'statusBlokir',
-            'nrp'
+            'nrp',
+            'mahasiswa',
         ));
     }
 

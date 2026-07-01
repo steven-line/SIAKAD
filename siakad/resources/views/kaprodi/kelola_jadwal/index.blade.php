@@ -114,7 +114,7 @@
 
                             {{-- SKS --}}
                             <td class="p-2 border text-center">
-                                {{ $item->matkul->sks ?? '-' }}
+                                {{ $item->mk->sks ?? '-' }}
                             </td>
 
                             {{-- SEMESTER --}}

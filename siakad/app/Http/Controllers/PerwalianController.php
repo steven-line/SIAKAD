@@ -76,5 +76,24 @@ class PerwalianController extends Controller
             ->with('success', 'KRS TERKUNCI');
     }
 
-    // Method lain (create, store, edit, update, destroy) tetap seperti sebelumnya
+    public function unlock(Mahasiswa $mahasiswa)
+    {
+        $user = auth()->user();
+
+        if (!$user || !$user->dosen) {
+            return redirect()->route('perwalian.index')
+                ->with('error', 'Anda tidak terdaftar sebagai dosen.');
+        }
+
+        if ($mahasiswa->dosen_wali !== $user->dosen->nim_dosen) {
+            abort(403, 'Anda tidak memiliki akses ke mahasiswa ini.');
+        }
+
+        $mahasiswa->status_blokir = "BELUM_KRS";
+        $mahasiswa->save();
+
+        return redirect()->route('perwalian.index')
+            ->with('success', 'Kunci KRS berhasil dibuka. Mahasiswa dapat mengisi KRS kembali.');
+    }
+
 }

@@ -67,16 +67,13 @@ class PenawaranController extends Controller
     public function create()
     {
         $matkuls = Mk::orderBy('nama')->get();
-        $prodiLogin = auth()->user()->dosen->prodi;
 
-        $dosens = Dosen::where('prodi', $prodiLogin)
-            ->orderBy('nama')
-            ->get();
+        $dosens = Dosen::orderBy('nama')->get();
+
         $semesters = Semester::with('periode')
-            ->whereAktif(true)
+            ->where('aktif', 1)
             ->get();
 
-        // PERBAIKI BAGIAN INI
         $jamSlotsPagi = $this->generateJamSlotsPagi();
         $jamSlotsMalam = $this->generateJamSlotsMalam();
 
@@ -103,9 +100,11 @@ class PenawaranController extends Controller
 
             $prodiLogin = $user->dosen->prodi;
 
-            $query->whereHas('dosenRelasi', function ($q) use ($prodiLogin) {
-                $q->where('prodi', $prodiLogin);
-            });
+        $query->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
+
+            $q->where('kode_prodi', $prodiLogin);
+
+        });
         }
 
         $penawarans = $query
@@ -130,11 +129,11 @@ class PenawaranController extends Controller
 
         if ($user && $user->dosen) {
 
-            $prodiLogin = $user->dosen->prodi;
+        $prodiLogin = $user->dosen->prodi;
 
-            $query->whereHas('dosenRelasi', function ($q) use ($prodiLogin) {
-                $q->where('prodi', $prodiLogin);
-            });
+        $query->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
+            $q->where('kode_prodi', $prodiLogin);
+        });
         }
 
         $penawaran = $query->findOrFail($recno);
@@ -168,7 +167,9 @@ class PenawaranController extends Controller
     $selesai = $mulai->copy()->addMinutes($durasiMenit);
 
     // Prodi Kaprodi yang login
-    $prodiLogin = auth()->user()->dosen->prodi;
+    $mk = Mk::with('kurikulum')->where('kodemk', $request->kodemk)->firstOrFail();
+
+    $kodeProdi = $mk->kurikulum->kode_prodi;
 
     // Validasi sesi
     if ($request->sesi == '1') {
@@ -191,10 +192,17 @@ class PenawaranController extends Controller
         ])->withInput();
     }
 
-    $bentrok = Penawaran::where('hari', $request->hari)
+        $bentrok = Penawaran::whereHas('mk.kurikulum', function ($q) use ($kodeProdi) {
+            $q->where('kode_prodi', $kodeProdi);
+        })
 
-        ->whereHas('dosenRelasi', function ($q) use ($prodiLogin) {
-            $q->where('prodi', $prodiLogin);
+        ->where('hari', $request->hari)
+
+        ->where(function ($q) use ($request) {
+
+            $q->where('kodemk', $request->kodemk)
+            ->orWhere('dosen', $request->dosen);
+
         })
 
         ->where(function ($q) use ($mulai, $selesai) {
@@ -204,15 +212,17 @@ class PenawaranController extends Controller
                     $selesai->format('H:i:s')
                 ])
 
-                ->orWhereBetween('selesaipukul', [
+            ->orWhereBetween('selesaipukul', [
                     $mulai->format('H:i:s'),
                     $selesai->format('H:i:s')
                 ])
 
-                ->orWhere(function ($q2) use ($mulai, $selesai) {
-                    $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
-                       ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
-                });
+            ->orWhere(function ($q2) use ($mulai, $selesai) {
+
+                    $q2->where('mulaipukul','<=',$mulai->format('H:i:s'))
+                    ->where('selesaipukul','>=',$selesai->format('H:i:s'));
+
+            });
 
         })
 
@@ -257,18 +267,16 @@ class PenawaranController extends Controller
 
             $prodiLogin = $user->dosen->prodi;
 
-            $query->whereHas('dosenRelasi', function ($q) use ($prodiLogin) {
-                $q->where('prodi', $prodiLogin);
-            });
+        $query->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
+            $q->where('kode_prodi', $prodiLogin);
+        });
         }
 
         $penawaran = $query->findOrFail($recno);
 
         $matkuls = Mk::orderBy('nama')->get();
 
-        $dosens = Dosen::where('prodi', $user->dosen->prodi)
-                        ->orderBy('nama')
-                        ->get();
+        $dosens = Dosen::orderBy('nama')->get();
 
         $semesters = Semester::with('periode')
             ->where('aktif', 1)
@@ -301,9 +309,14 @@ class PenawaranController extends Controller
             'keterangan' => 'nullable',
         ]);
 
-        $mk = Mk::where('kodemk', $request->kodemk)->firstOrFail();
+        $mk = Mk::with('kurikulum')
+            ->where('kodemk', $request->kodemk)
+            ->firstOrFail();
 
         $durasiMenit = ((int) $mk->sks) * 50;
+
+        // Ambil prodi pemilik mata kuliah
+        $kodeProdi = $mk->kurikulum->kode_prodi;
 
         $mulai = Carbon::createFromFormat('H:i', $request->mulaipukul);
         $selesai = $mulai->copy()->addMinutes($durasiMenit);
@@ -328,40 +341,49 @@ class PenawaranController extends Controller
             ])->withInput();
         }
 
-    $prodiLogin = auth()->user()->dosen->prodi;
+    $bentrok = Penawaran::where('recno', '!=', $penawaran->recno)
+        ->where('hari', $request->hari)
 
-    $bentrok = Penawaran::where('hari', $request->hari)
-        ->where('recno', '!=', $penawaran->recno)
-        ->whereHas('dosenRelasi', function ($q) use ($prodiLogin) {
-            $q->where('prodi', $prodiLogin);
+        // Hanya cek pada prodi yang sama
+        ->whereHas('mk.kurikulum', function ($q) use ($kodeProdi) {
+            $q->where('kode_prodi', $kodeProdi);
         })
+
+        // Mata kuliah sama ATAU dosen sama ATAU semester sama
+        ->where(function ($q) use ($request) {
+
+            $q->where('kodemk', $request->kodemk)
+            ->orWhere('dosen', $request->dosen);
+
+        })
+
+        // Jam bertabrakan
         ->where(function ($q) use ($mulai, $selesai) {
 
             $q->whereBetween('mulaipukul', [
-                $mulai->format('H:i:s'),
-                $selesai->format('H:i:s')
-            ])
+                    $mulai->format('H:i:s'),
+                    $selesai->format('H:i:s')
+                ])
 
             ->orWhereBetween('selesaipukul', [
-                $mulai->format('H:i:s'),
-                $selesai->format('H:i:s')
-            ])
+                    $mulai->format('H:i:s'),
+                    $selesai->format('H:i:s')
+                ])
 
             ->orWhere(function ($q2) use ($mulai, $selesai) {
-
-                $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
-                ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
-
+                    $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
+                    ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
             });
 
         })
+
         ->exists();
 
-        if ($bentrok) {
-            return back()->withErrors([
-                'jam' => 'Jadwal bentrok dengan jadwal lain'
-            ])->withInput();
-        }
+    if ($bentrok) {
+        return back()->withErrors([
+            'jam' => 'Jadwal bentrok. Mata kuliah, dosen, atau semester sudah memiliki jadwal pada waktu tersebut.'
+        ])->withInput();
+    }
 
         $penawaran->update([
             'kodemk'       => $request->kodemk,

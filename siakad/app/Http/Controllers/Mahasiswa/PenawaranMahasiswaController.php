@@ -22,7 +22,7 @@ class PenawaranMahasiswaController extends Controller
         }
 
         // Query penawaran dengan filter pataum (jika ada)
-        $query = Penawaran::with('mk');
+        $query = Penawaran::with('mk', 'dosenRelasi');
         if ($pataum) {
             $query->where('pataum', $pataum);
         }
