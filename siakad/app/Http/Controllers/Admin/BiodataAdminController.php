@@ -9,6 +9,7 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
 
 class BiodataAdminController extends Controller
 {
@@ -32,15 +33,35 @@ class BiodataAdminController extends Controller
     
     public function upload(Request $request)
     {
+        // Validasi file
         $request->validate([
             'file' => 'required|mimes:csv,xlsx,xls'
         ]);
 
-        Excel::import(new BiodatasImport, $request->file('file'));
+        try {
+            // Proses imports
+            FacadesExcel::import(new BiodatasImport, $request->file('file'));
 
-        return redirect()
-            ->route('biodata.index')
-            ->with('success', 'Import berhasil.'); 
+            // Jika berhasil
+            return redirect()
+                ->route('biodata.index')
+                ->with('success', 'Import berhasil.');
+                
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            // Ambil error validasi dari Excel
+            $failures = $e->failures();
+
+            $errors = [];
+            foreach ($failures as $failure) {
+                $errors[] = "Baris {$failure->row()} - {$failure->errors()[0]}";
+            }
+
+            return back()->with('error', implode(', ', $errors));
+
+        } catch (\Throwable $e) {
+            // Error umum
+            return back()->with('error', 'Import gagal: ' . $e->getMessage());
+        }
     }
         
     public function show(Biodata $biodata)
@@ -57,7 +78,7 @@ class BiodataAdminController extends Controller
             'nama' => 'required|max:50',
             'nik' => 'required|max:16',
             'tempat_lahir' => 'nullable|max:25',
-            'tanggal_lahir' => 'nullable|date',
+            'tanggal_lahir' => 'nullable',
             'tinggi' => 'required|integer',
             'berat' => 'required|integer',
             'alamat' => 'required|max:100',
@@ -115,7 +136,7 @@ class BiodataAdminController extends Controller
             'status_pendidikan' => 'required|max:1',
             'kebutuhan_ayah' => 'required|max:4',
             'kebutuhan_ibu' => 'required|max:4',
-            'last_update' => 'required|date',
+            'last_update' => 'required',
            
             'email' => 'required|email|max:100',
             'jenis_kelamin' => 'required|in:L,P', // validasi nilai yang diterima
