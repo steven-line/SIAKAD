@@ -11,11 +11,11 @@
                 <!-- Baris 1 -->
                 <div class="flex border-b pb-2">
                     <div class="w-1/3 font-semibold text-gray-700">NRP</div>
-                    <div class="w-2/3 text-gray-900">: {{ $biodata->nrp }}</div>
+                    <div class="w-2/3 text-gray-900">: {{ $biodata->nrp ?? '-'}}</div>
                 </div>
                 <div class="flex border-b pb-2">
                     <div class="w-1/3 font-semibold text-gray-700">Nama</div>
-                    <div class="w-2/3 text-gray-900">: {{ $biodata->nama }}</div>
+                    <div class="w-2/3 text-gray-900">: {{ $biodata->nama ?? '-'}}</div>
                 </div>
 
                 <!-- Baris 2 -->

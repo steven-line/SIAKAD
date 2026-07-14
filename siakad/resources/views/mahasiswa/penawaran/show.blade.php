@@ -1,15 +1,19 @@
 <x-layout title="Informasi Mata Kuliah">
 
-    @if($statusBlokir == 'TERKUNCI')
-    <div role="alert" class="alert alert-error">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span>Penawaran anda terkunci. Silahkan hubungi bagian keuangan untuk menyelesaikan tunggakan pembayaran.</span>
-        </div>
+@if($statusBlokir == 'TERKUNCI')
+<div role="alert" class="alert alert-error mb-5">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
 
-    @else
-    <div class="container mx-auto p-4">
+    <span>
+        KRS Anda sedang terkunci. Anda masih dapat melihat informasi mata kuliah,
+        tetapi tidak dapat melakukan perubahan KRS.
+    </span>
+</div>
+@endif
+<div class="container mx-auto p-4">
         <h1 class="text-2xl font-bold mb-4">Informasi Mata Kuliah</h1>
 
         <!-- Informasi Detail Mata Kuliah + Tombol Aksi -->
@@ -28,33 +32,44 @@
                 <div>
                     <strong>Aksi Anda :</strong>
                     
-                  
-                @if(in_array($statusBlokir, ['MENUNGGU_VALIDASI', 'DISETUJUI']))
+        @if($statusBlokir == 'TERKUNCI')
+
+            <button class="btn btn-disabled">
+                KRS Terkunci
+            </button>
+
+        @elseif(in_array($statusBlokir, ['MENUNGGU_VALIDASI', 'DISETUJUI']))
+
+            <button class="btn btn-disabled">
+                Menunggu Validasi Dosen Wali
+            </button>
+
+        @else
+
+            @if($sudahAmbil)
+
+                <form action="{{ route('mahasiswa.mata_kuliah.batal', $penawaran->recno) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+
+                    <button class="btn btn-error">
+                        Batalkan KRS
+                    </button>
+                </form>
 
             @else
 
-                @if($sudahAmbil)
+                <form action="{{ route('mahasiswa.mata_kuliah.daftar', $penawaran->recno) }}" method="POST">
+                    @csrf
 
-                    <form action="{{ route('mahasiswa.mata_kuliah.batal', $penawaran->recno) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-error">
-                            Batalkan KRS
-                        </button>
-                    </form>
-
-                @else
-
-                    <form action="{{ route('mahasiswa.mata_kuliah.daftar', $penawaran->recno) }}" method="POST">
-                        @csrf
-                        <button class="btn btn-soft-primary">
-                            Ambil KRS
-                        </button>
-                    </form>
-
-                @endif
+                    <button class="btn btn-primary">
+                        Ambil KRS
+                    </button>
+                </form>
 
             @endif
+
+        @endif
                 </div>
             </div>
         </div>
@@ -107,5 +122,4 @@
             </a>
         </div>
     </div>
-    @endif
 </x-layout>
