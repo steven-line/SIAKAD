@@ -188,6 +188,10 @@
         <li><a href="/penawaran">Penawaran</a></li>
         @endcan
 
+        {{-- KEUANGAN --}}
+        @can('blokir.keuangan')
+        <li><a href="{{ route('keuangan.mahasiswa.index') }}">Keuangan</a></li>
+        @endcan
             </ul>
 
         </div>

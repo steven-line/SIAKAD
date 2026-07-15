@@ -11,6 +11,7 @@ use App\Http\Controllers\{
     UbahPasswordController,
     FakultasController,
     JurusanController,
+    KeuanganController,
     KurikulumController,
     KrsController,
     NilaiKrsAnakWali,
@@ -237,6 +238,16 @@ Route::middleware('auth')->group(function () {
              Route::get('/{permission}', [PermissionController::class, 'show'])->name('show');
         });
 
+
+    Route::prefix('keuangan')
+    ->middleware('permission:blokir.keuangan')
+    ->name('keuangan.')
+    ->group(function () {
+        Route::get('/mahasiswa', [KeuanganController::class, 'index'])->name('mahasiswa.index');
+        Route::get('/mahasiswa/{mahasiswa}', [KeuanganController::class, 'show'])->name('mahasiswa.show');
+        Route::put('/mahasiswa/{mahasiswa}/blokir', [KeuanganController::class, 'blokir'])->name('mahasiswa.blokir');
+        Route::put('/mahasiswa/{mahasiswa}/bukablokir', [KeuanganController::class, 'bukablokir'])->name('mahasiswa.bukablokir');
+    });
     /*
     |--------------------------------------------------------------------------
     | JADWAL
@@ -351,10 +362,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [PeriodeController::class, 'index'])->name('index');
             Route::get('/create', [PeriodeController::class, 'create'])->name('create');
             Route::post('/', [PeriodeController::class, 'store'])->name('store');
-            Route::get('/{periode}/edit', [PeriodeController::class, 'edit'])->name('edit');
-            Route::patch('/{periode}', [PeriodeController::class, 'update'])->name('update');
+            Route::post('/{periode}/aktifkan', [PeriodeController::class, 'periodeAktif'])->name('periodeAktif');
             Route::delete('/{periode}', [PeriodeController::class, 'destroy'])->name('destroy');
             Route::get('/{periode}', [PeriodeController::class, 'show'])->name('show');
+            Route::post('/{periode}/semester/{jenis}/aktifkan', [PeriodeController::class, 'aktifkanSemester'])->name('aktifkan');
             
         });
      Route::prefix('jurusan')

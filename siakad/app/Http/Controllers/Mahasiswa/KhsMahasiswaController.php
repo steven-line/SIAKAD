@@ -66,29 +66,28 @@ class KhsMahasiswaController extends Controller
             ->orderBy('penawaran.kodemk')
             ->get();
 
+                    // Ambil data mahasiswa & dosen wali
+            $mahasiswa = DB::table('mahasiswas')
+                ->leftJoin('biodata', 'mahasiswas.nrp', '=', 'biodata.nrp')
+                ->where('mahasiswas.nrp', $nrp)
+                ->select('mahasiswas.*', 'biodata.nama', 'mahasiswas.prodi')
+                ->first();
+
+            $dosenWali = '-';
+            if ($mahasiswa && $mahasiswa->dosen_wali) {
+                $dosen = DB::table('dosen')->where('nim_dosen', $mahasiswa->dosen_wali)->first();
+                $dosenWali = $dosen->nama ?? '-';
+            }
+
         if ($data->isEmpty()) {
             return view('mahasiswa.khs.index', [
                 'results' => collect(),
                 'ipk' => 0,
                 'total_sks_tempuh' => 0,
-                'mahasiswa' => null,
-                'dosenWali' => '-',
-                'periode_aktif' => '-',
-                'semester_aktif' => '-'
+                'mahasiswa' => $mahasiswa,
+                'dosenWali' => $dosenWali,
+                'statusBlokir' => $statusBlokir
             ]);
-        }
-
-        // Ambil data mahasiswa & dosen wali
-        $mahasiswa = DB::table('mahasiswas')
-            ->leftJoin('biodata', 'mahasiswas.nrp', '=', 'biodata.nrp')
-            ->where('mahasiswas.nrp', $nrp)
-            ->select('mahasiswas.*', 'biodata.nama', 'mahasiswas.prodi')
-            ->first();
-
-        $dosenWali = '-';
-        if ($mahasiswa && $mahasiswa->dosen_wali) {
-            $dosen = DB::table('dosen')->where('nim_dosen', $mahasiswa->dosen_wali)->first();
-            $dosenWali = $dosen->nama ?? '-';
         }
 
         // Kelompokkan per periode dan hitung IPS / mutu

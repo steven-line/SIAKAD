@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Periode;
 use App\Http\Controllers\Controller;
+use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -37,16 +38,44 @@ class PeriodeController extends Controller
     {
         $request->validate([
             'tahun_ajaran' => ['required', 'size:9'],
+       
             'tanggal_mulai' => ['required',  Rule::date()->format('Y-m-d')],
             'tanggal_selesai' => ['required', Rule::date()->format('Y-m-d'),],
         ]);
 
-        Periode::create([
+        $periode = Periode::create([
             'tahun_ajaran' => $request->tahun_ajaran,
+            'aktif' => false,
             'tanggal_mulai' => $request->tanggal_mulai,
             'tanggal_selesai' =>  $request->tanggal_selesai,
         ]);
+          $dataSemester = [];
 
+    // Ganjil
+     foreach ([1,3,5,7] as $smt) {
+            $dataSemester[] = [
+            'periode_id' => $periode->id,
+            'nama' => (string)$smt,
+            'jenis' => 'Ganjil',
+            'aktif' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+        }
+
+    // Genap
+        foreach ([2,4,6,8] as $smt) {
+            $dataSemester[] = [
+                'periode_id' => $periode->id,
+                'nama' => (string)$smt,
+                'jenis' => 'Genap',
+                'aktif' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        Semester::insert($dataSemester);
         return redirect()->route('periode.index');
     }
 
@@ -61,34 +90,37 @@ class PeriodeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Periode $periode)
-    {
-       return view('admin.periode.edit', ['periode' => $periode]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Periode $periode)
-    {
-        $request->validate([
-            'tahun_ajaran' => ['required', 'size:9'],
-            'tanggal_mulai' => ['required',  Rule::date()->format('Y-m-d')],
-            'tanggal_selesai' => ['required', Rule::date()->format('Y-m-d'),],
-        ]);
-
-        $periode->update([
-            'tahun_ajaran' => $request->tahun_ajaran,
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_selesai' =>  $request->tanggal_selesai,
-        ]);
-
-        return redirect()->route('periode.index');
-    }
+ 
 
     /**
      * Remove the specified resource from storage.
      */
+    public function aktifkanSemester(Periode $periode, $jenis)
+        {
+            $jenis = ucfirst(strtolower($jenis));
+
+            if (!in_array($jenis, ['Ganjil', 'Genap'])) {
+                abort(404);
+            }
+
+            $periode->aktifkanSemester($jenis);
+
+            return back()->with('success', "Semester {$jenis} aktif");
+        }
+
+    public function periodeAktif(Periode $periode) {
+        Periode::query()->update([
+            'aktif' => false
+        ]);
+
+        // 2. Aktifkan periode yang dipilih
+        $periode->update([
+            'aktif' => true
+        ]);
+       
+        return redirect()->route('periode.index')->with('success', 'Periode diaktifkan');
+    }
+ 
     public function destroy(Periode $periode)
     {
         //

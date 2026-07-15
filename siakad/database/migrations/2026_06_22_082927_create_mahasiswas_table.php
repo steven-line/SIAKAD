@@ -26,7 +26,8 @@ return new class extends Migration
             'BELUM_KRS',
             'MENUNGGU_VALIDASI',
             'DISETUJUI',
-            'TERKUNCI'
+            'TERKUNCI',
+            'BLOKIR'
              ])->default('BELUM_KRS');
 
         });
