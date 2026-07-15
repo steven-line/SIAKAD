@@ -1,4 +1,4 @@
-<x-layout title="Biodata Mahasiswa">
+<x-layout title="KRS UWIKA">
     <div class="container mx-auto p-4">
         <!-- Header -->
         <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded shadow-sm">

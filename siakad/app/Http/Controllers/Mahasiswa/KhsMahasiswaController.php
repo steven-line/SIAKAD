@@ -153,6 +153,8 @@ class KhsMahasiswaController extends Controller
 
         $semester_aktif = $results[0]->semester ?? '-';
 
+        $total_sks_tempuh = $total_all_sks;
+
         return view('mahasiswa.khs.index', compact(
             'results',
             'ipk',

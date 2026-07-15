@@ -1,31 +1,20 @@
-<x-layout title="Nilai KRS Mahasiswa">
-    @if(in_array($statusBlokir, ['BLOKIR','TERKUNCI']))
-        <div role="alert"
-             class="alert {{ $statusBlokir == 'BLOKIR' ? 'alert-error' : 'alert-warning' }} mb-6">
-
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="h-6 w-6 shrink-0 stroke-current"
-                 fill="none"
-                 viewBox="0 0 24 24">
-
-                @if($statusBlokir == 'BLOKIR')
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                @else
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M13 16h-1v-4h-1m1-4h.01M12 22a10 10 0 100-20 10 10 0 000 20z"/>
-                @endif
-            </svg>
-
+<x-layout title="KRS UWIKA">
+    @if($statusBlokir === 'BLOKIR')
+        <div role="alert" class="alert alert-error mb-6">
             <span>
-                @if($statusBlokir == 'BLOKIR')
-                    KRS anda terkunci, mohon hubungi bagian keuangan untuk menyelesaikan tunggakan.
-                @else
-                    KRS Anda sedang terkunci. Anda masih dapat melihat data nilai, tetapi tidak dapat melakukan perubahan.
-                @endif
+                KRS anda terblokir, mohon hubungi bagian keuangan untuk menyelesaikan tunggakan.
             </span>
         </div>
-    @endif
+
+    @else
+
+        @if($statusBlokir === 'TERKUNCI')
+            <div role="alert" class="alert alert-warning mb-6">
+                <span>
+                    KRS Anda sedang terkunci. Anda masih dapat melihat data, tetapi tidak dapat melakukan perubahan.
+                </span>
+            </div>
+        @endif
 
 
     {{-- ✅ TERKUNCI / NORMAL --}}
