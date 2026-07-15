@@ -1,12 +1,34 @@
 <x-layout title="Nilai KRS Mahasiswa">
-    @if($statusBlokir == 'BLOKIR')
-    <div role="alert" class="alert alert-error">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span>KRS anda terkunci, mohon hubungi bagian keuangan untuk menyelesaikan tunggakan. </span>
+    @if(in_array($statusBlokir, ['BLOKIR','TERKUNCI']))
+        <div role="alert"
+             class="alert {{ $statusBlokir == 'BLOKIR' ? 'alert-error' : 'alert-warning' }} mb-6">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-6 w-6 shrink-0 stroke-current"
+                 fill="none"
+                 viewBox="0 0 24 24">
+
+                @if($statusBlokir == 'BLOKIR')
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                @else
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M12 22a10 10 0 100-20 10 10 0 000 20z"/>
+                @endif
+            </svg>
+
+            <span>
+                @if($statusBlokir == 'BLOKIR')
+                    KRS anda terkunci, mohon hubungi bagian keuangan untuk menyelesaikan tunggakan.
+                @else
+                    KRS Anda sedang terkunci. Anda masih dapat melihat data nilai, tetapi tidak dapat melakukan perubahan.
+                @endif
+            </span>
         </div>
-    @else
+    @endif
+
+
+    {{-- ✅ TERKUNCI / NORMAL --}}
     <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
         <table class="table">
             <thead class="bg-green-500 text-white">
@@ -31,6 +53,7 @@
                     <td>{{ $row->kode }}</td>
                     <td>{{ $row->nama_mk ?? '-' }}</td>
                     <td>{{ $row->sks ?? '-' }}</td>
+
                     <td class="text-center">
                         @if($row->status == 'B')
                             <span class="badge bg-green-500 text-white px-2 py-1 rounded">Baru</span>
@@ -40,11 +63,12 @@
                             {{ $row->status ?? '-' }}
                         @endif
                     </td>
-                    <td>{{ number_format($row->ttt1, 2) ?? '-' }}</td>
-                    <td>{{ number_format($row->ttt2, 2) ?? '-' }}</td>
-                    <td>{{ number_format($row->uts, 2) ?? '-' }}</td>
-                    <td>{{ number_format($row->uas, 2) ?? '-' }}</td>
-                    <td>{{ number_format($row->lain, 2) ?? '-' }}</td>
+
+                    <td>{{ $row->ttt1 !== null ? number_format($row->ttt1, 2) : '-' }}</td>
+                    <td>{{ $row->ttt2 !== null ? number_format($row->ttt2, 2) : '-' }}</td>
+                    <td>{{ $row->uts  !== null ? number_format($row->uts, 2)  : '-' }}</td>
+                    <td>{{ $row->uas  !== null ? number_format($row->uas, 2)  : '-' }}</td>
+                    <td>{{ $row->lain !== null ? number_format($row->lain, 2) : '-' }}</td>
                     <td>{{ $row->na ?? '-' }}</td>
                 </tr>
                 @empty
@@ -55,5 +79,7 @@
             </tbody>
         </table>
     </div>
+
     @endif
+
 </x-layout>

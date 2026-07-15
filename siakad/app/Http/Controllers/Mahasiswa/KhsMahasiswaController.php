@@ -10,7 +10,7 @@ class KhsMahasiswaController extends Controller
 {
     private function getBobot($grade)
     {
-        $bobot = [
+        return [
             'A'  => 4.0,
             'AB' => 3.5,
             'B'  => 3.0,
@@ -18,8 +18,7 @@ class KhsMahasiswaController extends Controller
             'C'  => 2.0,
             'D'  => 1.0,
             'E'  => 0.0,
-        ];
-        return $bobot[$grade] ?? 0.0;
+        ][$grade] ?? 0;
     }
 
     private function getMaxSks($ips)
@@ -35,95 +34,124 @@ class KhsMahasiswaController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $nrp = $user->nrp ?? $user->username ?? null;
+
+        $nrp = $user->mahasiswa->nrp;
         $statusBlokir = $user->mahasiswa->status_blokir;
 
-        if (!$nrp) {
-            return redirect()->back()->with('error', 'NRP tidak ditemukan.');
-        }
-
-        // (Opsional) filter periode jika diperlukan
-        // $periode = '2025/2026';
-
         $data = DB::table('registrasi')
-            // 1. JOIN ke penawaran untuk mendapatkan kodemk & info lainnya
+
             ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
-            // 2. JOIN ke mk untuk nama mata kuliah
+
+            ->leftJoin('semester', 'penawaran.semester_id', '=', 'semester.id')
+
+            ->leftJoin('periode', 'semester.periode_id', '=', 'periode.id')
+
             ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
-            // 3. JOIN ke krs untuk nilai (jika ada)
-            ->leftJoin('krs', function ($join) {
-                $join->on('registrasi.regkrs', '=', 'krs.registrasi_id')
-                     ->on('penawaran.kodemk', '=', 'krs.registrasi_id');
-            })
+
+            ->leftJoin('krs', 'registrasi.regkrs', '=', 'krs.registrasi_id')
+
             ->where('registrasi.nrp', $nrp)
-            // ->where('registrasi.periode', $periode) // aktifkan jika perlu
+
             ->select(
+                'periode.tahun_ajaran as periode',
+                'semester.nama as semester',
                 'penawaran.kodemk as kode',
                 'mk.nama as nama_mk',
-                'mk.sks as sks',
+                'mk.sks',
                 'krs.na'
             )
+
+            ->orderBy('periode.tahun_ajaran')
+
             ->orderBy('penawaran.kodemk')
+
             ->get();
 
-                    // Ambil data mahasiswa & dosen wali
-            $mahasiswa = DB::table('mahasiswas')
-                ->leftJoin('biodata', 'mahasiswas.nrp', '=', 'biodata.nrp')
-                ->where('mahasiswas.nrp', $nrp)
-                ->select('mahasiswas.*', 'biodata.nama', 'mahasiswas.prodi')
+        $mahasiswa = DB::table('mahasiswas')
+
+            ->leftJoin('biodata', 'mahasiswas.nrp', '=', 'biodata.nrp')
+
+            ->where('mahasiswas.nrp', $nrp)
+
+            ->select(
+                'mahasiswas.*',
+                'biodata.nama'
+            )
+
+            ->first();
+
+        $dosenWali = '-';
+
+        if ($mahasiswa && $mahasiswa->dosen_wali) {
+
+            $dosen = DB::table('dosen')
+                ->where('nim_dosen', $mahasiswa->dosen_wali)
                 ->first();
 
-            $dosenWali = '-';
-            if ($mahasiswa && $mahasiswa->dosen_wali) {
-                $dosen = DB::table('dosen')->where('nim_dosen', $mahasiswa->dosen_wali)->first();
-                $dosenWali = $dosen->nama ?? '-';
-            }
+            $dosenWali = $dosen->nama ?? '-';
+        }
 
         if ($data->isEmpty()) {
+
             return view('mahasiswa.khs.index', [
                 'results' => collect(),
                 'ipk' => 0,
                 'total_sks_tempuh' => 0,
                 'mahasiswa' => $mahasiswa,
                 'dosenWali' => $dosenWali,
-                'statusBlokir' => $statusBlokir
+                'periode_aktif' => '-',
+                'semester_aktif' => '-',
+                'statusBlokir' => $statusBlokir,
             ]);
         }
 
-        // Kelompokkan per periode dan hitung IPS / mutu
         $grouped = $data->groupBy('periode');
+
         $results = [];
+
         $total_all_sks = 0;
+
         $total_all_mutu = 0;
 
         foreach ($grouped as $periode => $items) {
-            $itemsWithMutu = $items->map(function ($item) {
+
+            $items = $items->map(function ($item) {
+
                 $item->mutu = $this->getBobot($item->na) * ($item->sks ?? 0);
+
                 return $item;
             });
 
-            $total_sks = $itemsWithMutu->sum('sks');
-            $total_mutu = $itemsWithMutu->sum('mutu');
-            $ips = $total_sks > 0 ? $total_mutu / $total_sks : 0;
+            $total_sks = $items->sum('sks');
 
-            $results[] = (object) [
-                'periode'    => $periode,
-                'items'      => $itemsWithMutu,
-                'total_sks'  => $total_sks,
+            $total_mutu = $items->sum('mutu');
+
+            $ips = $total_sks > 0
+                ? $total_mutu / $total_sks
+                : 0;
+
+            $results[] = (object)[
+                'periode' => $periode,
+                'semester' => $items->first()->semester,
+                'items' => $items,
+                'total_sks' => $total_sks,
                 'total_mutu' => $total_mutu,
-                'ips'        => $ips,
-                'max_sks'    => $this->getMaxSks($ips),
+                'ips' => $ips,
+                'max_sks' => $this->getMaxSks($ips),
             ];
 
             $total_all_sks += $total_sks;
+
             $total_all_mutu += $total_mutu;
         }
 
-        $ipk = $total_all_sks > 0 ? $total_all_mutu / $total_all_sks : 0;
-        $total_sks_tempuh = $total_all_sks;
+        $ipk = $total_all_sks > 0
+            ? $total_all_mutu / $total_all_sks
+            : 0;
 
         $periode_aktif = $results[0]->periode ?? '-';
-        $semester_aktif = 'GENAP';
+
+        $semester_aktif = $results[0]->semester ?? '-';
 
         return view('mahasiswa.khs.index', compact(
             'results',

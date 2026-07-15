@@ -51,14 +51,35 @@
         }
     </style>
 
-    @if($statusBlokir == 'BLOKIR')
-    <div role="alert" class="alert alert-error no-print">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span>KRS anda terkunci, mohon hubungi bagian keuangan untuk menyelesaikan tunggakan.</span>
-    </div>
-    @else
+    @if(in_array($statusBlokir, ['BLOKIR','TERKUNCI']))
+        <div role="alert"
+            class="alert {{ $statusBlokir == 'BLOKIR' ? 'alert-error' : 'alert-warning' }} mb-6 no-print">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 shrink-0 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24">
+
+                @if($statusBlokir == 'BLOKIR')
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                @else
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M12 22a10 10 0 100-20 10 10 0 000 20z"/>
+                @endif
+            </svg>
+
+            <span>
+                @if($statusBlokir == 'BLOKIR')
+                    KRS anda terkunci, mohon hubungi bagian keuangan untuk menyelesaikan tunggakan.
+                @else
+                    KRS Anda sedang terkunci. Anda masih dapat melihat data KHS, tetapi tidak dapat melakukan perubahan KRS.
+                @endif
+            </span>
+
+        </div>
+
+    @endif
 
     {{-- 🔥 PRINT AREA START --}}
     <div class="container mx-auto p-4 print-area">
@@ -112,6 +133,5 @@
     </div>
     {{-- 🔥 PRINT AREA END --}}
 
-    @endif
 
 </x-layout>
