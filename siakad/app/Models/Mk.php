@@ -41,7 +41,9 @@ class Mk extends Model
         protected $casts = [
         'aktif' => 'boolean',
     ];
-
+    public function bobotNilai(){   
+        return $this->hasOne(BobotNilai::class, 'kodemk', 'kodemk');
+    }
     public function kurikulum()
     {
         return $this->belongsTo(

@@ -524,8 +524,7 @@ Route::middleware('auth')->group(function () {
             Route::patch('/update-bobot/{mk}', [KrsController::class, 'update_bobot'])->name('update_bobot');
 
             Route::get('/{mk}/mahasiswa', [KrsController::class, 'list_mahasiswa'])->name('mahasiswa');
-            Route::get('/{mahasiswa}/{mk}/create', [KrsController::class, 'create'])->name('create');
-            Route::post('/{mahasiswa}/{mk}', [KrsController::class, 'store'])->name('store');
+       
             Route::get('/{mahasiswa}/{mk}', [KrsController::class, 'show'])->name('show');
             Route::get('/{mahasiswa}/{mk}/edit', [KrsController::class, 'edit'])->name('edit');
             Route::patch('/{mahasiswa}/{mk}', [KrsController::class, 'update'])->name('update');

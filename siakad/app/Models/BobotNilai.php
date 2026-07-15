@@ -11,7 +11,7 @@ class BobotNilai extends Model
      protected $table = 'bobotnilai';
      
     protected $fillable = [
-   
+        'kodemk',
         'ttt1',
         'ttt2',
         'lain',
@@ -20,5 +20,8 @@ class BobotNilai extends Model
        
       
     ];
-
+    public function mk()
+    {
+        return $this->belongsTo(Mk::class, 'kodemk', 'kodemk');
+    }
 }

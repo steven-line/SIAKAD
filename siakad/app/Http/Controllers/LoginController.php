@@ -29,7 +29,8 @@ class LoginController extends Controller
 
         if (Auth::attempt([
             'username' => $request->username,
-            'password' => $request->password
+            'password' => $request->password,
+            'aktif' => '1'
         ])) {
             $request->session()->regenerate();
 
@@ -44,7 +45,8 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'username' => 'Username atau password salah'
+            'username' => 'Username atau password salah',
+            'aktif' => 'Akun tidak aktif',
         ])->withInput();
     }
 

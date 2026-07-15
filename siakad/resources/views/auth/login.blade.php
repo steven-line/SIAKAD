@@ -6,22 +6,32 @@
     <title>Login Form</title>
     @vite('resources/css/app.css')
 </head>
-<body>
-  <form class="flex items-center h-screen"action="/login" method="POST">
-    @csrf
-    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs h-64 sborder p-4 mx-auto">
+<body class="flex justify-center items-center h-screen">
 
+  <form class="w-full max-w-xs" action="/login" method="POST">
+    @csrf
+
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box p-6 shadow-lg">
+        
+        @error('aktif')
+        <div class="alert alert-error mb-4 text-center justify-center">
+            <span>{{ $message }}</span>
+        </div>
+        @enderror
+        
         <label class="label font-bold" for="username">Username</label>
-        <input type="text" class="input" name="username" placeholder="Username/NRP" value="{{ old('username') }}" />
+        <input type="text" class="input w-full" name="username" placeholder="Username/NRP" value="{{ old('username') }}" />
         <x-forms.error name="username"/>
+
         <label class="label font-bold">Password</label>
-        <input type="password" class="input" name="password" placeholder="Password" value="{{ old('password') }}"/>
+        <input type="password" class="input w-full" name="password" placeholder="Password" value="{{ old('password') }}"/>
         <x-forms.error name="password"/>
-        <button class="btn btn-primary mt-4">Login</button>
-  </fieldset>
+
+        <button class="btn btn-primary mt-4 w-full">Login</button>
+
+    </fieldset>
 
   </form>
-  
 
 </body>
 </html>

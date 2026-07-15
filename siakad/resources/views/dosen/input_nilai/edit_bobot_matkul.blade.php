@@ -8,17 +8,28 @@
         @method('PATCH')
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-6 mx-auto max-w-4xl">
             <legend class="fieldset-legend font-bold text-lg">
-                Tambah KRS
+            Input Bobot Nilai Mata Kuliah: {{ $mk->nama ?? '-' }} ({{ $mk->kodemk }})
             </legend>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
+            @if (session('success'))
+                 <div id="success-alert" class="alert alert-success mb-4 flex justify-between items-center">
+                        <span>{{ session('success') }}</span>
+                        <button onclick="this.parentElement.remove()" class="btn btn-sm">✕</button>
+                    </div>
+                @endif
+              @if ($errors->has('bobot'))
+                        <div class="alert alert-error mb-4">
+                            <span onclick="this.parentElement.remove()">{{ $errors->first('bobot') }}</span>
+                        </div>
+                    @endif
              
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    
+                  
                 {{-- TTT1 --}}
                 <div>
                     <label class="label font-bold" for="ttt1">TTT1</label>
                     <input type="number" step="0.01" class="input w-full" name="ttt1"
-                        value="{{ old('ttt1') }}" />
+                        value="{{ old('ttt1', $mk->bobotNilai->ttt1 ?? '') }}" />
                     <x-forms.error name="ttt1" />
                 </div>
 
@@ -26,7 +37,7 @@
                 <div>
                     <label class="label font-bold" for="ttt2">TTT2</label>
                     <input type="number" step="0.01" class="input w-full" name="ttt2"
-                        value="{{ old('ttt2') }}" />
+                        value="{{ old('ttt2', $mk->bobotNilai->ttt2 ?? '0') }}" />
                     <x-forms.error name="ttt2" />
                 </div>
 
@@ -34,7 +45,7 @@
                 <div>
                     <label class="label font-bold" for="uts">UTS</label>
                     <input type="number" step="0.01" class="input w-full" name="uts"
-                        value="{{ old('uts') }}" />
+                        value="{{ old('uts', $mk->bobotNilai->uts ?? '0') }}" />
                     <x-forms.error name="uts" />
                 </div>
 
@@ -42,7 +53,7 @@
                 <div>
                     <label class="label font-bold" for="uas">UAS</label>
                     <input type="number" step="0.01" class="input w-full" name="uas"
-                        value="{{ old('uas') }}" />
+                        value="{{ old('uas', $mk->bobotNilai->uas ?? '0') }}" />
                     <x-forms.error name="uas" />
                 </div>
 
@@ -51,7 +62,7 @@
                 <div>
                     <label class="label font-bold" for="lain">Nilai Lain</label>
                     <input type="number" step="0.01" class="input w-full" name="lain"
-                        value="{{ old('lain') }}" />
+                        value="{{ old('lain', $mk->bobotNilai->lain ?? '0') }}" />
                     <x-forms.error name="lain" />
                 </div>
 
