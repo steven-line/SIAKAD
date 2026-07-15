@@ -120,6 +120,23 @@
 
             <x-forms.error name="sks"/>
 
+            {{-- STATUS AKTIF --}}
+            <label class="label font-bold mt-4">Status Akun</label>
+            <div class="flex gap-4 mt-1">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="aktif" value="1" class="radio radio-primary"
+                        {{ $user->aktif == 1 ? 'checked' : '' }} />
+                    <span>Aktif</span>
+                </label>
+
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="aktif" value="0" class="radio radio-primary"
+                        {{ $user->aktif == 0 ? 'checked' : '' }} />
+                    <span>Tidak Aktif</span>
+                </label>
+            </div>
+            <x-forms.error name="aktif"/>
+
             <button class="btn btn-primary mt-6 w-full">
                 Simpan Perubahan
             </button>
