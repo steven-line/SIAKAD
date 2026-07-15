@@ -70,9 +70,11 @@ class PenawaranController extends Controller
 
         $dosens = Dosen::orderBy('nama')->get();
 
-        $semesters = Semester::with('periode')
-            ->where('aktif', 1)
-            ->get();
+      $semesters = Semester::with('periode')
+    ->whereHas('periode', function ($query) {
+        $query->where('aktif', 1);
+    })->where('semester.aktif',1)
+    ->get();
 
         $jamSlotsPagi = $this->generateJamSlotsPagi();
         $jamSlotsMalam = $this->generateJamSlotsMalam();

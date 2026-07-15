@@ -15,6 +15,7 @@
                 <th>Hari</th>
                 <th>Jam</th>
                 <th>Aksi</th>
+
             </tr>
         </thead>
 
@@ -52,7 +53,13 @@
                         Lihat Mahasiswa
                     </a>
                 </td>
-
+                <td>
+                    <a
+                        class="btn btn-soft btn-warning"
+                        href="{{route('nilai.edit_bobot', $mk->kodemk)}}">
+                        Edit Bobot Nilai
+                    </a>
+                </td>
             </tr>
 
             @empty

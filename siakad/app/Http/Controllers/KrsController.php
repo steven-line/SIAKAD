@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BobotNilai;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
 use App\Models\Mk;
@@ -103,7 +104,33 @@ class KrsController extends Controller
     /**
      * SIMPAN NILAI KRS
      */
-   
+public function edit_bobot (Mk $mk){
+    return view('dosen.input_nilai.edit_bobot_matkul', ['mk' => $mk]);
+
+}
+
+public function update_bobot(Request $request, Mk $mk) {
+    $request->validate([
+        'ttt1' => ['required', 'numeric'],
+        'ttt2' => ['required', 'numeric'],
+        'lain' => ['required', 'numeric'],
+        'uts' => ['required', 'numeric'],
+        'uas' => ['required', 'numeric']
+    ]);
+    BobotNilai::updateOrCreate(
+        ['kodemk' => $mk->kodemk],
+        [
+            'ttt1' => $request->ttt1,
+            'ttt2' => $request->ttt2,
+            'lain' => $request->lain,
+            'uts' => $request->uts,
+            'uas' => $request->uas
+        ]
+    );
+    return redirect()->route('nilai.edit_bobot', ['mk' => $mk])->with('success', 'Bobot nilai berhasil diperbarui.');
+
+
+}
 public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
 {
     $validated = $request->validate([
