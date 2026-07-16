@@ -21,7 +21,7 @@
                     <th>Sesi</th>
                     <th>Hari</th>
                     <th>Jam</th>
-                    <th>Prodi</th>
+
                     <th>Pagu</th>
                     <th>P/M</th>
                     <th colspan="3" class="text-center">Aksi</th>
@@ -86,10 +86,7 @@
                     </td>
 
                     {{-- JURUSAN --}}
-                    <td>
-                        {{ $penawaran->prodiRelasi->nama_prodi ?? $penawaran->prodi }}
-                    </td>
-
+        
                     {{-- PAGU --}}
                     <td>
                         {{ $penawaran->pagu }}

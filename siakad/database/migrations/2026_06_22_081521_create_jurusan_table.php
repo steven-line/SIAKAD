@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('program_pendidikan',50);
             $table->string('sk_ban',50);
             $table->text('keterangan')->nullable();
-            $table->foreignIdFor(Fakultas::class)->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->string('kode_fakultas',1);
+            $table->foreign('kode_fakultas')->references('kode_fakultas')->on('fakultas')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

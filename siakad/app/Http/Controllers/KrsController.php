@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BobotNilai;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
 use App\Models\Mk;
@@ -59,24 +60,6 @@ class KrsController extends Controller
      * FORM INPUT NILAI
      * ⚠️ URUTAN HARUS: Mahasiswa dulu, baru MK (sesuai URL)
      */
-    public function create(Mahasiswa $mahasiswa, Mk $mk)
-    {
-        $registrasi = Registrasi::with('penawaran.semester.periode')
-            ->where('nrp', $mahasiswa->nrp)
-            ->whereHas('penawaran', function ($q) use ($mk) {
-                $q->where('kodemk', $mk->kodemk);
-            })
-            ->firstOrFail();
-
-        $semester = $registrasi->penawaran->semester;
-
-        return view('dosen.input_nilai.create', [
-            'mahasiswa' => $mahasiswa,
-            'mk' => $mk,
-            'semester' => $semester,
-        ]);
-    }
-
     public function show(Mahasiswa $mahasiswa, Mk $mk)
     {
         $registrasi = Registrasi::where('nrp', $mahasiswa->nrp)
@@ -103,111 +86,46 @@ class KrsController extends Controller
     /**
      * SIMPAN NILAI KRS
      */
-   
-public function store(Request $request, Mahasiswa $mahasiswa, Mk $mk)
-{
-    $validated = $request->validate([
-        // Kelas
-        'kelas' => [
-            'required',
-            'string',
-            'size:1',
-            'in:A,B,C',
-        ],
+public function edit_bobot (Mk $mk){
+    return view('dosen.input_nilai.edit_bobot_matkul', ['mk' => $mk]);
 
-        // BU
-        'bu' => [
-            'nullable',
-            'string',
-            'size:1',
-            'in:Y,N',
-        ],
+}
 
-        // Nilai Tugas
-        'ttt1' => [
-            'nullable',
-            'numeric',
-            'between:0,100',
-        ],
-
-        'ttt2' => [
-            'nullable',
-            'numeric',
-            'between:0,100',
-        ],
-
-        'ttt3' => [
-            'nullable',
-            'numeric',
-            'between:0,100',
-        ],
-
-        // Nilai Lain
-        'lain' => [
-            'nullable',
-            'numeric',
-            'between:0,100',
-        ],
-
-        // UTS
-        'uts' => [
-            'nullable',
-            'numeric',
-            'between:0,100',
-        ],
-
-        // UAS
-        'uas' => [
-            'nullable',
-            'numeric',
-            'between:0,100',
-        ],
-
-        // Nilai Huruf
-        'na' => [
-            'nullable',
-            'string',
-            'max:2',
-            'in:A,A-,B+,B,B-,C+,C,C-,D,E',
-        ],
-
-        // Survey
-        'survey' => [
-            'required',
-            'boolean',
-        ],
+public function update_bobot(Request $request, Mk $mk) {
+    $request->validate([
+        'ttt1' => ['required', 'numeric', 'between:0,100'],
+        'ttt2' => ['required', 'numeric', 'between:0,100'],
+        'lain' => ['required', 'numeric', 'between:0,100'],
+        'uts'  => ['required', 'numeric', 'between:0,100'],
+        'uas'  => ['required', 'numeric', 'between:0,100'],
     ]);
 
-    $registrasi = Registrasi::where('nrp', $mahasiswa->nrp)
-        ->whereHas('penawaran', function ($q) use ($mk) {
-            $q->where('kodemk', $mk->kodemk);
-        })
-        ->firstOrFail();
+    $bobotFields = ['ttt1','ttt2','lain','uts','uas'];
 
-    Krs::updateOrCreate(
-    [
-        'registrasi_id' => $registrasi->regkrs,
+    $total = round(collect($bobotFields)
+        ->sum(fn($f) => (float) $request->$f), 2);
 
-    ],
-    [        'kelas' => $validated['kelas'],
-        'bu' => $validated['bu'],
-        'ttt1' => $validated['ttt1'],
-        'ttt2' => $validated['ttt2'],
-        'ttt3' => $validated['ttt3'],
-        'lain' => $validated['lain'],
-        'uts' => $validated['uts'],
-        'uas' => $validated['uas'],
-        'na' => $validated['na'],
-        'sks' => $mk->sks,
-        'survey' => $validated['survey'],
-    ]
-    );
-
-    return redirect()
-        ->route('nilai.index')
-        ->with('success', 'Nilai berhasil disimpan.');
-
+    if ($total !== 100.00) {
+        return back()
+            ->withErrors([
+                'bobot' => "Total bobot harus 100%. Saat ini: {$total}%"
+            ])
+            ->withInput();
     }
+    BobotNilai::updateOrCreate(
+        ['kodemk' => $mk->kodemk],
+        [
+            'ttt1' => $request->ttt1,
+            'ttt2' => $request->ttt2,
+            'lain' => $request->lain,
+            'uts' => $request->uts,
+            'uas' => $request->uas
+        ]
+    );
+    return redirect()->route('nilai.edit_bobot', ['mk' => $mk])->with('success', 'Bobot nilai berhasil diperbarui.');
+
+
+}
     public function edit(Mahasiswa $mahasiswa, Mk $mk)
     {
         $registrasi = Registrasi::with('penawaran.semester.periode')
@@ -254,11 +172,7 @@ public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
             'numeric',
             'between:0,100',
         ],
-        'ttt3' => [
-            'nullable',
-            'numeric',
-            'between:0,100',
-        ],
+
         'lain' => [
             'nullable',
             'numeric',
@@ -274,37 +188,59 @@ public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
             'numeric',
             'between:0,100',
         ],
-        'na' => [
-            'nullable',
-            'string',
-            'max:2',
-            'in:A,A-,B+,B,B-,C+,C,C-,D,E',
-        ],
         'survey' => [
             'required',
             'boolean',
         ],
     ]);
 
+    // Ambil registrasi
     $registrasi = Registrasi::where('nrp', $mahasiswa->nrp)
         ->whereHas('penawaran', function ($q) use ($mk) {
             $q->where('kodemk', $mk->kodemk);
         })
         ->firstOrFail();
 
+    // Ambil KRS
     $krs = Krs::where('registrasi_id', $registrasi->regkrs)
         ->firstOrFail();
 
+    // Ambil bobot
+    $bobot = BobotNilai::where('kodemk', $mk->kodemk)->first();
+
+    // Hitung nilai akhir angka
+    $nilaiAkhirAngka = 0;
+
+    if ($bobot) {
+        $nilaiAkhirAngka =
+            (($validated['ttt1'] ?? 0) * $bobot->ttt1 / 100) +
+            (($validated['ttt2'] ?? 0) * $bobot->ttt2 / 100) +// ✅ ditambahkan
+            (($validated['lain'] ?? 0) * $bobot->lain / 100) +
+            (($validated['uts'] ?? 0) * $bobot->uts / 100) +
+            (($validated['uas'] ?? 0) * $bobot->uas / 100);
+    }
+
+    // Konversi ke nilai huruf (SESUI PEDOMAN BARU)
+    $na = match (true) {
+        $nilaiAkhirAngka >= 80 => 'A',
+        $nilaiAkhirAngka >= 74 => 'AB',
+        $nilaiAkhirAngka >= 68 => 'B',
+        $nilaiAkhirAngka >= 62 => 'BC',
+        $nilaiAkhirAngka >= 56 => 'C',
+        $nilaiAkhirAngka >= 41 => 'D',
+        default => 'E',
+    };
+
+    // Update data (PAKAI UPDATE, BUKAN updateOrCreate)
     $krs->update([
         'kelas'   => $validated['kelas'],
         'bu'      => $validated['bu'],
         'ttt1'    => $validated['ttt1'],
         'ttt2'    => $validated['ttt2'],
-        'ttt3'    => $validated['ttt3'],
         'lain'    => $validated['lain'],
         'uts'     => $validated['uts'],
         'uas'     => $validated['uas'],
-        'na'      => $validated['na'],
+        'na'      => $na, // ✅ hasil hitungan
         'sks'     => $mk->sks,
         'survey'  => $validated['survey'],
     ]);

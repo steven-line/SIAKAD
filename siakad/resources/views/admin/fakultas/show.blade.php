@@ -7,7 +7,7 @@
             <div class="grid grid-cols-2 gap-2">
                 <div>
                     <p class="font-semibold text-base-content/70">Kode Fakultas</p>
-                    <p class="text-lg"> {{$fakultas->id}}</p>
+                    <p class="text-lg"> {{$fakultas->kode_fakultas}}</p>
                 </div>
                   <div>
                     <p class="font-semibold text-base-content/70">Nama Fakultas</p>

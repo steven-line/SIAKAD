@@ -68,16 +68,16 @@
                 >{{ old('keterangan') }}</textarea>
                 <x-forms.error name="keterangan"/>
 
-                <label class="label font-bold mt-3" for="fakultas_id">Fakultas</label>
-                <select class="select select-bordered w-full" name="fakultas_id" required>
-                    <option disabled {{ old('fakultas_id') ? '' : 'selected' }}>Pilih Fakultas</option>
+                <label class="label font-bold mt-3" for="kode_fakultas">Fakultas</label>
+                <select class="select select-bordered w-full" name="kode_fakultas" required>
+                    <option disabled {{ old('kode_fakultas') ? '' : 'selected' }}>Pilih Fakultas</option>
                     @foreach ($fakultass as $fakultas)
-                        <option value="{{ $fakultas->id }}" {{ old('fakultas_id') == $fakultas->id ? 'selected' : '' }}>
+                        <option value="{{ $fakultas->kode_fakultas }}" {{ old('kode_fakultas') == $fakultas->kode_fakultas ? 'selected' : '' }}>
                             {{ $fakultas->nama_fakultas }}
                         </option>
                     @endforeach
                 </select>
-                <x-forms.error name="fakultas_id"/>
+                <x-forms.error name="kode_fakultas  "/>
 
                 <button class="btn btn-primary mt-6">
                     Buat Jurusan

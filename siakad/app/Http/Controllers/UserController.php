@@ -46,6 +46,7 @@ public function store(Request $request)
         'permissions.*' => ['string', 'exists:permissions,name'],
         'sks'      => ['required', 'numeric'],
         'pataum'   => ['required_if:role, mahasiswa', 'in:P,M'],
+        ''
     ]);
 
     $user = User::create([
@@ -84,10 +85,6 @@ public function show(User $user)
     ]);
 }
 
-/**
- * UPDATE USER
- */
- 
 
 public function update(Request $request, User $user)    
 {
@@ -98,12 +95,14 @@ public function update(Request $request, User $user)
         'permissions.*' => ['string', 'exists:permissions,name'],
         'sks'      => ['required', 'numeric'],
         'pataum'   => ['required_if:role, mahasiswa', 'in:P,M'],
+        'aktif' => ['required', 'in:0,1']
     ]);
 
     $user->update([
         'username' => $validated['username'],
         'sks'      => $validated['sks'],
         'pataum'   => $validated['pataum'] ?? $user->pataum,
+        'aktif' => $request->aktif
     ]);
 
     $user->syncRoles([$validated['role']]);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kurikulum;
 use App\Models\Penawaran;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,10 +23,13 @@ class PenawaranMahasiswaController extends Controller
         }
 
         // Query penawaran dengan filter pataum (jika ada)
-        $query = Penawaran::with('mk', 'dosenRelasi');
-        if ($pataum) {
-            $query->where('pataum', $pataum);
-        }
+         $prodi = Auth::user()?->mahasiswa?->prodi;
+
+        $query = Penawaran::with(['mk.kurikulum'])
+            ->whereHas('mk.kurikulum', function ($q) use ($prodi) {
+                $q->where('kode_prodi', $prodi);
+            });
+            
 
         $penawaran = $query->get();
 

@@ -34,10 +34,12 @@ class FakultasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'kode_fakultas' => ['required', 'size:1', 'unique:fakultas'],
             'nama_fakultas' => ['required', 'min:4', 'max:50'],
         ]);
-
+        
         Fakultas::create([
+            'kode_fakultas' => $request->kode_fakultas,
             'nama_fakultas' => $request->nama_fakultas,
         ]);
 
@@ -71,9 +73,11 @@ class FakultasController extends Controller
     public function update(Request $request, Fakultas $fakultas)
     {
         $request->validate([
+            'kode_fakultas' => ['required', 'size:1'],
             'nama_fakultas' => ['required', 'min:4', 'max:50'],
         ]);
         $fakultas->update([
+            'kode_fakultas' => $request->kode_fakultas,
             'nama_fakultas' => $request->nama_fakultas,
         ]);
 

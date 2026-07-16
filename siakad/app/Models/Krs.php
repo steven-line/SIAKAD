@@ -39,6 +39,8 @@ class Krs extends Model
         return $this->belongsTo(Mk::class, 'kode', 'kodemk');
     }
 
+    
+
     public function semester()
     {
         return $this->belongsTo(Semester::class, 'semester_id');

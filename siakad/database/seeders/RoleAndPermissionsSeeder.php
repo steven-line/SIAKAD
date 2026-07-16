@@ -32,7 +32,7 @@ class RoleAndPermissionsSeeder extends Seeder
         $mahasiswaRole = Role::firstOrCreate(['name' => 'mahasiswa']);
         $kaprodiRole   = Role::firstOrCreate(['name' => 'kaprodi']);
         $dosenWaliRole = Role::firstOrCreate(['name' => 'dosen-wali']);
-
+        $keuanganRole  = Role::firstOrCreate(['name' => 'keuangan']);
         // ======================
         // PERMISSIONS
         // ======================
@@ -75,7 +75,10 @@ class RoleAndPermissionsSeeder extends Seeder
             // PERIODE
             'periode.manage',
             'semester.manage',
-            'jurusan.manage'
+            'jurusan.manage',
+
+            // BLOKIR KEUANGAN
+            'blokir.keuangan'
         ];
 
         foreach ($permissions as $permission) {
@@ -104,6 +107,13 @@ class RoleAndPermissionsSeeder extends Seeder
         $dosenRole->syncPermissions([
             'jadwal.view_sendiri',
             'nilai.input',
+        ]);
+
+        // ======================
+        // KEUANGAN
+        // ======================
+        $keuanganRole->syncPermissions([
+            'blokir.keuangan',
         ]);
 
         // ======================
@@ -155,6 +165,7 @@ class RoleAndPermissionsSeeder extends Seeder
                      User::where('username', '31128888')->first()->syncRoles(['mahasiswa']);
                      User::where('username', '31129999')->first()->syncRoles(['kaprodi']);
                      User::where('username', '31120000')->first()->syncRoles(['dosen']);
+                     User::where('username', '31121111')->first()->syncRoles(['keuangan']);
         if ($userAdmin) {
             // lebih aman dari assignRole
             $userAdmin->syncRoles(['admin']);

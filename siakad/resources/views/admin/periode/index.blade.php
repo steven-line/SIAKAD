@@ -16,6 +16,7 @@
             <th>Tanggal Selesai</th>
             <th>Created At</th>
             <th>Updated At</th>
+            <th>Semester</th>
             <th colspan="3">Aksi</th>
         </tr>
         </thead>
@@ -24,12 +25,41 @@
         @forelse($periodes as $periode)
             <tr>
                 <th>{{ $loop->index }}</th>
+                <th>{{ $periode->id }}</th>
                 <th>{{ $periode->tahun_ajaran }}</th>
                 <th>{{ $periode->tanggal_mulai }}</th>
                 <th>{{ $periode->tanggal_selesai }}</th>
                 <th>{{ $periode->created_at }}</th>
                 <th>{{ $periode->updated_at }}</th>
-                {{-- DETAIL --}}
+            @php
+                $isGanjilActive = $periode->semesters->where('jenis', 'Ganjil')->where('aktif', true)->count() > 0;
+                $isGenapActive  = $periode->semesters->where('jenis', 'Genap')->where('aktif', true)->count() > 0;
+            @endphp
+
+            <th>
+                {{-- GANJIL --}}
+                <form action="{{ route('periode.aktifkan', [$periode->id, 'Ganjil']) }}"
+                    method="POST"
+                    style="display:inline-block;">
+                    @csrf
+                    <button type="submit"
+                        class="btn {{ $isGanjilActive ? 'btn-success text-white' : 'btn-soft btn-info' }}">
+                        Ganjil
+                    </button>
+                </form>
+
+                {{-- GENAP --}}
+                <form action="{{ route('periode.aktifkan', [$periode->id, 'Genap']) }}"
+                    method="POST"
+                    style="display:inline-block;">
+                    @csrf
+                    <button type="submit"
+                        class="btn {{ $isGenapActive ? 'btn-success text-white' : 'btn-soft btn-info' }}">
+                        Genap
+                    </button>
+                </form>
+            </th>
+                            {{-- DETAIL --}}
                 <th>
                     <a href="{{ route('periode.show', $periode->id) }}"
                        class="btn btn-soft btn-primary">
@@ -39,11 +69,21 @@
 
                 {{-- EDIT --}}
                 <th>
-                    <a class="btn btn-soft btn-warning"
-                       href="{{ route('periode.edit', $periode->id) }}">
-                        Edit
-                    </a>
+                    <form action="{{ route('periode.periodeAktif', $periode->id) }}" method="POST">
+                            @csrf
+
+                            <button type="submit"
+                                class="btn 
+                                {{ $periode->aktif ? 'btn-success text-white cursor-not-allowed' : 'btn-soft btn-info' }}"
+                                {{ $periode->aktif ? 'disabled' : '' }}>
+                                
+                                {{ $periode->aktif ? 'Aktif' : 'Aktifkan' }}
+                                
+                            </button>
+                        </form>
+                     
                 </th>
+                  
 
                 {{-- DELETE BUTTON --}}
                 <th>

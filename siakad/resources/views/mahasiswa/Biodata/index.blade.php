@@ -1,4 +1,4 @@
-<x-layout title="Biodata Mahasiswa">
+<x-layout title="KRS UWIKA">
     <div class="container mx-auto p-4">
         <!-- Header -->
         <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded shadow-sm">
@@ -11,11 +11,11 @@
                 <!-- Baris 1 -->
                 <div class="flex border-b pb-2">
                     <div class="w-1/3 font-semibold text-gray-700">NRP</div>
-                    <div class="w-2/3 text-gray-900">: {{ $biodata->nrp }}</div>
+                    <div class="w-2/3 text-gray-900">: {{ $biodata->nrp ?? '-'}}</div>
                 </div>
                 <div class="flex border-b pb-2">
                     <div class="w-1/3 font-semibold text-gray-700">Nama</div>
-                    <div class="w-2/3 text-gray-900">: {{ $biodata->nama }}</div>
+                    <div class="w-2/3 text-gray-900">: {{ $biodata->nama ?? '-'}}</div>
                 </div>
 
                 <!-- Baris 2 -->

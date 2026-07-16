@@ -21,6 +21,7 @@ return new class extends Migration
             // Menyimpan tanggal selesai perkuliahan
             $table->date('tanggal_selesai');
             
+            $table->boolean('aktif')->default(false);
             $table->timestamps();
         });
     }

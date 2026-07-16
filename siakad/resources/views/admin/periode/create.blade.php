@@ -21,8 +21,9 @@
                     type="text"
                     name="tahun_ajaran"
                     maxlength="9"
-                    value="{{old('tahun_ajaran', date('Y-m-d'))}}"
+                    value="{{ old('tahun_ajaran') }}"
                     class="input input-bordered w-full"
+                    placeholder="contoh: 2023/2024"
                 />
                 <x-forms.error name="tahun_ajaran"/>
 

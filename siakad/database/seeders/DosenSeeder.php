@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class DosenSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         DB::table('dosen')->updateOrInsert(
@@ -18,7 +15,7 @@ class DosenSeeder extends Seeder
                 'nama' => 'Yonatan Widianto',
                 'nip' => '19800101',
                 'user_id' => '31127777',
-                'prodi' => 'IF', // Ada di ProdiSeeder (Teknik Informatika)
+                'prodi' => 'I', // Teknik Informatika
                 'jabatan_struktural' => 'rektor',
             ]
         );
@@ -29,7 +26,7 @@ class DosenSeeder extends Seeder
                 'nama' => 'Darmanto',
                 'nip' => '19800202',
                 'user_id' => '31129999',
-                'prodi' => 'SI', // DISAMAKAN: Berubah dari ARS ke SI
+                'prodi' => 'G', // Arsitektur (biar tetap masuk akal)
                 'jabatan_struktural' => 'dosen biasa',
             ]
         );
@@ -40,7 +37,7 @@ class DosenSeeder extends Seeder
                 'nama' => 'Erwin',
                 'nip' => '19800303',
                 'user_id' => '31120000',
-                'prodi' => 'MNJ', // DISAMAKAN: Berubah dari ING ke MNJ
+                'prodi' => 'C', // Manajemen
                 'jabatan_struktural' => 'yayasan',
             ]
         );

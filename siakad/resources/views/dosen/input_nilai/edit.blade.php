@@ -107,21 +107,7 @@
                         <x-forms.error name="ttt2" />
                     </div>
 
-                    {{-- TTT3 --}}
-                    <div>
-                        <label class="label font-bold">TTT3</label>
-
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="ttt3"
-                            class="input w-full"
-                            value="{{ old('ttt3', $krs->ttt3) }}"
-                        >
-
-                        <x-forms.error name="ttt3" />
-                    </div>
-
+        
                     {{-- Nilai Lain --}}
                     <div>
                         <label class="label font-bold">Nilai Lain</label>
@@ -137,22 +123,22 @@
                         <x-forms.error name="lain" />
                     </div>
 
-                    {{-- Nilai Akhir --}}
-                    <div>
-                        <label class="label font-bold">Nilai Akhir</label>
+                   {{-- Nilai Akhir (AUTO) --}}
+                <div>
+                    <label class="label font-bold">Nilai Akhir</label>
 
-                        <input
-                            type="text"
-                            name="na"
-                            maxlength="2"
-                            class="input w-full"
-                            value="{{ old('na', $krs->na) }}"
-                        >
+                    <input
+                        type="text"
+                        class="input w-full"
+                        value="{{ $krs->na }}"
+                        readonly
+                    >
 
-                        <x-forms.error name="na" />
-                    </div>
-
-                    {{-- Survey --}}
+                    <small class="text-gray-500">
+                        Nilai dihitung otomatis berdasarkan bobot
+                    </small>
+                </div>
+                                    {{-- Survey --}}
                     <div>
                         <label class="label font-bold">Survey</label>
 

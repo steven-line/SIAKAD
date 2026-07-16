@@ -22,7 +22,7 @@ class SemesterSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'periode_id' => 2,
+                'periode_id' => 1,
                 'nama' => '2',
                 'jenis' => 'Genap',
                 'aktif' => false,
@@ -30,7 +30,7 @@ class SemesterSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'periode_id' => 3,
+                'periode_id' => 1,
                 'nama' => '3',
                 'jenis' => 'Ganjil',
                 'aktif' => true,
@@ -38,13 +38,45 @@ class SemesterSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'periode_id' => 4,
+                'periode_id' => 1,
                 'nama' => '4',
                 'jenis' => 'Genap',
                 'aktif' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'periode_id' => 1,
+                'nama' => '5',
+                'jenis' => 'Ganjil',
+                'aktif' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'periode_id' => 1,
+                'nama' => '6',
+                'jenis' => 'Genap',
+                'aktif' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'periode_id' => 1,
+                'nama' => '7',
+                'jenis' => 'Ganjil',
+                'aktif' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'periode_id' => 1,
+                'nama' => '8',
+                'jenis' => 'Genap',
+                'aktif' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
         ]);
     }
 }

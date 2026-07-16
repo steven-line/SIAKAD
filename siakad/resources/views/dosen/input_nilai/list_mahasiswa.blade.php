@@ -31,7 +31,7 @@
                 $krs = $reg->krs;
 
                 $nrp = $mhs?->nrp;
-                $nama = $mhs?->biodata->nama;
+                $nama = $mhs?->biodata?->nama;
 
                 $semester = $reg->penawaran?->semester?->periode?->tahun_ajaran;
                 $jenis = $reg->penawaran?->semester?->jenis;
@@ -65,7 +65,7 @@
 
                 {{-- EDIT (kalau sudah ada nilai) --}}
                 <td>
-                    @if($krs)
+                    
                         <a class="btn btn-soft btn-error"
                         href="{{ route('nilai.edit', [
                                 'mahasiswa' => $nrp,
@@ -73,21 +73,10 @@
                         ]) }}">
                             Edit
                         </a>
-                    @endif
+            
                 </td>
 
-                {{-- INPUT (kalau belum ada nilai) --}}
-                <td>
-                    @if(!$krs)
-                        <a class="btn btn-soft btn-info"
-                        href="{{ route('nilai.create', [
-                                'mahasiswa' => $nrp,
-                                'mk' => $mk->kodemk
-                        ]) }}">
-                            Input
-                        </a>
-                    @endif
-                </td>
+            
 
             </tr>
 

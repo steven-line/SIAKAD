@@ -33,11 +33,9 @@ class DetailMataKuliahController extends Controller
             return back()->with('error', 'Data mahasiswa tidak ditemukan.');
         }
 
-        // FIX INI
-        $check = $mahasiswa->status_blokir === 'BELUM_KRS';
-
-        if (!$check) {
-            return back()->with('error', 'Tidak bisa mengambil KRS.');
+        // Hanya mahasiswa TERKUNCI yang tidak boleh mengambil KRS
+        if ($mahasiswa->status_blokir === 'TERKUNCI') {
+            return back()->with('error', 'KRS Anda terkunci. Tidak dapat mengambil mata kuliah.');
         }
 
         $sudah = Registrasi::where('nrp', $mahasiswa->nrp)
@@ -55,10 +53,11 @@ class DetailMataKuliahController extends Controller
             'tanggal' => now()->toDateString(),
             'jam' => now()->toTimeString(),
         ]);
-    
-        return redirect()->route('mahasiswa.krs.index')->with('success', 'Berhasil mengambil KRS.');
-    }
 
+        return redirect()
+            ->route('mahasiswa.krs.index')
+            ->with('success', 'Berhasil mengambil KRS.');
+    }
 
     public function batal(Penawaran $penawaran)
     {
@@ -66,6 +65,10 @@ class DetailMataKuliahController extends Controller
 
         if (!$mahasiswa) {
             return back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+
+        if ($mahasiswa->status_blokir === 'TERKUNCI') {
+            return back()->with('error', 'KRS Anda terkunci.');
         }
 
         Registrasi::where('nrp', $mahasiswa->nrp)

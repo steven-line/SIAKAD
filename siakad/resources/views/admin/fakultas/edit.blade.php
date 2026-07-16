@@ -5,14 +5,17 @@
     </a>
 
     <form class="flex"
-          action="{{ route('fakultas.update', $fakultas->id) }}"
+          action="{{ route('fakultas.update', $fakultas->kode_fakultas) }}"
           method="POST">
 
         @csrf
         @method('PATCH')
 
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs  border p-4 mx-auto">
-
+            <label class="label font-bold" for="kode_fakultas">kode_fakultas</label>
+            <input type="text" maxlength="50" value="{{ old('kode_fakultas', $fakultas->kode_fakultas) }}" class="input" name="kode_fakultas" placeholder="" />
+            <x-forms.error name='kode_fakultas'/>
+            
             <label class="label font-bold" for="nama_fakultas">nama_fakultas</label>
             <input type="text" maxlength="50" class="input" name="nama_fakultas"
                    value="{{ old('nama_fakultas', $fakultas->nama_fakultas) }}" />

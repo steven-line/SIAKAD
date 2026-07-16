@@ -52,6 +52,22 @@
             <label class="label font-bold mt-4" for="sks">SKS</label>
             <input type="number" class="input w-full" oninput="this.value=this.value.slice(0,this.maxLength)" maxlength="10" value="{{ old('sks') }}" name="sks" placeholder="Contoh: 20" required />
             <x-forms.error name='sks'/>
+
+            <label class="label font-bold mt-4">Status Akun</label>
+            <div class="flex gap-4 mt-1">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="aktif" value="1" class="radio radio-primary"
+                        {{ old('aktif', 1) == 1 ? 'checked' : '' }} />
+                    <span>Aktif</span>
+                </label>
+
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="aktif" value="0" class="radio radio-primary"
+                        {{ old('aktif') == 0 ? 'checked' : '' }} />
+                    <span>Tidak Aktif</span>
+                </label>
+            </div>
+            <x-forms.error name="aktif"/>
             
             <!-- PATAUM (khusus mahasiswa) -->
             <div id="pataum-wrapper" style="display: none;">

@@ -100,10 +100,6 @@
                             <td>{{ $krs?->ttt2 ?? '-' }}</td>
                         </tr>
 
-                        <tr>
-                            <td>TTT 3</td>
-                            <td>{{ $krs?->ttt3 ?? '-' }}</td>
-                        </tr>
 
                         <tr>
                             <td>Lain-lain</td>

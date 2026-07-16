@@ -44,7 +44,7 @@ class JurusanController extends Controller
             'program_pendidikan' => ['required', 'min:2', 'max:50'],
             'sk_ban' => ['required', 'min:4', 'max:50'],
             'keterangan' => ['nullable', 'max:255'],
-            'fakultas_id' => ['required', 'exists:fakultas,id'],
+            'kode_fakultas' => ['required', 'exists:fakultas,kode_fakultas'],
         ]);
 
         Jurusan::create([
@@ -53,7 +53,7 @@ class JurusanController extends Controller
             'program_pendidikan' => $request->program_pendidikan,
             'sk_ban' => $request->sk_ban,
             'keterangan' => $request->keterangan,
-            'fakultas_id' => $request->fakultas_id,
+            'kode_fakultas' => $request->kode_fakultas,
         ]);
 
         return redirect()->route('jurusan.index')
@@ -101,7 +101,7 @@ class JurusanController extends Controller
             'program_pendidikan' => ['required', 'min:2', 'max:50'],
             'sk_ban' => ['required', 'min:4', 'max:50'],
             'keterangan' => ['nullable', 'max:255'],
-            'fakultas_id' => ['required', 'exists:fakultas,id'],
+            'kode_fakultas' => ['required', 'exists:fakultas,kode_fakultas'],
         ]);
 
         $jurusan->update([
@@ -110,7 +110,7 @@ class JurusanController extends Controller
             'program_pendidikan' => $request->program_pendidikan,
             'sk_ban' => $request->sk_ban,
             'keterangan' => $request->keterangan,
-            'fakultas_id' => $request->fakultas_id,
+            'kode_fakultas' => $request->kode_fakultas,
         ]);
 
         return redirect()->route('jurusan.index')
