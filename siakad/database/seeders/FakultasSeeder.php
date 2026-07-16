@@ -7,35 +7,24 @@ use Illuminate\Support\Facades\DB;
 
 class FakultasSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         DB::table('fakultas')->insert([
             [
-                'nama_fakultas' => 'Fakultas Teknologi Informasi',
+                'kode_fakultas' => 'A',
+                'nama_fakultas' => 'UNIVERSITAS (MKU)',
             ],
             [
-                'nama_fakultas' => 'Fakultas Teknik',
+                'kode_fakultas' => 'B',
+                'nama_fakultas' => 'FAKULTAS EKONOMI',
             ],
             [
-                'nama_fakultas' => 'Fakultas Ekonomi dan Bisnis',
+                'kode_fakultas' => 'E',
+                'nama_fakultas' => 'FAKULTAS TEKNIK',
             ],
             [
-                'nama_fakultas' => 'Fakultas Hukum',
-            ],
-            [
-                'nama_fakultas' => 'Fakultas Ilmu Sosial',
-            ],
-            [
-                'nama_fakultas' => 'Fakultas Keguruan dan Pendidikan',
-            ],
-            [
-                'nama_fakultas' => 'Fakultas Kesehatan Masyarakat',
-            ],
-            [
-                'nama_fakultas' => 'Fakultas Sains dan Pertanian',
+                'kode_fakultas' => 'J',
+                'nama_fakultas' => 'FAKULTAS SASTRA DAN PENDIDIKAN BAHASA',
             ],
         ]);
     }

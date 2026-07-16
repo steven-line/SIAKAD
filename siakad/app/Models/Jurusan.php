@@ -17,13 +17,14 @@ class Jurusan extends Model
         'program_pendidikan',
         'sk_ban',
         'keterangan',
-        'fakultas_id'
+        'kode_fakultas'
     ];
     public function fakultas()
     {
         return $this->belongsTo(
             Fakultas::class,
-            'fakultas_id'
+            'kode_fakultas',
+            'kode_fakultas'
         );
     }
 }

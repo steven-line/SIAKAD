@@ -187,7 +187,9 @@
         @can('penawaran.manage')
         <li><a href="/penawaran">Penawaran</a></li>
         @endcan
-
+        @can('pjmk.manage')
+        <li><a href="/pjmk">PJMK</a></li>
+        @endcan
         {{-- KEUANGAN --}}
         @can('blokir.keuangan')
         <li><a href="{{ route('keuangan.mahasiswa.index') }}">Keuangan</a></li>
