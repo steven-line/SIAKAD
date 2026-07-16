@@ -14,7 +14,7 @@
                 <th>Sesi</th>
                 <th>Hari</th>
                 <th>Jam</th>
-                <th>Aksi</th>
+                <th colspan="2">Aksi</th>
 
             </tr>
         </thead>

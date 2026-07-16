@@ -25,9 +25,9 @@
 
                 $user = auth()->user();
 
-        <span class="text-sm text-gray-500">
-            {{ $displayId }}
-        </span>
+                $displayName = 'Guest';
+                $displayId = '';
+                $displayRole = '';
 
                 if ($user) {
 
@@ -68,13 +68,11 @@
                 {{ $displayId }}
             </span>
 
-            @can('fakultas.manage')
-                <li><a href="/fakultas">Master Fakultas</a></li>
-            @endcan
+            <span class="badge badge-primary mt-1">
+                {{ ucfirst($displayRole) }}
+            </span>
 
-            @can('mk.manage')
-                <li><a href="/matakuliah">Master Mata Kuliah</a></li>
-            @endcan
+        </div>
 
         <hr class="border-gray-200">
 

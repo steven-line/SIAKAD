@@ -27,4 +27,7 @@ class Jurusan extends Model
             'kode_fakultas'
         );
     }
+    public function prodi() {
+        return $this->hasOne(Prodi::class, 'kode_jurusan', 'kode_jurusan');
+    }
 }

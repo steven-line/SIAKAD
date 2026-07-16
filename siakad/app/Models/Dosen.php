@@ -38,6 +38,10 @@ class Dosen extends Model
     public function penawaran()
 {
     return $this->hasMany(Penawaran::class, 'dosen', 'nim_dosen');
-}
+}   
+    public function prodi() 
+    {
+        return $this->belongsTo(Prodi::class, 'kode_prodi', 'prodi');
+    }
     
 }

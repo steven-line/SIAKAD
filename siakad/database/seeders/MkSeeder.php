@@ -94,7 +94,7 @@ class MkSeeder extends Seeder
                 'aktif' => true,
             ],
             [
-                'kodemk' => 'IF101005',
+                'kodemk' => 'AF101005',
                 'nama' => 'Kecerdasan Buatan',
                 'sks' => '3',
                 'nm_jenj_didik' => 'S1',

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('dosen', 15); 
             $table->foreign('dosen')->references('nim_dosen')->on('dosen')->onDelete('cascade')->onUpdate('cascade');
             $table->string('sesi',5)->default('')->index();
-            $table->string('keterangan',100)->default('');
+            $table->string('keterangan',100)->default('')->nullable();
             $table->string('hari',6)->default('');
             $table->time('mulaipukul');
             $table->time('selesaipukul');

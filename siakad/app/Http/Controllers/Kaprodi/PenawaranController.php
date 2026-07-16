@@ -11,6 +11,8 @@ use App\Models\Semester;
 use App\Models\Penawaran;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class PenawaranController extends Controller
 {
@@ -65,28 +67,77 @@ class PenawaranController extends Controller
      * FORM INPUT
      */
     public function create()
-    {
-        $matkuls = Mk::orderBy('nama')->get();
+{
+    $user = auth()->user();
 
-        $dosens = Dosen::orderBy('nama')->get();
+    $akses = ['A']; // default hanya MK Universitas
 
-      $semesters = Semester::with('periode')
-    ->whereHas('periode', function ($query) {
-        $query->where('aktif', 1);
-    })->where('semester.aktif',1)
-    ->get();
+    if ($user && $user->dosen) {
 
-        $jamSlotsPagi = $this->generateJamSlotsPagi();
-        $jamSlotsMalam = $this->generateJamSlotsMalam();
+        switch ($user->dosen->prodi) {
 
-        return view('kaprodi.penawaran.create', compact(
-            'matkuls',
-            'dosens',
-            'semesters',
-            'jamSlotsPagi',
-            'jamSlotsMalam'
-        ));
+            case 'C': // Manajemen
+                $akses = ['A','B','C'];
+                break;
+
+            case 'D': // Akuntansi
+                $akses = ['A','B','D'];
+                break;
+
+            case 'F': // Teknik Sipil
+                $akses = ['A','E','F'];
+                break;
+
+            case 'G': // Arsitektur
+                $akses = ['A','E','G'];
+                break;
+
+            case 'H': // Teknik Elektro
+                $akses = ['A','E','H'];
+                break;
+
+            case 'I': // Teknik Informatika
+                $akses = ['A','E','I'];
+                break;
+
+            case 'K': // Sastra Inggris
+                $akses = ['A','J','K'];
+                break;
+
+            case 'L': // Pendidikan Bahasa Mandarin
+                $akses = ['A','J','L'];
+                break;
+        }
     }
+
+    $matkuls = Mk::where(function ($query) use ($akses) {
+            foreach ($akses as $prefix) {
+                $query->orWhere('kodemk', 'like', $prefix.'%');
+            }
+        })
+        ->orderBy('nama')
+        ->get();
+
+    $dosens = Dosen::orderBy('nama')->get();
+
+    $semesters = Semester::with('periode')
+        ->whereHas('periode', function ($query) {
+            $query->where('aktif', 1);
+        })
+        ->where('semester.aktif', 1)
+        ->get();
+
+    $jamSlotsPagi = $this->generateJamSlotsPagi();
+    $jamSlotsMalam = $this->generateJamSlotsMalam();
+
+    return view('kaprodi.penawaran.create', compact(
+        'matkuls',
+        'dosens',
+        'semesters',
+        'jamSlotsPagi',
+        'jamSlotsMalam'
+    ));
+}
 
     public function index()
     {
