@@ -7,6 +7,7 @@ use App\Models\Krs;
 use App\Models\Mahasiswa;
 use App\Models\Mk;
 use App\Models\Penawaran;
+use App\Models\Pjmk;
 use App\Models\Registrasi;
 use App\Models\Semester;
 use Illuminate\Http\Request;
@@ -29,9 +30,11 @@ class KrsController extends Controller
         $mks = Penawaran::with('mk')
             ->where('dosen', $nimDosen)
             ->paginate(15);
+        $pjmkList = Pjmk::where('nim_dosen', $nimDosen)->pluck('kodemk')->toArray(); 
+        // Hasilnya berbentuk array simpel: ['MK001', 'MK002', ...]
 
-        return view('dosen.input_nilai.list_matkul', compact('mks'));
-    }
+        return view('dosen.input_nilai.list_matkul', compact('mks', 'pjmkList'));
+            }
     /**
      * LIST MAHASISWA PER MK
      */
@@ -87,11 +90,44 @@ class KrsController extends Controller
      * SIMPAN NILAI KRS
      */
 public function edit_bobot (Mk $mk){
+    $user = auth()->user();
+
+    // 1. Cek validasi dasar data dosen
+    if (!$user || !$user->dosen) {
+        abort(403, 'Akun Anda tidak memiliki data dosen.');
+    }
+
+    $nimDosen = $user->dosen->nim_dosen;
+
+    // 2. Cek apakah dosen ini adalah PJMK untuk Mata Kuliah terkait
+    // Sesuaikan nama kolom jika di tabel pjmk Anda berbeda (misal: 'dosen_id' atau 'mk_id')
+    $isPjmk = Pjmk::where('nim_dosen', $nimDosen) 
+                  ->where('kodemk', $mk->kodemk)
+                  ->exists();
+
+    if (!$isPjmk) {
+        abort(403, 'Anda bukan Penanggung Jawab Mata Kuliah (PJMK) untuk mata kuliah ini.');
+    }
     return view('dosen.input_nilai.edit_bobot_matkul', ['mk' => $mk]);
 
 }
 
 public function update_bobot(Request $request, Mk $mk) {
+    $user = auth()->user();
+
+    // Lakukan proteksi yang sama di method update agar tidak bisa Ditembus via API/Postman
+    if (!$user || !$user->dosen) {
+        abort(403, 'Akun Anda tidak memiliki data dosen.');
+    }
+
+    $nimDosen = $user->dosen->nim_dosen;
+    $isPjmk = Pjmk::where('nim_dosen', $nimDosen)
+                  ->where('kodemk', $mk->kodemk)
+                  ->exists();
+
+    if (!$isPjmk) {
+        abort(403, 'Anda tidak memiliki hak untuk mengubah bobot mata kuliah ini.');
+    }
     $request->validate([
         'ttt1' => ['required', 'numeric', 'between:0,100'],
         'ttt2' => ['required', 'numeric', 'between:0,100'],

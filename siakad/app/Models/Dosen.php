@@ -43,5 +43,9 @@ class Dosen extends Model
     {
         return $this->belongsTo(Prodi::class, 'kode_prodi', 'prodi');
     }
+
+    public function pjmk() {
+        return $this->hasMany(Pjmk::class, 'nim_dosen', 'nim_dosen');
+    }
     
 }
