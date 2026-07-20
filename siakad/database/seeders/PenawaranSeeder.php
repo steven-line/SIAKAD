@@ -74,7 +74,7 @@ class PenawaranSeeder extends Seeder
             ],
 
             [
-                'kodemk' => 'IF101005',
+                'kodemk' => 'AF101005',
                 'semester_id' => $semesterAktif,
                 'dosen' => '87654321',
                 'sesi' => '1',

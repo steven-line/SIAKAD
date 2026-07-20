@@ -78,7 +78,10 @@ class RoleAndPermissionsSeeder extends Seeder
             'jurusan.manage',
 
             // BLOKIR KEUANGAN
-            'blokir.keuangan'
+            'blokir.keuangan',
+
+            // PJMK
+            'pjmk.manage',
         ];
 
         foreach ($permissions as $permission) {
