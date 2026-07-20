@@ -33,7 +33,7 @@ class DosenController extends Controller
             'prodis' => $prodis
         ]);
     }
-
+    
     public function store(Request $request)
     {
         $request->validate([

@@ -9,6 +9,7 @@ use App\Models\prodi;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Semester;
 use App\Models\Penawaran;
+use App\Models\Pjmk;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -138,7 +139,7 @@ class PenawaranController extends Controller
         'jamSlotsMalam'
     ));
 }
-
+   
     public function index()
     {
         $query = Penawaran::with([

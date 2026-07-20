@@ -19,6 +19,7 @@ use App\Http\Controllers\{
     MahasiswaAdminController,
     NilaiKhsAnakWaliController,
     PeriodeController,
+    PjmkController,
     SemesterController,
     TranskripNilaiAnakWaliController
 };
@@ -123,6 +124,8 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{mk}', [MkController::class, 'destroy'])->name('destroy');
         });
 
+
+    
     /*
     |--------------------------------------------------------------------------
     | DOSEN
@@ -274,10 +277,18 @@ Route::middleware('auth')->group(function () {
                 Route::put('/{recno}', [JadwalController::class, 'update'])->name('update');
                 Route::delete('/{recno}', [JadwalController::class, 'destroy'])->name('destroy');
             });
-
+        
         });
-
-    /*
+        Route::prefix('pjmk')
+            ->middleware('permission:pjmk.manage')
+            ->name('pjmk.')
+            ->group(function () {
+                Route::get('/', [PjmkController::class, 'index'])->name('index');
+                Route::patch('setPjmk/{mk}/{dosen}', [PjmkController::class, 'setPjmk'])->name('setPjmk');
+         
+                Route::get('/{mk}/list_dosen_matkul', [PjmkController::class, 'list_dosen_matkul'])->name('list_dosen_matkul');
+                  });
+    /*0
     |--------------------------------------------------------------------------
     | PENAWARAN
     |--------------------------------------------------------------------------

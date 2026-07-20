@@ -54,11 +54,12 @@
                     </a>
                 </td>
                 <td>
-                    <a
-                        class="btn btn-soft btn-warning"
-                        href="{{route('nilai.edit_bobot', $mk->kodemk)}}">
-                        Edit Bobot Nilai
+                  <!-- --- TOMBOL EDIT BOBOT HANYA MUNCUL JIKA DIA PJMK --- -->
+                @if(in_array($mk->kodemk, $pjmkList))
+                    <a href="{{ route('nilai.edit_bobot', $mk->kodemk) }}" class="btn btn-warning">
+                        Edit Bobot
                     </a>
+                @endif
                 </td>
             </tr>
 
