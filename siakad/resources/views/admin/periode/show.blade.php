@@ -53,12 +53,6 @@
 {{-- BUTTON --}}
 <div class="card-actions justify-end mt-6">
 
-    <a
-        href="{{ route('periode.edit', $periode->id) }}"
-        class="btn btn-warning"
-    >
-        Edit
-    </a>
 
     <a
         href="{{ route('periode.index') }}"

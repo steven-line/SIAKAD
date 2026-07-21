@@ -90,6 +90,10 @@
         @can('user.manage')
         <li><a href="/users">Master User</a></li>
         @endcan
+
+        @can('settings.manage')
+        <li><a href="/metaperiode">Master Settings</a></li>
+        @endcan
            {{-- ROLE & PERMISSION --}}
            
         @can('permission.manage')

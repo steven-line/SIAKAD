@@ -18,6 +18,7 @@ use App\Http\Controllers\{
     NilaiKrsAnakWaliController,
     MahasiswaAdminController,
     NilaiKhsAnakWaliController,
+    MetaperiodeController,
     PeriodeController,
     PjmkController,
     SemesterController,
@@ -379,6 +380,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/{periode}/semester/{jenis}/aktifkan', [PeriodeController::class, 'aktifkanSemester'])->name('aktifkan');
             
         });
+
      Route::prefix('jurusan')
         ->middleware('permission:jurusan.manage')
         ->name('jurusan.')
@@ -553,6 +555,20 @@ Route::middleware('auth')->group(function () {
     Route::patch('/ubah-password/{user}', [UbahPasswordController::class, 'update'])
         ->name('password.update');
 });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Setting Metaperiode
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('metaperiode')
+            ->middleware('permission:settings.manage')
+            ->name('metaperiode.')
+            ->group(function () {
+                Route::get('/', [MetaperiodeController::class, 'index'])->name('index');
+                Route::patch('/update', [MetaperiodeController::class, 'update'])->name('update');
+                
+            });
 
 /*
 |--------------------------------------------------------------------------

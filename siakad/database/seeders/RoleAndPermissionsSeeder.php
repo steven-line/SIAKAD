@@ -128,6 +128,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'jadwal.manage',
             'nilai.input',
             'penawaran.manage',
+            'pjmk.manage',
         ]);
 
         // ======================
