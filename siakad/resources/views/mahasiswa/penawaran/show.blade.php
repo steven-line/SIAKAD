@@ -67,7 +67,7 @@
                 </form>
 
             @else
-
+                @if(now()->gte($periodeKrs->krs_mulai) && now()->lte($periodeKrs->krs_selesai)))
                 <form action="{{ route('mahasiswa.mata_kuliah.daftar', $penawaran->recno) }}" method="POST">
                     @csrf
 
@@ -75,7 +75,7 @@
                         Ambil KRS
                     </button>
                 </form>
-
+                @endif
             @endif
 
         @endif

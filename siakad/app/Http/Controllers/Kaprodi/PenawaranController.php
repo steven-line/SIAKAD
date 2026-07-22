@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Kaprodi;
 use App\Http\Controllers\Controller;
 use App\Models\Mk;
 use App\Models\Dosen;
+use App\Models\Metaperiode;
 use App\Models\prodi;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Semester;
@@ -180,6 +181,7 @@ class PenawaranController extends Controller
         ]);
 
         $user = auth()->user();
+      
 
         if ($user && $user->dosen) {
 
@@ -191,7 +193,7 @@ class PenawaranController extends Controller
         }
 
         $penawaran = $query->findOrFail($recno);
-
+        
         return view(
             'kaprodi.penawaran.show',
             compact('penawaran')

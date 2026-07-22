@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\BobotNilai;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
+use App\Models\Metaperiode;
 use App\Models\Mk;
 use App\Models\Penawaran;
 use App\Models\Pjmk;
 use App\Models\Registrasi;
 use App\Models\Semester;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Writer\Ods\Meta;
 
 class KrsController extends Controller
 {
@@ -52,10 +54,11 @@ class KrsController extends Controller
             $q->where('status_blokir', 'DISETUJUI');
         })
         ->get();
-
+        $periodeInputNilai = Metaperiode::findOrFail(1);
         return view('dosen.input_nilai.list_mahasiswa', [
             'mahasiswas' => $mahasiswas,
-            'mk' => $mk
+            'mk' => $mk,
+            'periodeInputNilai' => $periodeInputNilai
         ]);
     }
 
@@ -77,7 +80,7 @@ class KrsController extends Controller
             'registrasi.penawaran.semester.periode'
         ])
         ->where('registrasi_id', $registrasi->regkrs)
-        ->first(); // ❌ HAPUS where('kode')
+        ->first(); 
 
         return view('dosen.input_nilai.show', [
             'krs' => $krs,
@@ -164,16 +167,25 @@ public function update_bobot(Request $request, Mk $mk) {
 }
     public function edit(Mahasiswa $mahasiswa, Mk $mk)
     {
+        $periodeInputNilai = Metaperiode::findOrFail(1);
+         if (now()->lt($periodeInputNilai->input_nilai_mulai) || now()->gt($periodeInputNilai->input_nilai_selesai)) {
+            return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai');
+        }
         $registrasi = Registrasi::with('penawaran.semester.periode')
             ->where('nrp', $mahasiswa->nrp)
             ->whereHas('penawaran', function ($q) use ($mk) {
                 $q->where('kodemk', $mk->kodemk);
             })
             ->firstOrFail();
-
-        $krs = Krs::where('registrasi_id', $registrasi->regkrs)
-            ->firstOrFail();
-
+       
+       $krs = Krs::firstOrCreate(
+        ['registrasi_id' => $registrasi->regkrs], // Kondisi pencarian
+            [
+                'kelas' => 'A', // Isi dengan nilai default awal jika baru dibuat
+                'survey' => false
+            ]
+        );
+   
         $semester = $registrasi->penawaran->semester;
 
         return view('dosen.input_nilai.edit', [
@@ -181,10 +193,14 @@ public function update_bobot(Request $request, Mk $mk) {
             'mahasiswa' => $mahasiswa,
             'mk' => $mk,
             'semester' => $semester,
+          
         ]);
     }
 public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
-{
+{  $periodeInputNilai = Metaperiode::findOrFail(1);
+    if (now()->lt($periodeInputNilai->input_nilai_mulai) || now()->gt($periodeInputNilai->input_nilai_selesai)) {
+            return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai');
+        }
     $validated = $request->validate([
         'kelas' => [
             'required',
@@ -267,8 +283,8 @@ public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
         default => 'E',
     };
 
-    // Update data (PAKAI UPDATE, BUKAN updateOrCreate)
-    $krs->update([
+
+    $krs->updateOrCreate(['registrasi_id' => $registrasi->regkrs],[
         'kelas'   => $validated['kelas'],
         'bu'      => $validated['bu'],
         'ttt1'    => $validated['ttt1'],

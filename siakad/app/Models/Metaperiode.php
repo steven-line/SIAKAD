@@ -20,4 +20,12 @@ class Metaperiode extends Model
         'khs_mulai',
         'khs_selesai'
     ];
+    protected $casts = ['krs_mulai' => 'datetime',
+                        'krs_selesai' => 'datetime',  
+                        'batal_tambah_mulai' => 'datetime',
+                        'batal_tambah_selesai' => 'datetime',
+                        'input_nilai_mulai' => 'datetime',
+                        'input_nilai_selesai' => 'datetime',
+                        'khs_mulai' => 'datetime',
+                        'khs_selesai' => 'datetime'];
 }

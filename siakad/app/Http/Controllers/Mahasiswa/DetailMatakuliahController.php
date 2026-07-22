@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Penawaran;
 use App\Models\Registrasi;
 use App\Models\Mahasiswa;
+use App\Models\Metaperiode;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -21,18 +23,24 @@ class DetailMataKuliahController extends Controller
       $sudahAmbil = Registrasi::where('nrp', Auth::user()->mahasiswa->nrp)
     ->where('penawaran_id', $penawaran->recno)
     ->exists();
+    
+    $periodeKrs = Metaperiode::findOrFail(1);
     $statusBlokir = Auth::user()->mahasiswa->status_blokir;
-    return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil', 'statusBlokir'));
+  
+    return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil', 'statusBlokir','periodeKrs'));
     }
     public function daftar(Penawaran $penawaran)
     {
         $user = Auth::user();
         $mahasiswa = $user->mahasiswa;
 
+        $periodeKrs = Metaperiode::findOrFail(1);
         if (!$mahasiswa) {
             return back()->with('error', 'Data mahasiswa tidak ditemukan.');
         }
-
+        if (now()->lt($periodeKrs->krs_mulai) || now()->gt($periodeKrs->krs_selesai)) {
+            return redirect()->back()->with('error', 'Pendaftaran gagal! Anda berada di luar periode KRS.');
+        }
         // Hanya mahasiswa TERKUNCI yang tidak boleh mengambil KRS
         if ($mahasiswa->status_blokir === 'TERKUNCI') {
             return back()->with('error', 'KRS Anda terkunci. Tidak dapat mengambil mata kuliah.');
