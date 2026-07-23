@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Metaperiode;
+use App\Models\Periode;
 
 class KhsMahasiswaController extends Controller
 {
@@ -37,6 +39,40 @@ class KhsMahasiswaController extends Controller
 
         $nrp = $user->mahasiswa->nrp;
         $statusBlokir = $user->mahasiswa->status_blokir;
+            /*
+    |--------------------------------------------------------------------------
+    | Cek periode pengumuman nilai final
+    |--------------------------------------------------------------------------
+    */
+
+    // Ambil periode yang sedang aktif
+    $periodeAktif = Periode::where('aktif', 1)->first();
+
+    // Ambil metaperiode sesuai periode aktif
+    $metaperiode = null;
+
+    if ($periodeAktif) {
+        $metaperiode = Metaperiode::where('periode_id', $periodeAktif->id)->first();
+    }
+
+    // Jika sedang masa pengumuman nilai final,
+    // mahasiswa tidak boleh melihat KHS
+    if (
+        $metaperiode &&
+        $metaperiode->pengumuman_nilai_final_mulai &&
+        $metaperiode->pengumuman_nilai_final_selesai &&
+        now()->between(
+            $metaperiode->pengumuman_nilai_final_mulai,
+            $metaperiode->pengumuman_nilai_final_selesai
+        )
+    ) {
+        return view('mahasiswa.nilai_krs.index', [
+            'nilaiKrs' => collect(),
+            'statusBlokir' => $statusBlokir,
+            'periodePengumuman' => true,
+            'pengumumanSelesai' => $metaperiode->pengumuman_nilai_final_selesai,
+        ]);
+    }
 
         $data = DB::table('registrasi')
 
