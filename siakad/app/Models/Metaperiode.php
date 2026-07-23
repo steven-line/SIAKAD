@@ -17,8 +17,8 @@ class Metaperiode extends Model
         'batal_tambah_selesai',
         'input_nilai_mulai',
         'input_nilai_selesai',
-        'khs_mulai',
-        'khs_selesai'
+        'pengumuman_nilai_final_mulai',
+        'pengumuman_nilai_final_selesai'
     ];
     protected $casts = ['krs_mulai' => 'datetime',
                         'krs_selesai' => 'datetime',  
@@ -26,6 +26,6 @@ class Metaperiode extends Model
                         'batal_tambah_selesai' => 'datetime',
                         'input_nilai_mulai' => 'datetime',
                         'input_nilai_selesai' => 'datetime',
-                        'khs_mulai' => 'datetime',
-                        'khs_selesai' => 'datetime'];
+                        'pengumuman_nilai_final_mulai' => 'datetime',
+                        'pengumuman_nilai_final_selesai' => 'datetime'];
 }

@@ -23,8 +23,8 @@ return new class extends Migration
             $table->timestamp('input_nilai_mulai')->nullable();
             $table->timestamp('input_nilai_selesai')->nullable();
 
-            $table->timestamp('khs_mulai')->nullable();
-            $table->timestamp('khs_selesai')->nullable();
+            $table->timestamp('pengumuman_nilai_final_mulai')->nullable();
+            $table->timestamp('pengumuman_nilai_final_selesai')->nullable();
         });
     }
 

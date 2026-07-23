@@ -33,8 +33,8 @@ class MetaperiodeController extends Controller
             'input_nilai_mulai' => 'date',
             'input_nilai_selesai' => 'date|after:input_nilai_mulai',
 
-            'khs_mulai' => 'date',
-            'khs_selesai' => 'date|after:khs_mulai',
+            'pengumuman_nilai_final_mulai' => 'date',
+            'pengumuman_nilai_final_selesai' => 'date|after:khs_mulai',
         ]);
 
         // ✅ UPDATE ATAU CREATE
