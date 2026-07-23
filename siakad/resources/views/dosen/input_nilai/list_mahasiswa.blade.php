@@ -68,8 +68,8 @@
                         Show
                     </a>
                 </td>
-                @if(now()->gte($periodeInputNilai->input_nilai_mulai) && now()->lte($periodeInputNilai->input_nilai_selesai))
                 {{-- EDIT (kalau sudah ada nilai) --}}
+                @if($bobotnilai)
                     <td>
                         
                             <a class="btn btn-soft btn-error"

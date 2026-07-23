@@ -57,7 +57,9 @@
                             name="uts"
                             class="input w-full"
                             value="{{ old('uts', $krs->uts) }}"
-                        >
+                             {{ (now()->gte($periodeInputNilai->input_nilai_uts_mulai) && now()->lte($periodeInputNilai->input_nilai_uts_selesai)) ? '' : 'readonly' }}
+                       
+                            >
 
                         <x-forms.error name="uts" />
                     </div>
@@ -72,6 +74,7 @@
                             name="uas"
                             class="input w-full"
                             value="{{ old('uas', $krs->uas) }}"
+                             {{ (now()->gte($periodeInputNilai->input_nilai_uas_mulai) && now()->lte($periodeInputNilai->input_nilai_uas_selesai)) ? '' : 'readonly' }}
                         >
 
                         <x-forms.error name="uas" />

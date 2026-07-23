@@ -151,7 +151,7 @@
                     max="99"
                     maxlength="2"
                     oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)"
-                    class="w-full p-2 mt-1 bg-gray-700 rounded">
+                    class="w-full p-2 mt-1 bg-gray-700 rounded" required>
                 </div> 
                 {{-- MBKM --}}
                 <div>

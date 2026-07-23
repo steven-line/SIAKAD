@@ -52,7 +52,7 @@
                             </td>
                             <td class="px-4 py-2 text-left">
                                 <a href="{{ route('mahasiswa.mata_kuliah.show', $item->recno) }}" class="dark:text-white">
-                                {{ $item->mk->nama ?? '-' }}
+                                {{ $item->mk->nama ?? '-' }} - <span class="badge badge-sm badge-primary">{{ $item->semester->nama ?? '-' }}</span>
                                 </a>
                             </td>
                             <td class="px-4 py-2 text-left">

@@ -42,6 +42,7 @@ class KrsController extends Controller
      */
     public function list_mahasiswa(Mk $mk)
     {
+        $bobotnilai = BobotNilai::where('kodemk', $mk->kodemk)->first();
         $mahasiswas = Registrasi::with([
             'mahasiswa',
             'penawaran.semester.periode',
@@ -54,11 +55,11 @@ class KrsController extends Controller
             $q->where('status_blokir', 'DISETUJUI');
         })
         ->get();
-        $periodeInputNilai = Metaperiode::findOrFail(1);
+        
         return view('dosen.input_nilai.list_mahasiswa', [
             'mahasiswas' => $mahasiswas,
             'mk' => $mk,
-            'periodeInputNilai' => $periodeInputNilai
+            'bobotnilai' => $bobotnilai,
         ]);
     }
 
@@ -167,10 +168,12 @@ public function update_bobot(Request $request, Mk $mk) {
 }
     public function edit(Mahasiswa $mahasiswa, Mk $mk)
     {
-        $periodeInputNilai = Metaperiode::findOrFail(1);
-         if (now()->lt($periodeInputNilai->input_nilai_mulai) || now()->gt($periodeInputNilai->input_nilai_selesai)) {
-            return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai');
+         $bobotnilai = BobotNilai::where('kodemk', $mk->kodemk)->first();
+         if ($bobotnilai === null) {
+            return redirect()->back()->with('error', 'Bobot nilai untuk mata kuliah ini belum diatur. Silakan hubungi admin atau PJMK.');
         }
+        $periodeInputNilai = Metaperiode::findOrFail(1);
+
         $registrasi = Registrasi::with('penawaran.semester.periode')
             ->where('nrp', $mahasiswa->nrp)
             ->whereHas('penawaran', function ($q) use ($mk) {
@@ -193,13 +196,15 @@ public function update_bobot(Request $request, Mk $mk) {
             'mahasiswa' => $mahasiswa,
             'mk' => $mk,
             'semester' => $semester,
+            'periodeInputNilai' => $periodeInputNilai
           
         ]);
     }
 public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
-{  $periodeInputNilai = Metaperiode::findOrFail(1);
-    if (now()->lt($periodeInputNilai->input_nilai_mulai) || now()->gt($periodeInputNilai->input_nilai_selesai)) {
-            return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai');
+{  
+     $bobotnilai = BobotNilai::where('kodemk', $mk->kodemk)->first();
+         if ($bobotnilai === null) {
+            return redirect()->back()->with('error', 'Bobot nilai untuk mata kuliah ini belum diatur. Silakan hubungi admin atau PJMK.');
         }
     $validated = $request->validate([
         'kelas' => [
@@ -245,6 +250,13 @@ public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
             'boolean',
         ],
     ]);
+    $periodeInputNilai = Metaperiode::findOrFail(1);
+     if ($request->filled('uts')  &&  (now()->gte($periodeInputNilai->input_nilai_uts_mulai) || now()->lte($periodeInputNilai->input_nilai_uts_selesai))) {
+            return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai UTS.');
+        }
+    if ($request->filled('uas') && (now()->gte($periodeInputNilai->input_nilai_uas_mulai) || now()->lte($periodeInputNilai->input_nilai_uas_selesai))) {
+            return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai UAS.');
+        }
 
     // Ambil registrasi
     $registrasi = Registrasi::where('nrp', $mahasiswa->nrp)

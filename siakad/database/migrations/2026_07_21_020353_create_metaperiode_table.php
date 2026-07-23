@@ -16,13 +16,10 @@ return new class extends Migration
             $table->foreignId('periode_id')->constrained('periode')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamp('krs_mulai')->nullable();
             $table->timestamp('krs_selesai')->nullable();
-
-            $table->timestamp('batal_tambah_mulai')->nullable();
-            $table->timestamp('batal_tambah_selesai')->nullable();
-
-            $table->timestamp('input_nilai_mulai')->nullable();
-            $table->timestamp('input_nilai_selesai')->nullable();
-
+            $table->timestamp('input_nilai_uts_mulai')->nullable();
+            $table->timestamp('input_nilai_uts_selesai')->nullable();
+            $table->timestamp('input_nilai_uas_mulai')->nullable();
+            $table->timestamp('input_nilai_uas_selesai')->nullable();
             $table->timestamp('khs_mulai')->nullable();
             $table->timestamp('khs_selesai')->nullable();
         });

@@ -60,31 +60,30 @@
                 class="input input-bordered w-full"/>
             <x-forms.error name="krs_selesai"/>
 
-            {{-- ================= BATAL TAMBAH ================= --}}
-            <label class="label font-bold mt-4">Batal Tambah Mulai</label>
-            <input type="datetime-local" name="batal_tambah_mulai"
-                value="{{ old('batal_tambah_mulai', $metaperiode?->batal_tambah_mulai ? \Carbon\Carbon::parse($metaperiode->batal_tambah_mulai)->format('Y-m-d\TH:i') : '') }}"
-                class="input input-bordered w-full"/>
-            <x-forms.error name="batal_tambah_mulai"/>
-
-            <label class="label font-bold">Batal Tambah Selesai</label>
-            <input type="datetime-local" name="batal_tambah_selesai"
-                value="{{ old('batal_tambah_selesai', $metaperiode?->batal_tambah_selesai ? \Carbon\Carbon::parse($metaperiode->batal_tambah_selesai)->format('Y-m-d\TH:i') : '') }}"
-                class="input input-bordered w-full"/>
-            <x-forms.error name="batal_tambah_selesai"/>
-
             {{-- ================= INPUT NILAI ================= --}}
-            <label class="label font-bold mt-4">Input Nilai Mulai</label>
-            <input type="datetime-local" name="input_nilai_mulai"
-                value="{{ old('input_nilai_mulai', $metaperiode?->input_nilai_mulai ? \Carbon\Carbon::parse($metaperiode->input_nilai_mulai)->format('Y-m-d\TH:i') : '') }}"
+            <label class="label font-bold mt-4">Input Nilai UTS Mulai</label>
+            <input type="datetime-local" name="input_nilai_uts_mulai"
+                value="{{ old('input_nilai_uts_mulai', $metaperiode?->input_nilai_uts_mulai ? \Carbon\Carbon::parse($metaperiode->input_nilai_uts_mulai)->format('Y-m-d\TH:i') : '') }}"
                 class="input input-bordered w-full"/>
-            <x-forms.error name="input_nilai_mulai"/>
+            <x-forms.error name="input_nilai_uts_mulai"/>
 
-            <label class="label font-bold">Input Nilai Selesai</label>
-            <input type="datetime-local" name="input_nilai_selesai"
-                value="{{ old('input_nilai_selesai', $metaperiode?->input_nilai_selesai ? \Carbon\Carbon::parse($metaperiode->input_nilai_selesai)->format('Y-m-d\TH:i') : '') }}"
+            <label class="label font-bold">Input Nilai UTS Selesai</label>
+            <input type="datetime-local" name="input_nilai_uts_selesai"
+                value="{{ old('input_nilai_uts_selesai', $metaperiode?->input_nilai_uts_selesai ? \Carbon\Carbon::parse($metaperiode->input_nilai_uts_selesai)->format('Y-m-d\TH:i') : '') }}"
                 class="input input-bordered w-full"/>
-            <x-forms.error name="input_nilai_selesai"/>
+            <x-forms.error name="input_nilai_uts_selesai"/>
+
+                        <label class="label font-bold mt-4">Input Nilai UAS Mulai</label>
+            <input type="datetime-local" name="input_nilai_uas_mulai"
+                value="{{ old('input_nilai_uas_mulai', $metaperiode?->input_nilai_uas_mulai ? \Carbon\Carbon::parse($metaperiode->input_nilai_uas_mulai)->format('Y-m-d\TH:i') : '') }}"
+                class="input input-bordered w-full"/>
+            <x-forms.error name="input_nilai_uas_mulai"/>
+
+            <label class="label font-bold">Input Nilai UAS Selesai</label>
+            <input type="datetime-local" name="input_nilai_uas_selesai"
+                value="{{ old('input_nilai_uas_selesai', $metaperiode?->input_nilai_uas_selesai ? \Carbon\Carbon::parse($metaperiode->input_nilai_uas_selesai)->format('Y-m-d\TH:i') : '') }}"
+                class="input input-bordered w-full"/>
+            <x-forms.error name="input_nilai_uas_selesai"/>
 
             {{-- ================= KHS ================= --}}
             <label class="label font-bold mt-4">KHS Mulai</label>

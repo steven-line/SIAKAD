@@ -25,11 +25,13 @@ class PenawaranMahasiswaController extends Controller
         // Query penawaran dengan filter pataum (jika ada)
          $prodi = Auth::user()?->mahasiswa?->prodi;
 
-        $query = Penawaran::with(['mk.kurikulum'])
+        $query = Penawaran::with(['mk.kurikulum'])->whereHas('semester', function ($q){
+
+                $q->where('aktif', 1);
+            })
             ->whereHas('mk.kurikulum', function ($q) use ($prodi) {
                 $q->where('kode_prodi', $prodi);
             });
-            
 
         $penawaran = $query->get();
 

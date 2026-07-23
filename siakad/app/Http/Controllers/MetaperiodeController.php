@@ -27,14 +27,14 @@ class MetaperiodeController extends Controller
             'krs_mulai' => 'required|date',
             'krs_selesai' => 'required|date|after:krs_mulai',
 
-            'batal_tambah_mulai' => 'date',
-            'batal_tambah_selesai' => 'date|after:batal_tambah_mulai',
+            'input_nilai_uts_mulai' => 'nullable|date',
+            'input_nilai_uts_selesai' => 'nullable|date|after:input_nilai_uts_mulai',
 
-            'input_nilai_mulai' => 'date',
-            'input_nilai_selesai' => 'date|after:input_nilai_mulai',
+            'input_nilai_uas_mulai' => 'nullable|date',
+            'input_nilai_uas_selesai' => 'nullable|date|after:input_nilai_uas_mulai',
 
-            'khs_mulai' => 'date',
-            'khs_selesai' => 'date|after:khs_mulai',
+            'khs_mulai' => 'nullable|date',
+            'khs_selesai' => 'nullable|date|after:khs_mulai',
         ]);
 
         // ✅ UPDATE ATAU CREATE

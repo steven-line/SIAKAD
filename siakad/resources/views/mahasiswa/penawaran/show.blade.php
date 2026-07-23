@@ -30,7 +30,7 @@
                 <div><strong>Jam Mulai:</strong> {{ $penawaran->mulaipukul->format('H:i') }}</div>
                 <div><strong>Jam Selesai:</strong> {{ $penawaran->selesaipukul->format('H:i') }}</div>
                 <div><strong>SKS:</strong> {{ $penawaran->mk->sks }}</div>
-                <div><strong>Semester:</strong> {{ $penawaran->semester_id }}</div>
+                <div><strong>Semester:</strong> {{ $penawaran->semester->nama ?? '-' }}</div>
                 <div><strong>Keterangan :</strong> {{ $penawaran->keterangan ?? '-' }}</div>
                 <div><strong>Periode :</strong> {{ $penawaran->periode ?? 'GENAP / 2025-2026' }}</div>
                 <div>
@@ -67,7 +67,7 @@
                 </form>
 
             @else
-                @if(now()->gte($periodeKrs->krs_mulai) && now()->lte($periodeKrs->krs_selesai)))
+                @if(now()->gte($periodeKrs->krs_mulai) && now()->lte($periodeKrs->krs_selesai))
                 <form action="{{ route('mahasiswa.mata_kuliah.daftar', $penawaran->recno) }}" method="POST">
                     @csrf
 
