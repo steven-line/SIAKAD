@@ -73,7 +73,7 @@
                 class="input input-bordered w-full"/>
             <x-forms.error name="input_nilai_uts_selesai"/>
 
-                        <label class="label font-bold mt-4">Input Nilai UAS Mulai</label>
+            <label class="label font-bold mt-4">Input Nilai UAS Mulai</label>
             <input type="datetime-local" name="input_nilai_uas_mulai"
                 value="{{ old('input_nilai_uas_mulai', $metaperiode?->input_nilai_uas_mulai ? \Carbon\Carbon::parse($metaperiode->input_nilai_uas_mulai)->format('Y-m-d\TH:i') : '') }}"
                 class="input input-bordered w-full"/>
@@ -84,19 +84,19 @@
                 value="{{ old('input_nilai_uas_selesai', $metaperiode?->input_nilai_uas_selesai ? \Carbon\Carbon::parse($metaperiode->input_nilai_uas_selesai)->format('Y-m-d\TH:i') : '') }}"
                 class="input input-bordered w-full"/>
             <x-forms.error name="input_nilai_uas_selesai"/>
-
-            {{-- ================= KHS ================= --}}
-            <label class="label font-bold mt-4">KHS Mulai</label>
-            <input type="datetime-local" name="khs_mulai"
-                value="{{ old('khs_mulai', $metaperiode?->khs_mulai ? \Carbon\Carbon::parse($metaperiode->khs_mulai)->format('Y-m-d\TH:i') : '') }}"
+    
+            {{-- ================= pengumuman nilai final ================= --}}
+            <label class="label font-bold mt-4">Pengumuman Nilai Final Mulai</label>
+            <input type="datetime-local" name="pengumuman_nilai_final_mulai"
+                value="{{ old('pengumuman_nilai_final_mulai', $metaperiode?->pengumuman_nilai_final_mulai ? \Carbon\Carbon::parse($metaperiode->pengumuman_nilai_final_mulai)->format('Y-m-d\TH:i') : '') }}"
                 class="input input-bordered w-full"/>
-            <x-forms.error name="khs_mulai"/>
+            <x-forms.error name="pengumuman_nilai_final_mulai"/>
 
-            <label class="label font-bold">KHS Selesai</label>
-            <input type="datetime-local" name="khs_selesai"
-                value="{{ old('khs_selesai', $metaperiode?->khs_selesai ? \Carbon\Carbon::parse($metaperiode->khs_selesai)->format('Y-m-d\TH:i') : '') }}"
+            <label class="label font-bold">Pengumuman Nilai Final Selesai</label>
+            <input type="datetime-local" name="pengumuman_nilai_final_selesai"
+                value="{{ old('pengumuman_nilai_final_selesai', $metaperiode?->pengumuman_nilai_final_selesai ? \Carbon\Carbon::parse($metaperiode->pengumuman_nilai_final_selesai)->format('Y-m-d\TH:i') : '') }}"
                 class="input input-bordered w-full"/>
-            <x-forms.error name="khs_selesai"/>
+            <x-forms.error name="pengumuman_nilai_final_selesai"/>
 
             <button class="btn btn-primary mt-6 w-full">
                 Simpan
