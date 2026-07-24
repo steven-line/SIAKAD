@@ -14,7 +14,7 @@
         @csrf
         @method('PATCH')
 
-        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box h-100 border p-6 mx-auto mt-10">
+      <fieldset class="fieldset bg-base-200 border-base-300 rounded-box h-100 border p-6 mx-auto mt-10">
 
             <div class="grid grid-cols-3 gap-4">
                 <div>
@@ -74,23 +74,33 @@
                 @for ($i = 1; $i <= 10; $i++)
                     <div>
                         <label class="label font-bold">Prasyarat {{ $i }}</label>
-                        <input type="text"
-                               class="input"
-                               name="prasyarat{{ $i }}"
-                               maxlength="8"
-                               value="{{ old('prasyarat'.$i, $mk->{'prasyarat'.$i}) }}" />
+                        <select class="select select-bordered w-full" name="prasyarat{{$i}}">
+                                <option disabled selected>Select MK</option>
+                                @foreach ($mks as $mk)
+                                    <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i",  $mk->kodemk) == $mk->kodemk)>
+                                        {{ $mk->kodemk }} - {{ $mk->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
                         <x-forms.error name="prasyarat{{ $i }}"/>
                     </div>
                 @endfor
             </div>
 
             <div class="grid grid-cols-4 gap-4 mt-4">
-                <div>
+                  <div>
                     <label class="label font-bold">Prasyarat Grade</label>
-                    <input type="text" class="input" name="prasyaratgrade"
-                           value="{{ old('prasyaratgrade', $mk->prasyaratgrade) }}" maxlength="1"/>
-                    <x-forms.error name="prasyaratgrade"/>
+                       <select class="select select-bordered w-full" name="prasyaratgrade" required>
+                        <option disabled selected>Select Prasyarat Grade</option>
+                        <option value="A" @selected(old("prasyaratgrade") == "A")>A</option>
+                        <option value="AB" @selected(old("prasyaratgrade") == "AB")>AB</option>
+                        <option value="B" @selected(old("prasyaratgrade") == "B")>B</option>
+                        <option value="BC" @selected(old("prasyaratgrade") == "BC")>BC</option>
+                        <option value="C" @selected(old("prasyaratgrade") == "C")>C</option>
+                    </select>
+                    <x-forms.error name='prasyaratgrade'/>
                 </div>
+
 
                 <div>
                     <label class="label font-bold">Aktif</label>

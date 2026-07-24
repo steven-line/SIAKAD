@@ -11,6 +11,7 @@
 
             <div class="grid grid-cols-3 gap-4">
                 <div>
+                
                     <label class="label font-bold" for="kodemk">KodeMk</label>
                     <input type="text" class="input" name="kodemk" value="{{old('kodemk')}}" placeholder="TF2028" maxlength="8"/>
                     <x-forms.error name='kodemk'/>
@@ -61,7 +62,15 @@
                 @for ($i = 1; $i <= 4; $i++)
                 <div>
                     <label class="label font-bold">Prasyarat {{ $i }}</label>
-                    <input type="text" class="input" name="prasyarat{{ $i }}" value="{{old('prasyarat'.$i)}}" maxlength="8"/>
+                    <select class="select select-bordered w-full" name="prasyarat{{$i}}">
+                        <option disabled selected>Select MK</option>
+                        @foreach ($mks as $mk)
+                            <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i") == $mk->kodemk)>
+                                {{ $mk->kodemk }} - {{ $mk->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+            
                     <x-forms.error name="prasyarat{{ $i }}"/>
                 </div>
                 @endfor
@@ -71,7 +80,15 @@
                 @for ($i = 5; $i <= 8; $i++)
                 <div>
                     <label class="label font-bold">Prasyarat {{ $i }}</label>
-                    <input type="text" class="input" name="prasyarat{{ $i }}" value="{{old('prasyarat'.$i)}}" maxlength="8"/>
+                      <select class="select select-bordered w-full" name="prasyarat{{$i}}">
+                        <option disabled selected>Select MK</option>
+                        @foreach ($mks as $mk)
+                            <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i") == $mk->kodemk)>
+                                {{ $mk->kodemk }} - {{ $mk->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+            
                     <x-forms.error name="prasyarat{{ $i }}"/>
                 </div>
                 @endfor
@@ -81,14 +98,29 @@
                 @for ($i = 9; $i <= 10; $i++)
                 <div>
                     <label class="label font-bold">Prasyarat {{ $i }}</label>
-                    <input type="text" class="input" name="prasyarat{{ $i }}" value="{{old('prasyarat'.$i)}}" maxlength="8"/>
+                    <select class="select select-bordered w-full" name="prasyarat{{$i}}">
+                        <option disabled selected>Select MK</option>
+                        @foreach ($mks as $mk)
+                            <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i") == $mk->kodemk)>
+                                {{ $mk->kodemk }} - {{ $mk->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+            
                     <x-forms.error name="prasyarat{{ $i }}"/>
                 </div>
                 @endfor
 
                 <div>
                     <label class="label font-bold">Prasyarat Grade</label>
-                    <input type="text" class="input" name="prasyaratgrade" value="{{old('prasyaratgrade')}}" maxlength="1"  />
+                       <select class="select select-bordered w-full" name="prasyaratgrade" required>
+                        <option disabled selected>Select Prasyarat Grade</option>
+                        <option value="A">A</option>
+                        <option value="AB">AB</option>
+                        <option value="B">B</option>
+                        <option value="BC">BC</option>
+                        <option value="C">C</option>
+                    </select>
                     <x-forms.error name='prasyaratgrade'/>
                 </div>
 
