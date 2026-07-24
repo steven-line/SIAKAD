@@ -18,7 +18,7 @@ class DetailMataKuliahController extends Controller
     {
         // ============================================================
         // 1. DAPATKAN PATAUM USER & SEMESTER AKTIF
-    
+  
     $registrasis = Registrasi::where('penawaran_id', $penawaran->recno)->get();
       $sudahAmbil = Registrasi::where('nrp', Auth::user()->mahasiswa->nrp)
     ->where('penawaran_id', $penawaran->recno)

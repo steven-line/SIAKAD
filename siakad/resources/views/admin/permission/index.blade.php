@@ -2,9 +2,7 @@
 
 <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
 
-    <a class="btn btn-primary text-white mb-6" href="{{ route('permissions.create') }}">
-        Create Permission
-    </a>
+  
     <table class="table">
 
         <thead class="bg-blue-500 text-white">

@@ -19,13 +19,13 @@ class MkController extends Controller
     public function create()
     {
         $kurikulums = Kurikulum::orderby('kode_kurikulum')->get();
-        return view('admin.matakuliah.create', ['kurikulums' => $kurikulums]);
+        $mks = Mk::with(['kurikulum'])->get();
+        return view('admin.matakuliah.create', ['kurikulums' => $kurikulums, 
+        'mks' => $mks]);
     }
 
     public function store(Request $request)
     {
-
-  
         $request->validate([
             'kodemk' => ['required', 'unique:mk', 'max:8',  'regex:/^[A-Za-z0-9\-]+$/'],
             'nama' => ['required', 'max:50'],
@@ -33,16 +33,16 @@ class MkController extends Controller
             'nm_jenj_didik' => ['required', 'max:2'],
             'kode_kurikulum' => ['required', 'max:10'],
             'prasyaratsks' => ['required', 'max:3'],
-            'prasyarat1' => ['required', 'max:8'],
-            'prasyarat2' => ['required', 'max:8'],
-            'prasyarat3' => ['required', 'max:8'],
-            'prasyarat4' => ['required', 'max:8'],
-            'prasyarat5' => ['required', 'max:8'],
-            'prasyarat6' => ['required', 'max:8'],
-            'prasyarat7' => ['required', 'max:8'],
-            'prasyarat8' => ['required', 'max:8'],
-            'prasyarat9' => ['required', 'max:8'],
-            'prasyarat10' => ['required', 'max:8'],
+            'prasyarat1' => ['max:8'],
+            'prasyarat2' => ['max:8'],
+            'prasyarat3' => ['max:8'],
+            'prasyarat4' => ['max:8'],
+            'prasyarat5' => ['max:8'],
+            'prasyarat6' => ['max:8'],
+            'prasyarat7' => ['max:8'],
+            'prasyarat8' => ['max:8'],
+            'prasyarat9' => ['max:8'],
+            'prasyarat10' => ['max:8'],
             'prasyaratgrade' => ['required', 'max:1'], 
          
         ]);
@@ -54,16 +54,16 @@ class MkController extends Controller
             'nm_jenj_didik' => $request->nm_jenj_didik,
             'kode_kurikulum' => $request->kode_kurikulum,
             'prasyaratsks' => $request->prasyaratsks,
-            'prasyarat1' => $request->prasyarat1,
-            'prasyarat2' => $request->prasyarat2,
-            'prasyarat3' => $request->prasyarat3,
-            'prasyarat4' => $request->prasyarat4,
-            'prasyarat5' => $request->prasyarat5,
-            'prasyarat6' => $request->prasyarat6,
-            'prasyarat7' => $request->prasyarat7,
-            'prasyarat8' => $request->prasyarat8,
-            'prasyarat9' => $request->prasyarat9,
-            'prasyarat10' => $request->prasyarat10,
+            'prasyarat1' => $request->prasyarat1 ?? '-',
+            'prasyarat2' => $request->prasyarat2 ?? '-',
+            'prasyarat3' => $request->prasyarat3 ?? '-',
+            'prasyarat4' => $request->prasyarat4 ?? '-',
+            'prasyarat5' => $request->prasyarat5 ?? '-',
+            'prasyarat6' => $request->prasyarat6 ?? '-',
+            'prasyarat7' => $request->prasyarat7 ?? '-',
+            'prasyarat8' => $request->prasyarat8 ?? '-',
+            'prasyarat9' => $request->prasyarat9 ?? '-',
+            'prasyarat10' => $request->prasyarat10 ?? '-',
             'prasyaratgrade' => $request->prasyaratgrade,
             'aktif' => $request->boolean('aktif'),
         ]);
@@ -79,9 +79,11 @@ class MkController extends Controller
     public function edit(Mk $mk)
     {
         $kurikulums = Kurikulum::orderby('kode_kurikulum')->get();
+        $mks = Mk::with(['kurikulum'])->get();
         return view('admin.matakuliah.edit', [
             'mk' => $mk,
-            'kurikulums' => $kurikulums
+            'kurikulums' => $kurikulums,
+            'mks' => $mks
         ]);
     }
 
@@ -94,17 +96,17 @@ class MkController extends Controller
             'nm_jenj_didik' => ['required', 'max:2'],
             'kode_kurikulum' => ['required', 'max:10'],
             'prasyaratsks' => ['required', 'max:3'],
-            'prasyarat1' => ['required', 'max:8'],
-            'prasyarat2' => ['required', 'max:8'],
-            'prasyarat3' => ['required', 'max:8'],
-            'prasyarat4' => ['required', 'max:8'],
-            'prasyarat5' => ['required', 'max:8'],
-            'prasyarat6' => ['required', 'max:8'],
-            'prasyarat7' => ['required', 'max:8'],
-            'prasyarat8' => ['required', 'max:8'],
-            'prasyarat9' => ['required', 'max:8'],
-            'prasyarat10' => ['required', 'max:8'],
-            'prasyaratgrade' => ['required', 'max:1'], 
+            'prasyarat1' => ['max:8'],
+            'prasyarat2' => ['max:8'],
+            'prasyarat3' => ['max:8'],
+            'prasyarat4' => ['max:8'],
+            'prasyarat5' => ['max:8'],
+            'prasyarat6' => ['max:8'],
+            'prasyarat7' => ['max:8'],
+            'prasyarat8' => ['max:8'],
+            'prasyarat9' => ['max:8'],
+            'prasyarat10' => ['max:8'],
+            'prasyaratgrade' => ['required','max:1'], 
            
         ]);
 
@@ -115,16 +117,16 @@ class MkController extends Controller
             'nm_jenj_didik' => $request->nm_jenj_didik,
             'kode_kurikulum' => $request->kode_kurikulum,
             'prasyaratsks' => $request->prasyaratsks,
-            'prasyarat1' => $request->prasyarat1,
-            'prasyarat2' => $request->prasyarat2,
-            'prasyarat3' => $request->prasyarat3,
-            'prasyarat4' => $request->prasyarat4,
-            'prasyarat5' => $request->prasyarat5,
-            'prasyarat6' => $request->prasyarat6,
-            'prasyarat7' => $request->prasyarat7,
-            'prasyarat8' => $request->prasyarat8,
-            'prasyarat9' => $request->prasyarat9,
-            'prasyarat10' => $request->prasyarat10,
+            'prasyarat1' => $request->prasyarat1 ?? '-',
+            'prasyarat2' => $request->prasyarat2 ?? '-',
+            'prasyarat3' => $request->prasyarat3 ?? '-',
+            'prasyarat4' => $request->prasyarat4 ?? '-',
+            'prasyarat5' => $request->prasyarat5 ?? '-',
+            'prasyarat6' => $request->prasyarat6 ?? '-',
+            'prasyarat7' => $request->prasyarat7 ?? '-',
+            'prasyarat8' => $request->prasyarat8 ?? '-',
+            'prasyarat9' => $request->prasyarat9 ?? '-',
+            'prasyarat10' => $request->prasyarat10 ?? '-',
             'prasyaratgrade' => $request->prasyaratgrade,
             'aktif' => $request->boolean('aktif'),
         ]);
