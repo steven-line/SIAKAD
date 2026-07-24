@@ -308,22 +308,57 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{penawaran}', [PenawaranController::class, 'destroy'])->name('destroy');
         });
 
-    /*
-    |--------------------------------------------------------------------------
-    | PERWALIAN
-    |--------------------------------------------------------------------------
-    */
-    Route::prefix('perwalian')
-        ->middleware('permission:perwalian.manage')
-        ->name('perwalian.')
-        ->group(function () {
+/*
+|--------------------------------------------------------------------------
+| PERWALIAN
+|--------------------------------------------------------------------------
+*/
+Route::prefix('perwalian')
+    ->middleware('permission:perwalian.manage')
+    ->name('perwalian.')
+    ->group(function () {
 
-            Route::get('/', [PerwalianController::class, 'index'])->name('index');
-            Route::get('/{mahasiswa}', [PerwalianController::class, 'show'])->name('show');
-            Route::post('/{mahasiswa}/validasi', [PerwalianController::class, 'validasi'])->name('validasi');
-            Route::post('/{mahasiswa}/lock', [PerwalianController::class, 'lock'])->name('lock');
-            Route::post('/{mahasiswa}/unlock', [PerwalianController::class, 'unlock'])->name('unlock');
-        });
+        // Halaman utama
+        Route::get('/', [PerwalianController::class, 'index'])
+            ->name('index');
+
+        // Detail mahasiswa
+        Route::get('/{mahasiswa}', [PerwalianController::class, 'show'])
+            ->name('show');
+
+        // Validasi KRS
+        Route::post('/{mahasiswa}/validasi', [PerwalianController::class, 'validasi'])
+            ->name('validasi');
+
+        // Lock & Unlock KRS
+        Route::post('/{mahasiswa}/lock', [PerwalianController::class, 'lock'])
+            ->name('lock');
+
+        Route::post('/{mahasiswa}/unlock', [PerwalianController::class, 'unlock'])
+            ->name('unlock');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Penawaran Mata Kuliah
+        |--------------------------------------------------------------------------
+        */
+
+        // Daftar seluruh penawaran
+        Route::get('/{nrp}/penawaran', [PerwalianController::class, 'penawaran'])
+            ->name('penawaran');
+
+        // Detail penawaran
+        Route::get('/{nrp}/penawaran/{penawaran}', [PerwalianController::class, 'showPenawaran'])
+            ->name('penawaran.show');
+
+        // Tambahkan penawaran ke KRS mahasiswa
+        Route::post('/{nrp}/penawaran/{penawaran}', [PerwalianController::class, 'ambilKrs'])
+            ->name('penawaran.ambil');
+
+        // Batalkan/Hapus penawaran dari KRS mahasiswa
+        Route::delete('/{nrp}/penawaran/{penawaran}', [PerwalianController::class, 'batalKrs'])
+            ->name('penawaran.batal');
+    });
 
      Route::prefix('nilai_krs_anak_wali')
         ->middleware('permission:perwalian.manage')

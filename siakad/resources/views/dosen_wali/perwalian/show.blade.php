@@ -9,6 +9,15 @@
         <!-- Tabel Daftar KRS -->
         <h2 class="text-xl font-semibold mb-2">Daftar Mata Kuliah</h2>
 
+        <div class="flex justify-between mb-4">
+
+            <a href="{{ route('perwalian.penawaran', $mahasiswa->nrp) }}"
+            class="btn btn-primary">
+                Penawaran MK
+            </a>
+
+        </div>
+
         <div class="overflow-x-auto rounded-box border bg-base-100">
             <table class="table w-full">
                 <thead class="bg-blue-500 text-white">

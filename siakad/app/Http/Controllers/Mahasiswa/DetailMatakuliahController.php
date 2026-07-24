@@ -57,7 +57,7 @@ class DetailMataKuliahController extends Controller
         Registrasi::create([
             'nrp' => $mahasiswa->nrp,
             'penawaran_id' => $penawaran->recno,
-            'status' => 'BARU',
+            'status' => 'B',
             'tanggal' => now()->toDateString(),
             'jam' => now()->toTimeString(),
         ]);
