@@ -172,16 +172,7 @@
                         Edit Nilai
                     </a>
 
-                @else
-
-                    <a href="{{ route('nilai.create', [
-                        'mahasiswa' => $mahasiswa->nrp,
-                        'mk' => $mk->kodemk
-                    ]) }}"
-                       class="btn btn-primary">
-                        Input Nilai
-                    </a>
-
+             
                 @endif
 
             </div>

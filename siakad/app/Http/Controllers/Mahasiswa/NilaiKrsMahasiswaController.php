@@ -28,7 +28,7 @@ class NilaiKrsMahasiswaController extends Controller
 
         // Ambil periode yang sedang aktif
         $periodeAktif = Periode::where('aktif', 1)->first();
-
+        $semesterAktif = $periodeAktif ? $periodeAktif->semesters()->where('aktif', 1)->first() : null;
         // Ambil metaperiode sesuai periode aktif
         $metaperiode = null;
 
@@ -77,6 +77,6 @@ class NilaiKrsMahasiswaController extends Controller
             ->orderBy('penawaran.kodemk')
             ->get();
 
-        return view('mahasiswa.nilai_krs.index', compact('nilaiKrs', 'statusBlokir'));
+        return view('mahasiswa.nilai_krs.index', compact('nilaiKrs', 'statusBlokir', 'periodeAktif', 'semesterAktif'));
     }
 }

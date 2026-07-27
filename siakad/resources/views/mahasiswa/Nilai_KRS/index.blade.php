@@ -46,6 +46,14 @@
         @else
 
             {{-- ✅ TERKUNCI / NORMAL --}}
+            <div>
+                <div>
+                    Periode:  {{ $periodeAktif ? $periodeAktif->tahun_ajaran : '-' }}
+                </div>
+                <div>
+                    Semester:  {{ $semesterAktif ? $semesterAktif->jenis : '-' }}
+                </div>
+            </div>
             <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
                 <table class="table">
                     <thead class="bg-green-500 text-white">

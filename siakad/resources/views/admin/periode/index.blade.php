@@ -35,29 +35,62 @@
                 $isGanjilActive = $periode->semesters->where('jenis', 'Ganjil')->where('aktif', true)->count() > 0;
                 $isGenapActive  = $periode->semesters->where('jenis', 'Genap')->where('aktif', true)->count() > 0;
             @endphp
-
             <th>
                 {{-- GANJIL --}}
-                <form action="{{ route('periode.aktifkan', [$periode->id, 'Ganjil']) }}"
-                    method="POST"
-                    style="display:inline-block;">
-                    @csrf
-                    <button type="submit"
-                        class="btn {{ $isGanjilActive ? 'btn-success text-white' : 'btn-soft btn-info' }}">
-                        Ganjil
-                    </button>
-                </form>
+                <button type="button"
+                        class="btn {{ $isGanjilActive ? 'btn-success text-white' : 'btn-soft btn-info' }}"
+                        onclick="switchGanjil_{{ $periode->id }}.showModal()">
+                    Ganjil
+                </button>
+
+                <dialog id="switchGanjil_{{ $periode->id }}"
+                        class="modal modal-bottom sm:modal-middle">
+                    <div class="modal-box">
+                        <h3 class="text-lg font-bold">Peringatan</h3>
+                        <p class="py-4">Yakin mau ganti jenis semester menjadi Ganjil?</p>
+
+                        <div class="modal-action">
+                            <form method="dialog">
+                                <button class="btn btn-neutral">Batal</button>
+                            </form>
+
+                            <form action="{{ route('periode.aktifkan', [$periode->id, 'Ganjil']) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">
+                                    Ya, Ganti
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </dialog>
 
                 {{-- GENAP --}}
-                <form action="{{ route('periode.aktifkan', [$periode->id, 'Genap']) }}"
-                    method="POST"
-                    style="display:inline-block;">
-                    @csrf
-                    <button type="submit"
-                        class="btn {{ $isGenapActive ? 'btn-success text-white' : 'btn-soft btn-info' }}">
-                        Genap
-                    </button>
-                </form>
+                <button type="button"
+                        class="btn {{ $isGenapActive ? 'btn-success text-white' : 'btn-soft btn-info' }}"
+                        onclick="switchGenap_{{ $periode->id }}.showModal()">
+                    Genap
+                </button>
+
+                <dialog id="switchGenap_{{ $periode->id }}"
+                        class="modal modal-bottom sm:modal-middle">
+                    <div class="modal-box">
+                        <h3 class="text-lg font-bold">Peringatan</h3>
+                        <p class="py-4">Yakin mau ganti jenis semester menjadi Genap?</p>
+
+                        <div class="modal-action">
+                            <form method="dialog">
+                                <button class="btn btn-neutral">Batal</button>
+                            </form>
+
+                            <form action="{{ route('periode.aktifkan', [$periode->id, 'Genap']) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">
+                                    Ya, Ganti
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </dialog>
             </th>
                             {{-- DETAIL --}}
                 <th>

@@ -82,6 +82,8 @@ class RoleAndPermissionsSeeder extends Seeder
 
             // PJMK
             'pjmk.manage',
+
+            'settings.manage',
         ];
 
         foreach ($permissions as $permission) {
@@ -157,6 +159,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'semester.manage',
             'periode.manage',
             'jurusan.manage',
+            'settings.manage',
         ]);
 
         // ======================
