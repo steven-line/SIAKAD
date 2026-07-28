@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreign('nrp')->references('username')->on('users')->onDelete('cascade')->onUpdate('cascade');
             
             $table->foreign('dosen_wali')->references('nim_dosen')->on('dosen')->onDelete('cascade')->onUpdate('cascade');
+            $table->year('tahun_masuk')->nullable();
             $table->enum('status_blokir', [
             'BELUM_KRS',
             'MENUNGGU_VALIDASI',

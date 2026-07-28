@@ -141,64 +141,69 @@ class PenawaranController extends Controller
     ));
 }
    
-    public function index()
-    {
-        $query = Penawaran::with([
-            'mk',
-            'dosenRelasi',
-            'semesterRelasi.periode',
-        ]);
 
-        $user = auth()->user();
 
-        if ($user && $user->dosen) {
 
-            $prodiLogin = $user->dosen->prodi;
+public function index()
+{
+    $user = auth()->user();
+    $akses = ['A']; // default hanya MK Universitas
 
-        $query->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
+    if ($user && $user->dosen) {
+        switch ($user->dosen->prodi) {
+            case 'C': // Manajemen
+                $akses = ['A', 'B', 'C'];
+                break;
 
-            $q->where('kode_prodi', $prodiLogin);
+            case 'D': // Akuntansi
+                $akses = ['A', 'B', 'D'];
+                break;
 
-        });
+            case 'F': // Teknik Sipil
+                $akses = ['A', 'E', 'F'];
+                break;
+
+            case 'G': // Arsitektur
+                $akses = ['A', 'E', 'G'];
+                break;
+
+            case 'H': // Teknik Elektro
+                $akses = ['A', 'E', 'H'];
+                break;
+
+            case 'I': // Teknik Informatika
+                $akses = ['A', 'E', 'I'];
+                break;
+
+            case 'K': // Sastra Inggris
+                $akses = ['A', 'J', 'K'];
+                break;
+
+            case 'L': // Pendidikan Bahasa Mandarin
+                $akses = ['A', 'J', 'L'];
+                break;
         }
-
-        $penawarans = $query
-            ->orderBy('hari')
-            ->paginate(10);
-
-        return view(
-            'kaprodi.penawaran.index',
-            compact('penawarans')
-        );
     }
 
-    public function show($recno)
-    {
-        $query = Penawaran::with([
-            'mk',
-            'dosenRelasi',
-            'semesterRelasi.periode',
-        ]);
-
-        $user = auth()->user();
-      
-
-        if ($user && $user->dosen) {
-
-        $prodiLogin = $user->dosen->prodi;
-
-        $query->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
-            $q->where('kode_prodi', $prodiLogin);
+    $query = Penawaran::with([
+        'mk',
+        'dosenRelasi',
+        'semesterRelasi.periode',
+    ])
+    ->whereHas('mk', function ($q) use ($akses) {
+        $q->where(function ($sub) use ($akses) {
+            foreach ($akses as $prefix) {
+                $sub->orWhere('kodemk', 'like', $prefix . '%');
+            }
         });
-        }
+    });
 
-        $penawaran = $query->findOrFail($recno);
-        
-        return view(
-            'kaprodi.penawaran.show',
-            compact('penawaran')
-        );
-    }
+    $penawarans = $query
+        ->orderBy('hari')
+        ->paginate(10);
+
+    return view('kaprodi.penawaran.index', compact('penawarans'));
+}
 
    public function store(Request $request)
 {
