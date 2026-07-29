@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Periode;
 use App\Http\Controllers\Controller;
 use App\Models\Semester;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class PeriodeController extends Controller
 {
@@ -96,17 +98,35 @@ class PeriodeController extends Controller
      * Remove the specified resource from storage.
      */
     public function aktifkanSemester(Periode $periode, $jenis)
-        {
-            $jenis = ucfirst(strtolower($jenis));
+    {
+        $jenis = ucfirst(strtolower($jenis));
 
-            if (!in_array($jenis, ['Ganjil', 'Genap'])) {
-                abort(404);
-            }
-
-            $periode->aktifkanSemester($jenis);
-
-            return back()->with('success', "Semester {$jenis} aktif");
+        if (!in_array($jenis, ['Ganjil', 'Genap'])) {
+            abort(404);
         }
+
+        DB::transaction(function () use ($periode, $jenis) {
+
+            // 🔴 1. Nonaktifkan semua semester di periode ini
+            $periode->semesters()->update([
+                'aktif' => false
+            ]);
+
+            // 🟢 2. Aktifkan semester yang dipilih
+            $periode->semesters()
+                ->where('jenis', $jenis)
+                ->update([
+                    'aktif' => true
+                ]);
+
+            // 🔥 3. RESET STATUS MAHASISWA
+            Mahasiswa::query()->update([
+                'status_blokir' => 'BELUM_KRS'
+            ]);
+        });
+
+        return back()->with('success', "Semester {$jenis} aktif & status mahasiswa direset");
+    }
 
     public function periodeAktif(Periode $periode) {
         Periode::query()->update([

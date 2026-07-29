@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Registrasi;
 use App\Models\Mahasiswa;
 use App\Models\Penawaran;
+use App\Models\Periode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,9 +19,20 @@ class KrsMahasiswaController extends Controller
     {
         $nrp = session('nrp') ?? Auth::user()->username;
 
-        // Ambil semua registrasi mahasiswa (tanpa filter semester)
-        $registrasi = Registrasi::with('penawaran.mk')
+        // Ambil periode & semester aktif
+        $periodeAktif = Periode::where('aktif', 1)->first();
+        $semesterAktif = $periodeAktif?->semesters()->where('aktif', 1)->first();
+
+        if (!$semesterAktif) {
+            return back()->with('error', 'Semester aktif tidak ditemukan');
+        }
+
+        // 🔥 FILTER DI SINI
+        $registrasi = Registrasi::with(['penawaran.mk'])
             ->where('nrp', $nrp)
+            ->whereHas('penawaran', function ($q) use ($semesterAktif) {
+                $q->where('semester_id', $semesterAktif->id);
+            })
             ->get();
 
         // Mapping data

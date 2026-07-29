@@ -85,6 +85,7 @@ class NilaiKrsMahasiswaController extends Controller
         ->join('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
         ->leftJoin('krs', 'registrasi.regkrs', '=', 'krs.registrasi_id')
         ->where('registrasi.nrp', $nrp)
+        //->where('semester.id', $semesterAktif->id)
         ->select(
             'registrasi.regkrs',
             'penawaran.kodemk as kode',
@@ -98,7 +99,6 @@ class NilaiKrsMahasiswaController extends Controller
             'krs.uas',
             'krs.lain',
             'krs.na',
-            
             'semester.jenis',
             'semester.id as semester_id',
             'periode.tahun_ajaran'
@@ -108,8 +108,30 @@ class NilaiKrsMahasiswaController extends Controller
         ->orderBy('penawaran.kodemk')
         ->get();
         $mahasiswa = Auth::user()->mahasiswa->tahun_masuk ?? null;
-        $nilaiKrsGrouped = $nilaiKrs->groupBy(function ($item) {
-            return $item->tahun_ajaran . ' - ' . $item->jenis;
+        $nilaiKrsGrouped = $nilaiKrs
+        ->groupBy('tahun_ajaran')
+        ->map(function ($items, $tahun) use ($mahasiswa) {
+
+            return $items->groupBy('jenis')->map(function ($itemsPerJenis, $jenis) use ($tahun, $mahasiswa) {
+
+                // 🔥 Ambil tahun awal mahasiswa
+                $tahunAwal = $mahasiswa;
+
+                // 🔥 Ambil tahun dari periode (contoh: 2023/2024 → 2023)
+                $tahunPeriode = (int) substr($tahun, 0, 4);
+
+                // 🔥 Hitung selisih
+                $selisih = $tahunPeriode - $tahunAwal;
+
+                // 🔥 Hitung semester ke
+                $semesterKe = ($selisih * 2) + ($jenis === 'Ganjil' ? 1 : 2);
+
+                return [
+                    'data' => $itemsPerJenis,
+                    'semester_ke' => $semesterKe
+                ];
+            });
+
         });
 
         return view('mahasiswa.nilai_krs.index', compact('mahasiswa','nilaiKrsGrouped', 'statusBlokir', 'periodeAktif', 'semesterAktif', 'semesterKe'));

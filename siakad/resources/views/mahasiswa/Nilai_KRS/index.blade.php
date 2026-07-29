@@ -57,13 +57,28 @@
             </div>
 
             {{-- LOOP PER PERIODE --}}
-            @foreach ($nilaiKrsGrouped as $periode => $items)
-                
+            @foreach ($nilaiKrsGrouped as $tahun => $semesters)
+            @foreach ($semesters as $jenis => $wrap)
+                @php
+                    $items = $wrap['data'];
+                    $semesterKe = $wrap['semester_ke'];
+                @endphp
+
+                <div class="mb-4">
+                    <div class="flex justify-between font-semibold">
+                        <div>
+                            Periode : {{ $tahun }}
+                        </div>
+                        <div>
+                            Semester : {{ $semesterKe ?? "-" }} - {{ strtoupper($jenis) }}
+                        </div>
+                    </div>
+                </div>
+
                 <div class="mb-6">
                     <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
                         <table class="table w-full">
                             <thead class="bg-green-500 text-white">
-                              
                                 <tr>
                                     <th>No</th>
                                     <th>Kode</th>
@@ -80,7 +95,6 @@
                             <tbody>
                                 @foreach ($items as $i => $item)
                                     <tr>
-                                        
                                         <td>{{ $i+1 }}</td>
                                         <td>{{ $item->kode }}</td>
                                         <td>{{ $item->nama_mk }}</td>
@@ -90,16 +104,27 @@
                                         <td>{{ $item->uts ?? '-' }}</td>
                                         <td>{{ $item->uas ?? '-' }}</td>
                                         <td>{{ $item->na ?? '-' }}</td>
-                                        <td>{{ $item->tahun_ajaran ?? '-' }}</td>
-                                        
+                                        <td>{{ $item->tahun_ajaran }}</td>
                                     </tr>
                                 @endforeach
+
+                                {{-- TOTAL SKS --}}
+                                <tr class="font-bold">
+                                    <td colspan="3" class="text-right">TOTAL</td>
+                                    <td>
+                                        {{ $items->sum('sks') }}
+                                    </td>
+                                    <td colspan="6"></td>
+                                </tr>
+
                             </tbody>
                         </table>
                     </div>
                 </div>
 
             @endforeach
+
+        @endforeach
                     </tbody>
                 </table>
             </div>

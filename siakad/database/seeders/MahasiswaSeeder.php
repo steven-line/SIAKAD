@@ -14,7 +14,7 @@ class MahasiswaSeeder extends Seeder
             'dosen_wali' => '12345678',
             'tahun_masuk' => 2023,
             'status_blokir' => 'BELUM_KRS',
-            'prodi' => 'I' // Teknik Informatika
+            'prodi' => 'I'
         ]);
 
         Mahasiswa::create([
@@ -22,14 +22,14 @@ class MahasiswaSeeder extends Seeder
             'dosen_wali' => '12345678',
             'tahun_masuk' => 2023,
             'status_blokir' => 'BELUM_KRS',
-            'prodi' => 'I' // Teknik Informatika
+            'prodi' => 'I'
         ]);
 
         Mahasiswa::create([
             'nrp' => '31125555',
             'dosen_wali' => '12345678',
-a            'status_blokir' => 'BELUM_KRS',
-            'prodi' => 'K' // Sastra Inggris (pengganti SI yang sudah tidak ada)
+            'status_blokir' => 'BELUM_KRS',
+            'prodi' => 'K'
         ]);
     }
 }

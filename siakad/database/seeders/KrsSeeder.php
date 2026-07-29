@@ -12,23 +12,6 @@ class KrsSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('krs')->insert([
 
-            [
-                'registrasi_id' => 1,
-                'bu' => 'B',
-                'ttt1' => 80,
-                'ttt2' => 85,
-                'ttt3' => 90,
-                'lain' => 88,
-                'uts' => 84,
-                'uas' => 87,
-                'na' => 'A',
-                'sks' => 3,
-                'kelas' => 'A',
-                'survey' => true,
-            ],
-
-        ]);
     }
 }
