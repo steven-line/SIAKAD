@@ -124,7 +124,15 @@
         @can('mahasiswa.manage')
         <li><a href="/mahasiswa-admin">Master Mahasiswa</a></li>
         @endcan
-     
+
+        @can('sks.manage')
+        <li>
+            <a href="{{ route('ips.index') }}">
+                Master SKS
+            </a>
+        </li>
+        @endcan
+            
 
         @can('biodata.manage')
           <li><a href="/biodata">Master Biodata</a></li>
