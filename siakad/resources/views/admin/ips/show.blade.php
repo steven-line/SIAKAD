@@ -65,7 +65,7 @@
                     <input
                         type="text"
                         class="input input-bordered w-full"
-                        value="{{ number_format($ips->ips,3) }}"
+                        value="{{ number_format($ips->ips, 3) }}"
                         readonly>
                 </div>
 
@@ -77,14 +77,14 @@
                     <input
                         type="text"
                         class="input input-bordered w-full"
-                        value="{{ $ips->sks }}"
+                        value="{{ $ips->maksimal_sks }}"
                         readonly>
                 </div>
 
             </div>
 
             <form
-                action="{{ route('ips.update',$ips->nrp) }}"
+                action="{{ route('ips.update', $ips->nrp) }}"
                 method="POST"
                 class="mt-6">
 
@@ -97,13 +97,38 @@
                         Toleransi SKS
                     </label>
 
-                    <input
-                        type="number"
-                        name="toleransi"
-                        min="0"
-                        max="24"
-                        value="{{ old('toleransi',$ips->toleransi) }}"
-                        class="input input-bordered w-full">
+                    @if($ips->maksimal_sks == 21)
+
+                        <select name="toleransi" class="select select-bordered w-full">
+                            <option value="0" {{ $ips->toleransi == 0 ? 'selected' : '' }}>
+                                0 SKS
+                            </option>
+
+                            <option value="1" {{ $ips->toleransi == 1 ? 'selected' : '' }}>
+                                1 SKS
+                            </option>
+
+                            <option value="2" {{ $ips->toleransi == 2 ? 'selected' : '' }}>
+                                2 SKS
+                            </option>
+                        </select>
+
+                        <p class="text-xs text-gray-500 mt-2">
+                            Toleransi hanya dapat diberikan kepada mahasiswa
+                            dengan maksimal SKS 21.
+                        </p>
+
+                    @else
+
+                        <input
+                            type="text"
+                            class="input input-bordered w-full"
+                            value="Tidak dapat diberikan (Maksimal SKS sudah 24)"
+                            readonly>
+
+                        <input type="hidden" name="toleransi" value="0">
+
+                    @endif
 
                 </div>
 
@@ -111,7 +136,8 @@
 
                     <button
                         type="submit"
-                        class="btn btn-success">
+                        class="btn btn-success"
+                        {{ $ips->maksimal_sks == 24 ? 'disabled' : '' }}>
 
                         Simpan Perubahan
 

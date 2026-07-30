@@ -15,7 +15,7 @@ return new class extends Migration
 
             $table->string('nrp', 8);
 
-            $table->integer('sks')->default(0);
+            $table->integer('maksimal_sks')->default(0);
             $table->decimal('ips', 4, 3)->default(0.000);
             $table->integer('toleransi')->default(0);
 
