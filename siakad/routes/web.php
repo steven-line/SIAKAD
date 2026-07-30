@@ -10,6 +10,7 @@ use App\Http\Controllers\{
     PerwalianController,
     UbahPasswordController,
     FakultasController,
+    IpsController,
     JurusanController,
     KeuanganController,
     KurikulumController,
@@ -182,6 +183,31 @@ Route::middleware('auth')->group(function () {
             Route::patch('/{fakultas}', [FakultasController::class, 'update'])->name('update');
             Route::delete('/{fakultas}', [FakultasController::class, 'destroy'])->name('destroy');
              Route::get('/{fakultas}', [FakultasController::class, 'show'])->name('show');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | IPS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('ips')
+        ->middleware('permission:sks.manage')
+        ->name('ips.')
+        ->group(function () {
+
+            Route::get('/', [IpsController::class, 'index'])
+                ->name('index');
+
+            Route::post('/generate', [IpsController::class, 'generateIps'])
+                ->name('generate');
+
+            Route::get('/{ips}', [IpsController::class, 'show'])
+                ->name('show');
+
+            Route::put('/{ips}', [IpsController::class, 'update'])
+                ->name('update');
+
         });
 
     /*

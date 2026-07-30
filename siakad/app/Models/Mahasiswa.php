@@ -35,5 +35,10 @@ class Mahasiswa extends Model
          return $this->belongsTo(Prodi::class, 'prodi', 'kode_prodi');
      }
 
+     public function ips()
+    {
+        return $this->hasOne(Ips::class, 'nrp', 'nrp');
+    }
+
 
 }
