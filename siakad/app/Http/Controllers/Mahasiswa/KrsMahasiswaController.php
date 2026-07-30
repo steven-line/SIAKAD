@@ -7,6 +7,7 @@ use App\Models\Registrasi;
 use App\Models\Mahasiswa;
 use App\Models\Penawaran;
 use App\Models\Periode;
+use App\Models\Ips;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -58,11 +59,16 @@ class KrsMahasiswaController extends Controller
         $mahasiswa = Mahasiswa::with(['dosenWali', 'prodi'])->where('nrp', $nrp)->first();
 
         $statusBlokir = $mahasiswa?->status_blokir ?? 'BELUM_KRS';
+        $ipsMahasiswa = Ips::where('nrp', $nrp)->first();
 
-        $ipsTerakhir  = 3.813;
-        $limitSks     = 24;
-        $toleransiSks = 0;
-        $sisaLimit    = $limitSks - $totalSks - $toleransiSks;
+        $ipsTerakhir  = $ipsMahasiswa?->ips ?? 0;
+        $limitSks     = $ipsMahasiswa?->maksimal_sks ?? 21;
+        $toleransiSks = $ipsMahasiswa?->toleransi ?? 0;
+
+        // Maksimal SKS yang boleh diambil termasuk toleransi
+        $batasSks = $limitSks + $toleransiSks;
+
+        $sisaLimit = $batasSks - $totalSks;
 
         return view('mahasiswa.kartu_KRS.index', compact(
             'krsItems',
@@ -118,10 +124,28 @@ class KrsMahasiswaController extends Controller
                             ->sum('sks');
 
         $sksMatkul = $penawaran->mk ? $penawaran->mk->sks : 3;
-        $limitSks = 24;
 
-        if ($totalSksTerdaftar + $sksMatkul > $limitSks) {
-            return redirect()->back()->with('error', 'Melebihi batas SKS yang diizinkan (maksimal ' . $limitSks . ' SKS).');
+        // Ambil data IPS mahasiswa
+        $ipsMahasiswa = Ips::where('nrp', $nrp)->first();
+
+        $limitSks = $ipsMahasiswa?->maksimal_sks ?? 21;
+        $toleransi = $ipsMahasiswa?->toleransi ?? 0;
+
+        // Total SKS yang diizinkan
+        $batasSks = $limitSks + $toleransi;
+
+        if (($totalSksTerdaftar + $sksMatkul) > $batasSks) {
+
+            return redirect()->back()->with(
+                'error',
+                'Pengambilan mata kuliah melebihi batas SKS. Maksimal yang dapat diambil adalah '
+                . $batasSks .
+                ' SKS ('
+                . $limitSks .
+                ' SKS + toleransi '
+                . $toleransi .
+                ' SKS).'
+            );
         }
 
         // Simpan registrasi

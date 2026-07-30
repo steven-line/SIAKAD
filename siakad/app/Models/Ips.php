@@ -18,7 +18,7 @@ class Ips extends Model
 
     protected $fillable = [
         'nrp',
-        'sks',
+        'maksimal_sks',
         'ips',
         'toleransi',
     ];
