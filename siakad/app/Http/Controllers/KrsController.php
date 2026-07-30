@@ -172,7 +172,7 @@ public function update_bobot(Request $request, Mk $mk) {
          if ($bobotnilai === null) {
             return redirect()->back()->with('error', 'Bobot nilai untuk mata kuliah ini belum diatur. Silakan hubungi admin atau PJMK.');
         }
-        $periodeInputNilai = Metaperiode::findOrFail(1);
+        $periodeInputNilai = Metaperiode::first();
 
         $registrasi = Registrasi::with('penawaran.semester.periode')
             ->where('nrp', $mahasiswa->nrp)
@@ -182,9 +182,9 @@ public function update_bobot(Request $request, Mk $mk) {
             ->firstOrFail();
        
        $krs = Krs::firstOrCreate(
-        ['registrasi_id' => $registrasi->regkrs], // Kondisi pencarian
+        ['registrasi_id' => $registrasi->regkrs],
             [
-                'kelas' => 'A', // Isi dengan nilai default awal jika baru dibuat
+                'kelas' => 'A',
                 'survey' => false
             ]
         );
@@ -250,11 +250,11 @@ public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
             'boolean',
         ],
     ]);
-    $periodeInputNilai = Metaperiode::findOrFail(1);
-     if ($request->filled('uts')  &&  !(now()->between($periodeInputNilai->input_nilai_uts_mulai, $periodeInputNilai->input_nilai_uts_selesai))) {
+    $periodeInputNilai = Metaperiode::first();
+     if ($request->filled('uts')  &&  (!now()->between($periodeInputNilai->input_nilai_uts_mulai, $periodeInputNilai->input_nilai_uts_selesai))) {
             return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai UTS.');
         }
-    if ($request->filled('uas') && !(now()->between($periodeInputNilai->input_nilai_uas_mulai, $periodeInputNilai->input_nilai_uas_selesai))) {
+    if  ($request->filled('uas')  &&  (!now()->between($periodeInputNilai->input_nilai_uas_mulai, $periodeInputNilai->input_nilai_uas_selesai))) {
             return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai UAS.');
         }
 
@@ -295,8 +295,7 @@ public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
         default => 'E',
     };
 
-
-    $krs->updateOrCreate(['registrasi_id' => $registrasi->regkrs],[
+    $krs->update(['registrasi_id' => $registrasi->regkrs,
         'kelas'   => $validated['kelas'],
         'bu'      => $validated['bu'],
         'ttt1'    => $validated['ttt1'],

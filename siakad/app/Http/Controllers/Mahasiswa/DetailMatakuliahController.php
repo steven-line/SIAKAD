@@ -24,7 +24,7 @@ class DetailMataKuliahController extends Controller
     ->where('penawaran_id', $penawaran->recno)
     ->exists();
     
-    $periodeKrs = Metaperiode::findOrFail(1);
+    $periodeKrs = Metaperiode::first();
     $statusBlokir = Auth::user()->mahasiswa->status_blokir;
   
     return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil', 'statusBlokir','periodeKrs'));
@@ -34,7 +34,7 @@ class DetailMataKuliahController extends Controller
         $user = Auth::user();
         $mahasiswa = $user->mahasiswa;
 
-        $periodeKrs = Metaperiode::findOrFail(1);
+        $periodeKrs = Metaperiode::first();
         if (!$mahasiswa) {
             return back()->with('error', 'Data mahasiswa tidak ditemukan.');
         }

@@ -32,7 +32,6 @@ class PjmkController extends Controller
         }
 
         $penawarans = $query
-            ->orderBy('hari')
             ->paginate(10, ['kodemk', 'dosen']);
         return view('kaprodi.pjmk.list_matkul', ['penawarans' => $penawarans]);
     }
