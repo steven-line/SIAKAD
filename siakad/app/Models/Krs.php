@@ -17,7 +17,6 @@ class Krs extends Model
         'bu',
         'ttt1',
         'ttt2',
-        'ttt3',
         'lain',
         'uts',
         'uas',

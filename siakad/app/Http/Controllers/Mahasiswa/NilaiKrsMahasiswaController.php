@@ -94,7 +94,6 @@ class NilaiKrsMahasiswaController extends Controller
             'registrasi.status',
             'krs.ttt1',
             'krs.ttt2',
-            'krs.ttt3',
             'krs.uts',
             'krs.uas',
             'krs.lain',

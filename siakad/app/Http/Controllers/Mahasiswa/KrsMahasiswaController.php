@@ -30,8 +30,10 @@ class KrsMahasiswaController extends Controller
         // 🔥 FILTER DI SINI
         $registrasi = Registrasi::with(['penawaran.mk'])
             ->where('nrp', $nrp)
-            ->whereHas('penawaran', function ($q) use ($semesterAktif) {
-                $q->where('semester_id', $semesterAktif->id);
+            ->whereHas('penawaran', function ($q) use ($periodeAktif) {
+                $q->whereHas('semester', function ($s) use ($periodeAktif) {
+                    $s->where('periode_id', $periodeAktif->id);
+                });
             })
             ->get();
 
