@@ -1,136 +1,65 @@
-<x-layout title="KRS UWIKA">
-
-    @if($statusBlokir === 'BLOKIR')
-
-        <div role="alert" class="alert alert-error mb-6">
-            <span>
-                KRS anda terblokir, mohon hubungi bagian keuangan untuk menyelesaikan tunggakan.
-            </span>
+<x-layout>  
+    <div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
+        <div>
+            <p class="font-bold">Periode: {{$informasiUmum['periode']}}</p>
+            <p class="font-bold">Semester: {{$informasiUmum['semester']}}</p>
+            <p class="font-bold">Program studi: {{$informasiUmum['program_studi']}}</p>
         </div>
+        <div class="cols-start-2 cols-end-3">
+            <p class="font-bold">NRP: {{$informasiUmum['nrp']}}</p>
+            <p class="font-bold">Nama: {{$informasiUmum['nama']}}</p>
+            <p class="font-bold">Dosen Wali: {{$informasiUmum['dosen_wali']}}</p>
+        </div>
+        
+    </div>
 
-    @else
-
-        @if($statusBlokir === 'TERKUNCI')
-            <div role="alert" class="alert alert-warning mb-6">
-                <span>
-                    KRS Anda sedang terkunci. Anda masih dapat melihat data, tetapi tidak dapat melakukan perubahan.
-                </span>
+    <hr>
+    @foreach($grouped as $group)
+    <div class="flex justify-between px-4">
+        <div class="font-bold">Periode: {{$group['periode']}}</div>
+        <div class="font-bold mb-4">Semester: {{$group['semester']}} - <span class="badge badge-primary badge-sm"> {{$loop->iteration}}</span></div>
+    </div> 
+    <table class="table px-4">
+        <thead class="bg-blue-500 text-white">
+            <tr>
+                <th>No</th>
+                <th>Kode</th>
+                <th>Mata Kuliah</th>
+                <th>SKS</th>
+                <th>Sts</th>
+                <th>TTT1</th>
+                <th>TTT2</th>
+                <th>UTS</th>
+                <th>UAS</th>
+                <th>LAIN</th>
+                <th>GRADE</th>
+            </tr>
+        </thead>
+        <tbody>
+          
+            @foreach($group['items'] as $item) 
+                <tr>
+                    
+                    <td>{{$loop->iteration}}</td>
+                    <td>{{$item['kode']}}</td>
+                    <td>{{$item['mata_kuliah']}}</td>
+                    <td>{{$item['sks']}}</td>
+                    <td>{{$item['status']}}</td>
+                    <td>{{$item['ttt1']}}</td>
+                    <td>{{$item['ttt2']}}</td>
+                    <td>{{$item['uts']}}</td>
+                    <td>{{$item['uas']}}</td>
+                    <td>{{$item['lain']}}</td>
+                    <td>{{$item['grade']}}</td>
+                </tr>
+                
+           
+        </tbody>
+         @endforeach
+       
+    </table>
+         <div class="px-4">
+                Total:  {{$group['total_sks']}} 
             </div>
-        @endif
-
-        {{-- Alert Pengumuman Nilai Final --}}
-        @if(!empty($periodePengumuman))
-
-            <div role="alert" class="alert alert-warning mb-6">
-                <div>
-                    <h3 class="font-bold">
-                        Pengumuman
-                    </h3>
-
-                    <div class="mt-1">
-                        Nilai KRS sedang tidak dapat diakses karena sedang dalam periode
-                        <b>Pengumuman Nilai Final</b>.
-
-                        <br><br>
-
-                        Nilai dapat diakses kembali setelah
-
-                        <b>
-                            {{ \Carbon\Carbon::parse($pengumumanSelesai)->translatedFormat('d F Y, H:i') }}
-                            WIB
-                        </b>.
-                    </div>
-                </div>
-            </div>
-
-        @else
-
-            {{-- ✅ TERKUNCI / NORMAL --}}
-            {{-- HEADER --}}
-            <div class="mb-4">
-                <div>
-                    Periode: {{ $periodeAktif ? $periodeAktif->tahun_ajaran : '-' }}
-                </div>
-                <div>
-                    Semester: {{ $semesterKe ?? "-" }} - {{ $semesterAktif ? $semesterAktif->jenis : '-' }}
-                </div>
-            </div>
-
-            {{-- LOOP PER PERIODE --}}
-            @foreach ($nilaiKrsGrouped as $tahun => $semesters)
-            @foreach ($semesters as $jenis => $wrap)
-                @php
-                    $items = $wrap['data'];
-                    $semesterKe = $wrap['semester_ke'];
-                @endphp
-
-                <div class="mb-4">
-                    <div class="flex justify-between font-semibold">
-                        <div>
-                            Periode : {{ $tahun }}
-                        </div>
-                        <div>
-                            Semester : {{ $semesterKe ?? "-" }} - {{ strtoupper($jenis) }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-                        <table class="table w-full">
-                            <thead class="bg-green-500 text-white">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kode</th>
-                                    <th>Mata Kuliah</th>
-                                    <th>SKS</th>
-                                    <th>TTT1</th>
-                                    <th>TTT2</th>
-                                    <th>UTS</th>
-                                    <th>UAS</th>
-                                    <th>Grade</th>
-                                    <th>Periode</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($items as $i => $item)
-                                    <tr>
-                                        <td>{{ $i+1 }}</td>
-                                        <td>{{ $item->kode }}</td>
-                                        <td>{{ $item->nama_mk }}</td>
-                                        <td>{{ $item->sks }}</td>
-                                        <td>{{ $item->ttt1 ?? '-' }}</td>
-                                        <td>{{ $item->ttt2 ?? '-' }}</td>
-                                        <td>{{ $item->uts ?? '-' }}</td>
-                                        <td>{{ $item->uas ?? '-' }}</td>
-                                        <td>{{ $item->na ?? '-' }}</td>
-                                        <td>{{ $item->tahun_ajaran }}</td>
-                                    </tr>
-                                @endforeach
-
-                                {{-- TOTAL SKS --}}
-                                <tr class="font-bold">
-                                    <td colspan="3" class="text-right">TOTAL</td>
-                                    <td>
-                                        {{ $items->sum('sks') }}
-                                    </td>
-                                    <td colspan="6"></td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            @endforeach
-
-        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-        @endif
-
-    @endif
-
+    @endforeach
 </x-layout>

@@ -251,10 +251,10 @@ public function update(Request $request, Mahasiswa $mahasiswa, Mk $mk)
         ],
     ]);
     $periodeInputNilai = Metaperiode::findOrFail(1);
-     if ($request->filled('uts')  &&  (now()->gte($periodeInputNilai->input_nilai_uts_mulai) || now()->lte($periodeInputNilai->input_nilai_uts_selesai))) {
+     if ($request->filled('uts')  &&  !(now()->between($periodeInputNilai->input_nilai_uts_mulai, $periodeInputNilai->input_nilai_uts_selesai))) {
             return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai UTS.');
         }
-    if ($request->filled('uas') && (now()->gte($periodeInputNilai->input_nilai_uas_mulai) || now()->lte($periodeInputNilai->input_nilai_uas_selesai))) {
+    if ($request->filled('uas') && !(now()->between($periodeInputNilai->input_nilai_uas_mulai, $periodeInputNilai->input_nilai_uas_selesai))) {
             return redirect()->back()->with('error', 'Anda tidak sedang di periode input nilai UAS.');
         }
 

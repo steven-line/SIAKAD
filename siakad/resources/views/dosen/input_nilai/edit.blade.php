@@ -2,7 +2,15 @@
         <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
             ⮜ Previous page
         </a>
-
+        @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
         <form action="{{ route('nilai.update', [
             'mahasiswa' => $mahasiswa->nrp,
             'mk' => $mk->kodemk,
@@ -57,7 +65,7 @@
                             name="uts"
                             class="input w-full"
                             value="{{ old('uts', $krs->uts) }}"
-                             {{ (now()->gte($periodeInputNilai->input_nilai_uts_mulai) && now()->lte($periodeInputNilai->input_nilai_uts_selesai)) ? '' : 'readonly' }}
+                             {{ (now()->between($periodeInputNilai->input_nilai_uts_mulai ?? now(), $periodeInputNilai->input_nilai_uts_selesai ?? now())) ? '' : 'readonly' }}
                        
                             >
 
@@ -74,7 +82,7 @@
                             name="uas"
                             class="input w-full"
                             value="{{ old('uas', $krs->uas) }}"
-                             {{ (now()->gte($periodeInputNilai->input_nilai_uas_mulai) && now()->lte($periodeInputNilai->input_nilai_uas_selesai)) ? '' : 'readonly' }}
+                             {{ (now()->gte($periodeInputNilai->input_nilai_uas_mulai ?? now()) && now()->lte($periodeInputNilai->input_nilai_uas_selesai ?? now())) ? '' : 'readonly' }}
                         >
 
                         <x-forms.error name="uas" />
