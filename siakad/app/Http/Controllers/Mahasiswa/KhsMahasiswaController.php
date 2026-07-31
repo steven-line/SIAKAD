@@ -41,9 +41,7 @@ class KhsMahasiswaController extends Controller
 
     public function index()
     {
-        $nimDosen = Auth::user()->dosen->nim_dosen ?? null;
-
-        
+        $nimDosen = Auth::user()->dosen->nim_dosen ?? null;        
         $user = Auth::user();
         $krsMahasiswa = Krs::whereHas('registrasi', function (Builder $query) use ($user) {
             $query->where('nrp', $user->mahasiswa->nrp);
@@ -84,9 +82,7 @@ class KhsMahasiswaController extends Controller
             return $periode;
         })->all();
         $ipk = array_sum(array_column($grouped, 'ips'))/(count($grouped));
-        
-
-        
+               
         $informasiUmum = [
                             'periode' => $periode,
                             'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
@@ -96,8 +92,6 @@ class KhsMahasiswaController extends Controller
                             'dosen_wali' => $user->mahasiswa->dosen_wali
         ];     
 
-          
-     
         return view('mahasiswa.KHS.index', compact('grouped', 'informasiUmum', 'ipk'));
     
     }
