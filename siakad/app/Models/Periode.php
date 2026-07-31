@@ -23,6 +23,7 @@ class Periode extends Model
 public function semesters(){
     return $this->hasMany(Semester::class, 'periode_id');
 }
+
 public function aktifkanSemester($jenis)
 {
     DB::transaction(function () use ($jenis) {

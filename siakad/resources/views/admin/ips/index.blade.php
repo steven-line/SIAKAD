@@ -18,7 +18,7 @@
         <button class="btn btn-success">
             Generate IPS Semua Mahasiswa
         </button>
-    </form> 
+    </form>
 
     @if(session('success'))
         <div class="alert alert-success mx-4 mb-4">
@@ -34,7 +34,7 @@
                 <th>NRP</th>
                 <th>Nama Mahasiswa</th>
                 <th>IPS</th>
-                <th>SKS Maks</th>
+                <th>Maksimal SKS</th>
                 <th>Toleransi</th>
                 <th width="120">Aksi</th>
             </tr>
@@ -59,11 +59,11 @@
                 </td>
 
                 <td>
-                    {{ number_format($mahasiswa->ips->ips ?? 0,3) }}
+                    {{ number_format($mahasiswa->ips->ips ?? 0, 3) }}
                 </td>
 
                 <td>
-                    {{ $mahasiswa->ips->sks ?? 0 }}
+                    {{ $mahasiswa->ips->maksimal_sks ?? 0 }}
                 </td>
 
                 <td>
@@ -75,7 +75,7 @@
                     @if($mahasiswa->ips)
 
                         <a
-                            href="{{ route('ips.show',$mahasiswa->ips->nrp) }}"
+                            href="{{ route('ips.show', $mahasiswa->ips->nrp) }}"
                             class="btn btn-warning btn-sm text-white">
 
                             Kelola

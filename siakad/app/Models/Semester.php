@@ -14,7 +14,9 @@ class Semester extends Model
         'aktif',
         'nama'
     ];
-
+    public function penawarans(){
+        return $this->hasMany(Penawaran::class);
+    }
     /**
      * Relasi ke Periode
      */

@@ -12,6 +12,5 @@ class KrsSeeder extends Seeder
      */
     public function run(): void
     {
-        
     }
 }

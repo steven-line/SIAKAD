@@ -3,136 +3,66 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Krs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Metaperiode;
 use App\Models\Periode;
+use App\Models\Semester;
+use Illuminate\Database\Eloquent\Builder;
 
 class NilaiKrsMahasiswaController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $nrp = $user->mahasiswa->nrp ?? null;
-        $statusBlokir = $user->mahasiswa->status_blokir;
 
-        if (!$nrp) {
-            return redirect()->back()->with('error', 'NRP tidak ditemukan.');
+        
+        $krsMahasiswa = Krs::whereHas('registrasi', function (Builder $query) use ($user) {
+            $query->where('nrp', $user->mahasiswa->nrp);
+        })->get();
+        $datas = [];
+        $periode = Periode::where('aktif','1')->first();
+        $semester = $periode->whereHas('semesters', function (Builder $query) {
+            $query->where('aktif', '1')->select('jenis');
+        })->first();
+        $metaperiode = Metaperiode::findOrFail(1);
+    
+        if (now()->between($metaperiode->pengumuman_nilai_final_mulai ?? now(), $metaperiode->pengumuman_nilai_final_selesai ?? now())) {
+            return back()->withErrors(['error' => 'anda memasuki periode pengumuman nilai_final']);            
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Cek periode pengumuman nilai final
-        |--------------------------------------------------------------------------
-        */
+        foreach($krsMahasiswa as $index => $krs) {
+            $periode = $krs->registrasi->penawaran->semester->periode->tahun_ajaran;
+            $semester = $krs->registrasi->penawaran->semester->jenis;
+            $key = $periode . '|' . $semester;
+            $datas[$key]['periode'] = $periode;
+            $datas[$key]['semester'] = $semester;         
+            $datas[$key]['items']['item'.$index+1] = [
+                                'kode' => $krs->registrasi->penawaran->kodemk,
+                                'mata_kuliah' => $krs->registrasi->penawaran->mk->nama,
+                                'sks' => $krs->registrasi->penawaran->mk->sks,
+                                'status' =>   $krs->bu,
+                                'ttt1' =>   $krs->ttt1,
+                                'ttt2' =>   $krs->ttt2,
+                                'uts' =>    $krs->uts,
+                                'uas' =>    $krs->uas,
+                                'lain' =>   $krs->lain,
+                                'grade' => $krs->na];     
 
-        // Ambil periode yang sedang aktif
-        $periodeAktif = Periode::where('aktif', 1)->first();
-        $semesterAktif = $periodeAktif ? $periodeAktif->semesters()->where('aktif', 1)->first() : null;
-        // Ambil tahun masuk mahasiswa
-        $tahunMasuk = $user->mahasiswa->tahun_masuk ?? null;
-
-        // Default semester
-        $semesterKe = null;
-
-        if ($tahunMasuk && $semesterAktif && $periodeAktif) {
-            // Ambil tahun dari periode (contoh: 2023/2024 → 2023)
-            $tahunPeriode = (int) substr($periodeAktif->tahun_ajaran, 0, 4);
-
-            // Hitung selisih tahun
-            $selisihTahun = $tahunPeriode - $tahunMasuk;
-
-            // Hitung semester dasar
-            $semesterKe = $selisihTahun * 2;
-
-            // Tambahkan berdasarkan jenis semester
-            if ($semesterAktif->jenis === 'Ganjil') {
-                $semesterKe += 1;
-            } elseif ($semesterAktif->jenis === 'Genap') {
-                $semesterKe += 2;
-            }
         }
-        // Ambil metaperiode sesuai periode aktif
-        $metaperiode = null;
-
-        if ($periodeAktif) {
-            $metaperiode = Metaperiode::where('periode_id', $periodeAktif->id)->first();
-        }
-
-        // Jika sedang masa pengumuman nilai final,
-        // mahasiswa tidak boleh melihat nilai KRS
-        if (
-            $metaperiode &&
-            $metaperiode->pengumuman_nilai_final_mulai &&
-            $metaperiode->pengumuman_nilai_final_selesai &&
-            now()->between(
-                $metaperiode->pengumuman_nilai_final_mulai,
-                $metaperiode->pengumuman_nilai_final_selesai
-            )
-        ) {
-        return view('mahasiswa.nilai_krs.index', [
-            'nilaiKrs' => collect(),
-            'statusBlokir' => $statusBlokir,
-            'periodePengumuman' => true,
-            'pengumumanSelesai' => $metaperiode->pengumuman_nilai_final_selesai,
-        ]);
-        }
-
-        $nilaiKrs = DB::table('registrasi')
-        ->join('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
-        ->join('semester', 'penawaran.semester_id', '=', 'semester.id')
-        ->join('periode', 'semester.periode_id', '=', 'periode.id')
-        ->join('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
-        ->leftJoin('krs', 'registrasi.regkrs', '=', 'krs.registrasi_id')
-        ->where('registrasi.nrp', $nrp)
-        //->where('semester.id', $semesterAktif->id)
-        ->select(
-            'registrasi.regkrs',
-            'penawaran.kodemk as kode',
-            'mk.nama as nama_mk',
-            'mk.sks as sks',
-            'registrasi.status',
-            'krs.ttt1',
-            'krs.ttt2',
-            'krs.uts',
-            'krs.uas',
-            'krs.lain',
-            'krs.na',
-            'semester.jenis',
-            'semester.id as semester_id',
-            'periode.tahun_ajaran'
-        )
-        ->orderBy('periode.tahun_ajaran')
-        ->orderBy('semester.id')
-        ->orderBy('penawaran.kodemk')
-        ->get();
-        $mahasiswa = Auth::user()->mahasiswa->tahun_masuk ?? null;
-        $nilaiKrsGrouped = $nilaiKrs
-        ->groupBy('tahun_ajaran')
-        ->map(function ($items, $tahun) use ($mahasiswa) {
-
-            return $items->groupBy('jenis')->map(function ($itemsPerJenis, $jenis) use ($tahun, $mahasiswa) {
-
-                // 🔥 Ambil tahun awal mahasiswa
-                $tahunAwal = $mahasiswa;
-
-                // 🔥 Ambil tahun dari periode (contoh: 2023/2024 → 2023)
-                $tahunPeriode = (int) substr($tahun, 0, 4);
-
-                // 🔥 Hitung selisih
-                $selisih = $tahunPeriode - $tahunAwal;
-
-                // 🔥 Hitung semester ke
-                $semesterKe = ($selisih * 2) + ($jenis === 'Ganjil' ? 1 : 2);
-
-                return [
-                    'data' => $itemsPerJenis,
-                    'semester_ke' => $semesterKe
-                ];
-            });
-
-        });
-
-        return view('mahasiswa.nilai_krs.index', compact('mahasiswa','nilaiKrsGrouped', 'statusBlokir', 'periodeAktif', 'semesterAktif', 'semesterKe'));
+        $grouped = collect($datas)->map(function ($periode) {
+            $periode['total_sks'] = collect($periode['items'])->sum('sks');
+            return $periode;
+        })->all();
+        $informasiUmum = [
+                            'periode' => $periode,
+                            'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
+                            'semester' => $semester,
+                            'nrp' => $user->mahasiswa->nrp,
+                            'nama' => $user->mahasiswa->biodata->nama,
+                            'dosen_wali' => $user->mahasiswa->dosen_wali
+        ];      
+        return view('mahasiswa.nilai_krs.index', compact('grouped', 'informasiUmum'));
     }
 }

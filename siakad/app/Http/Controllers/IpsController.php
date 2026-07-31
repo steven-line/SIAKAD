@@ -60,8 +60,15 @@ class IpsController extends Controller
     public function update(Request $request, Ips $ips)
     {
         $request->validate([
-            'toleransi' => 'required|integer|min:0|max:24',
+            'toleransi' => 'required|integer|min:0|max:2',
         ]);
+
+        // Mahasiswa dengan hak 24 SKS tidak boleh diberi toleransi
+        if ($ips->maksimal_sks >= 24 && $request->toleransi > 0) {
+            return back()->withErrors([
+                'toleransi' => 'Mahasiswa dengan maksimal 24 SKS tidak dapat diberikan toleransi.'
+            ])->withInput();
+        }
 
         $ips->update([
             'toleransi' => $request->toleransi,
@@ -72,6 +79,9 @@ class IpsController extends Controller
             ->with('success', 'Toleransi SKS berhasil diperbarui.');
     }
 
+    /**
+     * Konversi nilai huruf ke bobot.
+     */
     private function getBobot($nilai)
     {
         return match ($nilai) {
@@ -85,6 +95,9 @@ class IpsController extends Controller
         };
     }
 
+    /**
+     * Generate IPS seluruh mahasiswa.
+     */
     public function generateIps()
     {
         $mahasiswas = Mahasiswa::all();
@@ -114,11 +127,11 @@ class IpsController extends Controller
                 $ips = round($totalMutu / $totalSks, 3);
             }
 
-            // Aturan maksimal SKS
+            // Menentukan maksimal SKS berdasarkan IPS
             if ($ips >= 3.000) {
-                $maksSks = 24;
+                $maksimalSks = 24;
             } else {
-                $maksSks = 21;
+                $maksimalSks = 21;
             }
 
             Ips::updateOrCreate(
@@ -127,7 +140,7 @@ class IpsController extends Controller
                 ],
                 [
                     'ips' => $ips,
-                    'sks' => $maksSks,
+                    'maksimal_sks' => $maksimalSks,
                 ]
             );
         }

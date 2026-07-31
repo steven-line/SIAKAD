@@ -4,6 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Biodata;
+use App\Models\Dosen;
+use App\Models\Registrasi;
+use App\Models\Prodi;
+use App\Models\Ips;
+
 class Mahasiswa extends Model
 {
     //
@@ -31,7 +37,7 @@ class Mahasiswa extends Model
          return $this->hasMany(Registrasi::class, 'nrp', 'nrp');
      }
 
-    public function prodi() {
+    public function programStudi() {
          return $this->belongsTo(Prodi::class, 'prodi', 'kode_prodi');
      }
 

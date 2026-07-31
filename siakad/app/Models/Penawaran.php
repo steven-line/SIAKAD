@@ -56,7 +56,9 @@ class Penawaran extends Model
     {
         return $value ? \Carbon\Carbon::parse($value) : null;
     }
-
+    public function registrasis() {
+        return $this->hasMany(Registrasi::class, 'penawaran_id', 'recno');
+    }
     public function semester()
     {
         return $this->belongsTo(Semester::class, 'semester_id');
