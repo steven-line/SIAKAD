@@ -21,7 +21,7 @@ class KrsMahasiswaController extends Controller
 
         // Ambil periode & semester aktif
         $periodeAktif = Periode::where('aktif', 1)->first();
-        $semesterAktif = $periodeAktif?->semesters()->where('aktif', 1)->first();
+        $semesterAktif = $periodeAktif?->semesters()->where('aktif', 1)->pluck('id');
 
         if (!$semesterAktif) {
             return back()->with('error', 'Semester aktif tidak ditemukan');
@@ -30,10 +30,8 @@ class KrsMahasiswaController extends Controller
         // 🔥 FILTER DI SINI
         $registrasi = Registrasi::with(['penawaran.mk'])
             ->where('nrp', $nrp)
-            ->whereHas('penawaran', function ($q) use ($periodeAktif) {
-                $q->whereHas('semester', function ($s) use ($periodeAktif) {
-                    $s->where('periode_id', $periodeAktif->id);
-                });
+            ->whereHas('penawaran', function ($q) use ($semesterAktif) {
+                $q->whereIn('semester_id', $semesterAktif);
             })
             ->get();
 
