@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Metaperiode;
 use App\Models\Periode;
+use App\Models\Registrasi;
 use App\Models\Semester;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -16,53 +17,42 @@ class NilaiKrsMahasiswaController extends Controller
     public function index()
     {
         $user = Auth::user();
-
-        
-        $krsMahasiswa = Krs::whereHas('registrasi', function (Builder $query) use ($user) {
-            $query->where('nrp', $user->mahasiswa->nrp);
-        })->get();
-        $datas = [];
-        $periode = Periode::where('aktif','1')->first();
-        $semester = $periode->whereHas('semesters', function (Builder $query) {
-            $query->where('aktif', '1')->select('jenis');
-        })->first();
-        $metaperiode = Metaperiode::findOrFail(1);
+        $krsMahasiswa = Registrasi::leftJoin('krs', 'registrasi.regkrs', '=', 'krs.registrasi_id')
+                                   ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
+                                   ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
+                                   ->leftJoin('semester', 'penawaran.semester_id', '=', 'semester.id')
+                                   ->leftJoin('periode', 'semester.periode_id', '=', 'periode.id')
+                                   ->select('mk.kodemk as kode','mk.nama as mata_kuliah', 'krs.sks', 'krs.bu as status', 'krs.na as grade', 'krs.ttt1', 'krs.ttt2', 'krs.uts', 'krs.uas', 'krs.lain', 'mk.sks', 'periode.tahun_ajaran', 'semester.jenis')
+                                   ->where('registrasi.nrp', $user->mahasiswa->nrp)
+                                   ->get()
+                                   ->groupBy(function($item) {
+                                    return $item->tahun_ajaran . '|' . $item->jenis;
+                                  })->map(function($group) {
+                                    return [
+                                        'periode' => $group->first()->tahun_ajaran,
+                                        'semester' => $group->first()->jenis,
+                                        'total_sks' => $group->sum('sks'),
+                                        'matkul' => $group
+                                    ];
+                                  });
     
+        $periode = Periode::where('aktif','1')->first();
+        $semester = Semester::join('periode', function($join){
+           $join->on('semester.periode_id', '=', 'periode.id')
+                ->where('periode.aktif', '=', '1'); 
+        })->select('jenis')->where('semester.aktif', '1')->first();       
+        $metaperiode = Metaperiode::findOrFail(1);
         if (now()->between($metaperiode->pengumuman_nilai_final_mulai ?? now(), $metaperiode->pengumuman_nilai_final_selesai ?? now())) {
             return back()->withErrors(['error' => 'anda memasuki periode pengumuman nilai_final']);            
         }
-
-        foreach($krsMahasiswa as $index => $krs) {
-            $periode = $krs->registrasi->penawaran->semester->periode->tahun_ajaran;
-            $semester = $krs->registrasi->penawaran->semester->jenis;
-            $key = $periode . '|' . $semester;
-            $datas[$key]['periode'] = $periode;
-            $datas[$key]['semester'] = $semester;         
-            $datas[$key]['items']['item'.$index+1] = [
-                                'kode' => $krs->registrasi->penawaran->kodemk,
-                                'mata_kuliah' => $krs->registrasi->penawaran->mk->nama,
-                                'sks' => $krs->registrasi->penawaran->mk->sks,
-                                'status' =>   $krs->bu,
-                                'ttt1' =>   $krs->ttt1,
-                                'ttt2' =>   $krs->ttt2,
-                                'uts' =>    $krs->uts,
-                                'uas' =>    $krs->uas,
-                                'lain' =>   $krs->lain,
-                                'grade' => $krs->na];     
-
-        }
-        $grouped = collect($datas)->map(function ($periode) {
-            $periode['total_sks'] = collect($periode['items'])->sum('sks');
-            return $periode;
-        })->all();
         $informasiUmum = [
-                            'periode' => $periode,
+                            'periode' => $periode->tahun_ajaran,
                             'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
-                            'semester' => $semester,
+                            'semester' => $semester->jenis,
                             'nrp' => $user->mahasiswa->nrp,
                             'nama' => $user->mahasiswa->biodata->nama,
                             'dosen_wali' => $user->mahasiswa->dosen_wali
         ];      
-        return view('mahasiswa.nilai_krs.index', compact('grouped', 'informasiUmum'));
+        return view('mahasiswa.nilai_krs.index', compact('krsMahasiswa', 'informasiUmum'));
     }
 }

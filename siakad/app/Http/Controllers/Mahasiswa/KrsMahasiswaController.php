@@ -23,7 +23,7 @@ class KrsMahasiswaController extends Controller
 
         // Ambil periode & semester aktif
         $periodeAktif = Periode::where('aktif', 1)->first();
-        $semesterAktif = $periodeAktif?->semesters()->where('aktif', 1)->first();
+        $semesterAktif = $periodeAktif?->semesters()->where('aktif', 1)->pluck('id');
 
         if (!$semesterAktif) {
             return back()->with('error', 'Semester aktif tidak ditemukan');
@@ -32,10 +32,8 @@ class KrsMahasiswaController extends Controller
         // 🔥 FILTER DI SINI
         $registrasi = Registrasi::with(['penawaran.mk'])
             ->where('nrp', $nrp)
-            ->whereHas('penawaran', function ($q) use ($periodeAktif) {
-                $q->whereHas('semester', function ($s) use ($periodeAktif) {
-                    $s->where('periode_id', $periodeAktif->id);
-                });
+            ->whereHas('penawaran', function ($q) use ($semesterAktif) {
+                $q->whereIn('semester_id', $semesterAktif);
             })
             ->get();
 
@@ -57,13 +55,13 @@ class KrsMahasiswaController extends Controller
 
         $totalSks = $krsItems->sum('sks');
 
-        $mahasiswa = Mahasiswa::with(['dosenWali', 'prodi'])->where('nrp', $nrp)->first();
+        $mahasiswa = Mahasiswa::with(['dosenWali', 'programStudi'])->where('nrp', $nrp)->first();
 
         $statusBlokir = $mahasiswa?->status_blokir ?? 'BELUM_KRS';
         $ipsMahasiswa = Ips::where('nrp', $nrp)->first();
 
         $ipsTerakhir  = $ipsMahasiswa?->ips ?? 0;
-        $limitSks     = $ipsMahasiswa?->maksimal_sks ?? 21;
+        $limitSks     = $ipsMahasiswa?->sks ?? 0;
         $toleransiSks = $ipsMahasiswa?->toleransi ?? 0;
 
         // Maksimal SKS yang boleh diambil termasuk toleransi
