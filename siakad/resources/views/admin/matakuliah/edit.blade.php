@@ -69,37 +69,85 @@
                 </div>
             </div>
 
-            {{-- PRASYARAT --}}
-            <div class="grid grid-cols-4 gap-4 mt-4">
-                @for ($i = 1; $i <= 10; $i++)
-                    <div>
-                        <label class="label font-bold">Prasyarat {{ $i }}</label>
-                        <select class="select select-bordered w-full" name="prasyarat{{$i}}">
-                                <option disabled selected>Select MK</option>
-                                @foreach ($mks as $mk)
-                                    <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i",  $mk->kodemk) == $mk->kodemk)>
-                                        {{ $mk->kodemk }} - {{ $mk->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        <x-forms.error name="prasyarat{{ $i }}"/>
-                    </div>
-                @endfor
-            </div>
+        {{-- PRASYARAT --}}
+        <div class="grid grid-cols-4 gap-4 mt-4">
+            @for ($i = 1; $i <= 10; $i++)
+                <div>
+                    <label class="label font-bold">Prasyarat {{ $i }}</label>
 
-            <div class="grid grid-cols-4 gap-4 mt-4">
-                  <div>
-                    <label class="label font-bold">Prasyarat Grade</label>
-                       <select class="select select-bordered w-full" name="prasyaratgrade" required>
-                        <option disabled selected>Select Prasyarat Grade</option>
-                        <option value="A" @selected(old("prasyaratgrade") == "A")>A</option>
-                        <option value="AB" @selected(old("prasyaratgrade") == "AB")>AB</option>
-                        <option value="B" @selected(old("prasyaratgrade") == "B")>B</option>
-                        <option value="BC" @selected(old("prasyaratgrade") == "BC")>BC</option>
-                        <option value="C" @selected(old("prasyaratgrade") == "C")>C</option>
+                    <select class="select select-bordered w-full" name="prasyarat{{ $i }}">
+
+                        <option value="-"
+                            @selected(old("prasyarat$i", $mk->{'prasyarat'.$i}) == '-')>
+                            -- Tidak Ada Prasyarat --
+                        </option>
+
+                        @foreach ($mks as $matkul)
+
+                            @if($matkul->kodemk != $mk->kodemk)
+
+                                <option
+                                    value="{{ $matkul->kodemk }}"
+                                    @selected(old("prasyarat$i", $mk->{'prasyarat'.$i}) == $matkul->kodemk)>
+
+                                    {{ $matkul->kodemk }} - {{ $matkul->nama }}
+
+                                </option>
+
+                            @endif
+
+                        @endforeach
+
                     </select>
-                    <x-forms.error name='prasyaratgrade'/>
+
+                    <x-forms.error name="prasyarat{{ $i }}" />
                 </div>
+            @endfor
+        </div>
+            <div class="grid grid-cols-4 gap-4 mt-4">
+
+                <div>
+                    <label class="label font-bold">Prasyarat Grade</label>
+
+                    <select class="select select-bordered w-full" name="prasyaratgrade">
+
+                        <option value="-"
+                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == '-')>
+                            -- Tidak Ada Prasyarat Grade --
+                        </option>
+
+                        <option value="A"
+                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'A')>
+                            A
+                        </option>
+
+                        <option value="AB"
+                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'AB')>
+                            AB
+                        </option>
+
+                        <option value="B"
+                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'B')>
+                            B
+                        </option>
+
+                        <option value="BC"
+                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'BC')>
+                            BC
+                        </option>
+
+                        <option value="C"
+                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'C')>
+                            C
+                        </option>
+
+                    </select>
+
+                    <x-forms.error name="prasyaratgrade"/>
+
+                </div>
+
+            </div>
 
 
                 <div>

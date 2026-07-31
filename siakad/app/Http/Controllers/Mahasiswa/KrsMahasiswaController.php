@@ -8,6 +8,7 @@ use App\Models\Mahasiswa;
 use App\Models\Penawaran;
 use App\Models\Periode;
 use App\Models\Ips;
+use App\Models\Krs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -105,6 +106,54 @@ class KrsMahasiswaController extends Controller
 
         if (!$penawaran) {
             return redirect()->back()->with('error', 'Data penawaran tidak ditemukan.');
+        }
+
+        // ======================================================
+        // CEK PRASYARAT MATA KULIAH
+        // ======================================================
+
+        $mk = $penawaran->mk;
+
+        $daftarPrasyarat = collect([
+            $mk->prasyarat1,
+            $mk->prasyarat2,
+            $mk->prasyarat3,
+            $mk->prasyarat4,
+            $mk->prasyarat5,
+            $mk->prasyarat6,
+            $mk->prasyarat7,
+            $mk->prasyarat8,
+            $mk->prasyarat9,
+            $mk->prasyarat10,
+        ])->filter();
+
+        foreach ($daftarPrasyarat as $kodePrasyarat) {
+
+            $lulus = Krs::whereHas('registrasi', function ($q) use ($nrp) {
+                    $q->where('nrp', $nrp);
+                })
+                ->whereHas('registrasi.penawaran', function ($q) use ($kodePrasyarat) {
+                    $q->where('kodemk', $kodePrasyarat);
+                })
+                ->where(function ($q) use ($mk) {
+
+                    if (!empty($mk->prasyaratgrade)) {
+                        $q->where('na', $mk->prasyaratgrade);
+                    } else {
+                        $q->whereIn('na', ['A','AB','B','BC','C']);
+                    }
+
+                })
+                ->exists();
+
+            if (!$lulus) {
+
+                return redirect()->back()->with(
+                    'error',
+                    'Anda belum memenuhi prasyarat mata kuliah ' . $kodePrasyarat . '.'
+                );
+
+            }
         }
 
         // Cek apakah sudah terdaftar

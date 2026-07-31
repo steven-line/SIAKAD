@@ -7,6 +7,7 @@ use App\Models\Penawaran;
 use App\Models\Registrasi;
 use App\Models\Mahasiswa;
 use App\Models\Metaperiode;
+use App\Models\Krs;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +27,79 @@ class DetailMataKuliahController extends Controller
     
     $periodeKrs = Metaperiode::first();
     $statusBlokir = Auth::user()->mahasiswa->status_blokir;
+
+    // ============================================================
+    // CEK PRASYARAT MATA KULIAH
+    // ============================================================
+
+    $penawaran->boleh_diambil = true;
+    $penawaran->pesan_prasyarat = '';
+
+    $mk = $penawaran->mk;
+    
+
+    if ($mk) {
+
+        $prasyarat = [];
+
+        for ($i = 1; $i <= 10; $i++) {
+
+            $kode = trim((string) $mk->{'prasyarat' . $i});
+
+            if (
+                $kode !== '' &&
+                $kode !== '-' &&
+                strtoupper($kode) !== 'NULL'
+            ) {
+                $prasyarat[] = $kode;
+            }
+        }
+
+        // Tidak ada prasyarat
+        if (count($prasyarat) == 0) {
+
+            $penawaran->boleh_diambil = true;
+            $penawaran->pesan_prasyarat = '';
+
+        } else {
+
+            // Ada prasyarat, cek satu per satu
+            
+            foreach ($prasyarat as $kodeMk) {
+                
+                $registrasi = Registrasi::where('nrp', Auth::user()->mahasiswa->nrp)
+                    ->whereHas('penawaran', function ($q) use ($kodeMk) {
+                        $q->where('kodemk', $kodeMk);
+                    })
+                    ->first();
+                
+                if (!$registrasi) {
+
+                    $penawaran->boleh_diambil = false;
+                    $penawaran->pesan_prasyarat =
+                        'Anda belum mengambil mata kuliah prasyarat ' . $kodeMk. '.';
+
+                    break;
+                }
+
+                $lulus = Krs::where('registrasi_id', $registrasi->regkrs)
+                    ->whereIn('na', ['A', 'AB', 'B', 'BC', 'C'])
+                    ->exists();
+
+                if (!$lulus) {
+
+                    $penawaran->boleh_diambil = false;
+                    $penawaran->pesan_prasyarat =
+                        'Anda belum lulus mata kuliah prasyarat ' . $kodeMk . '.';
+
+                    break;
+                }
+            }
+        }
+    }
   
     return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil', 'statusBlokir','periodeKrs'));
-    }
+}
     public function daftar(Penawaran $penawaran)
     {
         $user = Auth::user();
@@ -49,6 +120,61 @@ class DetailMataKuliahController extends Controller
         $sudah = Registrasi::where('nrp', $mahasiswa->nrp)
             ->where('penawaran_id', $penawaran->recno)
             ->exists();
+
+            // ============================================================
+            // CEK PRASYARAT MATA KULIAH
+            // ============================================================
+
+            $mk = $penawaran->mk;
+            
+
+            if ($mk) {
+
+                $prasyarat = [];
+
+                for ($i = 1; $i <= 10; $i++) {
+
+                    $kode = trim((string) ($mk->{'prasyarat'.$i} ?? ''));
+
+                    // abaikan "-", kosong, NULL
+                    if ($kode === '' || $kode === '-' || strtoupper($kode) === 'NULL') {
+                        continue;
+                    }
+
+                    $prasyarat[] = $kode;
+                }
+
+                // Hanya cek bila memang ada prasyarat
+                if (!empty($prasyarat)) {
+
+                    foreach ($prasyarat as $kodeMk) {
+
+                        $registrasi = Registrasi::where('nrp', $mahasiswa->nrp)
+                            ->whereHas('penawaran', function ($q) use ($kodeMk) {
+                                $q->where('kodemk', $kodeMk);
+                            })
+                            ->first();
+
+                        if (!$registrasi) {
+                            return back()->with(
+                                'error',
+                                "Anda belum mengambil mata kuliah prasyarat {$mk->nama}."
+                            );
+                        }
+
+                        $lulus = Krs::where('registrasi_id', $registrasi->regkrs)
+                            ->whereIn('na', ['A', 'AB', 'B', 'BC', 'C'])
+                            ->exists();
+
+                        if (!$lulus) {
+                            return back()->with(
+                                'error',
+                                "Anda belum lulus mata kuliah prasyarat {$kodeMk}."
+                            );
+                        }
+                    }
+                }
+            }
 
         if ($sudah) {
             return back()->with('error', 'Sudah mengambil mata kuliah ini.');

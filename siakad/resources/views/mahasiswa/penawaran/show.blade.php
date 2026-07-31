@@ -33,53 +33,68 @@
                 <div><strong>Semester:</strong> {{ $penawaran->semester->nama ?? '-' }}</div>
                 <div><strong>Keterangan :</strong> {{ $penawaran->keterangan ?? '-' }}</div>
                 <div><strong>Periode :</strong> {{ $penawaran->periode ?? 'GENAP / 2025-2026' }}</div>
-                <div>
-                    <strong>Aksi Anda :</strong>
-                    
-        @if($statusBlokir == 'TERKUNCI')
+<div>
+    <strong>Aksi Anda :</strong>
 
-            <button class="btn btn-disabled">
-                KRS Terkunci
-            </button>
+    @if($statusBlokir == 'TERKUNCI')
 
-        @elseif($statusBlokir == 'BLOKIR')
-            <button class="btn btn-disabled">
-                KRS Diblokir
-            </button>
+        <button class="btn btn-disabled">
+            KRS Terkunci
+        </button>
 
-        @elseif(in_array($statusBlokir, ['MENUNGGU_VALIDASI', 'DISETUJUI']))
+    @elseif($statusBlokir == 'BLOKIR')
 
-            <button class="btn btn-disabled">
-                Menunggu Validasi Dosen Wali
-            </button>
+        <button class="btn btn-disabled">
+            KRS Diblokir
+        </button>
+
+    @elseif(in_array($statusBlokir, ['MENUNGGU_VALIDASI', 'DISETUJUI']))
+
+        <button class="btn btn-disabled">
+            Menunggu Validasi Dosen Wali
+        </button>
+
+    @else
+
+        @if($sudahAmbil)
+
+            <form action="{{ route('mahasiswa.mata_kuliah.batal', $penawaran->recno) }}" method="POST">
+                @csrf
+                @method('DELETE')
+
+                <button class="btn btn-error">
+                    Batalkan KRS
+                </button>
+            </form>
 
         @else
 
-            @if($sudahAmbil)
+            @if(now()->gte($periodeKrs->krs_mulai) && now()->lte($periodeKrs->krs_selesai))
 
-                <form action="{{ route('mahasiswa.mata_kuliah.batal', $penawaran->recno) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
+                @if($penawaran->boleh_diambil)
 
-                    <button class="btn btn-error">
-                        Batalkan KRS
-                    </button>
-                </form>
+                    <form action="{{ route('mahasiswa.mata_kuliah.daftar', $penawaran->recno) }}" method="POST">
+                        @csrf
 
-            @else
-                @if(now()->gte($periodeKrs->krs_mulai) && now()->lte($periodeKrs->krs_selesai))
-                <form action="{{ route('mahasiswa.mata_kuliah.daftar', $penawaran->recno) }}" method="POST">
-                    @csrf
+                        <button class="btn btn-success">
+                            Daftar
+                        </button>
+                    </form>
 
-                    <button class="btn btn-primary">
-                        Ambil KRS
-                    </button>
-                </form>
+                @elseif(!empty(trim($penawaran->pesan_prasyarat ?? '')))
+
+                    <div class="alert alert-error mt-2">
+                        <span>{{ $penawaran->pesan_prasyarat }}</span>
+                    </div>
+
                 @endif
+
             @endif
 
         @endif
-                </div>
+
+    @endif
+</div>
             </div>
         </div>
         @if(session('success'))
