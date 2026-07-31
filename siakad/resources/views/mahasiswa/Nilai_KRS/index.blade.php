@@ -14,10 +14,10 @@
     </div>
 
     <hr>
-    @foreach($grouped as $group)
+    @foreach($krsMahasiswa as $krs)
     <div class="flex justify-between px-4">
-        <div class="font-bold">Periode: {{$group['periode']}}</div>
-        <div class="font-bold mb-4">Semester: {{$group['semester']}} - <span class="badge badge-primary badge-sm"> {{$loop->iteration}}</span></div>
+        <div class="font-bold">Periode: {{$krs['periode']}}</div>
+        <div class="font-bold mb-4">Semester: {{$krs['semester']}} - <span class="badge badge-primary badge-sm"> {{$loop->iteration}}</span></div>
     </div> 
     <table class="table px-4">
         <thead class="bg-blue-500 text-white">
@@ -37,7 +37,7 @@
         </thead>
         <tbody>
           
-            @foreach($group['items'] as $item) 
+            @foreach($krs['matkul'] as $item) 
                 <tr>
                     
                     <td>{{$loop->iteration}}</td>
@@ -45,21 +45,21 @@
                     <td>{{$item['mata_kuliah']}}</td>
                     <td>{{$item['sks']}}</td>
                     <td>{{$item['status']}}</td>
-                    <td>{{$item['ttt1']}}</td>
-                    <td>{{$item['ttt2']}}</td>
-                    <td>{{$item['uts']}}</td>
-                    <td>{{$item['uas']}}</td>
-                    <td>{{$item['lain']}}</td>
-                    <td>{{$item['grade']}}</td>
+                    <td>{{$item['ttt1'] ?? '0.00'}} </td>
+                    <td>{{$item['ttt2'] ?? '0.00'}}</td>
+                    <td>{{$item['uts'] ?? '0.00'}}</td>
+                    <td>{{$item['uas'] ?? '0.00'}}</td>
+                    <td>{{$item['lain'] ?? '0.00'}}</td>
+                    <td>{{$item['grade'] ?? 'E'}}</td>
                 </tr>
                 
-           
+            @endforeach
         </tbody>
-         @endforeach
+        
        
     </table>
          <div class="px-4">
-                Total:  {{$group['total_sks']}} 
+                Total:  {{$krs['total_sks']}} 
             </div>
     @endforeach
 </x-layout>
