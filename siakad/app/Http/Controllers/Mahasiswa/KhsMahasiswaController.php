@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Krs;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Metaperiode;
 use App\Models\Periode;
+use Illuminate\Database\Eloquent\Builder;
 
 class KhsMahasiswaController extends Controller
 {
-    private function getBobot($grade)
+  private function getBobot($grade)
     {
-        return [
+        $bobot = [
             'A'  => 4.0,
             'AB' => 3.5,
             'B'  => 3.0,
@@ -20,7 +22,9 @@ class KhsMahasiswaController extends Controller
             'C'  => 2.0,
             'D'  => 1.0,
             'E'  => 0.0,
-        ][$grade] ?? 0;
+        ];
+
+        return $bobot[$grade] ?? 0.0;
     }
 
     private function getMaxSks($ips)
@@ -33,173 +37,68 @@ class KhsMahasiswaController extends Controller
         return 9;
     }
 
+
+
     public function index()
     {
+        $nimDosen = Auth::user()->dosen->nim_dosen ?? null;
+
+        
         $user = Auth::user();
-
-        $nrp = $user->mahasiswa->nrp;
-        $statusBlokir = $user->mahasiswa->status_blokir;
-            /*
-    |--------------------------------------------------------------------------
-    | Cek periode pengumuman nilai final
-    |--------------------------------------------------------------------------
-    */
-
-    // Ambil periode yang sedang aktif
-    $periodeAktif = Periode::where('aktif', 1)->first();
-
-    // Ambil metaperiode sesuai periode aktif
-    $metaperiode = null;
-
-    if ($periodeAktif) {
-        $metaperiode = Metaperiode::where('periode_id', $periodeAktif->id)->first();
-    }
-
-    // Jika sedang masa pengumuman nilai final,
-    // mahasiswa tidak boleh melihat KHS
-    if (
-        $metaperiode &&
-        $metaperiode->pengumuman_nilai_final_mulai &&
-        $metaperiode->pengumuman_nilai_final_selesai &&
-        now()->between(
-            $metaperiode->pengumuman_nilai_final_mulai,
-            $metaperiode->pengumuman_nilai_final_selesai
-        )
-    ) {
-        return view('mahasiswa.nilai_krs.index', [
-            'nilaiKrs' => collect(),
-            'statusBlokir' => $statusBlokir,
-            'periodePengumuman' => true,
-            'pengumumanSelesai' => $metaperiode->pengumuman_nilai_final_selesai,
-        ]);
-    }
-
-        $data = DB::table('registrasi')
-
-            ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
-
-            ->leftJoin('semester', 'penawaran.semester_id', '=', 'semester.id')
-
-            ->leftJoin('periode', 'semester.periode_id', '=', 'periode.id')
-
-            ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
-
-            ->leftJoin('krs', 'registrasi.regkrs', '=', 'krs.registrasi_id')
-
-            ->where('registrasi.nrp', $nrp)
-
-            ->select(
-                'periode.tahun_ajaran as periode',
-                'semester.nama as semester',
-                'penawaran.kodemk as kode',
-                'mk.nama as nama_mk',
-                'mk.sks',
-                'krs.na'
-            )
-
-            ->orderBy('periode.tahun_ajaran')
-
-            ->orderBy('penawaran.kodemk')
-
-            ->get();
-
-        $mahasiswa = DB::table('mahasiswas')
-
-            ->leftJoin('biodata', 'mahasiswas.nrp', '=', 'biodata.nrp')
-
-            ->where('mahasiswas.nrp', $nrp)
-
-            ->select(
-                'mahasiswas.*',
-                'biodata.nama'
-            )
-
-            ->first();
-
-        $dosenWali = '-';
-
-        if ($mahasiswa && $mahasiswa->dosen_wali) {
-
-            $dosen = DB::table('dosen')
-                ->where('nim_dosen', $mahasiswa->dosen_wali)
-                ->first();
-
-            $dosenWali = $dosen->nama ?? '-';
+        $krsMahasiswa = Krs::whereHas('registrasi', function (Builder $query) use ($user) {
+            $query->where('nrp', $user->mahasiswa->nrp);
+        })->get();
+        $datas = [];
+        $ips = 0;
+        $periode = Periode::where('aktif','1')->first();
+        $semester = $periode->whereHas('semesters', function (Builder $query) {
+            $query->where('aktif', '1')->select('jenis');
+        })->first();
+        $metaperiode = Metaperiode::findOrFail(1);
+    
+        if (now()->between($metaperiode->pengumuman_nilai_final_mulai ?? now(), $metaperiode->pengumuman_nilai_final_selesai ?? now())) {
+            return back()->withErrors(['error' => 'anda memasuki periode pengumuman nilai_final']);            
         }
 
-        if ($data->isEmpty()) {
+        foreach($krsMahasiswa as $index => $krs) {
+            $periode = $krs->registrasi->penawaran->semester->periode->tahun_ajaran;
+            $semester = $krs->registrasi->penawaran->semester->jenis;
+            $key = $periode . '|' . $semester;
+            $datas[$key]['periode'] = $periode;
+            $datas[$key]['semester'] = $semester;
+            $datas[$key]['items']['item'.$index+1] = [
+                                'kode' => $krs->registrasi->penawaran->kodemk,
+                                'mata_kuliah' => $krs->registrasi->penawaran->mk->nama,
+                                'sks' => $krs->registrasi->penawaran->mk->sks,
+                                'grade' => $krs->na,
+                                'mutu' => $krs->registrasi->penawaran->mk->sks * $this->getBobot($krs->na)];     
+                                
 
-            return view('mahasiswa.khs.index', [
-                'results' => collect(),
-                'ipk' => 0,
-                'total_sks_tempuh' => 0,
-                'mahasiswa' => $mahasiswa,
-                'dosenWali' => $dosenWali,
-                'periode_aktif' => '-',
-                'semester_aktif' => '-',
-                'statusBlokir' => $statusBlokir,
-            ]);
+
         }
+        $grouped = collect($datas)->map(function ($periode) {
+            $periode['total_mutu'] = collect($periode['items'])->sum('mutu');
+            $periode['total_sks'] = collect($periode['items'])->sum('sks');
+            $periode['ips'] = $periode['total_mutu'] / $periode['total_sks']; 
 
-        $grouped = $data->groupBy('periode');
+            return $periode;
+        })->all();
+        $ipk = array_sum(array_column($grouped, 'ips'))/(count($grouped));
+        
 
-        $results = [];
+        
+        $informasiUmum = [
+                            'periode' => $periode,
+                            'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
+                            'semester' => $semester,
+                            'nrp' => $user->mahasiswa->nrp,
+                            'nama' => $user->mahasiswa->biodata->nama,
+                            'dosen_wali' => $user->mahasiswa->dosen_wali
+        ];     
 
-        $total_all_sks = 0;
-
-        $total_all_mutu = 0;
-
-        foreach ($grouped as $periode => $items) {
-
-            $items = $items->map(function ($item) {
-
-                $item->mutu = $this->getBobot($item->na) * ($item->sks ?? 0);
-
-                return $item;
-            });
-
-            $total_sks = $items->sum('sks');
-
-            $total_mutu = $items->sum('mutu');
-
-            $ips = $total_sks > 0
-                ? $total_mutu / $total_sks
-                : 0;
-
-            $results[] = (object)[
-                'periode' => $periode,
-                'semester' => $items->first()->semester,
-                'items' => $items,
-                'total_sks' => $total_sks,
-                'total_mutu' => $total_mutu,
-                'ips' => $ips,
-                'max_sks' => $this->getMaxSks($ips),
-            ];
-
-            $total_all_sks += $total_sks;
-
-            $total_all_mutu += $total_mutu;
-        }
-
-        $ipk = $total_all_sks > 0
-            ? $total_all_mutu / $total_all_sks
-            : 0;
-
-        $periode_aktif = $results[0]->periode ?? '-';
-
-        $semester_aktif = $results[0]->semester ?? '-';
-
-        $total_sks_tempuh = $total_all_sks;
-
-        return view('mahasiswa.khs.index', compact(
-            'results',
-            'ipk',
-            'total_sks_tempuh',
-            'mahasiswa',
-            'dosenWali',
-            'periode_aktif',
-            'semester_aktif',
-            'statusBlokir'
-        ));
+          
+     
+        return view('mahasiswa.KHS.index', compact('grouped', 'informasiUmum', 'ipk'));
+    
     }
 }

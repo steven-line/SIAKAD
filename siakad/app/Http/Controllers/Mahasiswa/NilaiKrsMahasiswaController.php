@@ -16,6 +16,8 @@ class NilaiKrsMahasiswaController extends Controller
     public function index()
     {
         $user = Auth::user();
+
+        
         $krsMahasiswa = Krs::whereHas('registrasi', function (Builder $query) use ($user) {
             $query->where('nrp', $user->mahasiswa->nrp);
         })->get();
@@ -35,11 +37,8 @@ class NilaiKrsMahasiswaController extends Controller
             $semester = $krs->registrasi->penawaran->semester->jenis;
             $key = $periode . '|' . $semester;
             $datas[$key]['periode'] = $periode;
-            $datas[$key]['semester'] = $semester;
-      
-          
+            $datas[$key]['semester'] = $semester;         
             $datas[$key]['items']['item'.$index+1] = [
-
                                 'kode' => $krs->registrasi->penawaran->kodemk,
                                 'mata_kuliah' => $krs->registrasi->penawaran->mk->nama,
                                 'sks' => $krs->registrasi->penawaran->mk->sks,

@@ -71,9 +71,9 @@ class TranskripMahasiswaController extends Controller
         $transkrip = DB::table('registrasi')
             ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
             ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
-            ->leftJoin('krs', function ($join) {
-                $join->on('registrasi.regkrs', '=', 'krs.registrasi_id')
-                     ->on('penawaran.kodemk', '=', 'krs.registrasi_id');
+            ->leftjoin('krs', function ($join) {
+                $join->on('registrasi.regkrs', '=', 'krs.registrasi_id');
+                  
             })
             ->where('registrasi.nrp', $nrp)
             ->select(
@@ -84,12 +84,13 @@ class TranskripMahasiswaController extends Controller
             )
             ->orderBy('penawaran.kodemk')
             ->get();
+           
 
         $transkripWithMutu = $transkrip->map(function ($item) {
             $item->mutu = $this->getBobot($item->na) * ($item->sks ?? 0);
             return $item;
         });
-
+    
         $total_sks = $transkripWithMutu->sum('sks');
         $total_mutu = $transkripWithMutu->sum('mutu');
         $ipk = $total_sks > 0 ? $total_mutu / $total_sks : 0;
