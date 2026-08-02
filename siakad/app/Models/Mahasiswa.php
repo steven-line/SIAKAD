@@ -8,12 +8,6 @@ use App\Models\Dosen;
 use App\Models\Biodata;
 use App\Models\Ips;
 
-use App\Models\Biodata;
-use App\Models\Dosen;
-use App\Models\Registrasi;
-use App\Models\Prodi;
-use App\Models\Ips;
-
 class Mahasiswa extends Model
 {
     //
