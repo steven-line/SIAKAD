@@ -1,7 +1,7 @@
 <x-layout>  
     <div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
         <div>
-            <p class="font-bold">Periode: {{$informasiUmum['periode']}}</p>
+            <p class="font-bold">Periode: {{$informasiUmum['periode']->tahun_ajaran}}</p>
             <p class="font-bold">Semester: {{$informasiUmum['semester']}}</p>
             <p class="font-bold">Program studi: {{$informasiUmum['program_studi']}}</p>
         </div>
