@@ -9,6 +9,7 @@ use App\Models\Mahasiswa;
 use App\Models\Metaperiode;
 use App\Models\Krs;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -104,8 +105,14 @@ class DetailMataKuliahController extends Controller
     public function daftar(Penawaran $penawaran)
     {
         $user = Auth::user();
-        $mahasiswa = $user->mahasiswa;
-       
+        $mahasiswa = $user->mahasiswa;  
+        $sksMahasiswa = Registrasi::join('krs', 'registrasi.regkrs', '=', 'krs.registrasi_id')
+                                ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
+                                ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
+                                ->select('mk.sks')
+                                ->where('nrp', $user->mahasiswa->nrp)
+                                ->get();
+
         $periodeKrs = Metaperiode::first();
         if (!$mahasiswa) {
             return back()->with('error', 'Data mahasiswa tidak ditemukan.');
@@ -120,10 +127,6 @@ class DetailMataKuliahController extends Controller
         $sudah = Registrasi::where('nrp', $mahasiswa->nrp)
             ->where('penawaran_id', $penawaran->recno)
             ->exists();
-
-            // ============================================================
-            // CEK PRASYARAT MATA KULIAH
-            // ============================================================
 
             $mk = $penawaran->mk;
             
@@ -208,7 +211,14 @@ class DetailMataKuliahController extends Controller
                 DB::rollBack(); // Data Registrasi::create tadi otomatis dihapus kembali
                 return back()->withErrors(['limit_sks' => 'Pendaftaran gagal! Total SKS melampaui limit Anda.']);
             }
-
+            if ($sksMahasiswa->sum('sks') < $penawaran->mk->prasyaratsks) {
+                  DB::rollBack(); // Data Registrasi::create tadi otomatis dihapus kembali
+                    
+                  $prasyaratSKSMK = $penawaran->mk->prasyaratsks;
+                  $selisihSKS = $prasyaratSKSMK - $sksMahasiswa->sum('sks');
+                  
+                  return back()->withErrors(['prasyarat_sks' => "Pendaftaran gagal!  Anda belum memenuhi Prasyarat SKS $prasyaratSKSMK, Anda masih kurang $selisihSKS"]);
+            }
             // 3. JIKA AMAN, SIMPAN PERMANEN
             DB::commit();
 
