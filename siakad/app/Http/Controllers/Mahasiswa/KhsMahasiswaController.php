@@ -93,7 +93,7 @@ class KhsMahasiswaController extends Controller
         $informasiUmum = [
                             'periode' => $periode,
                             'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
-                            'semester' => $semester->jenis,
+                            'semester' => $semester,
                             'nrp' => $user->mahasiswa->nrp,
                             'nama' => $user->mahasiswa->biodata->nama ?? null,
                             'dosen_wali' => $user->mahasiswa->dosen_wali

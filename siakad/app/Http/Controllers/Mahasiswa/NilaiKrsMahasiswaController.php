@@ -22,7 +22,7 @@ class NilaiKrsMahasiswaController extends Controller
                                    ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
                                    ->leftJoin('semester', 'penawaran.semester_id', '=', 'semester.id')
                                    ->leftJoin('periode', 'semester.periode_id', '=', 'periode.id')
-                                   ->select('mk.kodemk as kode','mk.nama as mata_kuliah', 'krs.sks', 'krs.bu as status', 'krs.na as grade', 'krs.ttt1', 'krs.ttt2', 'krs.uts', 'krs.uas', 'krs.lain', 'mk.sks', 'periode.tahun_ajaran', 'semester.jenis')
+                                   ->select('mk.kodemk as kode','mk.nama as mata_kuliah', 'krs.bu as status', 'krs.na as grade', 'krs.ttt1', 'krs.ttt2', 'krs.uts', 'krs.uas', 'krs.lain', 'mk.sks', 'periode.tahun_ajaran', 'semester.jenis')
                                    ->where('registrasi.nrp', $user->mahasiswa->nrp)
                                    ->get()
                                    ->groupBy(function($item) {
@@ -56,3 +56,5 @@ class NilaiKrsMahasiswaController extends Controller
         return view('mahasiswa.nilai_krs.index', compact('krsMahasiswa', 'informasiUmum'));
     }
 }
+
+// kayaknya dari databasenya yang bermasalah, kolom sks dari tabel krs itu bukan foreign key, jadi kalau kolom sks di tabel mk isinya berubah, isi dari kolom sks di tabel krs ngga berubah
