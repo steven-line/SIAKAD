@@ -204,7 +204,7 @@ class DetailMataKuliahController extends Controller
                 ->get();
      
             // 2. JIKA SKS MELEBIHI LIMIT, BATALKAN (ROLLBACK)
-            if ($registrasiMK->sum('sks') > $mahasiswa->ips->sks) {
+            if ($registrasiMK->sum('sks') > $mahasiswa->ips->maksimal_sks) {
                 DB::rollBack(); // Data Registrasi::create tadi otomatis dihapus kembali
                 return back()->withErrors(['limit_sks' => 'Pendaftaran gagal! Total SKS melampaui limit Anda.']);
             }

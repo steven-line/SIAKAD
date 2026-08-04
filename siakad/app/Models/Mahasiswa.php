@@ -7,6 +7,7 @@ use App\Models\Prodi;
 use App\Models\Dosen;
 use App\Models\Biodata;
 use App\Models\Ips;
+use App\Models\Registrasi;
 
 class Mahasiswa extends Model
 {
@@ -48,6 +49,5 @@ class Mahasiswa extends Model
     {
         return $this->belongsTo(Prodi::class, 'prodi', 'kode_prodi');
     }
-
 
 }

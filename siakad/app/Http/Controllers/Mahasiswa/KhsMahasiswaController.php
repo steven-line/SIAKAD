@@ -88,7 +88,7 @@ class KhsMahasiswaController extends Controller
                             'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
                             'semester' => $semester,
                             'nrp' => $user->mahasiswa->nrp,
-                            'nama' => $user->mahasiswa->biodata->nama,
+                            'nama' => $user->mahasiswa->biodata->nama ?? null,
                             'dosen_wali' => $user->mahasiswa->dosen_wali
         ];     
 

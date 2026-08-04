@@ -50,6 +50,7 @@ class KrsController extends Controller
         ])
         ->whereHas('penawaran', function ($q) use ($mk) {
             $q->where('kodemk', $mk->kodemk);
+            $q->where('dosen', auth()->user()->dosen->nim_dosen);
         })
         ->whereHas('mahasiswa', function ($q) {
             $q->where('status_blokir', 'DISETUJUI');

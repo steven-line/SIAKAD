@@ -7,7 +7,7 @@
         </div>
         <div class="cols-start-2 cols-end-3">
             <p class="font-bold">NRP: {{$informasiUmum['nrp']}}</p>
-            <p class="font-bold">Nama: {{$informasiUmum['nama']}}</p>
+            <p class="font-bold">Nama: {{$informasiUmum['nama'] ?? 'N/A'}}</p>
             <p class="font-bold">Dosen Wali: {{$informasiUmum['dosen_wali']}}</p>
         </div>
         

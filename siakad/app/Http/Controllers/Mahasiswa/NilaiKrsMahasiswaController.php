@@ -46,12 +46,12 @@ class NilaiKrsMahasiswaController extends Controller
             return back()->withErrors(['error' => 'anda memasuki periode pengumuman nilai_final']);            
         }
         $informasiUmum = [
-                            'periode' => $periode->tahun_ajaran,
-                            'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
-                            'semester' => $semester->jenis,
-                            'nrp' => $user->mahasiswa->nrp,
-                            'nama' => $user->mahasiswa->biodata->nama,
-                            'dosen_wali' => $user->mahasiswa->dosen_wali
+                            'periode' => $periode->tahun_ajaran ?? null,
+                            'program_studi' => $user->mahasiswa->programStudi->nama_prodi ?? null,
+                            'semester' => $semester->jenis ?? null,
+                            'nrp' => $user->mahasiswa->nrp ?? null,
+                            'nama' => $user->mahasiswa->biodata->nama ?? null,
+                            'dosen_wali' => $user->mahasiswa->dosen_wali ?? null
         ];      
         return view('mahasiswa.nilai_krs.index', compact('krsMahasiswa', 'informasiUmum'));
     }
