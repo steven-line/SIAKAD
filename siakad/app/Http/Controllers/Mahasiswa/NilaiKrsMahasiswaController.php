@@ -41,9 +41,10 @@ class NilaiKrsMahasiswaController extends Controller
            $join->on('semester.periode_id', '=', 'periode.id')
                 ->where('periode.aktif', '=', '1'); 
         })->select('jenis')->where('semester.aktif', '1')->first();       
-        $metaperiode = Metaperiode::findOrFail(1);
-        if (now()->between($metaperiode->pengumuman_nilai_final_mulai ?? now(), $metaperiode->pengumuman_nilai_final_selesai ?? now())) {
-            return back()->withErrors(['error' => 'anda memasuki periode pengumuman nilai_final']);            
+        $metaperiode = Metaperiode::findOrFail(12);
+        $pengumumanKrs = null;
+        if ($metaperiode && $metaperiode->pengumuman_nilai_final_mulai && $metaperiode->pengumuman_nilai_final_selesai && now()->between($metaperiode->pengumuman_nilai_final_mulai, $metaperiode->pengumuman_nilai_final_selesai)) {
+               $pengumumanKrs = 'Anda memasuki periode pengumuman nilai final';         
         }
         $informasiUmum = [
                             'periode' => $periode->tahun_ajaran ?? null,
@@ -53,7 +54,7 @@ class NilaiKrsMahasiswaController extends Controller
                             'nama' => $user->mahasiswa->biodata->nama ?? null,
                             'dosen_wali' => $user->mahasiswa->dosen_wali ?? null
         ];      
-        return view('mahasiswa.nilai_krs.index', compact('krsMahasiswa', 'informasiUmum'));
+        return view('mahasiswa.nilai_krs.index', compact('krsMahasiswa', 'informasiUmum', 'pengumumanKrs'));
     }
 }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Models\Penawaran;
 use App\Models\Registrasi;
+use App\Models\Periode;
 use App\Models\Mahasiswa;
 use App\Models\Metaperiode;
 use App\Models\Krs;
@@ -195,20 +196,25 @@ class DetailMataKuliahController extends Controller
                 'tanggal' => now()->toDateString(),
                 'jam' => now()->toTimeString(),
             ]);
-
+            $periodeAktif = Periode::where('aktif', 1)->first();
+            $jenisSemester = $periodeAktif->semesters()->where('aktif', 1)->pluck('jenis')->first();
+    
             $registrasiMK = DB::table('registrasi')
                 ->join('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
                 ->join('semester', 'penawaran.semester_id', '=', 'semester.id')
                 ->join('mk' ,'penawaran.kodemk', '=', 'mk.kodemk')
                 ->join('periode', 'semester.periode_id', '=', 'periode.id')
                 ->where('periode.aktif', '=', 1)
+                ->where('semester.jenis', '=', $jenisSemester)
                 ->where('registrasi.nrp', $mahasiswa->nrp)
                 ->select('mk.sks')
-                ->get();
+                ->get();    
+
      
             // 2. JIKA SKS MELEBIHI LIMIT, BATALKAN (ROLLBACK)
             if ($registrasiMK->sum('sks') > $mahasiswa->ips->maksimal_sks) {
                 DB::rollBack(); // Data Registrasi::create tadi otomatis dihapus kembali
+                dd($registrasiMK);
                 return back()->withErrors(['limit_sks' => 'Pendaftaran gagal! Total SKS melampaui limit Anda.']);
             }
             if ($sksMahasiswa->sum('sks') < $penawaran->mk->prasyaratsks) {

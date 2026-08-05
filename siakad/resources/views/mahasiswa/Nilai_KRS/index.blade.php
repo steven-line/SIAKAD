@@ -1,5 +1,13 @@
 <x-layout>  
-    <div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
+   
+@if ($pengumumanKrs)
+    <div role="alert" class="alert alert-info mb-6">
+        <span>
+            {{$pengumumanKrs}}
+        </span>
+    </div>
+@else
+<div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
         <div>
             <p class="font-bold">Periode: {{$informasiUmum['periode'] ?? 'N/A'}}</p>
             <p class="font-bold">Semester: {{$informasiUmum['semester'] ?? 'N/A'}}</p>
@@ -62,4 +70,6 @@
                 Total:  {{$krs['total_sks']}} 
             </div>
     @endforeach
+@endif
+ 
 </x-layout>

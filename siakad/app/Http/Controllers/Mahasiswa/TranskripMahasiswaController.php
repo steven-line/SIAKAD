@@ -45,25 +45,15 @@ class TranskripMahasiswaController extends Controller
     if ($periodeAktif) {
         $metaperiode = Metaperiode::where('periode_id', $periodeAktif->id)->first();
     }
-
+    
     // Jika sedang masa pengumuman nilai final,
     // mahasiswa tidak boleh melihat transkrip nilai
-    if (
-        $metaperiode &&
-        $metaperiode->pengumuman_nilai_final_mulai &&
-        $metaperiode->pengumuman_nilai_final_selesai &&
-        now()->between(
-            $metaperiode->pengumuman_nilai_final_mulai,
-            $metaperiode->pengumuman_nilai_final_selesai
-        )
-    ) {
-        return view('mahasiswa.nilai_krs.index', [
-            'nilaiKrs' => collect(),
-            'statusBlokir' => $statusBlokir,
-            'periodePengumuman' => true,
-            'pengumumanSelesai' => $metaperiode->pengumuman_nilai_final_selesai,
-        ]);
-    }
+
+    $pengumumanKrs = null;
+        if ($metaperiode && $metaperiode->pengumuman_nilai_final_mulai && $metaperiode->pengumuman_nilai_final_selesai && now()->between($metaperiode->pengumuman_nilai_final_mulai, $metaperiode->pengumuman_nilai_final_selesai)) {
+               $pengumumanKrs = 'Anda memasuki periode pengumuman nilai final';         
+        }
+    
         if (!$nrp) {
             return redirect()->back()->with('error', 'NRP tidak ditemukan.');
         }
@@ -97,6 +87,6 @@ class TranskripMahasiswaController extends Controller
         $total_mutu = $transkripWithMutu->sum('mutu');
         $ipk = $total_sks > 0 ? $total_mutu / $total_sks : 0;
 
-        return view('mahasiswa.Transkrip_nilai.index', compact('transkripWithMutu', 'total_sks', 'total_mutu', 'ipk', 'statusBlokir'));
+        return view('mahasiswa.Transkrip_nilai.index', compact('transkripWithMutu', 'total_sks', 'total_mutu', 'ipk', 'statusBlokir', 'pengumumanKrs'));
     }
 }

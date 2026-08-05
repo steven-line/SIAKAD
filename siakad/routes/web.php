@@ -623,13 +623,12 @@ Route::prefix('perwalian')
     |--------------------------------------------------------------------------
     */
     Route::prefix('metaperiode')
-            ->middleware('permission:settings.manage')
-            ->name('metaperiode.')
-            ->group(function () {
-                Route::get('/', [MetaperiodeController::class, 'index'])->name('index');
-                Route::patch('/update', [MetaperiodeController::class, 'update'])->name('update');
-                
-            });
+        ->middleware('permission:settings.manage')
+        ->name('metaperiode.')
+        ->group(function () {
+            Route::get('/', [MetaperiodeController::class, 'index'])->name('index');
+            Route::patch('/update', [MetaperiodeController::class, 'update'])->name('update');
+        });
 
 /*
 |--------------------------------------------------------------------------

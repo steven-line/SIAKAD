@@ -1,4 +1,13 @@
-<x-layout>  
+<x-layout>
+
+@if ($pengumumanKrs)
+    <div role="alert" class="alert alert-info mb-6">
+        <span>
+            {{$pengumumanKrs}}
+        </span>
+    </div>
+@else
+
     <div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
         <div>
             <p class="font-bold">Periode: {{$informasiUmum['periode']}}</p>
@@ -61,4 +70,5 @@
     <div class="px-4 mt-5">
         IPK: {{ number_format($ipk, 2, '.', '.')}}
     </div>
+    @endif
 </x-layout>

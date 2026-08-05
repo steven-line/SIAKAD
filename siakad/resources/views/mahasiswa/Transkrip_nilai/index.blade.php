@@ -1,4 +1,11 @@
 <x-layout title="Transkrip Nilai">
+@if ($pengumumanKrs)
+    <div role="alert" class="alert alert-info mb-6">
+        <span>
+            {{$pengumumanKrs}}
+        </span>
+    </div>
+@else
 
     {{-- CSS khusus print --}}
     <style>
@@ -49,7 +56,7 @@
             }
         }
     </style>
-
+    
     {{-- BLOKIR --}}
     @if($statusBlokir === 'BLOKIR')
 
@@ -173,5 +180,6 @@
         @endif
 
     @endif
-
+    
+@endif
 </x-layout>

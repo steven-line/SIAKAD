@@ -45,6 +45,7 @@ class KhsMahasiswaController extends Controller
         $user = Auth::user();
         $krsMahasiswa = Krs::whereHas('registrasi', function (Builder $query) use ($user) {
             $query->where('nrp', $user->mahasiswa->nrp);
+            
         })->get();
         $datas = [];
         $ips = 0;
@@ -54,24 +55,33 @@ class KhsMahasiswaController extends Controller
                             ->select('semester.jenis')
                             ->first();
 
-        $metaperiode = Metaperiode::findOrFail(1);
-    
-        if (now()->between($metaperiode->pengumuman_nilai_final_mulai ?? now(), $metaperiode->pengumuman_nilai_final_selesai ?? now())) {
-            return back()->withErrors(['error' => 'anda memasuki periode pengumuman nilai_final']);            
+        $metaperiode = Metaperiode::findOrFail(12);
+        $periodeAktif = Periode::where('aktif', 1)->first();
+        $jenisSemester = $periodeAktif->semesters()->where('aktif', 1)->pluck('jenis')->first();
+        $checkPeriode = $periodeAktif->tahun_ajaran . '|' . $jenisSemester;
+
+      
+        $pengumumanKrs = null;
+        if ($metaperiode && $metaperiode->pengumuman_nilai_final_mulai && $metaperiode->pengumuman_nilai_final_selesai && now()->between($metaperiode->pengumuman_nilai_final_mulai, $metaperiode->pengumuman_nilai_final_selesai)) {
+               $pengumumanKrs = 'Anda memasuki periode pengumuman nilai final';         
         }
 
         foreach($krsMahasiswa as $index => $krs) {
             $periode = $krs->registrasi->penawaran->semester->periode->tahun_ajaran;
             $semester = $krs->registrasi->penawaran->semester->jenis;
+
             $key = $periode . '|' . $semester;
-            $datas[$key]['periode'] = $periode;
-            $datas[$key]['semester'] = $semester;
-            $datas[$key]['items']['item'.$index+1] = [
-                                'kode' => $krs->registrasi->penawaran->kodemk,
-                                'mata_kuliah' => $krs->registrasi->penawaran->mk->nama,
-                                'sks' => $krs->registrasi->penawaran->mk->sks,
-                                'grade' => $krs->na,
-                                'mutu' => $krs->registrasi->penawaran->mk->sks * $this->getBobot($krs->na)];     
+            if($key != $checkPeriode) {
+                  $datas[$key]['periode'] = $periode;
+                  $datas[$key]['semester'] = $semester;
+                  $datas[$key]['items']['item'.$index+1] = [
+                                        'kode' => $krs->registrasi->penawaran->kodemk,
+                                        'mata_kuliah' => $krs->registrasi->penawaran->mk->nama,
+                                        'sks' => $krs->registrasi->penawaran->mk->sks,
+                                        'grade' => $krs->na,
+                                        'mutu' => $krs->registrasi->penawaran->mk->sks * $this->getBobot($krs->na)];    
+            }
+           
                                 
 
 
@@ -83,6 +93,7 @@ class KhsMahasiswaController extends Controller
 
             return $periode;
         })->all();
+
         if (count($grouped) == 0) {
             $ipk = 0;
         } else {
@@ -91,15 +102,15 @@ class KhsMahasiswaController extends Controller
         }
         
         $informasiUmum = [
-                            'periode' => $periode,
+                            'periode' => $periodeAktif->tahun_ajaran ?? null,
                             'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
-                            'semester' => $semester,
+                            'semester' => $jenisSemester ?? null,
                             'nrp' => $user->mahasiswa->nrp,
                             'nama' => $user->mahasiswa->biodata->nama ?? null,
                             'dosen_wali' => $user->mahasiswa->dosen_wali
         ];     
 
-        return view('mahasiswa.KHS.index', compact('grouped', 'informasiUmum', 'ipk'));
+        return view('mahasiswa.KHS.index', compact('grouped', 'informasiUmum', 'ipk', 'pengumumanKrs'));
     
     }
 }

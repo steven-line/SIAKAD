@@ -55,16 +55,6 @@ class PenawaranController extends Controller
     }
 
 
-    public function semesterRelasi()
-    {
-        return $this->belongsTo(Semester::class, 'semester_id', 'id');
-    }
-
-    public function registrasis()
-    {
-        return $this->hasMany(Registrasi::class, 'penawaran_id', 'recno');
-    }
-
     /**
      * FORM INPUT
      */
@@ -196,6 +186,13 @@ public function index()
                 $sub->orWhere('kodemk', 'like', $prefix . '%');
             }
         });
+    })
+
+    ->whereHas('semesterRelasi', function ($q) {
+    $q->where('aktif', 1)
+      ->whereHas('periode', function ($p) {
+          $p->where('aktif', 1);
+      });
     });
 
     $penawarans = $query
@@ -255,40 +252,27 @@ public function index()
 
         $bentrok = Penawaran::whereHas('mk.kurikulum', function ($q) use ($kodeProdi) {
             $q->where('kode_prodi', $kodeProdi);
-        })
-
-        ->where('hari', $request->hari)
-
-        ->where(function ($q) use ($request) {
-
+        })->where('hari', $request->hari)
+          ->where(function ($q) use ($request) {
             $q->where('kodemk', $request->kodemk)
-            ->orWhere('dosen', $request->dosen);
-
-        })
-
-        ->where(function ($q) use ($mulai, $selesai) {
-
+           ->orWhere('dosen', $request->dosen);
+        })->where(function ($q) use ($mulai, $selesai) {
             $q->whereBetween('mulaipukul', [
                     $mulai->format('H:i:s'),
                     $selesai->format('H:i:s')
                 ])
-
-            ->orWhereBetween('selesaipukul', [
+                ->orWhereBetween('selesaipukul', [
                     $mulai->format('H:i:s'),
                     $selesai->format('H:i:s')
                 ])
-
-            ->orWhere(function ($q2) use ($mulai, $selesai) {
+                ->orWhere(function ($q2) use ($mulai, $selesai) {
 
                     $q2->where('mulaipukul','<=',$mulai->format('H:i:s'))
                     ->where('selesaipukul','>=',$selesai->format('H:i:s'));
-
             });
-
         })
-
         ->exists();
-
+        
     if ($bentrok) {
         return back()->withErrors([
             'jam' => 'Jadwal bentrok dengan penawaran lain pada prodi Anda.'

@@ -10,14 +10,12 @@ class MetaperiodeController extends Controller
 {
     public function index()
     {
-        // Ambil periode yang aktif beserta semester aktifnya
         $periode = Periode::with([
             'semesters' => function ($q) {
                 $q->where('aktif', 1);
             }
         ])->where('aktif', 1)->first();
 
-        // Ambil metaperiode sesuai periode aktif
         $metaperiode = null;
 
         if ($periode) {
@@ -45,12 +43,12 @@ class MetaperiodeController extends Controller
             'pengumuman_nilai_final_selesai' => 'nullable|date|after:pengumuman_nilai_final_mulai',
         ]);
 
-        Metaperiode::updateOrCreate(
-            [
-                'periode_id' => $validated['periode_id']
-            ],
-            $validated
-        );
+        $data = Metaperiode::first();
+        if ($data) {
+            $data->update($validated);
+        } else {
+            Metaperiode::create($validated);
+        }
 
         return back()->with('success', 'Data berhasil disimpan.');
     }

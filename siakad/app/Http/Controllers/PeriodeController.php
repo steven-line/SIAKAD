@@ -129,6 +129,11 @@ class PeriodeController extends Controller
     }
 
     public function periodeAktif(Periode $periode) {
+        $periodelama = Periode::where('aktif', 1)->first();
+        if ($periodelama) {
+            $periodelama->semesters()->update(['aktif' => false]);
+        }
+        
         Periode::query()->update([
             'aktif' => false
         ]);
@@ -139,6 +144,7 @@ class PeriodeController extends Controller
         ]);
        
         return redirect()->route('periode.index')->with('success', 'Periode diaktifkan');
+
     }
  
     public function destroy(Periode $periode)
