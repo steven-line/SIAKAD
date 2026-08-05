@@ -48,6 +48,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'role.manage',
             'permission.manage',
             'mahasiswa.manage',
+            'penawaranumum.manage',
 
             // PENAWARAN
             'penawaran.view',
@@ -163,6 +164,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'jurusan.manage',
             'settings.manage',
             'sks.manage',
+            'penawaranumum.manage',
         ]);
 
         // ======================

@@ -1,5 +1,6 @@
 <x-layout title="Data Penawaran">
 
+
     {{-- ALERT --}}
     @if(session('success'))
         <div class="alert alert-success mb-4">
@@ -65,7 +66,11 @@
 
             @forelse($penawarans as $penawaran)
 
+            @php
+                $isPenawaranUmum = \Illuminate\Support\Str::startsWith($penawaran->kodemk, 'A');
+            @endphp
                 <tr>
+                    
 
                     <td>
                         {{ $loop->iteration + ($penawarans->firstItem() - 1) }}
@@ -81,6 +86,13 @@
 
                     <td>
                         {{ $penawaran->mk->kodemk ?? $penawaran->kodemk }}
+
+                        @if($isPenawaranUmum)
+                            <br>
+                            <span class="badge badge-info badge-sm mt-1">
+                                Umum
+                            </span>
+                        @endif
                     </td>
 
                     <td>
@@ -122,65 +134,86 @@
                     {{-- DETAIL --}}
                     <td>
                         <a class="btn btn-soft btn-info"
-                           href="{{ route('penawaran.show', $penawaran->recno) }}">
+                        href="{{ route('penawaran.show', $penawaran->recno) }}">
                             Detail
                         </a>
                     </td>
 
-                    {{-- EDIT --}}
-                    <td>
-                        <a class="btn btn-soft btn-warning"
-                           href="{{ route('penawaran.edit', $penawaran->recno) }}">
-                            Edit
-                        </a>
-                    </td>
+                    @if($isPenawaranUmum)
 
-                    {{-- DELETE --}}
-                    <td>
+                        <td class="text-center">
+                            <span class="badge badge-warning">
+                                Admin
+                            </span>
+                        </td>
 
-                        <button class="btn btn-soft btn-error"
-                            onclick="document.getElementById('deleteBox_{{ $penawaran->recno }}').showModal()">
-                            Delete
-                        </button>
+                        <td class="text-center">
+                            <span class="badge badge-warning">
+                                Admin
+                            </span>
+                        </td>
 
-                        <dialog id="deleteBox_{{ $penawaran->recno }}"
-                                class="modal modal-bottom sm:modal-middle">
+                    @else
 
-                            <div class="modal-box">
+                        {{-- EDIT --}}
+                        <td>
+                            <a class="btn btn-soft btn-warning"
+                            href="{{ route('penawaran.edit', $penawaran->recno) }}">
+                                Edit
+                            </a>
+                        </td>
 
-                                <h3 class="text-lg font-bold">
-                                    Peringatan Penghapusan
-                                </h3>
+                        {{-- DELETE --}}
+                        <td>
 
-                                <p class="py-4">
-                                    Apakah Anda yakin ingin menghapus data ini?
-                                </p>
+                            <button class="btn btn-soft btn-error"
+                                onclick="document.getElementById('deleteBox_{{ $penawaran->recno }}').showModal()">
+                                Delete
+                            </button>
 
-                                <div class="modal-action">
+                            <dialog id="deleteBox_{{ $penawaran->recno }}"
+                                    class="modal modal-bottom sm:modal-middle">
 
-                                    <form method="dialog">
-                                        <button class="btn btn-neutral">
-                                            Tidak
-                                        </button>
-                                    </form>
+                                <div class="modal-box">
 
-                                    <form action="{{ route('penawaran.destroy', $penawaran->recno) }}"
-                                          method="POST">
-                                        @csrf
-                                        @method('DELETE')
+                                    <h3 class="text-lg font-bold">
+                                        Peringatan Penghapusan
+                                    </h3>
 
-                                        <button type="submit" class="btn btn-error">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    <p class="py-4">
+                                        Apakah Anda yakin ingin menghapus data ini?
+                                    </p>
+
+                                    <div class="modal-action">
+
+                                        <form method="dialog">
+                                            <button class="btn btn-neutral">
+                                                Tidak
+                                            </button>
+                                        </form>
+
+                                        <form action="{{ route('penawaran.destroy', $penawaran->recno) }}"
+                                            method="POST">
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit"
+                                                    class="btn btn-error">
+                                                Delete
+                                            </button>
+
+                                        </form>
+
+                                    </div>
 
                                 </div>
 
-                            </div>
+                            </dialog>
 
-                        </dialog>
+                        </td>
 
-                    </td>
+                    @endif
 
                 </tr>
 

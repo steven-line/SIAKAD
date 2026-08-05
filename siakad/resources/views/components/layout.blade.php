@@ -94,6 +94,15 @@
         @can('settings.manage')
         <li><a href="/metaperiode">Master Settings</a></li>
         @endcan
+
+        @can('penawaranumum.manage')
+        <li>
+            <a href="{{ route('admin.penawaran.index') }}">
+                Master Penawaran Umum
+            </a>
+        </li>
+        @endcan
+        
            {{-- ROLE & PERMISSION --}}
            
         @can('permission.manage')
