@@ -61,7 +61,7 @@ class KrsMahasiswaController extends Controller
         $ipsMahasiswa = Ips::where('nrp', $nrp)->first();
 
         $ipsTerakhir  = $ipsMahasiswa?->ips ?? 0;
-        $limitSks     = $ipsMahasiswa?->sks ?? 0;
+        $limitSks     = $ipsMahasiswa?->maksimal_sks ?? 0;
         $toleransiSks = $ipsMahasiswa?->toleransi ?? 0;
 
         // Maksimal SKS yang boleh diambil termasuk toleransi

@@ -32,22 +32,50 @@ class MetaperiodeController extends Controller
         $validated = $request->validate([
             'periode_id' => 'required|exists:periode,id',
 
+            /*
+            |--------------------------------------------------------------------------
+            | Periode Input Penawaran
+            |--------------------------------------------------------------------------
+            */
+            'input_penawaran_mulai' => 'nullable|date',
+            'input_penawaran_selesai' => 'nullable|date|after:input_penawaran_mulai',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Periode KRS
+            |--------------------------------------------------------------------------
+            */
             'krs_mulai' => 'required|date',
             'krs_selesai' => 'required|date|after:krs_mulai',
 
+            /*
+            |--------------------------------------------------------------------------
+            | Periode Input Nilai UTS
+            |--------------------------------------------------------------------------
+            */
             'input_nilai_uts_mulai' => 'nullable|date',
             'input_nilai_uts_selesai' => 'nullable|date|after:input_nilai_uts_mulai',
 
+            /*
+            |--------------------------------------------------------------------------
+            | Periode Input Nilai UAS
+            |--------------------------------------------------------------------------
+            */
             'input_nilai_uas_mulai' => 'nullable|date',
             'input_nilai_uas_selesai' => 'nullable|date|after:input_nilai_uas_mulai',
 
+            /*
+            |--------------------------------------------------------------------------
+            | Periode Pengumuman Nilai Final
+            |--------------------------------------------------------------------------
+            */
             'pengumuman_nilai_final_mulai' => 'nullable|date',
             'pengumuman_nilai_final_selesai' => 'nullable|date|after:pengumuman_nilai_final_mulai',
         ]);
 
         Metaperiode::updateOrCreate(
             [
-                'periode_id' => $validated['periode_id']
+                'periode_id' => $validated['periode_id'],
             ],
             $validated
         );
