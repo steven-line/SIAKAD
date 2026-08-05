@@ -60,51 +60,67 @@ class PenawaranController extends Controller
      */
     public function create()
 {
+    $metaPeriode = Metaperiode::first();
+
+    // Cek periode input penawaran
+    if (
+        !$metaPeriode ||
+        !$metaPeriode->input_penawaran_mulai ||
+        !$metaPeriode->input_penawaran_selesai ||
+        now()->lt($metaPeriode->input_penawaran_mulai) ||
+        now()->gt($metaPeriode->input_penawaran_selesai)
+    ) {
+        return redirect()
+            ->route('penawaran.index')
+            ->with('error', 'Periode input penawaran belum dibuka atau sudah berakhir.');
+    }
+
     $user = auth()->user();
 
-    $akses = ['A']; // default hanya MK Universitas
+    // Tidak lagi menampilkan MK Universitas (A)
+    $akses = [];
 
     if ($user && $user->dosen) {
 
         switch ($user->dosen->prodi) {
 
             case 'C': // Manajemen
-                $akses = ['A','B','C'];
+                $akses = ['B', 'C'];
                 break;
 
             case 'D': // Akuntansi
-                $akses = ['A','B','D'];
+                $akses = ['B', 'D'];
                 break;
 
             case 'F': // Teknik Sipil
-                $akses = ['A','E','F'];
+                $akses = ['E', 'F'];
                 break;
 
             case 'G': // Arsitektur
-                $akses = ['A','E','G'];
+                $akses = ['E', 'G'];
                 break;
 
             case 'H': // Teknik Elektro
-                $akses = ['A','E','H'];
+                $akses = ['E', 'H'];
                 break;
 
             case 'I': // Teknik Informatika
-                $akses = ['A','E','I'];
+                $akses = ['E', 'I'];
                 break;
 
             case 'K': // Sastra Inggris
-                $akses = ['A','J','K'];
+                $akses = ['J', 'K'];
                 break;
 
             case 'L': // Pendidikan Bahasa Mandarin
-                $akses = ['A','J','L'];
+                $akses = ['J', 'L'];
                 break;
         }
     }
 
     $matkuls = Mk::where(function ($query) use ($akses) {
             foreach ($akses as $prefix) {
-                $query->orWhere('kodemk', 'like', $prefix.'%');
+                $query->orWhere('kodemk', 'like', $prefix . '%');
             }
         })
         ->orderBy('nama')
@@ -130,7 +146,6 @@ class PenawaranController extends Controller
         'jamSlotsMalam'
     ));
 }
-   
 
 
 
@@ -204,6 +219,19 @@ public function index()
 
    public function store(Request $request)
 {
+
+    $metaPeriode = Metaperiode::first();
+
+    if (
+        !$metaPeriode ||
+        now()->lt($metaPeriode->input_penawaran_mulai) ||
+        now()->gt($metaPeriode->input_penawaran_selesai)
+    ) {
+        return redirect()
+            ->route('penawaran.index')
+            ->with('error', 'Periode input penawaran belum dibuka atau sudah berakhir.');
+    }
+
     $request->validate([
         'kodemk'       => 'required|exists:mk,kodemk',
         'semester_id'  => 'required|exists:semester,id',
@@ -299,49 +327,119 @@ public function index()
 }
 
     public function edit($recno)
-    {
-        $query = Penawaran::with([
-            'mk',
-            'dosenRelasi',
-            'semesterRelasi.periode',
-        ]);
+{
+    $metaPeriode = Metaperiode::first();
 
-        $user = auth()->user();
+    if (
+        !$metaPeriode ||
+        !now()->between($metaPeriode->input_penawaran_mulai, $metaPeriode->input_penawaran_selesai)
+    ) {
+        return redirect()
+            ->route('penawaran.index')
+            ->with('error', 'Periode input penawaran belum dibuka atau sudah berakhir.');
+    }   
 
-        if ($user && $user->dosen) {
+    $user = auth()->user();
 
-            $prodiLogin = $user->dosen->prodi;
+    $akses = ['A'];
 
-        $query->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
-            $q->where('kode_prodi', $prodiLogin);
-        });
+    if ($user && $user->dosen) {
+
+        switch ($user->dosen->prodi) {
+
+            case 'C':
+                $akses = ['A','B','C'];
+                break;
+
+            case 'D':
+                $akses = ['A','B','D'];
+                break;
+
+            case 'F':
+                $akses = ['A','E','F'];
+                break;
+
+            case 'G':
+                $akses = ['A','E','G'];
+                break;
+
+            case 'H':
+                $akses = ['A','E','H'];
+                break;
+
+            case 'I':
+                $akses = ['A','E','I'];
+                break;
+
+            case 'K':
+                $akses = ['A','J','K'];
+                break;
+
+            case 'L':
+                $akses = ['A','J','L'];
+                break;
         }
-
-        $penawaran = $query->findOrFail($recno);
-
-        $matkuls = Mk::orderBy('nama')->get();
-
-        $dosens = Dosen::orderBy('nama')->get();
-
-        $semesters = Semester::with('periode')
-            ->where('aktif', 1)
-            ->get();
-
-        $jamSlotsPagi = $this->generateJamSlotsPagi();
-        $jamSlotsMalam = $this->generateJamSlotsMalam();
-
-        return view('kaprodi.penawaran.edit', compact(
-            'penawaran',
-            'matkuls',
-            'dosens',
-            'semesters',
-            'jamSlotsPagi',
-            'jamSlotsMalam'
-        ));
     }
+
+    $penawaran = Penawaran::with([
+        'mk.kurikulum',
+        'dosenRelasi',
+        'semesterRelasi.periode',
+    ])->where('recno', $recno)->firstOrFail();
+
+    if (str_starts_with($penawaran->kodemk, 'A')) {
+    return redirect()
+        ->route('penawaran.index')
+        ->with('error', 'Penawaran umum hanya dapat dikelola oleh Admin.');
+}
+
+    $matkuls = Mk::where(function ($query) use ($akses) {
+            foreach ($akses as $prefix) {
+                $query->orWhere('kodemk', 'like', $prefix.'%');
+            }
+        })
+        ->orderBy('nama')
+        ->get();
+        
+    $dosens = Dosen::orderBy('nama')->get();
+
+    $semesters = Semester::with('periode')
+        ->where('aktif', 1)
+        ->get();
+
+    $jamSlotsPagi = $this->generateJamSlotsPagi();
+    $jamSlotsMalam = $this->generateJamSlotsMalam();
+
+    return view('kaprodi.penawaran.edit', compact(
+        'penawaran',
+        'matkuls',
+        'dosens',
+        'semesters',
+        'jamSlotsPagi',
+        'jamSlotsMalam'
+    ));
+}
 
     public function update(Request $request, Penawaran $penawaran)
     {
+
+    if (str_starts_with($penawaran->kodemk, 'A')) {
+    return redirect()
+        ->route('penawaran.index')
+        ->with('error', 'Penawaran umum hanya dapat dikelola oleh Admin.');
+}
+
+    $metaPeriode = Metaperiode::first();
+
+    if (
+        !$metaPeriode ||
+        now()->lt($metaPeriode->input_penawaran_mulai) ||
+        now()->gt($metaPeriode->input_penawaran_selesai)
+    ) {
+        return redirect()
+            ->route('penawaran.index')
+            ->with('error', 'Periode input penawaran belum dibuka atau sudah berakhir.');
+    }
         $request->validate([
             'kodemk'     => 'required',
             'semester_id' => 'required|exists:semester,id',
@@ -451,6 +549,28 @@ public function index()
 
     public function destroy(Penawaran $penawaran)
 {
+
+    if (str_starts_with($penawaran->kodemk, 'A')) {
+        return redirect()
+            ->route('penawaran.index')
+            ->with('error', 'Penawaran umum hanya dapat dikelola oleh Admin.');
+    }
+
+    $metaPeriode = Metaperiode::first();
+
+        // Cek periode input penawaran
+        if (
+            !$metaPeriode ||
+            !$metaPeriode->input_penawaran_mulai ||
+            !$metaPeriode->input_penawaran_selesai ||
+            now()->lt($metaPeriode->input_penawaran_mulai) ||
+            now()->gt($metaPeriode->input_penawaran_selesai)
+        ) {
+            return redirect()
+                ->route('penawaran.index')
+                ->with('error', 'Periode input penawaran belum dibuka atau sudah berakhir.');
+        }
+
     try {
         $penawaran->delete();
 

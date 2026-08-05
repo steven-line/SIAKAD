@@ -5,6 +5,18 @@
         Edit Penawaran Mata Kuliah
     </h1>
 
+    @if(session('error'))
+    <div class="alert alert-error mb-4">
+        <span>{{ session('error') }}</span>
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success mb-4">
+        <span>{{ session('success') }}</span>
+    </div>
+@endif
+
     <div class="bg-gray-800 p-6 rounded-lg shadow">
 
         @if ($errors->any())

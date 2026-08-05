@@ -63,4 +63,9 @@ class Penawaran extends Model
     {
         return $this->belongsTo(Semester::class, 'semester_id');
     }
+
+    public function getRouteKeyName()
+    {
+        return 'recno';
+    }
 }

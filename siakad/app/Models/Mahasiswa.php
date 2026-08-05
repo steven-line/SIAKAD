@@ -9,7 +9,7 @@ use App\Models\Ips;
 use App\Models\Registrasi;
 
 class Mahasiswa extends Model
-{
+{   
     //
      public $timestamps = false;
      public $incrementing = false;

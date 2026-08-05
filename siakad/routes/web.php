@@ -23,7 +23,8 @@ use App\Http\Controllers\{
     PeriodeController,
     PjmkController,
     SemesterController,
-    TranskripNilaiAnakWaliController
+    TranskripNilaiAnakWaliController,
+    PenawaranAdminController,
 };
 
 use App\Http\Controllers\Admin\{
@@ -125,6 +126,33 @@ Route::middleware('auth')->group(function () {
             Route::patch('/{mk}', [MkController::class, 'update'])->name('update');
             Route::delete('/{mk}', [MkController::class, 'destroy'])->name('destroy');
         });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PENAWARAN UMUM ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+Route::prefix('admin/penawaran')
+    ->middleware('permission:penawaranumum.manage')
+    ->name('admin.penawaran.')
+    ->group(function () {
+
+        Route::get('/', [PenawaranAdminController::class,'index'])->name('index');
+
+        Route::get('/create',[PenawaranAdminController::class,'create'])->name('create');
+
+        Route::post('/',[PenawaranAdminController::class,'store'])->name('store');
+
+        Route::get('/{penawaran}',[PenawaranAdminController::class,'show'])->name('show');
+
+        Route::get('/{penawaran}/edit',[PenawaranAdminController::class,'edit'])->name('edit');
+
+        Route::patch('/{penawaran}',[PenawaranAdminController::class,'update'])->name('update');
+
+        Route::delete('/{penawaran}',[PenawaranAdminController::class,'destroy'])->name('destroy');
+
+});
 
 
     
