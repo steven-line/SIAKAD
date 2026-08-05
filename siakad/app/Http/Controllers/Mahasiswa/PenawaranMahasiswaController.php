@@ -26,6 +26,7 @@ class PenawaranMahasiswaController extends Controller
 
         $prodi = Auth::user()?->mahasiswa?->prodi;
         $nrp   = Auth::user()?->username;
+        $pataumMahasiswa = Auth::user()->pataum;
 
         // Query penawaran dengan filter prodi & semester aktif
         $query = Penawaran::with([
@@ -38,7 +39,7 @@ class PenawaranMahasiswaController extends Controller
             })
             ->whereHas('mk.kurikulum', function ($q) use ($prodi) {
                 $q->where('kode_prodi', $prodi);
-            });
+            })->where('pataum', $pataumMahasiswa);
 
         $penawaran = $query->get();
 

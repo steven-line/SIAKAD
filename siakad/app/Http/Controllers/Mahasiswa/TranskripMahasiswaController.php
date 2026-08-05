@@ -76,6 +76,8 @@ class TranskripMahasiswaController extends Controller
                   
             })
             ->where('registrasi.nrp', $nrp)
+            ->whereNotNull('krs.na')
+            ->where('krs.na', '!=', '')
             ->select(
                 'penawaran.kodemk as kode',
                 'mk.nama as nama_mk',

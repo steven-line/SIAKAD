@@ -52,4 +52,6 @@ class Mk extends Model
             'kode_kurikulum'
         );
     }
+
+    
 }

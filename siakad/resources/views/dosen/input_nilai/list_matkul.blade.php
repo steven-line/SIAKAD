@@ -10,7 +10,7 @@
                 <th>Kode MK</th>
                 <th>Nama Mata Kuliah</th>
 
-                <th>Periode</th>
+             
                 <th>Sesi</th>
                 <th>Hari</th>
                 <th>Jam</th>
@@ -33,8 +33,6 @@
                 </td>
 
      
-
-                <td>{{ $mk->semester_id }}</td>
 
                 <td>{{ $mk->sesi }}</td>
 

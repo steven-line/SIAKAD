@@ -18,11 +18,16 @@
     @endif
 
 <div class="container mx-auto p-4">
-@error('limit_sks')
-    <div class="alert alert-danger text-red-600 bg-red-100 p-3 rounded mb-4">
-        {{ $message }}
-    </div>
-@enderror
+    @error('limit_sks')
+        <div class="alert alert-danger text-red-600 bg-red-100 p-3 rounded mb-4">
+            {{ $message }}
+        </div>
+    @enderror
+    @error('prasyarat_sks')
+        <div class="alert alert-danger text-red-600 bg-red-100 p-3 rounded mb-4">
+            {{ $message }}
+        </div>
+    @enderror
         <h1 class="text-2xl font-bold mb-4">Informasi Mata Kuliah</h1>
 
         <!-- Informasi Detail Mata Kuliah + Tombol Aksi -->

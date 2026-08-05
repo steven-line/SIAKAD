@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Prodi;
 use App\Models\Dosen;
-use App\Models\Biodata;
 use App\Models\Ips;
 use App\Models\Registrasi;
 
@@ -43,11 +42,6 @@ class Mahasiswa extends Model
      public function ips()
     {
         return $this->hasOne(Ips::class, 'nrp', 'nrp');
-    }
-
-    public function prodi()
-    {
-        return $this->belongsTo(Prodi::class, 'prodi', 'kode_prodi');
     }
 
 

@@ -63,7 +63,7 @@
                 <div>
                     <label class="label font-bold">Prasyarat {{ $i }}</label>
                     <select class="select select-bordered w-full" name="prasyarat{{$i}}">
-                        <option disabled selected>Select MK</option>
+                        <option selected value="-">Select MK</option>
                         @foreach ($mks as $mk)
                             <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i") == $mk->kodemk)>
                                 {{ $mk->kodemk }} - {{ $mk->nama }}

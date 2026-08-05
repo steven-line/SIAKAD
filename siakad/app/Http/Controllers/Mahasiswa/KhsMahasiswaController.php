@@ -49,9 +49,11 @@ class KhsMahasiswaController extends Controller
         $datas = [];
         $ips = 0;
         $periode = Periode::where('aktif','1')->first();
-        $semester = $periode->whereHas('semesters', function (Builder $query) {
-            $query->where('aktif', '1')->select('jenis');
-        })->first();
+        $semester = $periode->leftJoin('semester', 'periode.id', '=',  'semester.periode_id')
+                            ->where('semester.aktif', '1')
+                            ->select('semester.jenis')
+                            ->first();
+
         $metaperiode = Metaperiode::findOrFail(1);
     
         if (now()->between($metaperiode->pengumuman_nilai_final_mulai ?? now(), $metaperiode->pengumuman_nilai_final_selesai ?? now())) {
@@ -81,14 +83,19 @@ class KhsMahasiswaController extends Controller
 
             return $periode;
         })->all();
-        $ipk = array_sum(array_column($grouped, 'ips'))/(count($grouped));
+        if (count($grouped) == 0) {
+            $ipk = 0;
+        } else {
+            $ipk = array_sum(array_column($grouped, 'ips'))/(count($grouped));
                
+        }
+        
         $informasiUmum = [
                             'periode' => $periode,
                             'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
                             'semester' => $semester,
                             'nrp' => $user->mahasiswa->nrp,
-                            'nama' => $user->mahasiswa->biodata->nama,
+                            'nama' => $user->mahasiswa->biodata->nama ?? null,
                             'dosen_wali' => $user->mahasiswa->dosen_wali
         ];     
 

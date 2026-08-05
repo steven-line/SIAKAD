@@ -1,14 +1,14 @@
 <x-layout>  
     <div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
         <div>
-            <p class="font-bold">Periode: {{$informasiUmum['periode']}}</p>
-            <p class="font-bold">Semester: {{$informasiUmum['semester']}}</p>
-            <p class="font-bold">Program studi: {{$informasiUmum['program_studi']}}</p>
+            <p class="font-bold">Periode: {{$informasiUmum['periode'] ?? 'N/A'}}</p>
+            <p class="font-bold">Semester: {{$informasiUmum['semester'] ?? 'N/A'}}</p>
+            <p class="font-bold">Program studi: {{$informasiUmum['program_studi'] ?? 'N/A'}}</p>
         </div>
         <div class="cols-start-2 cols-end-3">
-            <p class="font-bold">NRP: {{$informasiUmum['nrp']}}</p>
-            <p class="font-bold">Nama: {{$informasiUmum['nama']}}</p>
-            <p class="font-bold">Dosen Wali: {{$informasiUmum['dosen_wali']}}</p>
+            <p class="font-bold">NRP: {{$informasiUmum['nrp'] ?? 'N/A'}}</p>
+            <p class="font-bold">Nama: {{$informasiUmum['nama'] ?? 'N/A'}}</p>
+            <p class="font-bold">Dosen Wali: {{$informasiUmum['dosen_wali'] ?? 'N/A'}}</p>
         </div>
         
     </div>
