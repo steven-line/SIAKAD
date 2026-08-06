@@ -18,18 +18,6 @@
 
         <div class="p-4">
 
-            @php
-                $metaPeriode = \App\Models\Metaperiode::first();
-
-                $bolehInput =
-                    $metaPeriode &&
-                    $metaPeriode->input_penawaran_mulai &&
-                    $metaPeriode->input_penawaran_selesai &&
-                    now()->between(
-                        $metaPeriode->input_penawaran_mulai,
-                        $metaPeriode->input_penawaran_selesai
-                    );
-            @endphp
 
             @if($bolehInput)
                 <a class="btn btn-primary text-white mb-4"
