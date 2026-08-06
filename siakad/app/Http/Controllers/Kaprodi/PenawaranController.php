@@ -64,11 +64,9 @@ class PenawaranController extends Controller
 
     // Cek periode input penawaran
     if (
-        !$metaPeriode ||
-        !$metaPeriode->input_penawaran_mulai ||
-        !$metaPeriode->input_penawaran_selesai ||
-        now()->lt($metaPeriode->input_penawaran_mulai) ||
-        now()->gt($metaPeriode->input_penawaran_selesai)
+        !$metaPeriode && !$metaPeriode->input_penawaran_mulai &&
+        !$metaPeriode->input_penawaran_selesai &&
+        !now()->between($metaPeriode->input_penawaran_mulai, $metaPeriode->input_penawaran_selesai)
     ) {
         return redirect()
             ->route('penawaran.index')
@@ -153,7 +151,7 @@ public function index()
 {
     $user = auth()->user();
     $akses = ['A']; // default hanya MK Universitas
-
+    
     if ($user && $user->dosen) {
         switch ($user->dosen->prodi) {
             case 'C': // Manajemen
@@ -213,8 +211,12 @@ public function index()
     $penawarans = $query
         ->orderBy('hari')
         ->paginate(10);
-
-    return view('kaprodi.penawaran.index', compact('penawarans'));
+    $metaPeriode = Metaperiode::first();
+    $bolehInput = $metaPeriode && $metaPeriode->input_penawaran_mulai && $metaPeriode->input_penawaran_selesai && now()->between(
+                        $metaPeriode->input_penawaran_mulai,
+                        $metaPeriode->input_penawaran_selesai
+                    );
+    return view('kaprodi.penawaran.index', compact('penawarans', 'bolehInput'));
 }
 
    public function store(Request $request)
@@ -223,9 +225,8 @@ public function index()
     $metaPeriode = Metaperiode::first();
 
     if (
-        !$metaPeriode ||
-        now()->lt($metaPeriode->input_penawaran_mulai) ||
-        now()->gt($metaPeriode->input_penawaran_selesai)
+        !$metaPeriode && !$metaPeriode->input_penawaran_mulai && !$metaPeriode->input_penawaran_selesai
+        && !now()->between($metaPeriode->input_penawaran_mulai, $metaPeriode->input_penawaran_selesai)
     ) {
         return redirect()
             ->route('penawaran.index')
@@ -277,30 +278,61 @@ public function index()
             'jam' => 'Durasi mata kuliah melebihi batas sesi.'
         ])->withInput();
     }
+   $akses = ['A'];
+   $user = Auth::user();
+    if ($user && $user->dosen) {
 
-        $bentrok = Penawaran::whereHas('mk.kurikulum', function ($q) use ($kodeProdi) {
-            $q->where('kode_prodi', $kodeProdi);
-        })->where('hari', $request->hari)
-          ->where(function ($q) use ($request) {
-            $q->where('kodemk', $request->kodemk)
-           ->orWhere('dosen', $request->dosen);
-        })->where(function ($q) use ($mulai, $selesai) {
-            $q->whereBetween('mulaipukul', [
-                    $mulai->format('H:i:s'),
-                    $selesai->format('H:i:s')
-                ])
-                ->orWhereBetween('selesaipukul', [
-                    $mulai->format('H:i:s'),
-                    $selesai->format('H:i:s')
-                ])
-                ->orWhere(function ($q2) use ($mulai, $selesai) {
+        switch ($user->dosen->prodi) {
 
-                    $q2->where('mulaipukul','<=',$mulai->format('H:i:s'))
-                    ->where('selesaipukul','>=',$selesai->format('H:i:s'));
-            });
-        })
-        ->exists();
-        
+            case 'C':
+                $akses = ['A','B','C'];
+                break;
+
+            case 'D':
+                $akses = ['A','B','D'];
+                break;
+
+            case 'F':
+                $akses = ['A','E','F'];
+                break;
+
+            case 'G':
+                $akses = ['A','E','G'];
+                break;
+
+            case 'H':
+                $akses = ['A','E','H'];
+                break;
+
+            case 'I':
+                $akses = ['A','E','I'];
+                break;
+
+            case 'K':
+                $akses = ['A','J','K'];
+                break;
+
+            case 'L':
+                $akses = ['A','J','L'];
+                break;
+        }
+    }
+  $bentrok = Penawaran::select('hari', 'mulaipukul','selesaipukul')->where('hari', $request->hari)
+                        ->whereHas('semester', function (Builder $query){
+                            $query->where('aktif', '1');
+                            $query->whereHas('periode', function (Builder $q) {
+                                $q->where('aktif', '1');
+                            });
+                        })->where(function($query) use ($mulai, $selesai) {
+                        $query->whereBetween('mulaipukul', [$mulai->format('H:i:s'), $selesai->format('H:i:s')]);
+                        $query->OrwhereBetween('selesaipukul', [$mulai->format('H:i:s'),$selesai->format('H:i:s')]);
+                        })->whereHas('mk', function (Builder $query) use($akses){
+                            foreach($akses as $char) {
+                                 $query->orWhere('kodemk',  'LIKE', $char . '%');
+                            }    
+                       
+                        })->exists();
+
     if ($bentrok) {
         return back()->withErrors([
             'jam' => 'Jadwal bentrok dengan penawaran lain pada prodi Anda.'
@@ -331,7 +363,7 @@ public function index()
     $metaPeriode = Metaperiode::first();
 
     if (
-        !$metaPeriode ||
+        !$metaPeriode &&
         !now()->between($metaPeriode->input_penawaran_mulai, $metaPeriode->input_penawaran_selesai)
     ) {
         return redirect()
@@ -432,9 +464,8 @@ public function index()
     $metaPeriode = Metaperiode::first();
 
     if (
-        !$metaPeriode ||
-        now()->lt($metaPeriode->input_penawaran_mulai) ||
-        now()->gt($metaPeriode->input_penawaran_selesai)
+        !$metaPeriode &&
+        !now()->between($metaPeriode->input_penawaran_mulai, $metaPeriode->input_penawaran_selesai)
     ) {
         return redirect()
             ->route('penawaran.index')
@@ -483,45 +514,62 @@ public function index()
                 'jam' => 'Durasi mata kuliah melebihi batas sesi'
             ])->withInput();
         }
+        
+    $akses = ['A'];
 
-    $bentrok = Penawaran::where('recno', '!=', $penawaran->recno)
-        ->where('hari', $request->hari)
+    if ($user && $user->dosen) {
 
-        // Hanya cek pada prodi yang sama
-        ->whereHas('mk.kurikulum', function ($q) use ($kodeProdi) {
-            $q->where('kode_prodi', $kodeProdi);
-        })
+        switch ($user->dosen->prodi) {
 
-        // Mata kuliah sama ATAU dosen sama ATAU semester sama
-        ->where(function ($q) use ($request) {
+            case 'C':
+                $akses = ['A','B','C'];
+                break;
 
-            $q->where('kodemk', $request->kodemk)
-            ->orWhere('dosen', $request->dosen);
+            case 'D':
+                $akses = ['A','B','D'];
+                break;
 
-        })
+            case 'F':
+                $akses = ['A','E','F'];
+                break;
 
-        // Jam bertabrakan
-        ->where(function ($q) use ($mulai, $selesai) {
+            case 'G':
+                $akses = ['A','E','G'];
+                break;
 
-            $q->whereBetween('mulaipukul', [
-                    $mulai->format('H:i:s'),
-                    $selesai->format('H:i:s')
-                ])
+            case 'H':
+                $akses = ['A','E','H'];
+                break;
 
-            ->orWhereBetween('selesaipukul', [
-                    $mulai->format('H:i:s'),
-                    $selesai->format('H:i:s')
-                ])
+            case 'I':
+                $akses = ['A','E','I'];
+                break;
 
-            ->orWhere(function ($q2) use ($mulai, $selesai) {
-                    $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
-                    ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
-            });
+            case 'K':
+                $akses = ['A','J','K'];
+                break;
 
-        })
-
-        ->exists();
-
+            case 'L':
+                $akses = ['A','J','L'];
+                break;
+        }
+    }
+   $bentrok = Penawaran::select('hari', 'mulaipukul','selesaipukul')->where('hari', $request->hari)
+                        ->whereHas('semester.periode', function (Builder $query){
+                            $query->where('aktif', '1');
+                            $query->whereHas('periode', function (Builder $q) {
+                                $q->where('aktif', '1');
+                            });
+                        })->where(function($query) use ($mulai, $selesai) {
+                        $query->whereBetween('mulaipukul', [$mulai->format('H:i:s'), $selesai->format('H:i:s')]);
+                        $query->OrwhereBetween('selesaipukul', [$mulai->format('H:i:s'),$selesai->format('H:i:s')]);
+                        })->whereHas('mk', function (Builder $query) use($akses){
+                            foreach($akses as $char) {
+                                 $query->orWhere('kodemk',  'LIKE', $char . '%');
+                            }    
+                       
+                        })->get();
+    dd($bentrok);
     if ($bentrok) {
         return back()->withErrors([
             'jam' => 'Jadwal bentrok. Mata kuliah, dosen, atau semester sudah memiliki jadwal pada waktu tersebut.'
@@ -560,11 +608,9 @@ public function index()
 
         // Cek periode input penawaran
         if (
-            !$metaPeriode ||
-            !$metaPeriode->input_penawaran_mulai ||
-            !$metaPeriode->input_penawaran_selesai ||
-            now()->lt($metaPeriode->input_penawaran_mulai) ||
-            now()->gt($metaPeriode->input_penawaran_selesai)
+            !$metaPeriode && !$metaPeriode->input_penawaran_mulai &&
+            !$metaPeriode->input_penawaran_selesai &&
+            !now()->between($metaPeriode->input_penawaran_mulai, $metaPeriode->input_penawaran_selesai)
         ) {
             return redirect()
                 ->route('penawaran.index')

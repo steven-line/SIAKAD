@@ -3,6 +3,18 @@
     <div class="container mx-auto p-4">
 
         <h1 class="text-2xl font-bold mb-4">
+            @php
+                $metaPeriode = \App\Models\Metaperiode::first();
+
+                $bolehKrs =
+                    $metaPeriode &&
+                    $metaPeriode->krs_mulai &&
+                    $metaPeriode->krs_selesai &&
+                    now()->between(
+                        $metaPeriode->krs_mulai,
+                        $metaPeriode->krs_selesai
+                    );
+            @endphp
             Informasi Mata Kuliah
         </h1>
 
@@ -29,31 +41,40 @@
                 {{-- Tombol Aksi --}}
                 <div class="md:col-span-2">
                     <strong>Aksi Dosen Wali :</strong>
-
                     <div class="mt-2">
 
-                        @if($sudahAmbil)
+                        @if($bolehKrs)
 
-                            <form action="{{ route('perwalian.penawaran.batal', [$mahasiswa->nrp, $penawaran->recno]) }}"
-                                  method="POST">
-                                @csrf
-                                @method('DELETE')
+                            @if($sudahAmbil)
 
-                                <button class="btn btn-error">
-                                    Batalkan KRS Mahasiswa
-                                </button>
-                            </form>
+                                <form action="{{ route('perwalian.penawaran.batal', [$mahasiswa->nrp, $penawaran->recno]) }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button class="btn btn-error">
+                                        Batalkan KRS Mahasiswa
+                                    </button>
+                                </form>
+
+                            @else
+
+                                <form action="{{ route('perwalian.penawaran.ambil', [$mahasiswa->nrp, $penawaran->recno]) }}"
+                                    method="POST">
+                                    @csrf
+
+                                    <button class="btn btn-primary">
+                                        Tambahkan ke KRS Mahasiswa
+                                    </button>
+                                </form>
+
+                            @endif
 
                         @else
 
-                            <form action="{{ route('perwalian.penawaran.ambil', [$mahasiswa->nrp, $penawaran->recno]) }}"
-                                  method="POST">
-                                @csrf
-
-                                <button class="btn btn-primary">
-                                    Tambahkan ke KRS Mahasiswa
-                                </button>
-                            </form>
+                            <button class="btn btn-disabled">
+                                Periode KRS Ditutup
+                            </button>
 
                         @endif
 

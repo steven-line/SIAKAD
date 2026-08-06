@@ -151,6 +151,21 @@ class PerwalianController extends Controller
 
     public function ambilKrs($nrp, Penawaran $penawaran)
     {
+
+        $periodeKrs = Metaperiode::first();
+
+        if (
+            !$periodeKrs ||
+            !$periodeKrs->krs_mulai ||
+            !$periodeKrs->krs_selesai ||
+            now()->lt($periodeKrs->krs_mulai) ||
+            now()->gt($periodeKrs->krs_selesai)
+        ) {
+            return back()->with(
+                'error',
+                'Periode KRS belum dibuka atau sudah berakhir. Dosen wali tidak dapat menambahkan mata kuliah.'
+            );
+        }
         $mahasiswa = Mahasiswa::findOrFail($nrp);
 
         if ($mahasiswa->dosen_wali !== auth()->user()->dosen->nim_dosen) {
@@ -186,6 +201,21 @@ class PerwalianController extends Controller
 
         if ($mahasiswa->dosen_wali !== auth()->user()->dosen->nim_dosen) {
             abort(403);
+        }
+
+        $periodeKrs = Metaperiode::first();
+
+        if (
+            !$periodeKrs ||
+            !$periodeKrs->krs_mulai ||
+            !$periodeKrs->krs_selesai ||
+            now()->lt($periodeKrs->krs_mulai) ||
+            now()->gt($periodeKrs->krs_selesai)
+        ) {
+            return back()->with(
+                'error',
+                'Periode KRS belum dibuka atau sudah berakhir. Dosen wali tidak dapat menghapus mata kuliah.'
+            );
         }
 
         Registrasi::where('nrp', $mahasiswa->nrp)

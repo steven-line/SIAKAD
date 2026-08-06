@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ips;
 use App\Models\Krs;
 use App\Models\Mahasiswa;
+use App\Models\Metaperiode;
 use Illuminate\Http\Request;
 
 class IpsController extends Controller
@@ -14,6 +15,8 @@ class IpsController extends Controller
      */
     public function index()
     {
+        $this->generateIpsIfAllowed();
+
         $mahasiswas = Mahasiswa::with([
             'biodata',
             'ips'
@@ -96,10 +99,25 @@ class IpsController extends Controller
     }
 
     /**
-     * Generate IPS seluruh mahasiswa.
-     */
-    public function generateIps()
+ * Generate IPS otomatis setelah pengumuman nilai final selesai.
+ */
+    private function generateIpsIfAllowed()
     {
+        $meta = Metaperiode::first();
+
+        if (
+            !$meta ||
+            !$meta->pengumuman_nilai_final_mulai ||
+            !$meta->pengumuman_nilai_final_selesai
+        ) {
+            return;
+        }
+
+        // Belum selesai pengumuman
+        if (now()->lte($meta->pengumuman_nilai_final_selesai)) {
+            return;
+        }
+
         $mahasiswas = Mahasiswa::all();
 
         foreach ($mahasiswas as $mahasiswa) {
@@ -117,21 +135,23 @@ class IpsController extends Controller
 
                 $bobot = $this->getBobot($item->na);
 
-                $totalMutu += ($bobot * $item->sks);
+                $totalMutu += $bobot * $item->sks;
                 $totalSks += $item->sks;
             }
 
             $ips = 0;
+            $maksimalSks = 19; // default mahasiswa baru
 
             if ($totalSks > 0) {
-                $ips = round($totalMutu / $totalSks, 3);
-            }
 
-            // Menentukan maksimal SKS berdasarkan IPS
-            if ($ips >= 3.000) {
-                $maksimalSks = 24;
-            } else {
-                $maksimalSks = 21;
+                $ips = round($totalMutu / $totalSks, 3);
+
+                if ($ips >= 3.000) {
+                    $maksimalSks = 24;
+                } else {
+                    $maksimalSks = 21;
+                }
+
             }
 
             Ips::updateOrCreate(
@@ -144,10 +164,16 @@ class IpsController extends Controller
                 ]
             );
         }
+    }
 
-        return redirect()
-            ->route('ips.index')
-            ->with('success', 'IPS seluruh mahasiswa berhasil diperbarui.');
+    /**
+     * Generate IPS seluruh mahasiswa.
+     */
+    public function generateIps()
+    {
+        $this->generateIpsIfAllowed();
+
+        return redirect()->route('ips.index');
     }
 
     /**
