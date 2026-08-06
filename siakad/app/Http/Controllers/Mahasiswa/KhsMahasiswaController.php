@@ -55,7 +55,7 @@ class KhsMahasiswaController extends Controller
                             ->select('semester.jenis')
                             ->first();
 
-        $metaperiode = Metaperiode::findOrFail(12);
+        $metaperiode = Metaperiode::findOrFail(1);
         $periodeAktif = Periode::where('aktif', 1)->first();
         $jenisSemester = $periodeAktif->semesters()->where('aktif', 1)->pluck('jenis')->first();
         $checkPeriode = $periodeAktif->tahun_ajaran . '|' . $jenisSemester;

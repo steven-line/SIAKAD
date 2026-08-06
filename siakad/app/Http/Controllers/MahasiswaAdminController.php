@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Dosen;
 use App\Models\Prodi;
 use App\Models\User;
+use App\Models\Ips;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -46,12 +47,23 @@ class MahasiswaAdminController extends Controller
             'prodi' => ['required']
 
         ]);
-        Mahasiswa::create([
+        $mahasiswa = Mahasiswa::create([
             'nrp' => $request->nrp,
             'dosen_wali' => $request->dosen_wali,
             'status_blokir' => $request->status_blokir,
-            'prodi' => $request->prodi
+            'prodi' => $request->prodi,
         ]);
+
+        Ips::updateOrCreate(
+            [
+                'nrp' => $mahasiswa->nrp,
+            ],
+            [
+                'ips' => 0,
+                'maksimal_sks' => 19,
+                'toleransi' => 0,
+            ]
+        );
         
         return redirect()
         ->route('mahasiswa_admin.index');

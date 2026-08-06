@@ -107,12 +107,10 @@ class DetailMataKuliahController extends Controller
     {
         $user = Auth::user();
         $mahasiswa = $user->mahasiswa;  
-        $sksMahasiswa = Registrasi::join('krs', 'registrasi.regkrs', '=', 'krs.registrasi_id')
-                                ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
-                                ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
-                                ->select('mk.sks')
-                                ->where('nrp', $user->mahasiswa->nrp)
-                                ->get();
+        $ipsMahasiswa = $mahasiswa->ips;
+
+        $sksMahasiswa = ($ipsMahasiswa?->maksimal_sks ?? 19)
+                    + ($ipsMahasiswa?->toleransi ?? 0);
 
         $periodeKrs = Metaperiode::first();
         if (!$mahasiswa) {
@@ -212,16 +210,21 @@ class DetailMataKuliahController extends Controller
 
      
             // 2. JIKA SKS MELEBIHI LIMIT, BATALKAN (ROLLBACK)
-            if ($registrasiMK->sum('sks') > $mahasiswa->ips->maksimal_sks) {
-                DB::rollBack(); // Data Registrasi::create tadi otomatis dihapus kembali
-                dd($registrasiMK);
-                return back()->withErrors(['limit_sks' => 'Pendaftaran gagal! Total SKS melampaui limit Anda.']);
+            $limitSks = ($mahasiswa->ips?->maksimal_sks ?? 19)
+                    + ($mahasiswa->ips?->toleransi ?? 0);
+
+            if ($registrasiMK->sum('sks') > $limitSks) {
+                DB::rollBack();
+
+                return back()->withErrors([
+                    'limit_sks' => "Pendaftaran gagal! Total SKS melampaui batas {$limitSks} SKS."
+                ]);
             }
-            if ($sksMahasiswa->sum('sks') < $penawaran->mk->prasyaratsks) {
+            if ($sksMahasiswa < $penawaran->mk->prasyaratsks){
                   DB::rollBack(); // Data Registrasi::create tadi otomatis dihapus kembali
                     
                   $prasyaratSKSMK = $penawaran->mk->prasyaratsks;
-                  $selisihSKS = $prasyaratSKSMK - $sksMahasiswa->sum('sks');
+                  $selisihSKS = $prasyaratSKSMK - $sksMahasiswa;
                   
                   return back()->withErrors(['prasyarat_sks' => "Pendaftaran gagal!  Anda belum memenuhi Prasyarat SKS $prasyaratSKSMK, Anda masih kurang $selisihSKS"]);
             }

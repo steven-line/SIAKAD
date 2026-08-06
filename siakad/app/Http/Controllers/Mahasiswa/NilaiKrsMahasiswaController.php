@@ -41,7 +41,7 @@ class NilaiKrsMahasiswaController extends Controller
            $join->on('semester.periode_id', '=', 'periode.id')
                 ->where('periode.aktif', '=', '1'); 
         })->select('jenis')->where('semester.aktif', '1')->first();       
-        $metaperiode = Metaperiode::findOrFail(12);
+        $metaperiode = Metaperiode::findOrFail(1);
         $pengumumanKrs = null;
         if ($metaperiode && $metaperiode->pengumuman_nilai_final_mulai && $metaperiode->pengumuman_nilai_final_selesai && now()->between($metaperiode->pengumuman_nilai_final_mulai, $metaperiode->pengumuman_nilai_final_selesai)) {
                $pengumumanKrs = 'Anda memasuki periode pengumuman nilai final';         
