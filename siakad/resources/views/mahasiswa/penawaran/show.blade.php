@@ -42,7 +42,7 @@
                 <div><strong>SKS:</strong> {{ $penawaran->mk->sks }}</div>
                 <div><strong>Semester:</strong> {{ $penawaran->semester->nama ?? '-' }}</div>
                 <div><strong>Keterangan :</strong> {{ $penawaran->keterangan ?? '-' }}</div>
-                <div><strong>Periode :</strong> {{ $penawaran->periode ?? 'GENAP / 2025-2026' }}</div>
+                <div><strong>Periode :</strong> {{ $penawaran->semester->periode->tahun_ajaran ?? '-' }} {{ $penawaran->semester->jenis ?? '-' }}</div>
 <div>
     <strong>Aksi Anda :</strong>
 

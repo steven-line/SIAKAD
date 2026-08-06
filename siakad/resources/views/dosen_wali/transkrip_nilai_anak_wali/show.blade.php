@@ -8,12 +8,19 @@
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-bold mb-4">Transkrip Nilai Mahasiswa</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6 p-4 bg-transparent rounded">
-            <div><strong>NRP :</strong> {{ $mahasiswa->nrp ?? '-' }}</div>
-            <div><strong>Nama :</strong> {{ $biodata->nama ?? '-' }}</div>
-            <div><strong>Program Studi :</strong> {{ $mahasiswa->prodi ?? '-' }}</div>
-            <div><strong>Dosen Wali :</strong> {{ $dosenWali ?? '-' }}</div>
+ <div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
+        <div>
+            <p class="font-bold">Periode: {{$informasiUmum['periode']}}</p>
+            <p class="font-bold">Semester: {{$informasiUmum['semester']}}</p>
+            <p class="font-bold">Program studi: {{$informasiUmum['program_studi']}}</p>
         </div>
+        <div class="cols-start-2 cols-end-3">
+            <p class="font-bold">NRP: {{$informasiUmum['nrp']}}</p>
+            <p class="font-bold">Nama: {{$informasiUmum['nama'] ?? 'N/A'}}</p>
+            <p class="font-bold">Dosen Wali: {{$informasiUmum['dosen_wali']}}</p>
+        </div>
+        
+    </div>
 
         <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
             <table class="table">

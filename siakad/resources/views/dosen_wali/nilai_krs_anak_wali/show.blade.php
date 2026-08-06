@@ -1,77 +1,75 @@
-<x-layout title="Nilai KRS Mahasiswa">
-    <div>
+<x-layout>  
+   
+@if ($pengumumanKrs)
+    <div role="alert" class="alert alert-info mb-6">
+        <span>
+            {{$pengumumanKrs}}
+        </span>
+    </div>
+@else
+<div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
+        <div>
+            <p class="font-bold">Periode: {{$informasiUmum['periode'] ?? 'N/A'}}</p>
+            <p class="font-bold">Semester: {{$informasiUmum['semester'] ?? 'N/A'}}</p>
+            <p class="font-bold">Program studi: {{$informasiUmum['program_studi'] ?? 'N/A'}}</p>
+        </div>
+        <div class="cols-start-2 cols-end-3">
+            <p class="font-bold">NRP: {{$informasiUmum['nrp'] ?? 'N/A'}}</p>
+            <p class="font-bold">Nama: {{$informasiUmum['nama'] ?? 'N/A'}}</p>
+            <p class="font-bold">Dosen Wali: {{$informasiUmum['dosen_wali'] ?? 'N/A'}}</p>
+        </div>
         
-        <a class="join-item btn btn-primary mb-10" href="{{ route('nilai_krs_anak_wali.index') }}">
-            ⮜ Previous page
-        </a>
     </div>
 
-    <div class="space-y-4">
+    <hr>
+    @foreach($krsMahasiswa as $krs)
+    <div class="flex justify-between px-4">
+        <div class="font-bold">Periode: {{$krs['periode']}}</div>
+        <div class="font-bold mb-4">Semester: {{$krs['semester']}} - <span class="badge badge-primary badge-sm"> {{$loop->iteration}}</span></div>
+    </div> 
+    <table class="table px-4">
+        <thead class="bg-blue-500 text-white">
+            <tr>
+                <th>No</th>
+                <th>Kode</th>
+                <th>Mata Kuliah</th>
+                <th>SKS</th>
+                <th>Sts</th>
+                <th>TTT1</th>
+                <th>TTT2</th>
+                <th>UTS</th>
+                <th>UAS</th>
+                <th>LAIN</th>
+                <th>GRADE</th>
+            </tr>
+        </thead>
+        <tbody>
+          
+            @foreach($krs['matkul'] as $item) 
+                <tr>
+                    
+                    <td>{{$loop->iteration}}</td>
+                    <td>{{$item['kode']}}</td>
+                    <td>{{$item['mata_kuliah']}}</td>
+                    <td>{{$item['sks']}}</td>
+                    <td>{{$item['status']}}</td>
+                    <td>{{$item['ttt1'] ?? '0.00'}} </td>
+                    <td>{{$item['ttt2'] ?? '0.00'}}</td>
+                    <td>{{$item['uts'] ?? '0.00'}}</td>
+                    <td>{{$item['uas'] ?? '0.00'}}</td>
+                    <td>{{$item['lain'] ?? '0.00'}}</td>
+                    <td>{{$item['grade'] ?? 'E'}}</td>
+                </tr>
+                
+            @endforeach
+        </tbody>
         
-        <div class="p-4 rounded-box border border-base-300 bg-base-100">
-            <h2 class="text-xl font-bold">
-                NRP: {{ $mahasiswa->nrp }}
-            </h2>
-            <p class="mt-1">
-                Dosen Wali: {{ $mahasiswa->dosen_wali }}
-            </p>
-        </div>
-
-        <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-            <table class="table">
-                <thead class="bg-green-500 text-white">
-                    <tr>
-                        <th>No</th>
-                        <th>Kode</th>
-                        <th>Mata Kuliah</th>
-                        <th>SKS</th>
-                        <th>Status</th>
-                        <th>TTT1</th>
-                        <th>TTT2</th>
-                        <th>TTT3</th>
-                        <th>UTS</th>
-                        <th>UAS</th>
-                        <th>Lain</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @forelse ($nilaiKrs as $index => $row)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $row->kode }}</td>
-                            <td>{{ $row->nama_mk ?? '-' }}</td>
-                            <td>{{ $row->sks ?? '-' }}</td>
-
-                            <td>
-                                @if($row->status === 'B')
-                                    <span class="badge badge-success">Baru</span>
-                                @elseif($row->status === 'U')
-                                    <span class="badge badge-error">Ulang</span>
-                                @else
-                                    {{ $row->status ?? '-' }}
-                                @endif
-                            </td>
-
-                            <td>{{ $row->ttt1 !== null ? number_format($row->ttt1, 2) : '-' }}</td>
-                            <td>{{ $row->ttt2 !== null ? number_format($row->ttt2, 2) : '-' }}</td>
-                            <td>{{ $row->ttt3 !== null ? number_format($row->ttt3, 2) : '-' }}</td>
-                            <td>{{ $row->uts !== null ? number_format($row->uts, 2) : '-' }}</td>
-                            <td>{{ $row->uas !== null ? number_format($row->uas, 2) : '-' }}</td>
-                            <td>{{ $row->lain !== null ? number_format($row->lain, 2) : '-' }}</td>
-                            <td>{{ $row->na ?? '-' }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="12" class="text-center py-4">
-                                Belum ada data nilai KRS
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-    </div>
+       
+    </table>
+         <div class="px-4">
+                Total:  {{$krs['total_sks']}} 
+            </div>
+    @endforeach
+@endif
+ 
 </x-layout>
