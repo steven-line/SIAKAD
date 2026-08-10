@@ -101,92 +101,168 @@ class DetailMataKuliahController extends Controller
         }
     }
   
-    return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil', 'statusBlokir','periodeKrs'));
-}
+    return view('mahasiswa.penawaran.show', compact('registrasis', 'penawaran', 'sudahAmbil', 'statusBlokir','periodeKrs'))->with('jadwalBentrok', false);
+    }
+
     public function daftar(Penawaran $penawaran)
     {
         $user = Auth::user();
         $mahasiswa = $user->mahasiswa;  
-        $ipsMahasiswa = $mahasiswa->ips;
 
-        $sksMahasiswa = ($ipsMahasiswa?->maksimal_sks ?? 19)
-                    + ($ipsMahasiswa?->toleransi ?? 0);
-
-        $periodeKrs = Metaperiode::first();
         if (!$mahasiswa) {
             return back()->with('error', 'Data mahasiswa tidak ditemukan.');
         }
-        if (now()->lt($periodeKrs->krs_mulai) || now()->gt($periodeKrs->krs_selesai)) {
-            return redirect()->back()->with('error', 'Pendaftaran gagal! Anda berada di luar periode KRS.');
-        }
-        if ($mahasiswa->status_blokir === 'TERKUNCI') {
-            return back()->with('error', 'KRS Anda terkunci. Tidak dapat mengambil mata kuliah.');
+
+        $ipsMahasiswa = $mahasiswa->ips;
+
+        $limitSks = ($ipsMahasiswa?->maksimal_sks ?? 19)
+                + ($ipsMahasiswa?->toleransi ?? 0);
+
+        $periodeKrs = Metaperiode::first();
+
+        if (!$periodeKrs) { // FIX
+            return back()->with('error', 'Periode KRS belum disetting.');
         }
 
+        if (now()->lt($periodeKrs->krs_mulai) || now()->gt($periodeKrs->krs_selesai)) {
+            return back()->with('error', 'Pendaftaran gagal! Anda berada di luar periode KRS.');
+        }
+
+        if ($mahasiswa->status_blokir === 'TERKUNCI') {
+            return back()->with('error', 'KRS Anda terkunci.');
+        }
+
+        // ===============================
+        // CEK SUDAH AMBIL
+        // ===============================
         $sudah = Registrasi::where('nrp', $mahasiswa->nrp)
             ->where('penawaran_id', $penawaran->recno)
             ->exists();
-
-            $mk = $penawaran->mk;
-            
-
-            if ($mk) {
-
-                $prasyarat = [];
-
-                for ($i = 1; $i <= 10; $i++) {
-
-                    $kode = trim((string) ($mk->{'prasyarat'.$i} ?? ''));
-
-                    // abaikan "-", kosong, NULL
-                    if ($kode === '' || $kode === '-' || strtoupper($kode) === 'NULL') {
-                        continue;
-                    }
-
-                    $prasyarat[] = $kode;
-                }
-
-                // Hanya cek bila memang ada prasyarat
-                if (!empty($prasyarat)) {
-
-                    foreach ($prasyarat as $kodeMk) {
-
-                        $registrasi = Registrasi::where('nrp', $mahasiswa->nrp)
-                            ->whereHas('penawaran', function ($q) use ($kodeMk) {
-                                $q->where('kodemk', $kodeMk);
-                            })
-                            ->first();
-
-                        if (!$registrasi) {
-                            return back()->with(
-                                'error',
-                                "Anda belum mengambil mata kuliah prasyarat {$mk->nama}."
-                            );
-                        }
-
-                        $lulus = Krs::where('registrasi_id', $registrasi->regkrs)
-                            ->whereIn('na', ['A', 'AB', 'B', 'BC', 'C'])
-                            ->exists();
-
-                        if (!$lulus) {
-                            return back()->with(
-                                'error',
-                                "Anda belum lulus mata kuliah prasyarat {$kodeMk}."
-                            );
-                        }
-                    }
-                }
-            }
 
         if ($sudah) {
             return back()->with('error', 'Sudah mengambil mata kuliah ini.');
         }
 
-        // 1. MULAI TRANSAKSI DATABASE
+        // ============================================================
+        // CEK BENTROK JADWAL
+        // ============================================================
+
+        $periodeAktif = Periode::where('aktif', 1)->first();
+        $jenisSemester = $periodeAktif?->semesters()->where('aktif', 1)->value('jenis');
+
+        $jadwalBentrok = DB::table('registrasi')
+            ->join('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
+            ->join('semester', 'penawaran.semester_id', '=', 'semester.id')
+            ->join('periode', 'semester.periode_id', '=', 'periode.id')
+            ->where('registrasi.nrp', $mahasiswa->nrp)
+            ->where('periode.aktif', 1)
+            ->where('semester.jenis', $jenisSemester)
+            ->where('penawaran.hari', $penawaran->hari)
+            ->where(function ($q) use ($penawaran) {
+                $q->whereBetween('penawaran.mulaipukul', [
+                        $penawaran->mulaipukul,
+                        $penawaran->selesaipukul
+                    ])
+                ->orWhereBetween('penawaran.selesaipukul', [
+                        $penawaran->mulaipukul,
+                        $penawaran->selesaipukul
+                    ])
+                ->orWhere(function ($q2) use ($penawaran) {
+                        $q2->where('penawaran.mulaipukul', '<=', $penawaran->mulaipukul)
+                        ->where('penawaran.selesaipukul', '>=', $penawaran->selesaipukul);
+                    });
+            })
+            ->exists();
+
+        if ($jadwalBentrok) {
+            return back()->with('error', 'Pendaftaran gagal! Jadwal mata kuliah bentrok dengan yang sudah diambil.');
+        }
+
+        // ===============================
+        // CEK PRASYARAT
+        // ===============================
+        $mk = $penawaran->mk;
+
+        if (!$mk) { // FIX
+            return back()->with('error', 'Data mata kuliah tidak ditemukan.');
+        }
+
+        $prasyarat = [];
+
+        for ($i = 1; $i <= 10; $i++) {
+            $kode = trim((string) ($mk->{'prasyarat'.$i} ?? ''));
+
+            if ($kode === '' || $kode === '-' || strtoupper($kode) === 'NULL') {
+                continue;
+            }
+
+            $prasyarat[] = $kode;
+        }
+
+        foreach ($prasyarat as $kodeMk) {
+
+            $registrasi = Registrasi::where('nrp', $mahasiswa->nrp)
+                ->whereHas('penawaran', function ($q) use ($kodeMk) {
+                    $q->where('kodemk', $kodeMk);
+                })
+                ->first();
+
+            if (!$registrasi) {
+                return back()->with('error', "Anda belum mengambil mata kuliah prasyarat {$kodeMk}.");
+            }
+
+            $lulus = Krs::where('registrasi_id', $registrasi->regkrs)
+                ->whereIn('na', ['A', 'AB', 'B', 'BC', 'C'])
+                ->exists();
+
+            if (!$lulus) {
+                return back()->with('error', "Anda belum lulus mata kuliah prasyarat {$kodeMk}.");
+            }
+        }
+
+        // ===============================
+        // TRANSAKSI
+        // ===============================
+        // ============================================================
+        // CEK BENTROK JADWAL
+        // ============================================================
+
+        $periodeAktif = Periode::where('aktif', 1)->first();
+        $jenisSemester = $periodeAktif?->semesters()->where('aktif', 1)->value('jenis');
+
+        $jadwalBentrok = DB::table('registrasi')
+            ->join('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
+            ->join('semester', 'penawaran.semester_id', '=', 'semester.id')
+            ->join('periode', 'semester.periode_id', '=', 'periode.id')
+            ->where('registrasi.nrp', $mahasiswa->nrp)
+            ->where('periode.aktif', 1)
+            ->where('semester.jenis', $jenisSemester)
+            ->where('penawaran.hari', $penawaran->hari)
+            ->where(function ($q) use ($penawaran) {
+                $q->whereBetween('penawaran.mulaipukul', [
+                        $penawaran->mulaipukul,
+                        $penawaran->selesaipukul
+                    ])
+                ->orWhereBetween('penawaran.selesaipukul', [
+                        $penawaran->mulaipukul,
+                        $penawaran->selesaipukul
+                    ])
+                ->orWhere(function ($q2) use ($penawaran) {
+                        $q2->where('penawaran.mulaipukul', '<=', $penawaran->mulaipukul)
+                        ->where('penawaran.selesaipukul', '>=', $penawaran->selesaipukul);
+                    });
+            })
+            ->exists();
+
+        if ($jadwalBentrok) {
+            return back()->withErrors([
+                'jadwal' => 'Pendaftaran gagal! Jadwal mata kuliah bentrok dengan yang sudah diambil.'
+            ]);
+        }
         DB::beginTransaction();
 
         try {
-            // Data dibuat di dalam lingkup transaksi (belum permanen)
+
             Registrasi::create([
                 'nrp' => $mahasiswa->nrp,
                 'penawaran_id' => $penawaran->recno,
@@ -194,41 +270,64 @@ class DetailMataKuliahController extends Controller
                 'tanggal' => now()->toDateString(),
                 'jam' => now()->toTimeString(),
             ]);
+
+            // ===============================
+            // AMBIL PERIODE & SEMESTER AKTIF
+            // ===============================
             $periodeAktif = Periode::where('aktif', 1)->first();
-            $jenisSemester = $periodeAktif->semesters()->where('aktif', 1)->pluck('jenis')->first();
-    
-            $registrasiMK = DB::table('registrasi')
+
+            if (!$periodeAktif) { // FIX
+                DB::rollBack();
+                return back()->with('error', 'Tidak ada periode aktif.');
+            }
+
+            $semesterAktif = $periodeAktif->semesters()
+                ->where('aktif', 1)
+                ->first(); // FIX (jangan pluck string)
+
+            if (!$semesterAktif) { // FIX
+                DB::rollBack();
+                return back()->with('error', 'Tidak ada semester aktif.');
+            }
+
+            // ===============================
+            // HITUNG TOTAL SKS
+            // ===============================
+            $totalSks = DB::table('registrasi')
                 ->join('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
                 ->join('semester', 'penawaran.semester_id', '=', 'semester.id')
-                ->join('mk' ,'penawaran.kodemk', '=', 'mk.kodemk')
+                ->join('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
                 ->join('periode', 'semester.periode_id', '=', 'periode.id')
-                ->where('periode.aktif', '=', 1)
-                ->where('semester.jenis', '=', $jenisSemester)
+                ->where('periode.id', $periodeAktif->id) // FIX lebih aman
+                ->where('semester.id', $semesterAktif->id) // FIX
                 ->where('registrasi.nrp', $mahasiswa->nrp)
-                ->select('mk.sks')
-                ->get();    
+                ->sum('mk.sks'); // FIX langsung sum
 
-     
-            // 2. JIKA SKS MELEBIHI LIMIT, BATALKAN (ROLLBACK)
-            $limitSks = ($mahasiswa->ips?->maksimal_sks ?? 19)
-                    + ($mahasiswa->ips?->toleransi ?? 0);
-
-            if ($registrasiMK->sum('sks') > $limitSks) {
+            // ===============================
+            // VALIDASI SKS
+            // ===============================
+            if ($totalSks > $limitSks) {
                 DB::rollBack();
 
                 return back()->withErrors([
                     'limit_sks' => "Pendaftaran gagal! Total SKS melampaui batas {$limitSks} SKS."
                 ]);
             }
-            if ($sksMahasiswa < $penawaran->mk->prasyaratsks){
-                  DB::rollBack(); // Data Registrasi::create tadi otomatis dihapus kembali
-                    
-                  $prasyaratSKSMK = $penawaran->mk->prasyaratsks;
-                  $selisihSKS = $prasyaratSKSMK - $sksMahasiswa;
-                  
-                  return back()->withErrors(['prasyarat_sks' => "Pendaftaran gagal!  Anda belum memenuhi Prasyarat SKS $prasyaratSKSMK, Anda masih kurang $selisihSKS"]);
+
+            // ===============================
+            // CEK PRASYARAT SKS MK
+            // ===============================
+            if ($limitSks < ($mk->prasyaratsks ?? 0)) {
+                DB::rollBack();
+
+                $butuh = $mk->prasyaratsks ?? 0;
+                $kurang = $butuh - $limitSks;
+
+                return back()->withErrors([
+                    'prasyarat_sks' => "Pendaftaran gagal! Minimal SKS {$butuh}, kurang {$kurang}."
+                ]);
             }
-            // 3. JIKA AMAN, SIMPAN PERMANEN
+
             DB::commit();
 
             return redirect()
@@ -236,10 +335,12 @@ class DetailMataKuliahController extends Controller
                 ->with('success', 'Berhasil mengambil KRS.');
 
         } catch (\Exception $e) {
-            // 4. ROLLBACK JIKA TERJADI ERROR SISTEM
+
             DB::rollBack();
+
             Log::error('Gagal daftar KRS: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan sistem. Silakan coba lagi.');
+
+            return back()->with('error', 'Terjadi kesalahan sistem.');
         }
     }
 

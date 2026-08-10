@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             BiodataSeeder::class,
             RegistrasiSeeder::class,
             KrsSeeder::class,
-
+            
         ]);
     }
 }

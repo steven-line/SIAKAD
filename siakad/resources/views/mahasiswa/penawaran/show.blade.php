@@ -107,18 +107,17 @@
 </div>
             </div>
         </div>
-        @if(session('success'))
+@if(session('success'))
     <div class="bg-green-500 text-white p-2">
         {{ session('success') }}
     </div>
 @endif
 
 @if(session('error'))
-    <div class="bg-red-500 text-white p-2">
-        {{ session('error') }}
+    <div class="alert alert-error mt-4">
+        <span>{{ session('error') }}</span>
     </div>
 @endif
-
 
         <!-- Tabel Daftar Mahasiswa -->
         <h2 class="text-xl font-semibold mb-2">Daftar Mahasiswa Peserta</h2>

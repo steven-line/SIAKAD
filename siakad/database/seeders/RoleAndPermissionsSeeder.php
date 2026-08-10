@@ -171,13 +171,35 @@ class RoleAndPermissionsSeeder extends Seeder
         // ASSIGN ADMIN USER
         // ======================
         $userAdmin = User::where('username', '31123019')->first();
-                     User::where('username', '31127777')->first()->syncRoles(['dosen-wali']);
-                     User::where('username', '31126666')->first()->syncRoles(['mahasiswa']);
-                     User::where('username', '31125555')->first()->syncRoles(['mahasiswa']);
-                     User::where('username', '31128888')->first()->syncRoles(['mahasiswa']);
-                     User::where('username', '31129999')->first()->syncRoles(['kaprodi']);
-                     User::where('username', '31120000')->first()->syncRoles(['dosen']);
-                     User::where('username', '31121111')->first()->syncRoles(['keuangan']);
+        for ($i = 1; $i <= 81; $i++) {
+
+            $username = '31123' . str_pad($i, 3, '0', STR_PAD_LEFT);
+            $user = User::where('username', $username)->first();
+
+            if (!$user) {
+                continue;
+            }
+
+            // 🎓 Mahasiswa (1 - 40)
+            if ($i >= 1 && $i <= 40 && $i != 19) {
+                $user->syncRoles(['mahasiswa']);
+            }
+
+            // 👨‍🏫 Dosen (41 - 72)
+            elseif ($i >= 41 && $i <= 72) {
+                $user->syncRoles(['dosen']);
+            }
+
+            // 🏫 Kaprodi (73 - 80)
+            elseif ($i >= 73 && $i <= 80) {
+                $user->syncRoles(['kaprodi']);
+            }
+
+            // 💰 Keuangan (81)
+            elseif ($i == 81) {
+                $user->syncRoles(['keuangan']);
+            }
+        }
         if ($userAdmin) {
             // lebih aman dari assignRole
             $userAdmin->syncRoles(['admin']);

@@ -124,7 +124,7 @@ class PenawaranController extends Controller
         ->orderBy('nama')
         ->get();
 
-    $dosens = Dosen::orderBy('nama')->get();
+    $dosens = Dosen::orderBy('nama')->where('prodi', $user->dosen->prodi)->get();
 
     $semesters = Semester::with('periode')
         ->whereHas('periode', function ($query) {
@@ -317,21 +317,28 @@ public function index()
                 break;
         }
     }
-  $bentrok = Penawaran::select('hari', 'mulaipukul','selesaipukul')->where('hari', $request->hari)
-                        ->whereHas('semester', function (Builder $query){
-                            $query->where('aktif', '1');
-                            $query->whereHas('periode', function (Builder $q) {
-                                $q->where('aktif', '1');
-                            });
-                        })->where(function($query) use ($mulai, $selesai) {
-                        $query->whereBetween('mulaipukul', [$mulai->format('H:i:s'), $selesai->format('H:i:s')]);
-                        $query->OrwhereBetween('selesaipukul', [$mulai->format('H:i:s'),$selesai->format('H:i:s')]);
-                        })->whereHas('mk', function (Builder $query) use($akses){
-                            foreach($akses as $char) {
-                                 $query->orWhere('kodemk',  'LIKE', $char . '%');
-                            }    
-                       
-                        })->exists();
+$bentrok = Penawaran::where('semester_id', $request->semester_id)
+    ->where('hari', $request->hari)
+    ->whereHas('mk', function (Builder $query) use ($akses) {
+        foreach ($akses as $char) {
+            $query->orWhere('kodemk', 'LIKE', $char . '%');
+        }
+    })
+    ->where(function ($query) use ($mulai, $selesai) {
+        $query->whereBetween('mulaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+            ->orWhereBetween('selesaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+            ->orWhere(function ($q2) use ($mulai, $selesai) {
+                $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
+                   ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
+            });
+    })
+    ->exists();
 
     if ($bentrok) {
         return back()->withErrors([
@@ -359,7 +366,9 @@ public function index()
 }
 
     public function edit($recno)
+    
 {
+    $user = Auth::user();
     $metaPeriode = Metaperiode::first();
 
     if (
@@ -371,7 +380,7 @@ public function index()
             ->with('error', 'Periode input penawaran belum dibuka atau sudah berakhir.');
     }   
 
-    $user = auth()->user();
+   
 
     $akses = ['A'];
 
@@ -460,7 +469,7 @@ public function index()
         ->route('penawaran.index')
         ->with('error', 'Penawaran umum hanya dapat dikelola oleh Admin.');
 }
-
+     $user = Auth::user();
     $metaPeriode = Metaperiode::first();
 
     if (
@@ -554,22 +563,31 @@ public function index()
                 break;
         }
     }
-   $bentrok = Penawaran::select('hari', 'mulaipukul','selesaipukul')->where('hari', $request->hari)
-                        ->whereHas('semester.periode', function (Builder $query){
-                            $query->where('aktif', '1');
-                            $query->whereHas('periode', function (Builder $q) {
-                                $q->where('aktif', '1');
-                            });
-                        })->where(function($query) use ($mulai, $selesai) {
-                        $query->whereBetween('mulaipukul', [$mulai->format('H:i:s'), $selesai->format('H:i:s')]);
-                        $query->OrwhereBetween('selesaipukul', [$mulai->format('H:i:s'),$selesai->format('H:i:s')]);
-                        })->whereHas('mk', function (Builder $query) use($akses){
-                            foreach($akses as $char) {
-                                 $query->orWhere('kodemk',  'LIKE', $char . '%');
-                            }    
-                       
-                        })->get();
-    dd($bentrok);
+$bentrok = Penawaran::where('recno', '!=', $penawaran->recno)
+    ->where('semester_id', $request->semester_id)
+    ->where('hari', $request->hari)
+    ->whereHas('mk', function (Builder $query) use ($akses) {
+        foreach ($akses as $char) {
+            $query->orWhere('kodemk', 'LIKE', $char . '%');
+        }
+    })
+    ->where(function ($query) use ($mulai, $selesai) {
+        $query->whereBetween('mulaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+            ->orWhereBetween('selesaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+            ->orWhere(function ($q2) use ($mulai, $selesai) {
+                $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
+                   ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
+            });
+    })
+    ->exists();
+
+                        
     if ($bentrok) {
         return back()->withErrors([
             'jam' => 'Jadwal bentrok. Mata kuliah, dosen, atau semester sudah memiliki jadwal pada waktu tersebut.'

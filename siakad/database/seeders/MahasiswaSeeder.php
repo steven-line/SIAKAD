@@ -9,27 +9,39 @@ class MahasiswaSeeder extends Seeder
 {
     public function run(): void
     {
-        Mahasiswa::create([
-            'nrp' => '31128888',
-            'dosen_wali' => '12345678',
-            'tahun_masuk' => 2023,
-            'status_blokir' => 'BELUM_KRS',
-            'prodi' => 'I'
-        ]);
+        $prodis = ['C', 'D', 'F', 'G', 'H', 'I', 'K', 'L'];
 
-        Mahasiswa::create([
-            'nrp' => '31126666',
-            'dosen_wali' => '12345678',
-            'tahun_masuk' => 2023,
-            'status_blokir' => 'BELUM_KRS',
-            'prodi' => 'I'
-        ]);
+        $counter = 0;
 
-        Mahasiswa::create([
-            'nrp' => '31125555',
-            'dosen_wali' => '12345678',
-            'status_blokir' => 'BELUM_KRS',
-            'prodi' => 'K'
-        ]);
+        for ($i = 1; $i <= 40; $i++) {
+
+            if ($i == 19) {
+                continue;
+            }
+
+            if ($counter >= 39) {
+                break;
+            }
+
+            $nrp = '31123' . str_pad($i, 3, '0', STR_PAD_LEFT);
+
+            $prodiIndex = floor($counter / 5);
+
+            if ($prodiIndex >= 7) {
+                $prodiIndex = 7; // L
+            }
+
+            $prodi = $prodis[$prodiIndex];
+
+            Mahasiswa::create([
+                'nrp' => $nrp,
+                'dosen_wali' => '123456' . str_pad(41, 3, '0', STR_PAD_LEFT),
+                'tahun_masuk' => 2023,
+                'status_blokir' => 'BELUM_KRS',
+                'prodi' => $prodi,
+            ]);
+
+            $counter++;
+        }
     }
 }

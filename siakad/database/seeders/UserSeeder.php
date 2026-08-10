@@ -14,9 +14,12 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $datas = [
-            [
-                'username' => '31129999',
+        $datas = [];
+
+        // Generate username 31123001 - 31123080
+        for ($i = 1; $i <= 81; $i++) {
+            $datas[] = [
+                'username' => '31123' . str_pad($i, 3, '0', STR_PAD_LEFT),
                 'password' => Hash::make('hello12346'),
                 'firstlogin' => Carbon::now(),
                 'lastlogin' => Carbon::now(),
@@ -25,89 +28,42 @@ class UserSeeder extends Seeder
                 'sks' => 110,
                 'validasi' => 1,
                 'pataum' => 'P',
-            ],
-            [
-                'username' => '31128888',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 1,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P',
-            ],
-            [
-                'username' => '31127777',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 1,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P',
-            ],
-            [
-                'username' => '31123019',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 1,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P',
-            ],
-            [
-                'username' => '31120000',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 1,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P',
-            ],
-            [
-                'username' => '31126666',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 1,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P',
-            ],
-            [
-                'username' => '31125555',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 1,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P',
-            ],
-            [
-                'username' => '31121111',
-                'password' => Hash::make('hello12346'),
-                'firstlogin' => Carbon::now(),
-                'lastlogin' => Carbon::now(),
-                'aksesnilai' => 0,
-                'aktif' => 1,
-                'sks' => 110,
-                'validasi' => 1,
-                'pataum' => 'P',
-            ],
-        ];
+            ];
+        }
 
         foreach ($datas as $data) {
-            // 1. Buat user
-            $user = User::create($data);
+            User::create($data);
         }
     }
 }
+
+/** 
+ * Prodi = 
+ * C = Manajemen  
+ * D = Akuntansi  
+ * F = Teknik Sipil  
+ * G = Teknil Arsitektur  
+ * H = Teknil Elektro 
+ * I = Teknik Informatika 
+ * K = Sastra Inggris 
+ * L = Pendidikan Bahasa Mandarin 
+ * Mahasiswa = 40
+ * Dosen = 40 
+ * Kaprodi = 8
+ * kodeMK = 
+ * A : UNIVERSITAS (MKU)
+ * B : FAKULTAS EKONOMI
+ * C : PRODI S1 MANAJEMEN
+ * D : PRODI S1 AKUNTANSI
+ * E : FAKULTAS TEKNIK
+ * F : PRODI S1 TEKMK SIPL 
+ * G : PRODI S1 ARSITEKTUR 
+ * H : PRODI S1 TEKNIK ELEKTRO 
+ * I : PRODI S1 TEKNIK INFORMATIKA 
+ * J : FAKULTAS SASTRA DAN PENDIDIKAN BAHASA 
+ * K : PRODI S1 SASTRA INGGRIS 
+ * L : PRODI S1 PENDIDIKAN BAHASA MANDARIN 
+ * MK = 48
+ * Kurkulum = 7
+ * 
+*/

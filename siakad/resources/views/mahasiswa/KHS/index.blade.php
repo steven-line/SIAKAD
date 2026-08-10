@@ -19,7 +19,6 @@
             <p class="font-bold">Nama: {{$informasiUmum['nama'] ?? 'N/A'}}</p>
             <p class="font-bold">Dosen Wali: {{$informasiUmum['dosen_wali']}}</p>
         </div>
-        
     </div>
 
     <hr>
