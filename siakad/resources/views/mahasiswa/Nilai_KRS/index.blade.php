@@ -1,5 +1,12 @@
 <x-layout>  
-   
+@if ($periodeKosong)
+    <div role="alert" class="alert alert-info mb-6">
+        <span>
+            {{ $periodeKosong }}
+        </span>
+    </div>
+@endif
+
 @if ($pengumumanKrs)
     <div role="alert" class="alert alert-info mb-6">
         <span>

@@ -2,61 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('auth.login');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'username' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string'],
         ]);
 
-        if (Auth::attempt([
-            'username' => $request->username,
-            'password' => $request->password,
-            'aktif' => '1'
-        ])) {
-            $request->session()->regenerate();
+        // 1. Cari username
+        $user = \App\Models\User::where('username', $request->username)->first();
 
-            // Simpan pataum user ke session
-            $user = Auth::user();
-            if ($user && isset($user->pataum)) {
-                // Ambil karakter pertama dari pataum (misal 'P (Pagi)' -> 'P')
-                $pataum = substr($user->pataum, 0, 1);
-                session(['pataum' => $pataum]);
-            }
-
+        if (!$user) {
+            return back()
+                ->withErrors([
+                    'username' => 'Username salah',
+                ])
+                ->withInput();
         }
 
-        return back()->withErrors([
-            'username' => 'Username atau password salah',
-            'aktif' => 'Akun tidak aktif',
-        ])->withInput();
+        // 2. Cek password
+        if (!Hash::check($request->password, $user->password)) {
+            return back()
+                ->withErrors([
+                    'password' => 'Password salah',
+                ])
+                ->withInput();
+        }
+
+        // 3. Cek status akun
+        if ((int) $user->aktif !== 1) {
+            return back()
+                ->withErrors([
+                    'aktif' => 'Akun tidak aktif',
+                ])
+                ->withInput();
+        }
+
+        // 4. Login berhasil
+        Auth::login($user);
+
+        $request->session()->regenerate();
+
+        // Simpan pataum ke session
+        if ($user->pataum) {
+            $pataum = substr($user->pataum, 0, 1);
+            session(['pataum' => $pataum]);
+        }
+
+        return redirect()->intended('/dashboard');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy()
     {
         Auth::logout();
-        session()->forget('pataum'); // hapus session pataum
+        session()->forget('pataum');
+
         return redirect('/login');
     }
 }

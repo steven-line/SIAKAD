@@ -7,6 +7,7 @@ use App\Models\Mahasiswa;
 use App\Models\Penawaran;
 use App\Models\Registrasi;
 use App\Models\Metaperiode;
+use App\Models\Periode;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -17,8 +18,6 @@ class PerwalianController extends Controller
     public function index()
     {
         $user = auth()->user();
-
-       
 
         $nimDosen = $user->dosen;
 
@@ -34,7 +33,8 @@ class PerwalianController extends Controller
         $user = auth()->user();
 
         if (!$user || !$user->dosen) {
-            return redirect()->route('perwalian.index')->with('error', 'Anda tidak terdaftar sebagai dosen.');
+            return redirect()->route('perwalian.index')
+                ->with('error', 'Anda tidak terdaftar sebagai dosen.');
         }
 
         if ($mahasiswa->dosen_wali !== $user->dosen->nim_dosen) {
@@ -49,7 +49,8 @@ class PerwalianController extends Controller
         $user = auth()->user();
 
         if (!$user || !$user->dosen) {
-            return redirect()->route('perwalian.index')->with('error', 'Anda tidak terdaftar sebagai dosen.');
+            return redirect()->route('perwalian.index')
+                ->with('error', 'Anda tidak terdaftar sebagai dosen.');
         }
 
         if ($mahasiswa->dosen_wali !== $user->dosen->nim_dosen) {
@@ -68,7 +69,8 @@ class PerwalianController extends Controller
         $user = auth()->user();
 
         if (!$user || !$user->dosen) {
-            return redirect()->route('perwalian.index')->with('error', 'Anda tidak terdaftar sebagai dosen.');
+            return redirect()->route('perwalian.index')
+                ->with('error', 'Anda tidak terdaftar sebagai dosen.');
         }
 
         if ($mahasiswa->dosen_wali !== $user->dosen->nim_dosen) {
@@ -102,14 +104,14 @@ class PerwalianController extends Controller
             ->with('success', 'Kunci KRS berhasil dibuka. Mahasiswa dapat mengisi KRS kembali.');
     }
 
-        public function penawaran($nrp)
+    public function penawaran($nrp)
     {
         $mahasiswa = Mahasiswa::findOrFail($nrp);
 
         $prodi = $mahasiswa?->prodi;
 
-        $query = Penawaran::with(['mk.kurikulum'])->whereHas('semester', function ($q){
-
+        $query = Penawaran::with(['mk.kurikulum'])
+            ->whereHas('semester', function ($q) {
                 $q->where('aktif', 1);
             })
             ->whereHas('mk.kurikulum', function ($q) use ($prodi) {
@@ -117,6 +119,7 @@ class PerwalianController extends Controller
             });
 
         $penawaran = $query->get();
+
         return view(
             'dosen_wali.perwalian.penawaran_mahasiswa',
             compact('mahasiswa', 'penawaran')
@@ -151,7 +154,6 @@ class PerwalianController extends Controller
 
     public function ambilKrs($nrp, Penawaran $penawaran)
     {
-
         $periodeKrs = Metaperiode::first();
 
         if (
@@ -166,6 +168,7 @@ class PerwalianController extends Controller
                 'Periode KRS belum dibuka atau sudah berakhir. Dosen wali tidak dapat menambahkan mata kuliah.'
             );
         }
+
         $mahasiswa = Mahasiswa::findOrFail($nrp);
 
         if ($mahasiswa->dosen_wali !== auth()->user()->dosen->nim_dosen) {
@@ -178,6 +181,69 @@ class PerwalianController extends Controller
 
         if ($cek) {
             return back()->with('error', 'Mata kuliah sudah diambil.');
+        }
+
+        $periodeAktif = Periode::where('aktif', 1)->first();
+
+        if (!$periodeAktif) {
+            return back()->with('error', 'Tidak ada periode aktif.');
+        }
+
+        $semesterAktif = $periodeAktif->semesters()
+            ->where('aktif', 1)
+            ->pluck('id');
+
+        if ($semesterAktif->isEmpty()) {
+            return back()->with('error', 'Tidak ada semester aktif.');
+        }
+
+        if (!$semesterAktif->contains($penawaran->semester_id)) {
+            return back()->with(
+                'error',
+                'Mata kuliah ini bukan bagian dari semester aktif.'
+            );
+        }
+
+        $jadwalBentrok = DB::table('registrasi')
+            ->join(
+                'penawaran',
+                'registrasi.penawaran_id',
+                '=',
+                'penawaran.recno'
+            )
+            ->join(
+                'semester',
+                'penawaran.semester_id',
+                '=',
+                'semester.id'
+            )
+            ->join(
+                'periode',
+                'semester.periode_id',
+                '=',
+                'periode.id'
+            )
+            ->where('registrasi.nrp', $mahasiswa->nrp)
+            ->where('periode.id', $periodeAktif->id)
+            ->whereIn('semester.id', $semesterAktif)
+            ->where('penawaran.hari', $penawaran->hari)
+            ->where(
+                'penawaran.mulaipukul',
+                '<',
+                $penawaran->selesaipukul
+            )
+            ->where(
+                'penawaran.selesaipukul',
+                '>',
+                $penawaran->mulaipukul
+            )
+            ->exists();
+
+        if ($jadwalBentrok) {
+            return back()->with(
+                'error',
+                'Pendaftaran gagal! Jadwal mata kuliah bentrok dengan mata kuliah yang sudah diambil.'
+            );
         }
 
         Registrasi::create([
@@ -224,5 +290,4 @@ class PerwalianController extends Controller
 
         return back()->with('success', 'Mata kuliah berhasil dibatalkan.');
     }
-
 }
