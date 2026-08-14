@@ -8,27 +8,24 @@
             <th>No</th>
             <th>Kode MK</th>
             <th>Nama MK</th>
+            <th>Periode</th>
             <th colspan="3">Aksi</th>
         </tr>
         </thead>
 
         <tbody>
         @forelse($penawarans as $penawaran)
+        
             <tr>
                 <th>{{ $loop->index + 1 }}</th>
                 <td>{{$penawaran->kodemk}}</td>
                 <td>{{$penawaran->mk->nama}}</td>
-                <td>
-                    <a href="{{ route('pjmk.list_dosen_matkul', $penawaran->kodemk) }}"
-                       class="btn btn-soft btn-primary">
-                        Dosen MK
-                    </a>
-                </td>
-                
-
+                <td>{{$penawaran->tahun_ajaran}}|{{$penawaran->jenis}}</td>
+                <td><a href="{{route('pjmk.list_dosen_matkul', ['periode' => $penawaran->periode_id, 'semester' => $penawaran->jenis, 'mk' => $penawaran->kodemk])}}" class="btn btn-primary">List Dosens</a></td>
               
 
             </tr>
+
         @empty
             <tr>
                 <td colspan="9" class="text-center">Tidak ada data</td>

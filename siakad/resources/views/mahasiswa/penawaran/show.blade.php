@@ -79,7 +79,7 @@
 
         @else
 
-            @if(now()->between($periodeKrs->krs_mulai, $periodeKrs->krs_selesai))
+            @if($periodeKrs)
 
                 @if($penawaran->boleh_diambil)
 

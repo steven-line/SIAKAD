@@ -339,9 +339,9 @@ Route::prefix('admin/penawaran')
             ->name('pjmk.')
             ->group(function () {
                 Route::get('/', [PjmkController::class, 'index'])->name('index');
-                Route::patch('setPjmk/{mk}/{dosen}', [PjmkController::class, 'setPjmk'])->name('setPjmk');
+                Route::patch('setPjmk/set', [PjmkController::class, 'setPjmk'])->name('setPjmk');
          
-                Route::get('/{mk}/list_dosen_matkul', [PjmkController::class, 'list_dosen_matkul'])->name('list_dosen_matkul');
+                Route::get('/list_dosen_matkul/{periode}/{semester:jenis}/{mk}', [PjmkController::class, 'list_dosen_matkul'])->name('list_dosen_matkul');
                   });
     /*0
     |--------------------------------------------------------------------------
@@ -615,24 +615,60 @@ Route::prefix('perwalian')
     |--------------------------------------------------------------------------
     | INPUT NILAI
     |--------------------------------------------------------------------------
-    */
-    Route::prefix('input-nilai')
-        ->middleware('permission:nilai.input')
-        ->name('nilai.')
-        ->group(function () {
+    */Route::prefix('input-nilai')
+    ->middleware('permission:nilai.input')
+    ->name('nilai.')
+    ->group(function () {
 
-            Route::get('/', [KrsController::class, 'list_matkul'])->name('index');
-            Route::get('/edit-bobot/{mk}', [KrsController::class, 'edit_bobot'])->name('edit_bobot');
-            Route::patch('/update-bobot/{mk}', [KrsController::class, 'update_bobot'])->name('update_bobot');
+        Route::get(
+            '/',
+            [KrsController::class, 'list_matkul']
+        )->name('index');
 
-            Route::get('/{mk}/mahasiswa', [KrsController::class, 'list_mahasiswa'])->name('mahasiswa');
-       
-            Route::get('/{mahasiswa}/{mk}', [KrsController::class, 'show'])->name('show');
-            Route::get('/{mahasiswa}/{mk}/edit', [KrsController::class, 'edit'])->name('edit');
-            Route::patch('/{mahasiswa}/{mk}', [KrsController::class, 'update'])->name('update');
-           
-        });
 
+        // =========================
+        // BOBOT NILAI
+        // =========================
+
+        Route::get(
+            '/nilai/bobot/{mk}/{periode}/{semester}',
+            [KrsController::class, 'edit_bobot']
+        )->name('edit_bobot');
+
+        Route::patch(
+            '/nilai/bobot/{mk}/{periode}/{semester}',
+            [KrsController::class, 'update_bobot']
+        )->name('update_bobot');
+
+
+        // =========================
+        // MAHASISWA
+        // =========================
+
+        Route::get(
+            '/{mk}/{periode}/{semester}/mahasiswa',
+            [KrsController::class, 'list_mahasiswa']
+        )->name('mahasiswa');
+
+
+        // =========================
+        // NILAI MAHASISWA
+        // =========================
+        Route::get(
+            '/{mahasiswa}/{penawaran}',
+            [KrsController::class, 'show']
+        )->name('show');
+
+        Route::get(
+            '/{mahasiswa}/{penawaran}/edit',
+            [KrsController::class, 'edit']
+        )->name('edit');
+
+        Route::patch(
+            '/{mahasiswa}/{penawaran}',
+            [KrsController::class, 'update']
+        )->name('update');
+    });
     /*
     |--------------------------------------------------------------------------
     | PASSWORD

@@ -28,30 +28,62 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
                 <div>
-                    <p class="font-semibold text-base-content/70">NRP</p>
+                    <p class="font-semibold text-base-content/70">
+                        NRP
+                    </p>
+
                     <p class="text-lg">
                         {{ $mahasiswa->nrp }}
                     </p>
                 </div>
 
                 <div>
-                    <p class="font-semibold text-base-content/70">Kode MK</p>
+                    <p class="font-semibold text-base-content/70">
+                        Kode MK
+                    </p>
+
                     <p class="text-lg">
                         {{ $mk->kodemk }}
                     </p>
                 </div>
 
                 <div>
-                    <p class="font-semibold text-base-content/70">Mata Kuliah</p>
+                    <p class="font-semibold text-base-content/70">
+                        Mata Kuliah
+                    </p>
+
                     <p class="text-lg">
                         {{ $mk->nama ?? '-' }}
                     </p>
                 </div>
 
                 <div>
-                    <p class="font-semibold text-base-content/70">SKS</p>
+                    <p class="font-semibold text-base-content/70">
+                        SKS
+                    </p>
+
                     <p class="text-lg">
                         {{ $mk->sks ?? '-' }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-base-content/70">
+                        Periode
+                    </p>
+
+                    <p class="text-lg">
+                        {{ $penawaran?->semester?->periode?->tahun_ajaran ?? '-' }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="font-semibold text-base-content/70">
+                        Jenis Semester
+                    </p>
+
+                    <p class="text-lg">
+                        {{ $penawaran?->semester?->jenis ?? '-' }}
                     </p>
                 </div>
 
@@ -77,11 +109,16 @@
                         </tr>
 
                         <tr>
-                            <td>Semester</td>
+                            <td>Periode</td>
                             <td>
-                                {{ $krs?->registrasi?->penawaran?->semester?->periode?->tahun_ajaran ?? '-' }}
-                                -
-                                {{ $krs?->registrasi?->penawaran?->semester?->jenis ?? '-' }}
+                                {{ $penawaran?->semester?->periode?->tahun_ajaran ?? '-' }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Jenis Semester</td>
+                            <td>
+                                {{ $penawaran?->semester?->jenis ?? '-' }}
                             </td>
                         </tr>
 
@@ -99,7 +136,6 @@
                             <td>TTT 2</td>
                             <td>{{ $krs?->ttt2 ?? '-' }}</td>
                         </tr>
-
 
                         <tr>
                             <td>Lain-lain</td>
@@ -135,19 +171,23 @@
                             <td>
 
                                 @if(!$krs)
+
                                     <span class="badge badge-neutral">
                                         Belum Ada Nilai
                                     </span>
 
                                 @elseif($krs->survey)
+
                                     <span class="badge badge-success">
                                         Sudah
                                     </span>
 
                                 @else
+
                                     <span class="badge badge-error">
                                         Belum
                                     </span>
+
                                 @endif
 
                             </td>
@@ -164,15 +204,16 @@
 
                 @if($krs)
 
-                    <a href="{{ route('nilai.edit', [
-                        'mahasiswa' => $mahasiswa->nrp,
-                        'mk' => $mk->kodemk
-                    ]) }}"
-                       class="btn btn-warning">
+                    <a
+                        href="{{ route('nilai.edit', [
+                            'mahasiswa' => $mahasiswa->nrp,
+                            'penawaran' => $penawaran->recno,
+                        ]) }}"
+                        class="btn btn-warning"
+                    >
                         Edit Nilai
                     </a>
 
-             
                 @endif
 
             </div>

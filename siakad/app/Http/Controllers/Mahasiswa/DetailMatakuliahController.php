@@ -28,7 +28,14 @@ class DetailMataKuliahController extends Controller
     ->where('penawaran_id', $penawaran->recno)
     ->exists();
     
-    $periodeKrs = Metaperiode::first();
+    $metaperiode = Metaperiode::first();
+    if ($metaperiode) {
+         $periodeKrs = now()->between($metaperiode->krs_mulai, $metaperiode->krs_selesai);
+    
+    } else {
+        $periodeKrs = null;
+    }
+   
     $statusBlokir = Auth::user()->mahasiswa->status_blokir;
 
     // ============================================================
@@ -40,7 +47,7 @@ class DetailMataKuliahController extends Controller
 
     $mk = $penawaran->mk;
     
-
+    
     if ($mk) {
 
         $prasyarat = [];

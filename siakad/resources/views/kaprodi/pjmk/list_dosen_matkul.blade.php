@@ -21,21 +21,25 @@
                 <td>{{$dosen->nama}}</td>
                 <td>{{$dosen->user->pataum}}</td>
                 <td>
-                    @if($isPjmk->contains($dosen->nim_dosen))
-                        <button type="submit" form="setPjmk-form-{{$dosen->nim_dosen}}" class="btn btn-soft btn-success">
-                    
-                        pjmk</button>
-                    @else 
-                        <button type="submit" form="setPjmk-form-{{$dosen->nim_dosen}}" class="btn btn-soft btn-warning">
-                    
-                        pjmk</button>
-                    @endif</td>  
-            
-                <form id="setPjmk-form-{{$dosen->nim_dosen}}" action="{{route('pjmk.setPjmk', ['mk' => $mk->kodemk, 'dosen' => $dosen->nim_dosen])}}" method="post">
-                    @csrf
+                  
+                    <form action="{{route('pjmk.setPjmk')}}" method="POST">
+                    @csrf 
                     @method('PATCH')
+                    <input type="hidden">
+                    <input type="hidden" name="nim_dosen" value="{{ $dosen->nim_dosen }}">
+                    <input type="hidden" name="kodemk" value="{{ $mk->kodemk }}">
+                    <input type="hidden" name="periode_id" value="{{ $periode->id }}">
+                    <input type="hidden" name="jenis" value="{{$semester->jenis}}">
+                    <input type="text" name="" id="">
+                      @if($dosen?->nim_dosen == $currentPjmk?->nim_dosen)
+                        <button class="btn btn-soft btn-success">PJMK</button>
+                      @else
+                         <button class="btn btn-soft">PJMK</button>
+                      @endif
                 </form>
-
+                
+                </td>
+                
               
 
             </tr>
