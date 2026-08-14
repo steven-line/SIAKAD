@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Metaperiode;
 use App\Models\Periode;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class KhsMahasiswaController extends Controller
 {
@@ -55,17 +56,38 @@ class KhsMahasiswaController extends Controller
                             ->select('semester.jenis')
                             ->first();
 
-        $metaperiode = Metaperiode::findOrFail(1);
+        try {
+            $metaperiode = Metaperiode::findOrFail(1);
+        } catch (ModelNotFoundException $e) {
+            $metaperiode = null;
+        }
+
+        $periodeKosong = null;
+
+        if (!$metaperiode) {
+            $periodeKosong = 'Anda belum memasuki periode yang aktif';
+        }
+
         $periodeAktif = Periode::where('aktif', 1)->first();
         $jenisSemester = $periodeAktif->semesters()->where('aktif', 1)->pluck('jenis')->first();
         $checkPeriode = $periodeAktif->tahun_ajaran . '|' . $jenisSemester;
 
-      
-        $pengumumanKrs = null;
-        if ($metaperiode && $metaperiode->pengumuman_nilai_final_mulai && $metaperiode->pengumuman_nilai_final_selesai && now()->between($metaperiode->pengumuman_nilai_final_mulai, $metaperiode->pengumuman_nilai_final_selesai)) {
-               $pengumumanKrs = 'Anda memasuki periode pengumuman nilai final';         
-        }
 
+        // Tetap menggunakan algoritma pengumumanKrs
+        $pengumumanKrs = null;
+
+        if (
+            $metaperiode &&
+            $metaperiode->pengumuman_nilai_final_mulai &&
+            $metaperiode->pengumuman_nilai_final_selesai &&
+            now()->between(
+                $metaperiode->pengumuman_nilai_final_mulai,
+                $metaperiode->pengumuman_nilai_final_selesai
+            )
+        ) {
+            $pengumumanKrs = 'Anda memasuki periode pengumuman nilai final';         
+        }
+        
         foreach($krsMahasiswa as $index => $krs) {
             $periode = $krs->registrasi->penawaran->semester->periode->tahun_ajaran;
             $semester = $krs->registrasi->penawaran->semester->jenis;
@@ -110,7 +132,7 @@ class KhsMahasiswaController extends Controller
                             'dosen_wali' => $user->mahasiswa->dosen_wali
         ];     
 
-        return view('mahasiswa.KHS.index', compact('grouped', 'informasiUmum', 'ipk', 'pengumumanKrs'));
+        return view('mahasiswa.KHS.index', compact('grouped', 'informasiUmum', 'ipk', 'pengumumanKrs', 'periodeKosong'));
     
     }
 }
