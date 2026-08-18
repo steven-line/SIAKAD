@@ -9,13 +9,12 @@
                 <th>No</th>
                 <th>Kode MK</th>
                 <th>Nama Mata Kuliah</th>
-
-             
+                <th>Periode</th>
+                <th>Jenis</th>
                 <th>Sesi</th>
                 <th>Hari</th>
                 <th>Jam</th>
-                <th colspan="2">Aksi</th>
-
+                <th>Aksi</th>
             </tr>
         </thead>
 
@@ -24,6 +23,7 @@
             @forelse($mks as $mk)
 
             <tr>
+
                 <td>{{ $loop->iteration }}</td>
 
                 <td>{{ $mk->kodemk }}</td>
@@ -32,33 +32,56 @@
                     {{ $mk->mk->nama ?? '-' }}
                 </td>
 
-     
-
-                <td>{{ $mk->sesi }}</td>
-
-                <td>{{ $mk->hari }}</td>
-
                 <td>
-                    {{ substr($mk->mulaipukul,0,5) }}
-                    -
-                    {{ substr($mk->selesaipukul,0,5) }}
+                    {{ $mk->semester->periode->tahun_ajaran ?? '-' }}
                 </td>
 
                 <td>
+                    {{ $mk->semester->jenis ?? '-' }}
+                </td>
+
+                <td>
+                    {{ $mk->sesi }}
+                </td>
+
+                <td>
+                    {{ $mk->hari }}
+                </td>
+
+                <td>
+                    {{ substr($mk->mulaipukul, 0, 5) }}
+                    -
+                    {{ substr($mk->selesaipukul, 0, 5) }}
+                </td>
+
+                <td class="flex gap-2">
+
                     <a
                         class="btn btn-soft btn-info"
-                        href="{{route('nilai.mahasiswa', $mk->kodemk)}}">
-                        Lihat Mahasiswa
+                        href="{{ route('nilai.mahasiswa', [
+                            'mk' => $mk->kodemk,
+                            'periode' => $mk->semester->periode_id,
+                            'semester' => $mk->semester_id,
+                        ]) }}">
+                        Mahasiswa
                     </a>
+
+                    @if ($mk->bisaEditBobot)
+
+                        <a
+                            class="btn btn-soft btn-primary"
+                            href="{{ route('nilai.edit_bobot', [
+                                'mk' => $mk->kodemk,
+                                'periode' => $mk->semester->periode_id,
+                                'semester' => $mk->semester_id,
+                            ]) }}">
+                            Edit Bobot
+                        </a>
+
+                    @endif
+
                 </td>
-                <td>
-                  <!-- --- TOMBOL EDIT BOBOT HANYA MUNCUL JIKA DIA PJMK --- -->
-                @if(in_array($mk->kodemk, $pjmkList))
-                    <a href="{{ route('nilai.edit_bobot', $mk->kodemk) }}" class="btn btn-warning">
-                        Edit Bobot
-                    </a>
-                @endif
-                </td>
+
             </tr>
 
             @empty

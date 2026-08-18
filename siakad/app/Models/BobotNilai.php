@@ -11,14 +11,14 @@ class BobotNilai extends Model
      protected $table = 'bobotnilai';
      
     protected $fillable = [
+        'jenis',
         'kodemk',
+        'periode_id',
         'ttt1',
         'ttt2',
         'lain',
         'uts',
         'uas',
-       
-      
     ];
     public function mk()
     {

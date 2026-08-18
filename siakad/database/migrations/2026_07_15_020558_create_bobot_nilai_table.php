@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Penawaran;
+use App\Models\Periode;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,9 +18,11 @@ return new class extends Migration
             $table->id();
 		
             // Relasi ke mahasiswa
-	      $table->string('kodemk', 8);
-            $table->foreign('kodemk')->references('kodemk')->on('mk')->onDelete('cascade')->onUpdate('cascade');
-
+            $table->string('jenis');
+            $table->string('kodemk', 8);
+            $table->foreign('kodemk')->references('kodemk')->on('mk')->onUpdate('cascade')->onDelete('cascade');
+	        $table->foreignIdFor(Periode::class)->cascadeOnUpdate()->cascadeOnDelete();
+         
             // Relasi ke mata kuliah
 
             $table->decimal('ttt1', 5, 2)->default('20.00')->nullable();

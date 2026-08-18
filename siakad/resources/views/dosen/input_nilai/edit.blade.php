@@ -1,16 +1,48 @@
 <x-layout>
+
+    {{-- Pesan berhasil --}}
+    @if (session('success'))
+        <div class="alert alert-success mb-4">
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    {{-- Pesan gagal --}}
+    @if (session('error'))
+        <div class="alert alert-error mb-4">
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    {{-- Error validasi --}}
+    @if ($errors->any())
+        <div class="alert alert-error mb-4">
+            <div>
+                <p class="font-bold">Gagal menyimpan nilai:</p>
+
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
     <a class="join-item btn btn-primary mb-4" href="{{ url()->previous() }}">
         ⮜ Previous page
     </a>
 
     <form action="{{ route('nilai.update', [
         'mahasiswa' => $mahasiswa->nrp,
-        'mk' => $mk->kodemk,
+        'penawaran' => $penawaran->recno,
     ]) }}" method="POST">
+
         @csrf
         @method('PATCH')
 
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-full border p-6 mx-auto max-w-4xl">
+
             <legend class="fieldset-legend font-bold text-lg">
                 Edit Nilai Mahasiswa
             </legend>
@@ -21,16 +53,26 @@
                 <div>
                     <label class="label font-bold">Kelas</label>
 
-                    <select class="select select-bordered w-full" name="kelas" required>
-                        <option value="A" @selected(old('kelas', $krs->kelas) == 'A')>A</option>
-                        <option value="B" @selected(old('kelas', $krs->kelas) == 'B')>B</option>
-                        <option value="C" @selected(old('kelas', $krs->kelas) == 'C')>C</option>
+                    <select
+                        class="select select-bordered w-full"
+                        name="kelas"
+                        required
+                    >
+                        <option value="A" @selected(old('kelas', $krs->kelas) == 'A')>
+                            A
+                        </option>
+
+                        <option value="B" @selected(old('kelas', $krs->kelas) == 'B')>
+                            B
+                        </option>
+
+                        <option value="C" @selected(old('kelas', $krs->kelas) == 'C')>
+                            C
+                        </option>
                     </select>
 
                     <x-forms.error name="kelas" />
                 </div>
-
-            
 
                 {{-- BU --}}
                 <div>
@@ -57,7 +99,20 @@
                         name="uts"
                         class="input w-full"
                         value="{{ old('uts', $krs->uts) }}"
-                        {{ (is_null($periodeInputNilai->input_nilai_uts_mulai) || is_null($periodeInputNilai->input_nilai_uts_selesai)) ? 'readonly' : (now()->between($periodeInputNilai->input_nilai_uts_mulai, $periodeInputNilai->input_nilai_uts_selesai) ? '' : 'readonly') }}
+                        {{ (
+                            is_null($periodeInputNilai->input_nilai_uts_mulai) ||
+                            is_null($periodeInputNilai->input_nilai_uts_selesai)
+                        )
+                            ? 'readonly'
+                            : (
+                                now()->between(
+                                    $periodeInputNilai->input_nilai_uts_mulai,
+                                    $periodeInputNilai->input_nilai_uts_selesai
+                                )
+                                ? ''
+                                : 'readonly'
+                            )
+                        }}
                     >
 
                     <x-forms.error name="uts" />
@@ -73,7 +128,20 @@
                         name="uas"
                         class="input w-full"
                         value="{{ old('uas', $krs->uas) }}"
-                        {{ (is_null($periodeInputNilai->input_nilai_uas_mulai) || is_null($periodeInputNilai->input_nilai_uas_selesai)) ? 'readonly' : (now()->between($periodeInputNilai->input_nilai_uas_mulai, $periodeInputNilai->input_nilai_uas_selesai) ? '' : 'readonly') }}
+                        {{ (
+                            is_null($periodeInputNilai->input_nilai_uas_mulai) ||
+                            is_null($periodeInputNilai->input_nilai_uas_selesai)
+                        )
+                            ? 'readonly'
+                            : (
+                                now()->between(
+                                    $periodeInputNilai->input_nilai_uas_mulai,
+                                    $periodeInputNilai->input_nilai_uas_selesai
+                                )
+                                ? ''
+                                : 'readonly'
+                            )
+                        }}
                     >
 
                     <x-forms.error name="uas" />
@@ -109,7 +177,6 @@
                     <x-forms.error name="ttt2" />
                 </div>
 
-    
                 {{-- Nilai Lain --}}
                 <div>
                     <label class="label font-bold">Nilai Lain</label>
@@ -125,26 +192,32 @@
                     <x-forms.error name="lain" />
                 </div>
 
-               {{-- Nilai Akhir (AUTO) --}}
-            <div>
-                <label class="label font-bold">Nilai Akhir</label>
+                {{-- Nilai Akhir --}}
+                <div>
+                    <label class="label font-bold">
+                        Nilai Akhir
+                    </label>
 
-                <input
-                    type="text"
-                    class="input w-full"
-                    value="{{ $krs->na }}"
-                    readonly
-                >
+                    <input
+                        type="text"
+                        class="input w-full"
+                        value="{{ $krs->na }}"
+                        readonly
+                    >
 
-                <small class="text-gray-500">
-                    Nilai dihitung otomatis berdasarkan bobot
-                </small>
-            </div>
-                                {{-- Survey --}}
+                    <small class="text-gray-500">
+                        Nilai dihitung otomatis berdasarkan bobot
+                    </small>
+                </div>
+
+                {{-- Survey --}}
                 <div>
                     <label class="label font-bold">Survey</label>
 
-                    <select class="select select-bordered w-full" name="survey">
+                    <select
+                        class="select select-bordered w-full"
+                        name="survey"
+                    >
                         <option value="0" @selected(old('survey', $krs->survey) == 0)>
                             Belum
                         </option>
@@ -159,10 +232,15 @@
 
             </div>
 
-            <button class="btn btn-warning mt-6 w-full">
+            <button
+                type="submit"
+                class="btn btn-warning mt-6 w-full"
+            >
                 Update Nilai
             </button>
 
         </fieldset>
+
     </form>
+
 </x-layout>

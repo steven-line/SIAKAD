@@ -44,6 +44,10 @@ class Mk extends Model
     public function bobotNilai(){   
         return $this->hasOne(BobotNilai::class, 'kodemk', 'kodemk');
     }
+
+    public function penawarans() {
+        return $this->hasMany(Penawaran::class, 'recno','penawaran_id');
+    }
     public function kurikulum()
     {
         return $this->belongsTo(
