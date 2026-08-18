@@ -26,8 +26,7 @@
 
             <!-- Peringatan -->
             <div class="alert alert-warning mb-4 p-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
-                <strong>Ingat!</strong> Sebelum membatalkan, diskusikan dengan 
-                <a href="#" class="text-blue-600 underline mx-1">Dosen Wali</a> anda.
+                <strong>Ingat!</strong> Sebelum membatalkan, diskusikan dengan Dosen Wali anda.
             </div>
 
             <!-- Data Mahasiswa -->
@@ -115,7 +114,7 @@
                         @empty
                         <tr>
                             <td colspan="6" class="text-center py-4">
-                                Belum ada mata kuliah yang dipilih.
+                                <a class="text-blue-600"> Belum ada mata kuliah yang diambil.</a>
                             </td>
                         </tr>
                         @endforelse

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use App\Models\Krs;
 use App\Models\Penawaran;
+use App\Models\Periode;
 use App\Models\Registrasi;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,6 +13,7 @@ class PenawaranMahasiswaController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
         // Ambil pataum dari session
         $pataum = session('pataum');
         $statusBlokir = Auth::user()->mahasiswa->status_blokir;
@@ -47,10 +49,22 @@ class PenawaranMahasiswaController extends Controller
         foreach ($penawaran as $item) {
             $this->cekPrasyarat($item, $nrp);
         }
+        $periodeAktif = Periode::where('aktif', 1)->first();
+        $semesterAktif = $periodeAktif?->semesters()->where('aktif', 1)->pluck('jenis')->first();
+
+        $informasiUmum = [
+            'periode' => $periodeAktif->tahun_ajaran ?? null,
+            'program_studi' => $user->mahasiswa->programStudi->nama_prodi,
+            'semester' => $semesterAktif ?? null,
+            'nrp' => $user->mahasiswa->nrp,
+            'nama' => $user->mahasiswa->biodata->nama ?? null,
+            'dosen_wali' => $user->mahasiswa->dosen_wali
+        ]; 
 
         return view('mahasiswa.penawaran.index', compact(
             'penawaran',
-            'statusBlokir'
+            'statusBlokir',
+            'informasiUmum'
         ));
     }
 
