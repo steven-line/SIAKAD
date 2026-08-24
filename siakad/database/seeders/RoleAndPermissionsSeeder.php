@@ -66,6 +66,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'nilai_krs.view',
             'khs.view',
             'transkrip.view',
+            'changepassword.manage',
 
             // DOSEN
             'nilai.input',
@@ -107,6 +108,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'nilai_krs.view',
             'khs.view',
             'transkrip.view',
+            'changepassword.manage',
         ]);
 
         // ======================

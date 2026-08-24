@@ -13,22 +13,23 @@
         @csrf
 
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box p-6 shadow-lg">
-
-            {{-- Username salah --}}
+            @if(session('success'))
+                <div class="alert alert-success mb-4 text-center justify-center">
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
             @error('username')
                 <div class="alert alert-error mb-4 text-center justify-center">
                     <span>{{ $message }}</span>
                 </div>
             @enderror
 
-            {{-- Akun tidak aktif --}}
             @error('aktif')
                 <div class="alert alert-error mb-4 text-center justify-center">
                     <span>{{ $message }}</span>
                 </div>
             @enderror
 
-            {{-- Password salah --}}
             @error('password')
                 <div class="alert alert-error mt-2 text-center justify-center">
                     <span>{{ $message }}</span>

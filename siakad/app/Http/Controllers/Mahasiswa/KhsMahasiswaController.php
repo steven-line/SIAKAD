@@ -57,7 +57,7 @@ class KhsMahasiswaController extends Controller
                             ->first();
 
         try {
-            $metaperiode = Metaperiode::findOrFail(1);
+            $metaperiode = Metaperiode::findOrFail(2);
         } catch (ModelNotFoundException $e) {
             $metaperiode = null;
         }

@@ -87,51 +87,32 @@
         </li>
 
         {{-- ADMIN --}}
+        @role('admin')
+        <div class="divider divider-primary">User</div>
+        @endrole
+
         @can('user.manage')
         <li><a href="/users">Master User</a></li>
         @endcan
 
-        @can('settings.manage')
-        <li><a href="/metaperiode">Master Settings</a></li>
-        @endcan
-
-        @can('penawaranumum.manage')
-        <li>
-            <a href="{{ route('admin.penawaran.index') }}">
-                Master Penawaran Umum
-            </a>
-        </li>
-        @endcan
-        
-           {{-- ROLE & PERMISSION --}}
-           
-        @can('permission.manage')
-        <li><a href="/permissions">Master Permission</a></li>
-        @endcan
         @can('role.manage')
         <li><a href="/roles">Master Role</a></li>
         @endcan
 
-        @can('kurikulum.manage')
-        <li><a href="/kurikulum">Master Kurikulum</a></li>
-        @endcan
-        @can('fakultas.manage')
-        <li><a href="/fakultas">Master Fakultas</a></li>
-        @endcan
-        @can('mk.manage')
-        <li><a href="/matakuliah">Master Mata Kuliah</a></li>
-        @endcan
-
-        @can('prodi.manage')
-        <li><a href="/prodi">Master Prodi</a></li>
-        @endcan
-        
-        @can('dosen.manage')
-        <li><a href="/dosen">Master Dosen</a></li>
+        @can('permission.manage')
+        <li><a href="/permissions">Master Permission</a></li>
         @endcan
 
         @can('mahasiswa.manage')
         <li><a href="/mahasiswa-admin">Master Mahasiswa</a></li>
+        @endcan
+
+        @can('biodata.manage')
+          <li><a href="/biodata">Master Biodata</a></li>
+        @endcan
+
+        @can('dosen.manage')
+        <li><a href="/dosen">Master Dosen</a></li>
         @endcan
 
         @can('sks.manage')
@@ -141,18 +122,51 @@
             </a>
         </li>
         @endcan
-            
 
-        @can('biodata.manage')
-          <li><a href="/biodata">Master Biodata</a></li>
+        @role('admin')
+        <div class="divider divider-primary">Tahun Ajar</div>
+        @endrole
+
+        @can('periode.manage')
+            <li><a href="/periode">Master Periode</a></li>
         @endcan
 
+        @can('settings.manage')
+        <li><a href="/metaperiode">Master Settings Periode</a></li>
+        @endcan
+
+        @role('admin')
+        <div class="divider divider-primary">Perkuliahan</div>
+        @endrole
+
+        @can('kurikulum.manage')
+        <li><a href="/kurikulum">Master Kurikulum</a></li>
+        @endcan
+
+        @can('fakultas.manage')
+        <li><a href="/fakultas">Master Fakultas</a></li>
+        @endcan
+
+
+
+        @can('prodi.manage')
+        <li><a href="/prodi">Master Prodi</a></li>
+        @endcan
+        
         @can('jurusan.manage')
           <li><a href="/jurusan">Master Jurusan</a></li>
         @endcan
 
-        @can('periode.manage')
-            <li><a href="/periode">Master Periode</a></li>
+        @can('mk.manage')
+        <li><a href="/matakuliah">Master Mata Kuliah</a></li>
+        @endcan        
+
+        @can('penawaranumum.manage')
+        <li>
+            <a href="{{ route('admin.penawaran.index') }}">
+                Master Penawaran Umum
+            </a>
+        </li>
         @endcan
 
         @can('semester.manage')
@@ -165,29 +179,48 @@
         @endcan
 
         {{-- MAHASISWA --}}
-         
         @can('biodata.view')
-        <li><a href="/mahasiswa/biodata">Biodata</a></li>
+        <li>
+            <a href="/mahasiswa/biodata">Biodata</a>
+        </li>
         @endcan
 
         @can('krs.view')
-        <li><a href="/mahasiswa/krs">KRS</a></li>
+        <li>
+            <a href="/mahasiswa/krs">KRS</a>
+        </li>
         @endcan
 
         @can('penawaran.view')
-        <li><a href="/mahasiswa/penawaran">Penawaran</a></li>
+        <li>
+            <a href="/mahasiswa/penawaran">Penawaran</a>
+        </li>
         @endcan
 
         @can('nilai_krs.view')
-        <li><a href="/mahasiswa/nilai_krs">Nilai KRS</a></li>
+        <li>
+            <a href="/mahasiswa/nilai_krs">Nilai KRS</a>
+        </li>
         @endcan
 
         @can('khs.view')
-        <li><a href="/mahasiswa/khs">KHS</a></li>
+        <li>
+            <a href="/mahasiswa/khs">KHS</a>
+        </li>
         @endcan
 
         @can('transkrip.view')
-        <li><a href="/mahasiswa/transkrip">Transkrip Nilai</a></li>
+        <li>
+            <a href="/mahasiswa/transkrip">Transkrip Nilai</a>
+        </li>
+        @endcan
+
+        @can('changepassword.manage')
+        <li>
+            <a href="{{ route('mahasiswa.password.create') }}">
+                Ubah Password
+            </a>
+        </li>
         @endcan
 
         {{-- PERWALIAN --}}

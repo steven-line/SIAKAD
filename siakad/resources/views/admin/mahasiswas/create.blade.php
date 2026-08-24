@@ -13,7 +13,7 @@
                 <legend class="fieldset-legend text-lg font-bold">
                     Tambah Mahasiswa
                 </legend>
-                <label class="label font-bold mt-4" for="nrp-select">Pilih NRP User</label>
+                <label class="label font-bold mt-4" for="nrp-select">Pilih NRP User Baru</label>
                 <select id="nrp-select" name="nrp" class="select select-bordered w-full" required>
                         <option disabled selected>Pilih satu user...</option>
                                 @foreach($users as $user)
@@ -27,7 +27,7 @@
                 <select id="dosen-wali-select" name="dosen_wali" class="select select-bordered w-full" required>
                         <option disabled selected>Pilih satu dosen</option>
                                 @foreach($dosens as $dosen)
-                                    <option value="{{ $dosen->nim_dosen}}" @selected(old('dosen_wali', $dosen->nim_dosen) == $dosen->nim_dosen)>{{ ucfirst($dosen->nim_dosen) }}</option>
+                                    <option value="{{ $dosen->nim_dosen}}" @selected(old('dosen_wali', $dosen->nim_dosen) == $dosen->nim_dosen)>{{ ucfirst($dosen->nim_dosen) }} - {{ $dosen->nama }}</option>
                                 @endforeach
                 </select>
                     
@@ -46,7 +46,7 @@
                 <select id="prodi-select" name="prodi" class="select select-bordered w-full" required>
                         <option disabled selected>Pilih Prodi.</option>
                                 @foreach($prodis as $prodi)
-                                    <option value="{{ $prodi->kode_prodi}}" @selected(old('prodi', $prodi->kode_prodi) == $prodi->kode_prodi)>{{ ucfirst($prodi->kode_prodi) }}</option>
+                                    <option value="{{ $prodi->kode_prodi}}" @selected(old('prodi', $prodi->kode_prodi) == $prodi->kode_prodi)>{{ ucfirst($prodi->kode_prodi) }} - {{ $prodi->nama_prodi }}</option>
                                 @endforeach
                 </select>
                     

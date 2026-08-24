@@ -3,7 +3,11 @@
    href="{{ route('users.create') }}">
     Create User
 </a>
-
+@if(session('success'))
+    <div class="alert alert-success mb-4 text-center justify-center">
+        <span>{{ session('success') }}</span>
+    </div>
+@endif
 <table class="table table-fixed w-full text-sm">
     <thead class="bg-blue-500 text-white">
         <tr>
@@ -12,7 +16,7 @@
             <th>Role</th>
             <th class="w-24">Pataum</th>
             <th class="w-20">Aktif</th>
-            <th class="text-center w-60">Aksi</th>
+            <th class="text-center w-100">Aksi</th>
         </tr>
     </thead>
 
@@ -36,7 +40,25 @@
                 <td>{{ $user->aktif }}</td>
 
                 <td class="flex gap-2 justify-center">
-
+                    <button class="btn btn-soft btn-warning btn-sm" onclick="document.getElementById('resetPasswordBox_{{ $user->username }}').showModal()">
+                        Reset Password
+                    </button>
+                    <dialog id="resetPasswordBox_{{ $user->username }}" class="modal modal-bottom sm:modal-middle">
+                        <div class="modal-box">
+                            <h3 class="text-lg font-bold">Reset Password</h3>
+                            <p class="py-4">Apakah anda yakin ingin mereset password user <strong>{{ $user->username }}</strong>?</p>
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <button class="btn">Tidak</button>
+                                </form>
+                                <form action="{{ route('users.reset_password', $user) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button class="btn btn-error" type="submit">Ya, Reset</button>
+                                </form>
+                            </div>
+                        </div>
+                        </dialog>
                     {{-- DETAIL --}}
                     <a href="{{ route('users.show', $user)}}"
                        class="btn btn-soft btn-primary btn-sm">
@@ -48,7 +70,7 @@
                        href="{{ route('users.edit', $user) }}">
                         Edit
                     </a>
-
+                  
                     {{-- DELETE BUTTON --}}
                     <button class="btn btn-soft btn-error btn-sm"
                         onclick="document.getElementById('deleteBox_{{ $user->username }}').showModal()">
