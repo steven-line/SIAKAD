@@ -37,49 +37,97 @@ class PeriodeController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'tahun_ajaran' => ['required', 'size:9'],
-       
-            'tanggal_mulai' => ['required',  Rule::date()->format('Y-m-d')],
-            'tanggal_selesai' => ['required', Rule::date()->format('Y-m-d'),],
-        ]);
+{
+    $request->validate([
+        'tahun_mulai' => [
+            'required',
+            'integer',
+            'min:2000',
+            'max:2100',
+        ],
 
-        $periode = Periode::create([
-            'tahun_ajaran' => $request->tahun_ajaran,
-            'aktif' => false,
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_selesai' =>  $request->tanggal_selesai,
-        ]);
-          $dataSemester = [];
+        'tanggal_mulai' => [
+            'required',
+            Rule::date()->format('Y-m-d'),
+        ],
 
-    // Ganjil
-     foreach ([1,3,5,7] as $smt) {
-            $dataSemester[] = [
+        'tanggal_selesai' => [
+            'required',
+            Rule::date()->format('Y-m-d'),
+            'after:tanggal_mulai',
+        ],
+    ]);
+
+    // ==========================================================
+    // TAHUN AJARAN
+    // Tahun selesai otomatis = tahun mulai + 1
+    // Contoh: 2026 -> 2027
+    // Hasil: 2026/2027
+    // ==========================================================
+
+    $tahunMulai = (int) $request->tahun_mulai;
+    $tahunSelesai = $tahunMulai + 1;
+
+    $tahunAjaran = $tahunMulai . '/' . $tahunSelesai;
+
+
+    // ==========================================================
+    // SIMPAN PERIODE
+    // ==========================================================
+
+    $periode = Periode::create([
+        'tahun_ajaran' => $tahunAjaran,
+        'aktif' => false,
+        'tanggal_mulai' => $request->tanggal_mulai,
+        'tanggal_selesai' => $request->tanggal_selesai,
+    ]);
+
+
+    // ==========================================================
+    // BUAT SEMESTER OTOMATIS
+    // ==========================================================
+
+    $dataSemester = [];
+
+    // Semester Ganjil
+    foreach ([1, 3, 5, 7] as $smt) {
+
+        $dataSemester[] = [
             'periode_id' => $periode->id,
-            'nama' => (string)$smt,
+            'nama' => (string) $smt,
             'jenis' => 'Ganjil',
             'aktif' => false,
             'created_at' => now(),
             'updated_at' => now(),
         ];
-        }
-
-    // Genap
-        foreach ([2,4,6,8] as $smt) {
-            $dataSemester[] = [
-                'periode_id' => $periode->id,
-                'nama' => (string)$smt,
-                'jenis' => 'Genap',
-                'aktif' => false,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-
-        Semester::insert($dataSemester);
-        return redirect()->route('periode.index');
     }
+
+    // Semester Genap
+    foreach ([2, 4, 6, 8] as $smt) {
+
+        $dataSemester[] = [
+            'periode_id' => $periode->id,
+            'nama' => (string) $smt,
+            'jenis' => 'Genap',
+            'aktif' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
+
+
+    // Simpan seluruh semester
+    Semester::insert($dataSemester);
+
+
+    // ==========================================================
+    // KEMBALI KE INDEX
+    // ==========================================================
+
+    return redirect()
+        ->route('periode.index')
+        ->with('success', 'Periode berhasil dibuat.');
+}
 
     /**
      * Display the specified resource.
@@ -144,15 +192,16 @@ class PeriodeController extends Controller
         ]);
        
         return redirect()->route('periode.index')->with('success', 'Periode diaktifkan');
-
+    
     }
  
     public function destroy(Periode $periode)
     {
-        //
-         $periode->delete();
-          return redirect()->route('periode.index')->with('success', 'Periode Dihapus');
-   
+        $periode->delete();
+
+        return redirect()
+            ->route('periode.index')
+            ->with('success', 'Periode berhasil dihapus.');
     }
     
 }
