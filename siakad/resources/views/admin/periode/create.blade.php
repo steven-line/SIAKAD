@@ -2,9 +2,10 @@
 
     <div class="p-6">
 
-       <a class="join-item btn btn-primary mb-4" href="{{ route('periode.index') }}">
-        ⮜ Previous page
-    </a>
+        <a class="join-item btn btn-primary mb-4" href="{{ route('periode.index') }}">
+            ⮜ Previous page
+        </a>
+
         <form action="{{ route('periode.store') }}" method="POST">
             @csrf
 
@@ -14,44 +15,89 @@
                     Tambah Periode
                 </legend>
 
+                {{-- TAHUN AJARAN --}}
                 <label class="label font-bold">
                     Tahun Ajaran
                 </label>
-                <input
-                    type="text"
-                    name="tahun_ajaran"
-                    maxlength="9"
-                    value="{{ old('tahun_ajaran') }}"
-                    class="input input-bordered w-full"
-                    placeholder="contoh: 2023/2024"
-                />
-                <x-forms.error name="tahun_ajaran"/>
 
-                <label class="label font-bold">
+                <div class="grid grid-cols-2 gap-4">
+
+                    {{-- Tahun Mulai --}}
+                    <div>
+
+                        <label class="label text-sm">
+                            Tahun Mulai
+                        </label>
+
+                        <input
+                            type="number"
+                            id="tahun_mulai"
+                            name="tahun_mulai"
+                            min="2000"
+                            max="2100"
+                            value="{{ old('tahun_mulai') }}"
+                            class="input input-bordered w-full"
+                            placeholder="2026"
+                            required
+                        />
+
+                        <x-forms.error name="tahun_mulai"/>
+
+                    </div>
+
+                    {{-- Tahun Selesai --}}
+                    <div>
+
+                        <label class="label text-sm">
+                            Tahun Selesai
+                        </label>
+
+                        <input
+                            type="number"
+                            id="tahun_selesai"
+                            class="input input-bordered w-full"
+                            placeholder="2027"
+                            readonly
+                        />
+
+                    </div>
+
+                </div>
+
+                <p class="text-sm text-gray-500 mt-2">
+                    Tahun selesai otomatis 1 tahun setelah tahun mulai.
+                    Contoh: <b>2026</b> akan menjadi <b>2026/2027</b>.
+                </p>
+
+                {{-- TANGGAL MULAI --}}
+                <label class="label font-bold mt-4">
                     Tanggal Mulai
                 </label>
+
                 <input
                     type="date"
                     name="tanggal_mulai"
-                    placeholder="YYYY-MM-DD"
-                    value="{{old('tanggal_mulai', date('Y-m-d'))}}"
+                    value="{{ old('tanggal_mulai', date('Y-m-d')) }}"
                     class="input input-bordered w-full"
+                    required
                 />
+
                 <x-forms.error name="tanggal_mulai"/>
 
+                {{-- TANGGAL SELESAI --}}
                 <label class="label font-bold">
                     Tanggal Selesai
                 </label>
-                <input
-                        type="date"
-                        name="tanggal_selesai"
-                        placeholder="YYYY-MM-DD"
-                        value="{{old('tanggal_selesai', date('Y-m-d'))}}"
-                        class="input input-bordered w-full"
-                />
-                <x-forms.error name="tanggal_selesai"/>
 
-              
+                <input
+                    type="date"
+                    name="tanggal_selesai"
+                    value="{{ old('tanggal_selesai') }}"
+                    class="input input-bordered w-full"
+                    required
+                />
+
+                <x-forms.error name="tanggal_selesai"/>
 
                 <button class="btn btn-primary mt-6">
                     Buat Periode
@@ -62,5 +108,34 @@
         </form>
 
     </div>
+
+
+    {{-- OTOMATIS TAHUN SELESAI --}}
+    <script>
+
+        const tahunMulai = document.getElementById('tahun_mulai');
+        const tahunSelesai = document.getElementById('tahun_selesai');
+
+        function updateTahunSelesai() {
+
+            if (tahunMulai.value) {
+
+                tahunSelesai.value =
+                    parseInt(tahunMulai.value) + 1;
+
+            } else {
+
+                tahunSelesai.value = '';
+
+            }
+
+        }
+
+        tahunMulai.addEventListener('input', updateTahunSelesai);
+
+        // Jalankan saat halaman pertama kali dibuka
+        updateTahunSelesai();
+
+    </script>
 
 </x-layout>

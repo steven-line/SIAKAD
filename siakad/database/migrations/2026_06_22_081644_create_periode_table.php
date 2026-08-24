@@ -13,16 +13,22 @@ return new class extends Migration
     {
         Schema::create('periode', function (Blueprint $table) {
             $table->id();
-            $table->string('tahun_ajaran', 9); 
-            
+
+            $table->string('tahun_ajaran', 9);
+
             // Menyimpan tanggal mulai perkuliahan
             $table->date('tanggal_mulai');
-            
+
             // Menyimpan tanggal selesai perkuliahan
             $table->date('tanggal_selesai');
-            
+
+            // Menentukan periode aktif
             $table->boolean('aktif')->default(false);
+
             $table->timestamps();
+
+            // Soft Delete
+            $table->softDeletes();
         });
     }
 
