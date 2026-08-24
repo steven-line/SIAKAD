@@ -147,8 +147,6 @@
         <li><a href="/fakultas">Master Fakultas</a></li>
         @endcan
 
-
-
         @can('prodi.manage')
         <li><a href="/prodi">Master Prodi</a></li>
         @endcan
@@ -173,10 +171,29 @@
             <li><a href="/semester">Master Semester</a></li>
         @endcan
 
+        @role('admin')
+        @can('changepassword.manage')
+        <li>
+            <a href="{{ route('admin.password.create') }}">
+                Ubah Password
+            </a>
+        </li>
+        @endcan
+        @endrole
+
         {{-- DOSEN INPUT NILAI --}}
         @can('nilai.input')
         <li><a href="/input-nilai">Input Nilai</a></li>
         @endcan
+        @role('dosen')
+        @can('changepassword.manage')
+        <li>
+            <a href="{{ route('dosen.password.create') }}">
+                Ubah Password
+            </a>
+        </li>
+        @endcan
+        @endrole
 
         {{-- MAHASISWA --}}
         @can('biodata.view')
@@ -215,6 +232,7 @@
         </li>
         @endcan
 
+        @role('mahasiswa')
         @can('changepassword.manage')
         <li>
             <a href="{{ route('mahasiswa.password.create') }}">
@@ -222,6 +240,7 @@
             </a>
         </li>
         @endcan
+        @endrole
 
         {{-- PERWALIAN --}}
         @can('perwalian.manage')
@@ -229,6 +248,15 @@
         <li><a href="/nilai_krs_anak_wali">Nilai Krs Anak Wali</a></li>
         <li><a href="/nilai_khs_anak_wali">Nilai Khs Anak Wali</a></li>
         <li><a href="/transkrip_nilai_anak_wali">Transkrip Nilai Anak Wali</a></li>
+        @role('dosen-wali')
+        @can('changepassword.manage')
+        <li>
+            <a href="{{ route('dosen-wali.password.create') }}">
+                Ubah Password
+            </a>
+        </li>
+        @endcan
+        @endrole
         @endcan
 
         {{-- KAPRODI (jadwal/penawaran pakai permission juga) --}}
@@ -244,10 +272,29 @@
         @can('pjmk.manage')
         <li><a href="/pjmk">PJMK</a></li>
         @endcan
+        @role('kaprodi')
+        @can('changepassword.manage')
+        <li>
+            <a href="{{ route('kaprodi.password.create') }}">
+                Ubah Password
+            </a>
+        </li>
+        @endcan
+        @endrole
         {{-- KEUANGAN --}}
         @can('blokir.keuangan')
         <li><a href="{{ route('keuangan.mahasiswa.index') }}">Keuangan</a></li>
         @endcan
+
+        @role('keuangan')
+        @can('changepassword.manage')
+        <li>
+            <a href="{{ route('keuangan.password.create') }}">
+                Ubah Password
+            </a>
+        </li>
+        @endcan
+        @endrole
             </ul>
 
         </div>

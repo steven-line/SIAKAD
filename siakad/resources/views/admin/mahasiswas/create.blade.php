@@ -23,6 +23,15 @@
                     
                 <x-forms.error name="nrp"/>
 
+                <label class="label font-bold mt-4" for="prodi-select">Pilih Prodi</label>
+                <select id="prodi-select" name="prodi" class="select select-bordered w-full" required>
+                        <option disabled selected>Pilih Prodi.</option>
+                                @foreach($prodis as $prodi)
+                                    <option value="{{ $prodi->kode_prodi}}" @selected(old('prodi', $prodi->kode_prodi) == $prodi->kode_prodi)>{{ ucfirst($prodi->kode_prodi) }} - {{ $prodi->nama_prodi }}</option>
+                                @endforeach
+                </select>
+                <x-forms.error name="prodi"/>
+
                 <label class="label font-bold mt-4" for="dosen-wali-select">Pilih Dosen Wali</label>
                 <select id="dosen-wali-select" name="dosen_wali" class="select select-bordered w-full" required>
                         <option disabled selected>Pilih satu dosen</option>
@@ -42,15 +51,6 @@
                     @endforeach
                 </select>
                 <x-forms.error name="status_blokir"/>
-                <label class="label font-bold mt-4" for="prodi-select">Pilih Prodi</label>
-                <select id="prodi-select" name="prodi" class="select select-bordered w-full" required>
-                        <option disabled selected>Pilih Prodi.</option>
-                                @foreach($prodis as $prodi)
-                                    <option value="{{ $prodi->kode_prodi}}" @selected(old('prodi', $prodi->kode_prodi) == $prodi->kode_prodi)>{{ ucfirst($prodi->kode_prodi) }} - {{ $prodi->nama_prodi }}</option>
-                                @endforeach
-                </select>
-                    
-                <x-forms.error name="prodi"/>
 
 
                 <button class="btn btn-primary mt-6">

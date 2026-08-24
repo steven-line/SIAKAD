@@ -117,6 +117,7 @@ class RoleAndPermissionsSeeder extends Seeder
         $dosenRole->syncPermissions([
             'jadwal.view_sendiri',
             'nilai.input',
+            'changepassword.manage',
         ]);
 
         // ======================
@@ -124,6 +125,7 @@ class RoleAndPermissionsSeeder extends Seeder
         // ======================
         $keuanganRole->syncPermissions([
             'blokir.keuangan',
+            'changepassword.manage',
         ]);
 
         // ======================
@@ -136,6 +138,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'nilai.input',
             'penawaran.manage',
             'pjmk.manage',
+            'changepassword.manage',
         ]);
 
         // ======================
@@ -145,6 +148,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'jadwal.view_sendiri',
             'nilai.input',
             'perwalian.manage',
+            'changepassword.manage',
         ]);
 
         // ======================
@@ -167,6 +171,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'settings.manage',
             'sks.manage',
             'penawaranumum.manage',
+            'changepassword.manage',
         ]);
 
         // ======================
