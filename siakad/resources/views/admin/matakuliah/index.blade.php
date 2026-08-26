@@ -6,7 +6,13 @@
        href="{{ route('mk.create') }}">
         Create Mata Kuliah
     </a>
-
+      <form action="{{route('mk.upload')}}" class="mb-10" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="file"  accept=".csv, .xlsx, .xls" class="file-input">
+          <input type="submit" value="Upload File" class="btn btn-primary">
+      </form>
+       <a href=" {{ asset('document/template_import_biodata.xlsx') }}" download class="btn btn-success mb-5">Download Template</a>
+  
     <table class="table">
 
         <thead class="bg-blue-500 text-white">

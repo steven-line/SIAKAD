@@ -135,6 +135,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{mk}/edit', [MkController::class, 'edit'])->name('edit');
             Route::patch('/{mk}', [MkController::class, 'update'])->name('update');
             Route::delete('/{mk}', [MkController::class, 'destroy'])->name('destroy');
+            Route::post('/upload', [MkController::class, 'upload'])->name('upload');
         });
 
     /*
