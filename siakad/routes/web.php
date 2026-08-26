@@ -8,7 +8,6 @@ use App\Http\Controllers\{
     RoleController,
     PermissionController,
     PerwalianController,
-    UbahPasswordController,
     FakultasController,
     IpsController,
     JurusanController,
@@ -25,6 +24,7 @@ use App\Http\Controllers\{
     SemesterController,
     TranskripNilaiAnakWaliController,
     PenawaranAdminController,
+    UbahPasswordController,
 };
 
 use App\Http\Controllers\Admin\{
@@ -32,11 +32,16 @@ use App\Http\Controllers\Admin\{
     MkController,
     ProdiController,
     DosenController,
+    UbahPasswordAdminController,
+};
+use App\Http\Controllers\DosenWali\{
+    UbahPasswordDosenWaliController,
 };
 
 use App\Http\Controllers\Kaprodi\{
     JadwalController,
-    PenawaranController
+    PenawaranController,
+    UbahPasswordKaprodiController,
 };
 
 use App\Http\Controllers\Mahasiswa\{
@@ -46,7 +51,12 @@ use App\Http\Controllers\Mahasiswa\{
     DetailMataKuliahController,
     BiodataMahasiswaController,
     KhsMahasiswaController,
-    TranskripMahasiswaController
+    TranskripMahasiswaController,
+    UbahPasswordMahasiswaController,
+};
+
+use App\Http\Controllers\Keuangan\{
+    UbahPasswordKeuanganController
 };
 
 /*
@@ -78,7 +88,6 @@ Route::middleware('auth')->group(function () {
         ->middleware('permission:user.manage')
         ->name('users.')
         ->group(function () {
-
             Route::get('/', [UserController::class, 'index'])->name('index');
             Route::get('/create', [UserController::class, 'create'])->name('create');
             Route::post('/', [UserController::class, 'store'])->name('store');
@@ -86,6 +95,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{user}', [UserController::class, 'show'])->name('show');
             Route::patch('/{user}', [UserController::class, 'update'])->name('update');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+            Route::patch('/{user}/reset-password', [UserController::class, 'resetPassword'])->name('reset_password');
         });
 
     /*
@@ -162,6 +172,18 @@ Route::prefix('admin/penawaran')
     | DOSEN
     |--------------------------------------------------------------------------
     */
+    Route::prefix('dosen')
+        ->middleware('permission:changepassword.manage')
+        ->name('dosen.')
+        ->group(function(){
+    Route::get('/ubah-password', [UbahPasswordController::class, 'create'])
+        ->middleware('auth')
+        ->name('password.create');
+    Route::post('/ubah-password', [UbahPasswordController::class, 'store'])
+        ->middleware('auth')
+        ->name('password.store');   
+    });
+
     Route::prefix('dosen')
         ->middleware('permission:dosen.manage')
         ->name('dosen.')
@@ -306,6 +328,13 @@ Route::prefix('admin/penawaran')
         Route::get('/mahasiswa/{mahasiswa}', [KeuanganController::class, 'show'])->name('mahasiswa.show');
         Route::put('/mahasiswa/{mahasiswa}/blokir', [KeuanganController::class, 'blokir'])->name('mahasiswa.blokir');
         Route::put('/mahasiswa/{mahasiswa}/bukablokir', [KeuanganController::class, 'bukablokir'])->name('mahasiswa.bukablokir');
+        Route::get('/ubah-password', [UbahPasswordKeuanganController::class, 'create'])
+            ->middleware('auth')
+            ->name('password.create');
+        Route::post('/ubah-password', [UbahPasswordKeuanganController::class, 'store'])
+            ->middleware('auth')
+            ->name('password.store');
+        });
     });
     /*
     |--------------------------------------------------------------------------
@@ -515,10 +544,8 @@ Route::prefix('perwalian')
             ->name('biodata.')
             ->group(function () {
 
-                Route::get('/', [BiodataMahasiswaController::class, 'index'])->name('index');
-                // kalau nanti ada edit/update bisa ditambah:
-                // Route::get('/edit', ...)->name('edit');
-                // Route::patch('/', ...)->name('update');
+                Route::get('/', [BiodataMahasiswaController::class, 'index'])
+                    ->name('index');
             });
 
         /*
@@ -529,7 +556,8 @@ Route::prefix('perwalian')
             ->name('penawaran.')
             ->group(function () {
 
-                Route::get('/', [PenawaranMahasiswaController::class, 'index'])->name('index');
+                Route::get('/', [PenawaranMahasiswaController::class, 'index'])
+                    ->name('index');
             });
 
         /*
@@ -540,14 +568,9 @@ Route::prefix('perwalian')
             ->name('nilai_krs.')
             ->group(function () {
 
-                Route::get('/', [NilaiKrsMahasiswaController::class, 'index'])->name('index');
+                Route::get('/', [NilaiKrsMahasiswaController::class, 'index'])
+                    ->name('index');
             });
-
-
-        /*
-        MahasiswaAdmin
-        */
-
 
         /*
         | KHS
@@ -556,14 +579,21 @@ Route::prefix('perwalian')
             ->middleware('permission:khs.view')
             ->name('khs.')
             ->group(function () {
-                Route::get('/', [KhsMahasiswaController::class, 'index'])->name('index');
+
+                Route::get('/', [KhsMahasiswaController::class, 'index'])
+                    ->name('index');
             });
 
+        /*
+        | TRANSKRIP
+        */
         Route::prefix('transkrip')
             ->middleware('permission:transkrip.view')
             ->name('transkrip.')
             ->group(function () {
-                Route::get('/', [TranskripMahasiswaController::class, 'index'])->name('index');
+
+                Route::get('/', [TranskripMahasiswaController::class, 'index'])
+                    ->name('index');
             });
 
         /*
@@ -592,25 +622,22 @@ Route::prefix('perwalian')
                 Route::post('/krs/{nrp}/validasi', [KrsMahasiswaController::class, 'validasi'])
                     ->name('validasi')
                     ->middleware('auth');
-                
             });
 
         /*
         | DETAIL MATA KULIAH
         */
-    
-
         Route::get('/mata-kuliah/{penawaran}', [DetailMataKuliahController::class, 'show'])
             ->name('mata_kuliah.show');
 
-        Route::post('/mata-kuliah/{penawaran}/', 
-                [DetailMataKuliahController::class, 'daftar']
-            )->name('mata_kuliah.daftar');
+        Route::post('/mata-kuliah/{penawaran}', [DetailMataKuliahController::class, 'daftar'])
+            ->name('mata_kuliah.daftar');
 
-            Route::delete('/mata-kuliah/{penawaran}', 
-    [DetailMataKuliahController::class, 'batal']
-)->name('mata_kuliah.batal');
-    });
+        Route::delete('/mata-kuliah/{penawaran}', [DetailMataKuliahController::class, 'batal'])
+            ->name('mata_kuliah.batal');
+
+
+        });
 
     /*
     |--------------------------------------------------------------------------
@@ -670,17 +697,8 @@ Route::prefix('perwalian')
             [KrsController::class, 'update']
         )->name('update');
     });
-    /*
-    |--------------------------------------------------------------------------
-    | PASSWORD
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/ubah-password', [UbahPasswordController::class, 'edit'])
-        ->name('password.edit');
 
-    Route::patch('/ubah-password/{user}', [UbahPasswordController::class, 'update'])
-        ->name('password.update');
-});
+
 
     /*
     |--------------------------------------------------------------------------
@@ -695,6 +713,59 @@ Route::prefix('perwalian')
             Route::patch('/update', [MetaperiodeController::class, 'update'])->name('update');
         });
 
+        /*
+        |--------------------------------------------------------------------------
+        | PASSWORD
+        |--------------------------------------------------------------------------
+        */
+    Route::prefix('mahasiswa')
+        ->middleware('permission:changepassword.manage')
+        ->name('mahasiswa.')
+        ->group(function(){
+    Route::get('/ubah-password', [UbahPasswordMahasiswaController::class, 'create'])
+        ->middleware('auth')
+        ->name('password.create');
+    Route::post('/ubah-password', [UbahPasswordMahasiswaController::class, 'store'])
+        ->middleware('auth')
+        ->name('password.store');
+    });
+
+    Route::prefix('admin')
+        ->middleware('permission:changepassword.manage')
+        ->name('admin.')
+        ->group(function(){
+    Route::get('/ubah-password', [UbahPasswordAdminController::class, 'create'])
+        ->middleware('auth')
+        ->name('password.create');
+    Route::post('/ubah-password', [UbahPasswordAdminController::class, 'store'])
+        ->middleware('auth')
+        ->name('password.store');
+    });
+
+    Route::prefix('kaprodi')
+        ->middleware('permission:changepassword.manage')
+        ->name('kaprodi.')
+        ->group(function(){
+    Route::get('/ubah-password', [UbahPasswordKaprodiController::class, 'create'])
+        ->middleware('auth')
+        ->name('password.create');
+    Route::post('/ubah-password', [UbahPasswordKaprodiController::class, 'store'])
+        ->middleware('auth')
+        ->name('password.store');
+    });
+
+    Route::prefix('dosen-wali')
+        ->middleware('permission:changepassword.manage')
+        ->name('dosen-wali.')
+        ->group(function(){
+    Route::get('/ubah-password', [UbahPasswordDosenWaliController::class, 'create'])
+        ->middleware('auth')
+        ->name('password.create');
+    Route::post('/ubah-password', [UbahPasswordDosenWaliController::class, 'store'])
+        ->middleware('auth')
+        ->name('password.store');   
+    });
+
 /*
 |--------------------------------------------------------------------------
 | GUEST
@@ -707,4 +778,5 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/login', [LoginController::class, 'store'])
         ->name('login.store');
+
 });

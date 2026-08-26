@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('mahasiswa.password.create') }}" method="POST">
+    <form action="{{ route('admin.password.create') }}" method="POST">
         @csrf
 
         <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-6 mx-auto">

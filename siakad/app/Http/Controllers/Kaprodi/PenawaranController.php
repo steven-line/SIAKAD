@@ -121,7 +121,7 @@ class PenawaranController extends Controller
                 $query->orWhere('kodemk', 'like', $prefix . '%');
             }
         })
-        ->orderBy('nama')
+        ->orderBy('kodemk', 'asc')
         ->get();
 
     $dosens = Dosen::orderBy('nama')->where('prodi', $user->dosen->prodi)->get();

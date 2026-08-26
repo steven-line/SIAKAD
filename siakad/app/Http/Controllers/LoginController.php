@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,7 @@ class LoginController extends Controller
         ]);
 
         // 1. Cari username
-        $user = \App\Models\User::where('username', $request->username)->first();
+        $user = User::where('username', $request->username)->first();
 
         if (!$user) {
             return back()
@@ -61,6 +62,40 @@ class LoginController extends Controller
         }
 
         return redirect()->intended('/dashboard');
+    }
+
+    public function forgotPassword()
+    {
+        return view('auth.forgot_password');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => ['required', 'string', 'max:15'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = User::where(
+            'username',
+            $validated['username']
+        )->first();
+
+        if (!$user) {
+            return back()
+                ->withErrors([
+                    'username' => 'Username tidak ditemukan.',
+                ])
+                ->withInput();
+        }
+
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()
+            ->route('login')
+            ->with('success', 'Password berhasil direset. Silakan login kembali.');
     }
 
     public function destroy()

@@ -135,6 +135,43 @@
                     <span>Tidak Aktif</span>
                 </label>
             </div>
+            {{-- PATAUM (khusus mahasiswa) --}}
+            <div
+                id="pataum-wrapper"
+                style="{{ strtolower($userRole) === 'mahasiswa' ? 'display:block;' : 'display:none;' }}"
+            >
+                <label class="label font-bold mt-4">
+                    Pilih Jadwal (Pagi/Malam)
+                </label>
+
+                <div class="flex gap-4 mt-1">
+
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input
+                            type="radio"
+                            name="pataum"
+                            value="P"
+                            class="radio radio-primary"
+                            {{ old('pataum', $user->pataum) === 'P' ? 'checked' : '' }}
+                        />
+                        <span>Pagi</span>
+                    </label>
+
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input
+                            type="radio"
+                            name="pataum"
+                            value="M"
+                            class="radio radio-primary"
+                            {{ old('pataum', $user->pataum) === 'M' ? 'checked' : '' }}
+                        />
+                        <span>Malam</span>
+                    </label>
+
+                </div>
+
+                <x-forms.error name="pataum"/>
+            </div>
             <x-forms.error name="aktif"/>
 
             <button class="btn btn-primary mt-6 w-full">
@@ -153,41 +190,49 @@
         const roleSelect = document.getElementById('role-select');
         const permWrapper = document.getElementById('permissions-wrapper');
         const checkboxes = document.querySelectorAll('.permission-checkbox');
+        const pataumWrapper = document.getElementById('pataumWrapper')
 
         function applyRolePermissions(roleName) {
             const selectedRole = roleName.toLowerCase();
             const allowed = rolesData[roleName] || [];
 
-            // reset semua checkbox dulu
+            // Reset semua checkbox
             checkboxes.forEach(cb => {
                 cb.checked = false;
                 cb.classList.remove('default-role-permission');
             });
 
-            // kalau admin, cukup sembunyikan permission
+            // Permission
             if (selectedRole === 'admin') {
                 permWrapper.style.display = 'none';
-                return;
+            } else {
+                permWrapper.style.display = 'block';
+
+                checkboxes.forEach(cb => {
+                    if (allowed.includes(cb.value)) {
+                        cb.checked = true;
+                        cb.classList.add('default-role-permission');
+                    }
+                });
             }
 
-            permWrapper.style.display = 'block';
+            // PATAUM hanya untuk mahasiswa
+            applyRolePermissions(roleSelect.value);
+            if (selectedRole === 'mahasiswa') {
+                pataumWrapper.style.display = 'block';
+            } else {
+                pataumWrapper.style.display = 'none';
 
-            // centang sesuai permission role yang dipilih
-            checkboxes.forEach(cb => {
-                if (allowed.includes(cb.value)) {
-                    cb.checked = true;
-                    cb.classList.add('default-role-permission');
-                }
-            });
+                document.querySelectorAll('input[name="pataum"]').forEach(el => {
+                    el.checked = false;
+                });
+            }
         }
 
         roleSelect.addEventListener('change', function () {
             applyRolePermissions(this.value);
         });
-
-        // inisialisasi saat halaman dibuka
    
-
         // cegah permission bawaan role di-uncheck manual
         document.querySelectorAll('.permission-checkbox').forEach(cb => {
             cb.addEventListener('click', function(e) {

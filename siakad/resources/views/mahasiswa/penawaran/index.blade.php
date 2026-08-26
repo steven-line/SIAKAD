@@ -1,4 +1,16 @@
 <x-layout title="KRS UWIKA">
+<div class="grid grid-cols-[70%_30%] justify-between px-4 mb-4">
+    <div>
+        <p class="font-bold">Periode: {{$informasiUmum['periode']}}</p>
+        <p class="font-bold">Semester: {{$informasiUmum['semester']}}</p>
+        <p class="font-bold">Program studi: {{$informasiUmum['program_studi']}}</p>
+    </div>
+    <div class="cols-start-2 cols-end-3">
+        <p class="font-bold">NRP: {{$informasiUmum['nrp']}}</p>
+        <p class="font-bold">Nama: {{$informasiUmum['nama'] ?? 'N/A'}}</p>
+        <p class="font-bold">Dosen Wali: {{$informasiUmum['dosen_wali']}}</p>
+    </div>
+</div>
     @if($statusBlokir === 'BLOKIR')
         <div role="alert" class="alert alert-error mb-6">
             <span>

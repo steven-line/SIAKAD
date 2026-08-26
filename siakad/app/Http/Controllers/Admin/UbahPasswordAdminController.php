@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
-class UbahPasswordController extends Controller
+class UbahPasswordAdminController extends Controller
 {
 
     public function create()
     {
-        return view('dosen.ubah_password_dosen.create');
+        return view('admin.ubah_password_admin.create');
     }
 
     public function store(Request $request)
@@ -48,7 +48,7 @@ class UbahPasswordController extends Controller
         ]);
 
         return redirect()
-            ->route('dosen.password.create')
+            ->route('admin.password.create')
             ->with('success', 'Password berhasil diubah.');
     }
 }

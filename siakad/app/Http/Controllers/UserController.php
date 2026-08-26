@@ -46,7 +46,6 @@ public function store(Request $request)
         'permissions.*' => ['string', 'exists:permissions,name'],
         'sks'      => ['required', 'numeric'],
         'pataum'   => ['required_if:role, mahasiswa', 'in:P,M'],
-        ''
     ]);
 
     $user = User::create([
@@ -94,7 +93,7 @@ public function update(Request $request, User $user)
         'permissions' => ['nullable', 'array'],
         'permissions.*' => ['string', 'exists:permissions,name'],
         'sks'      => ['required', 'numeric'],
-        'pataum'   => ['required_if:role, mahasiswa', 'in:P,M'],
+        'pataum'   => ['required_if:role,mahasiswa', 'in:P,M'],
         'aktif' => ['required', 'in:0,1']
     ]);
 
@@ -112,6 +111,12 @@ public function update(Request $request, User $user)
         ->with('success', 'User berhasil diperbarui');
 }
 
+
+public function resetPassword(User $user) {
+    $user->update(['password' => Hash::make('hello12345')]);
+    return redirect()->route('users.index')
+        ->with('success', 'Password user berhasil direset menjadi "hello12345"');   
+}
 /**
  * DELETE USER
  */

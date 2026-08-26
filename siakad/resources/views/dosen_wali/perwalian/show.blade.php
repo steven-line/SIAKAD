@@ -38,10 +38,10 @@
                             <td>{{ $i + 1 }}</td>
                             <td>{{ $reg->penawaran->kodemk }}</td>
                             <td>{{ $reg->penawaran->mk->nama ?? '-' }}</td>
-                            <td>{{ $reg->sks }}</td>
-                            <td>{{ $reg->hari }}</td>
+                            <td>{{ $reg->penawaran->mk->sks }}</td>
+                            <td>{{ $reg->penawaran->hari }}</td>
                             <td>
-                                {{ $reg->mulaipukul }} - {{ $reg->selesaipukul }}
+                                {{ $reg->penawaran->mulaipukul->format('H:i')  }} - {{ $reg->penawaran->selesaipukul->format('H:i')  }}
                             </td>
                             <td>{{ $reg->status }}</td>
                         </tr>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Kaprodi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
-class UbahPasswordController extends Controller
+class UbahPasswordKaprodiController extends Controller
 {
 
     public function create()
     {
-        return view('dosen.ubah_password_dosen.create');
+        return view('kaprodi.ubah_password_kaprodi.create');
     }
 
     public function store(Request $request)
@@ -48,7 +48,7 @@ class UbahPasswordController extends Controller
         ]);
 
         return redirect()
-            ->route('dosen.password.create')
+            ->route('kaprodi.password.create')
             ->with('success', 'Password berhasil diubah.');
     }
 }
