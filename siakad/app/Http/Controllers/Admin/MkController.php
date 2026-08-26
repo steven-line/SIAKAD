@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Mk;
 use App\Http\Controllers\Controller;
+use App\Imports\MkImport;
 use App\Models\Kurikulum;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Excel;
 
 class MkController extends Controller
 {
@@ -141,5 +143,20 @@ class MkController extends Controller
         return redirect()
             ->route('mk.index')
             ->with('success', 'Mata Kuliah Dihapus');
+    }
+    public function upload(Request $request) {
+        $request->validate(['file' => 'required|mimes:csv,xlsx,xls']);
+        try{
+            Excel::import(new MkImport, request()->file("your_file"));
+            return redirect()->route('mk.index')->with('success', 'Import Berhasil!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            foreach ($failures as $failure) {
+                $failure->row(); // row that went wrong
+                $failure->attribute(); // either heading key (if using heading row concern) or column index
+                $failure->errors(); // Actual error messages from Laravel validator
+                $failure->values(); // The values of the row that has failed.
+     }
+        }
     }
 }
