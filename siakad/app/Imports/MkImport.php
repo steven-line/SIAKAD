@@ -6,8 +6,9 @@ use App\Models\Mk;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class MkImport implements ToModel, WithHeadingRow
+class MkImport implements ToModel, WithHeadingRow, WithValidation
 {
     public function model(array $row)
     {

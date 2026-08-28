@@ -3,7 +3,7 @@
     <div class="mb-4">
         <a
             class="btn btn-primary"
-            href="/mahasiswa"
+            href="/"
         >
             ⮜ Previous page
         </a>

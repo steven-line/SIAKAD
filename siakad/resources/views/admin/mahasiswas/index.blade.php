@@ -1,5 +1,33 @@
 <x-layout title="index">
  <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+<div class="flex gap-2 mb-6">
+
+    <form action="{{ route('mahasiswa_admin.index') }}" method="GET" class="flex gap-2">
+
+        <input
+            type="text"
+            name="search"
+            value="{{ $search ?? '' }}"
+            placeholder="Cari NRP..."
+            class="input input-bordered w-64"
+        >
+
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+
+        @if(!empty($search))
+            <a
+                href="{{ route('mahasiswa_admin.index') }}"
+                class="btn btn-neutral"
+            >
+                Reset
+            </a>
+        @endif
+
+    </form>
+
+</div>
     <a class="btn btn-primary text-white mb-6" href="{{route('mahasiswa_admin.create')}}">Create Mahasiswa</a>
       <form action="{{route('mahasiswa_admin.index')}}" method="GET" class="mb-5">
         <input type="text" name="search" value='{{$search ?? ''}}' class="file-input px-2" placeholder="Cari Mahasiswa...">
@@ -23,9 +51,9 @@
             <th>{{$loop->index}}</th>
            
             <th>{{$mahasiswa->nrp}}</th>
-            <th>{{$mahasiswa->dosen_wali}}</th>
+            <th>{{$mahasiswa->dosenWali->nim_dosen .' - '. $mahasiswa->dosenWali->nama}}</th>
             <th>{{$mahasiswa->status_blokir}}</th>
-            <th>{{$mahasiswa->prodi}}</th>
+            <th>{{$mahasiswa->programStudi->kode_prodi . ' - ' . $mahasiswa->programStudi->nama_prodi}}</th>
             <th><a href='{{route('mahasiswa_admin.show', $mahasiswa->nrp)}}' class="btn btn-soft btn-primary">Detail</a></th>
             <th><a class="btn btn-soft btn-warning" href="{{route('mahasiswa_admin.edit',$mahasiswa->nrp)}}">Edit</a></th>
             <th>

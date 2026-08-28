@@ -24,7 +24,17 @@ class MahasiswaAdminController extends Controller
             $query->where('nrp', 'like', '%' . $search . '%'); 
         })->with('dosenwali')->paginate('10');
 
-        return view('admin.mahasiswas.index', ['mahasiswas' => $mahasiswas]);
+        $mahasiswas = Mahasiswa::with(['dosenWali', 'programStudi'])
+            ->when($search, function ($query) use ($search) {
+                $query->where('nrp', 'like', '%' . $search . '%');
+            })
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.mahasiswas.index', [
+            'mahasiswas' => $mahasiswas,
+            'search' => $search,
+        ]);
     }
 
     /**
@@ -47,7 +57,8 @@ class MahasiswaAdminController extends Controller
             'nrp' => ['required', 'unique:mahasiswas'],
             'dosen_wali' => ['required'],
             'status_blokir' => ['required', Rule::enum(StatusBlokir::class)],
-            'prodi' => ['required']
+            'prodi' => ['required'],
+            'tahun_masuk' => ['required', 'integer', 'digits:4'],
 
         ]);
         $mahasiswa = Mahasiswa::create([
@@ -55,6 +66,7 @@ class MahasiswaAdminController extends Controller
             'dosen_wali' => $request->dosen_wali,
             'status_blokir' => $request->status_blokir,
             'prodi' => $request->prodi,
+            'tahun_masuk' => $request->tahun_masuk,
         ]);
 
         Ips::updateOrCreate(

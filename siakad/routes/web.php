@@ -334,6 +334,8 @@ Route::prefix('admin/penawaran')
         Route::post('/ubah-password', [UbahPasswordKeuanganController::class, 'store'])
             ->middleware('auth')
             ->name('password.store');
+        Route::post('/keuangan/mahasiswa/upload', [KeuanganController::class, 'upload'])
+            ->name('mahasiswa.upload');
         });
     });
     /*
