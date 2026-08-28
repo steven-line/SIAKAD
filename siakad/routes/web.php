@@ -96,6 +96,7 @@ Route::middleware('auth')->group(function () {
             Route::patch('/{user}', [UserController::class, 'update'])->name('update');
             Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
             Route::patch('/{user}/reset-password', [UserController::class, 'resetPassword'])->name('reset_password');
+            Route::post('/upload', [UserController::class, 'upload'])->name('upload');
         });
 
     /*

@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -12,36 +13,82 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 class UsersImport implements ToModel, WithHeadingRow, WithValidation
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * Membuat User dari setiap baris Excel.
+     *
+     * @param array $row
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function model(array $row)
     {
         $user = User::create([
-            'username' => $row['username'], 
-            'password' => Hash::make($row['password']), 
-            'sks' => $row['sks'],
-            'firstlogin' => $row['firstlogin'],
-            'lastlogin' => $row['lastlogin'],
-            'validasi' => $row['validasi'],
-            'aksesnilai' => $row['aksesnilai'],
-            'pataum' => $row['pataum'],
-            'aktif' => $row['aktif']
+            'username'   => trim($row['username']),
+            'password'   => Hash::make($row['password']),
+            'sks'        => $row['sks'] ?? 0,
+            'validasi'   => $row['validasi'] ?? null,
+            'aksesnilai' => $row['aksesnilai'] ?? null,
+            'pataum'     => !empty($row['pataum']) ? $row['pataum'] : 'P',
+            'aktif'      => isset($row['aktif'])
+                ? filter_var($row['aktif'], FILTER_VALIDATE_BOOLEAN)
+                : true,
+            'firstlogin' => Carbon::now(),
+            'lastlogin'  => Carbon::now(),
         ]);
-        if (!empty($row['role'])) {
-            $user->syncRoles([$row['role']]);
-        }
-        return null;
 
+        // Assign role
+        $user->syncRoles([$row['role']]);
+
+        return null;
     }
-    public function rules(): array {
+
+    /**
+     * Validasi setiap baris Excel.
+     */
+    public function rules(): array
+    {
         return [
-            'username' => ['required', 'string', 'max:255', 'unique:users',  'regex:/^[A-Za-z0-9\-]+$/'],
-            'password' => ['required', Password::default()],
-            'role'     => ['required', 'exists:roles,name'],
-            'sks'      => ['numeric'],
-            'pataum'   => ['required_if:role, mahasiswa', 'in:P,M'],
+            'username' => [
+                'required',
+                'string',
+                'max:15',
+                'unique:users,username',
+                'regex:/^[A-Za-z0-9\-]+$/',
+            ],
+
+            'password' => [
+                'required',
+                Password::default(),
+            ],
+
+            'role' => [
+                'required',
+                'string',
+                'exists:roles,name',
+            ],
+
+            'sks' => [
+                'required',
+                'numeric',
+            ],
+
+            'validasi' => [
+                'nullable',
+                'integer',
+            ],
+
+            'aksesnilai' => [
+                'nullable',
+                'integer',
+            ],
+
+            'pataum' => [
+                'required_if:role,mahasiswa',
+                'in:P,M',
+            ],
+
+            'aktif' => [
+                'required',
+                'boolean',
+            ],
         ];
     }
 }
