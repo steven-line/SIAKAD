@@ -19,6 +19,7 @@ class Mahasiswa extends Model
       'nrp',
       'prodi',
       'dosen_wali',
+      'tahun_masuk',
       'status_blokir'
      ];
  
