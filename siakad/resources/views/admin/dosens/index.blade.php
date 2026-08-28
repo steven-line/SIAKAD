@@ -4,7 +4,10 @@
     <a class="btn btn-primary text-white mb-6" href="{{ route('dosen.create') }}">
         Create Dosen
     </a>
-
+    <form action="{{route('dosen.index')}}" method="GET" class="mb-5">
+        <input type="text" name="search" value='{{$search ?? ''}}' class="file-input px-2" placeholder="Cari Dosen...">
+        <button type="submit" class="btn btn-primary">Cari</button>
+    </form>
   <table class="table">
     <thead class="bg-blue-500 text-white">
       <tr>

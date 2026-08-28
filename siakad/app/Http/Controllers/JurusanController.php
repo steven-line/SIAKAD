@@ -12,13 +12,15 @@ class JurusanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $jurusans = Jurusan::with('fakultas')->paginate(10);
+        $search = $request->input('search');
+        $jurusans = Jurusan::when($search, function($query, $search) {
+            $query->where('kode_jurusan', 'like', '%' . $search . '%')
+                   ->orWhere('nama_jurusan', 'like', '%' . $search . '%');
+        })->with('fakultas')->paginate(10);
 
-        return view('admin.jurusan.index', [
-            'jurusans' => $jurusans
-        ]);
+        return view('admin.jurusan.index', compact('search', 'jurusans'));
     }
 
     /**

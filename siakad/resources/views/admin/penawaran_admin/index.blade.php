@@ -20,7 +20,10 @@
         </a>
 
     </div>
-
+    <form action="{{route('admin.penawaran.index')}}" method="GET" class="mb-5">
+        <input type="text" name="search" value='{{$search ?? ''}}' class="file-input px-2" placeholder="Cari Penawaran...">
+        <button type="submit" class="btn btn-primary">Cari</button>
+    </form>
     @if(session('success'))
         <div class="alert alert-success mx-4 mb-4">
             {{ session('success') }}

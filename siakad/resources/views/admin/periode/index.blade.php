@@ -9,7 +9,10 @@
            href="{{ route('periode.create') }}">
             + Create Periode
         </a>
-
+        <form action="{{route('periode.index')}}" method="GET" class="mb-5">
+        <input type="text" name="search" value='{{$search ?? ''}}' class="file-input px-2" placeholder="Cari Periode...">
+        <button type="submit" class="btn btn-primary">Cari</button>
+        </form>
         <table class="table">
 
             <thead class="bg-blue-500 text-white">

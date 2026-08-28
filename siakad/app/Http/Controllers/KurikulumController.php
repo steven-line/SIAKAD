@@ -12,9 +12,13 @@ class KurikulumController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $kurikulums = Kurikulum::paginate(10);
+        $search = $request->input('search');
+        $kurikulums = Kurikulum::when($search, function($query, $search) {
+            $query->where('kode_kurikulum', 'like', '%' . $search . '%')
+                   ->orWhere('nama_kurikulum', 'like', '%' . $search . '%');
+        })->paginate(10);
 
         return view('admin.kurikulum.index', [
             'kurikulums' => $kurikulums

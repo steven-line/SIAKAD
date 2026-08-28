@@ -16,10 +16,15 @@ class UserController extends Controller
     /**
      * LIST USER
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with(['roles', 'permissions'])->select('username', 'pataum', 'aktif')->paginate(10);
-        return view('admin.users.index', compact('users'));
+        $search = $request->input('search');
+
+        $users = User::when($search, function ($query, $search) {
+            $query->where('username', 'like', '%' . $search . '%');
+
+        })->with(['roles', 'permissions'])->select('username', 'pataum', 'aktif')->paginate(10);
+        return view('admin.users.index', compact('users', 'search'));
     }
 
 /**

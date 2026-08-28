@@ -14,10 +14,14 @@ class ProdiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $prodis = Prodi::paginate(10);
-        return view('admin.prodi.index', ['prodis' => $prodis]);
+        $search = $request->input('search'); 
+        $prodis = Prodi::when($search, function ($query, $search) {
+            $query->where('kode_prodi', 'like', '%' . $search . '%')
+                  ->orWhere('nama_prodi', 'like', '%' . $search . '%');
+        })->paginate(10);
+        return view('admin.prodi.index', compact('prodis', 'search'));
     }
 
     /**

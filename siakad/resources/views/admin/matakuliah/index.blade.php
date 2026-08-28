@@ -6,12 +6,39 @@
        href="{{ route('mk.create') }}">
         Create Mata Kuliah
     </a>
+     @if (session('success'))
+        <div class="alert alert-success mb-4">
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    {{-- NOTIFIKASI ERROR --}}
+    @if (session('error'))
+        <div class="alert alert-error mb-4">
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    {{-- VALIDATION ERROR --}}
+    @if ($errors->any())
+        <div class="alert alert-error mb-4">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>• {{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    <form action="{{route('mk.index')}}" method="GET" class="mb-5">
+        <input type="text" name="search" value='{{$search ?? ''}}' class="file-input px-2" placeholder="Cari Matkul...">
+        <button type="submit" class="btn btn-primary">Cari</button>
+    </form>
       <form action="{{route('mk.upload')}}" class="mb-10" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="file" name="file"  accept=".csv, .xlsx, .xls" class="file-input">
           <input type="submit" value="Upload File" class="btn btn-primary">
       </form>
-       <a href=" {{ asset('document/template_import_biodata.xlsx') }}" download class="btn btn-success mb-5">Download Template</a>
+       <a href=" {{ asset('document/template_import_mk.xlsx') }}" download class="btn btn-success mb-5">Download Template</a>
   
     <table class="table">
 

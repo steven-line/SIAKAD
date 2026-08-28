@@ -23,10 +23,16 @@
             </ul>
         </div>
     @endif
+
   <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
       <a class="btn btn-primary text-white mb-6" href="{{ route('biodata.create') }}">
         Create Biodata
       </a>
+    <form action="{{route('biodata.index')}}" method="GET" class="mb-5">
+        <input type="text" name="search" value='{{$search ?? ''}}' class="file-input px-2" placeholder="Cari Biodata...">
+        <button type="submit" class="btn btn-primary">Cari</button>
+    </form>
+    
       <form action="{{route('biodata.upload')}}" class="mb-10" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="file" name="file"  accept=".csv, .xlsx, .xls" class="file-input">

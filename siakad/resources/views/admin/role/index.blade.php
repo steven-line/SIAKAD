@@ -1,7 +1,11 @@
 <x-layout title="index">
  <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
     <a class="btn btn-primary text-white mb-6" href="{{route('roles.create')}}">Create Role</a>
-  <table class="table">
+<form action="{{route('roles.index')}}" method="GET" class="mb-5">
+    <input type="text" name="search" value='{{$search ?? ''}}' class="file-input px-2" placeholder="Cari Role...">
+    <button type="submit" class="btn btn-primary">Cari</button>
+</form>
+    <table class="table">
     <thead class="bg-blue-500 text-white">
       <tr>
         <th>No</th>

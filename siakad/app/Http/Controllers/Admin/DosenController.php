@@ -11,13 +11,16 @@ use Illuminate\Validation\Rule;
 
 class DosenController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $dosens = Dosen::paginate(10);
+        $search = $request->input('search'); 
+        $dosens = Dosen::when($search, function($query, $search) {
+            $query->where('nim_dosen', 'like', '%' . $search . '%')
+                   ->orWhere('nama', 'like', '%' . $search . '%')
+                   ->orwhere('prodi', 'like', '%' . $search . '%');
+        })->paginate(10);
 
-        return view('admin.dosens.index', [
-            'dosens' => $dosens
-        ]);
+        return view('admin.dosens.index', compact('dosens','search'));
     }
 
     public function create()

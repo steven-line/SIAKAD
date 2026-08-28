@@ -13,13 +13,18 @@ use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
 
 class BiodataAdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $biodatas = Biodata::paginate(10);
+        $search = $request->input('search'); 
+        $biodatas = Biodata::when($search, function($query, $search) {
+            $query->where('nrp', 'like', '%' . $search . '%')
+                   ->orWhere('nama', 'like', '%' . $search . '%')
+                   ->orwhere('nama_ayah', 'like', '%' . $search . '%')
+                   ->orwhere('nama_ibu', 'like', '%' . $search . '%')
+                   ->orwhere('nama_wali', 'like', '%' . $search . '%');
+        })->paginate(10);
 
-        return view('admin.biodata.index', [
-            'biodatas' => $biodatas
-        ]);
+        return view('admin.biodata.index', compact('biodatas', 'search'));
     }
 
     public function create()

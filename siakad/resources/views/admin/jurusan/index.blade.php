@@ -5,7 +5,10 @@
        href="{{ route('jurusan.create') }}">
         Create Jurusan
     </a>
-
+    <form action="{{route('jurusan.index')}}" method="GET" class="mb-5">
+        <input type="text" name="search" value='{{$search ?? ''}}' class="file-input px-2" placeholder="Cari Jurusan...">
+        <button type="submit" class="btn btn-primary">Cari</button>
+    </form>
     <table class="table">
         <thead class="bg-blue-500 text-white">
         <tr>

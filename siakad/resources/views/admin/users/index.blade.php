@@ -8,6 +8,10 @@
         <span>{{ session('success') }}</span>
     </div>
 @endif
+<form action="{{route('users.index')}}" method="GET" class="mb-5">
+    <input type="text" name="search" value="{{$search ?? ''}}" class="file-input px-2" placeholder="Cari User...">
+    <button type="submit" class="btn btn-primary">Cari</button>
+</form>
 <table class="table table-fixed w-full text-sm">
     <thead class="bg-blue-500 text-white">
         <tr>

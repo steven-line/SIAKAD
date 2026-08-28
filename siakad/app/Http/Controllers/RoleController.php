@@ -13,11 +13,15 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::with('permissions')->paginate('10');
+        $search = $request->input('search');
+        $roles = Role::when($search, function ($query, $search) {
+            $query->where('name', 'like', '%' . $search . '%');
 
-        return view('admin.role.index', ['roles' => $roles]);
+        })->with('permissions')->paginate('10');
+
+        return view('admin.role.index', compact('roles', 'search'));
     }
 
     /**

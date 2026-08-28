@@ -15,10 +15,14 @@ class PeriodeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-          $periodes = Periode::paginate(10);
-
+        $search = $request->input('search');
+        $periodes = Periode::when($search, function($query, $search) {
+            $query->where('id', 'like', '%' . $search . '%')
+                  ->orWhere('tahun_ajaran', 'like', '%' . $search . '%');
+        })->paginate(10);
+        
         return view('admin.periode.index', [
             'periodes' => $periodes
         ]);

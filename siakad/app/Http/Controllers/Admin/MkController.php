@@ -8,14 +8,20 @@ use App\Imports\MkImport;
 use App\Models\Kurikulum;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MkController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $mks = Mk::paginate('10');
-        return view('admin.matakuliah.index', ['mks' => $mks]);
+        $search = $request->input('search');
+
+        $mks = Mk::when($search, function ($query, $search) {
+            $query->where('kodemk', 'like', '%' . $search .'%')
+                   ->orWhere('nama', 'like', '%' . $search . '%');
+        })->paginate('10');
+
+        return view('admin.matakuliah.index', compact('mks', 'search'));
     }
 
     public function create()
@@ -147,16 +153,21 @@ class MkController extends Controller
     public function upload(Request $request) {
         $request->validate(['file' => 'required|mimes:csv,xlsx,xls']);
         try{
-            Excel::import(new MkImport, request()->file("your_file"));
+            Excel::import(new MkImport, $request->file("file"));
             return redirect()->route('mk.index')->with('success', 'Import Berhasil!');
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = $e->failures();
+             $failures = $e->failures();
+
+            $errors = [];
             foreach ($failures as $failure) {
-                $failure->row(); // row that went wrong
-                $failure->attribute(); // either heading key (if using heading row concern) or column index
-                $failure->errors(); // Actual error messages from Laravel validator
-                $failure->values(); // The values of the row that has failed.
+                $errors[] = "Baris {$failure->row()} - {$failure->errors()[0]}";
+            }
+
+            return back()->with('error', implode(', ', $errors));
      }
+         catch (\Throwable $e) {
+            // Error umum
+            return back()->with('error', 'Import gagal: ' . $e->getMessage());
         }
     }
 }

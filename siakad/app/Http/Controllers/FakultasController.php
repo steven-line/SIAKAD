@@ -11,13 +11,15 @@ class FakultasController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $fakultass = Fakultas::paginate(10);
+        $search = $request->input('search');
+        $fakultass = Fakultas::when($search, function($query, $search) {
+            $query->where('kode_fakultas', 'like', '%' . $search . '%')
+                   ->orWhere('nama_fakultas', 'like', '%' . $search . '%');
+        })->paginate(10);
 
-        return view('admin.fakultas.index', [
-            'fakultass' => $fakultass
-        ]);
+        return view('admin.fakultas.index', compact('fakultass', 'search'));
     }
 
     /**

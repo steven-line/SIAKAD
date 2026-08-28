@@ -17,9 +17,12 @@ class MahasiswaAdminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $mahasiswas = Mahasiswa::with('dosenwali')->paginate('10');
+        $search = $request->input('search'); 
+        $mahasiswas = Mahasiswa::when($search, function($query, $search) {
+            $query->where('nrp', 'like', '%' . $search . '%'); 
+        })->with('dosenwali')->paginate('10');
 
         return view('admin.mahasiswas.index', ['mahasiswas' => $mahasiswas]);
     }

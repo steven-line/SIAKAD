@@ -18,9 +18,13 @@ class PenawaranAdminController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function index()
+    public function index(Request $request)
     {
-        $penawarans = Penawaran::with([
+        $search = $request->input('search');
+
+        $penawarans = Penawaran::when($search, function($query, $search) {
+            $query->where('kodemk', 'like', '%' . $search . '%');
+        })->with([
             'mk',
             'dosenRelasi',
             'semesterRelasi.periode'
