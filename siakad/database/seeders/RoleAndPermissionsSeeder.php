@@ -13,13 +13,12 @@ class RoleAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         // ======================
-        // CLEAR CACHE (WAJIB)
+        // CLEAR CACHE
         // ======================
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // ======================
         // CLEAN ROLE & PERMISSION
-        // (AMAN karena kita rebuild semua)
         // ======================
         Role::query()->delete();
         Permission::query()->delete();
@@ -33,10 +32,12 @@ class RoleAndPermissionsSeeder extends Seeder
         $kaprodiRole   = Role::firstOrCreate(['name' => 'kaprodi']);
         $dosenWaliRole = Role::firstOrCreate(['name' => 'dosen-wali']);
         $keuanganRole  = Role::firstOrCreate(['name' => 'keuangan']);
+
         // ======================
         // PERMISSIONS
         // ======================
         $permissions = [
+
             // ADMIN MODULE
             'user.manage',
             'kurikulum.manage',
@@ -85,8 +86,10 @@ class RoleAndPermissionsSeeder extends Seeder
             // PJMK
             'pjmk.manage',
 
+            // SETTINGS
             'settings.manage',
 
+            // SKS
             'sks.manage',
         ];
 
@@ -152,7 +155,7 @@ class RoleAndPermissionsSeeder extends Seeder
         ]);
 
         // ======================
-        // ADMIN (FULL ACCESS MODULE ADMIN)
+        // ADMIN
         // ======================
         $adminRole->syncPermissions([
             'user.manage',
@@ -165,19 +168,36 @@ class RoleAndPermissionsSeeder extends Seeder
             'role.manage',
             'permission.manage',
             'mahasiswa.manage',
+
+            // PERIODE & SEMESTER
             'semester.manage',
             'periode.manage',
             'jurusan.manage',
-            'settings.manage',
-            'sks.manage',
+
+            // PENAWARAN UMUM
             'penawaranumum.manage',
+
+            // PENAWARAN
+            'penawaran.manage',
+
+            // PJMK
+            'pjmk.manage',
+
+            // SETTINGS
+            'settings.manage',
+
+            // SKS
+            'sks.manage',
+
+            // PASSWORD
             'changepassword.manage',
         ]);
 
         // ======================
-        // ASSIGN ADMIN USER
+        // ASSIGN USER ROLES
         // ======================
         $userAdmin = User::where('username', '31123019')->first();
+
         for ($i = 1; $i <= 81; $i++) {
 
             $username = '31123' . str_pad($i, 3, '0', STR_PAD_LEFT);
@@ -187,28 +207,29 @@ class RoleAndPermissionsSeeder extends Seeder
                 continue;
             }
 
-            // 🎓 Mahasiswa (1 - 40)
+            // Mahasiswa 1 - 40
             if ($i >= 1 && $i <= 40 && $i != 19) {
                 $user->syncRoles(['mahasiswa']);
             }
 
-            // 👨‍🏫 Dosen (41 - 72)
+            // Dosen 41 - 72
             elseif ($i >= 41 && $i <= 72) {
                 $user->syncRoles(['dosen']);
             }
 
-            // 🏫 Kaprodi (73 - 80)
+            // Kaprodi 73 - 80
             elseif ($i >= 73 && $i <= 80) {
                 $user->syncRoles(['kaprodi']);
             }
 
-            // 💰 Keuangan (81)
+            // Keuangan 81
             elseif ($i == 81) {
                 $user->syncRoles(['keuangan']);
             }
         }
+
+        // Admin
         if ($userAdmin) {
-            // lebih aman dari assignRole
             $userAdmin->syncRoles(['admin']);
         }
 

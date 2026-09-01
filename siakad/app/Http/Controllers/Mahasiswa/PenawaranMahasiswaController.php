@@ -40,7 +40,7 @@ class PenawaranMahasiswaController extends Controller
                 $q->where('aktif', 1);
             })
             ->whereHas('mk.kurikulum', function ($q) use ($prodi) {
-                $q->where('kode_prodi', $prodi);
+                $q->where('kode_prodi', $prodi)->orWhere('kode_prodi', 'UM1');
             })->where('pataum', $pataumMahasiswa);
 
         $penawaran = $query->get();

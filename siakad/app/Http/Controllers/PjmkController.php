@@ -16,26 +16,78 @@ class PjmkController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+ public function index()
     {
-     
         $user = auth()->user();
 
-        if ($user && $user->dosen) {
+        // ADMIN
+        if ($user->can('pjmk.manage') && !$user->dosen) {
+
+            $penawarans = Penawaran::leftJoin(
+                    'semester',
+                    'penawaran.semester_id',
+                    '=',
+                    'semester.id'
+                )
+                ->leftJoin(
+                    'periode',
+                    'semester.periode_id',
+                    '=',
+                    'periode.id'
+                )
+                ->select(
+                    'semester.jenis',
+                    'periode.tahun_ajaran',
+                    'penawaran.kodemk',
+                    'periode.id as periode_id'
+                )
+                ->with('mk')
+                ->distinct()
+                ->paginate(10);
+
+            return view('kaprodi.pjmk.list_matkul', [
+                'penawarans' => $penawarans
+            ]);
+        }
+
+        // KAPRODI
+        if ($user->dosen) {
 
             $prodiLogin = $user->dosen->prodi;
-            $query = Penawaran::leftJoin('semester', 'penawaran.semester_id', '=', 'semester.id')
-                          ->leftJoin('periode', 'semester.periode_id', '=', 'periode.id')                   
-                          ->select('semester.jenis', 'periode.tahun_ajaran', 'kodemk', 'periode.id as periode_id')
-                          ->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
-                            $q->where('kode_prodi', $prodiLogin);
-                          })->distinct()->paginate(10);
-          
-            $penawarans = $query;
-           
-            return view('kaprodi.pjmk.list_matkul', ['penawarans' => $penawarans]);
+
+            $penawarans = Penawaran::leftJoin(
+                    'semester',
+                    'penawaran.semester_id',
+                    '=',
+                    'semester.id'
+                )
+                ->leftJoin(
+                    'periode',
+                    'semester.periode_id',
+                    '=',
+                    'periode.id'
+                )
+                ->select(
+                    'semester.jenis',
+                    'periode.tahun_ajaran',
+                    'penawaran.kodemk',
+                    'periode.id as periode_id'
+                )
+                ->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
+                    $q->where('kode_prodi', $prodiLogin);
+                })
+                ->with('mk')
+                ->distinct()
+                ->paginate(10);
+
+            return view('kaprodi.pjmk.list_matkul', [
+                'penawarans' => $penawarans
+            ]);
         }
+
+        abort(403);
     }
+
     /**
      * Show the form for creating a new resource.
      */

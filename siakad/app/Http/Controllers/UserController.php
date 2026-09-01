@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\UsersImport;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -69,6 +71,27 @@ public function store(Request $request)
         ->with('success', 'User berhasil ditambahkan');
 }
 
+
+    public function upload(Request $request) {
+        $request->validate(['file' => 'required|mimes:csv,xlsx,xls']);
+        try{
+            Excel::import(new UsersImport, $request->file("file"));
+            return redirect()->route('users.index')->with('success', 'Import Berhasil!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+             $failures = $e->failures();
+
+            $errors = [];
+            foreach ($failures as $failure) {
+                $errors[] = "Baris {$failure->row()} - {$failure->errors()[0]}";
+            }
+
+            return back()->with('error', implode(', ', $errors));
+     }
+         catch (\Throwable $e) {
+            // Error umum
+            return back()->with('error', 'Import gagal: ' . $e->getMessage());
+        }
+    }
 /**
  * EDIT FORM
  */
