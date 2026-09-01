@@ -1,81 +1,142 @@
-
 <x-layout>
-    {{-- PREVIOUS --}}
-    <a class="btn btn-primary"
-       href="{{ route('mk.index') }}">
-        ⮜ Previous page
-    </a>
 
-    {{-- FORM --}}
-    <form class="flex h-screen"
-          action="{{ route('mk.update', $mk->kodemk) }}"
-          method="POST">
+{{-- PREVIOUS --}}
+<a class="btn btn-primary"
+   href="{{ route('mk.index') }}">
+    ⮜ Previous page
+</a>
 
-        @csrf
-        @method('PATCH')
+{{-- FORM --}}
+<form class="flex h-screen"
+      action="{{ route('mk.update', $mk->kodemk) }}"
+      method="POST">
 
-      <fieldset class="fieldset bg-base-200 border-base-300 rounded-box h-100 border p-6 mx-auto mt-10">
+    @csrf
+    @method('PATCH')
 
-            <div class="grid grid-cols-3 gap-4">
-                <div>
-                    <label class="label font-bold">KodeMk</label>
-                    <input type="text" class="input" name="kodemk"
-                           value="{{ old('kodemk', $mk->kodemk) }}" maxlength="8"/>
-                    <x-forms.error name="kodemk"/>
-                </div>
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box h-100 border p-6 mx-auto mt-10">
 
-                <div>
-                    <label class="label font-bold">Nama</label>
-                    <input type="text" class="input" name="nama"
-                           value="{{ old('nama', $mk->nama) }}" maxlength="50"/>
-                    <x-forms.error name="nama"/>
-                </div>
+        <div class="grid grid-cols-3 gap-4">
 
-                <div>
-                    <label class="label font-bold">SKS</label>
-                    <input type="text" class="input" name="sks"
-                           value="{{ old('sks', $mk->sks) }}" maxlength="3"/>
-                    <x-forms.error name="sks"/>
-                </div>
+            <div>
+                <label class="label font-bold">KodeMk</label>
+                <input type="text" class="input" name="kodemk"
+                       value="{{ old('kodemk', $mk->kodemk) }}"
+                       maxlength="8"/>
+                <x-forms.error name="kodemk"/>
             </div>
 
-            <div class="grid grid-cols-4 gap-4">
-                <div>
-                    <label class="label font-bold">Nama Jenjang Didik</label>
-                    <input type="text" class="input" name="nm_jenj_didik"
-                           value="{{ old('nm_jenj_didik', $mk->nm_jenj_didik) }}" maxlength="2"/>
-                    <x-forms.error name="nm_jenj_didik"/>
-                </div>
-
-                <div>
-                    <label class="label font-bold">Kurikulum</label>
-                    <select class="select select-bordered w-full" name="kode_kurikulum">
-                        <option disabled>Select Kurikulum</option>
-                        @foreach ($kurikulums as $kurikulum)
-                            <option value="{{ $kurikulum->kode_kurikulum }}"
-                                @selected($mk->kode_kurikulum == $kurikulum->kode_kurikulum)>
-                                {{ $kurikulum->kode_kurikulum }} - {{ $kurikulum->nama_kurikulum }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <x-forms.error name="kode_kurikulum"/>
-                </div>
-
-                <div>
-                    <label class="label font-bold">Prasyarat SKS</label>
-                    <input type="text" class="input" name="prasyaratsks" maxlength="3"
-                           value="{{ old('prasyaratsks', $mk->prasyaratsks) }}" />
-                    <x-forms.error name="prasyaratsks"/>
-                </div>
+            <div>
+                <label class="label font-bold">Nama</label>
+                <input type="text" class="input" name="nama"
+                       value="{{ old('nama', $mk->nama) }}"
+                       maxlength="50"/>
+                <x-forms.error name="nama"/>
             </div>
+
+            <div>
+                <label class="label font-bold">SKS</label>
+                <input type="text" class="input" name="sks"
+                       value="{{ old('sks', $mk->sks) }}"
+                       maxlength="3"/>
+                <x-forms.error name="sks"/>
+            </div>
+
+        </div>
+
+
+        <div class="grid grid-cols-4 gap-4 mt-4">
+
+            <div>
+                <label class="label font-bold">Nama Jenjang Didik</label>
+                <input type="text" class="input"
+                       name="nm_jenj_didik"
+                       value="{{ old('nm_jenj_didik', $mk->nm_jenj_didik) }}"
+                       maxlength="2"/>
+                <x-forms.error name="nm_jenj_didik"/>
+            </div>
+
+
+            <div>
+                <label class="label font-bold">Kurikulum</label>
+
+                <select class="select select-bordered w-full"
+                        name="kode_kurikulum">
+
+                    <option disabled>
+                        Select Kurikulum
+                    </option>
+
+                    @foreach ($kurikulums as $kurikulum)
+
+                        <option value="{{ $kurikulum->kode_kurikulum }}"
+                            @selected(old('kode_kurikulum', $mk->kode_kurikulum) == $kurikulum->kode_kurikulum)>
+
+                            {{ $kurikulum->kode_kurikulum }}
+                            - {{ $kurikulum->nama_kurikulum }}
+
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+                <x-forms.error name="kode_kurikulum"/>
+            </div>
+
+
+            <div>
+                <label class="label font-bold">Prasyarat SKS</label>
+
+                <input type="text"
+                       class="input"
+                       name="prasyaratsks"
+                       maxlength="3"
+                       value="{{ old('prasyaratsks', $mk->prasyaratsks) }}"/>
+
+                <x-forms.error name="prasyaratsks"/>
+            </div>
+
+
+            <div>
+                <label class="label font-bold">Jenis Mata Kuliah</label>
+
+                <select class="select select-bordered w-full"
+                        name="jenis"
+                        required>
+
+                    <option value="normal"
+                        @selected(old('jenis', $mk->jenis) == 'normal')>
+                        Normal
+                    </option>
+
+                    <option value="khusus"
+                        @selected(old('jenis', $mk->jenis) == 'khusus')>
+                        Khusus
+                    </option>
+
+                </select>
+
+                <x-forms.error name="jenis"/>
+            </div>
+
+        </div>
+
 
         {{-- PRASYARAT --}}
-        <div class="grid grid-cols-4 gap-4 mt-4">
-            @for ($i = 1; $i <= 10; $i++)
-                <div>
-                    <label class="label font-bold">Prasyarat {{ $i }}</label>
 
-                    <select class="select select-bordered w-full" name="prasyarat{{ $i }}">
+        <div class="grid grid-cols-4 gap-4 mt-4">
+
+            @for ($i = 1; $i <= 10; $i++)
+
+                <div>
+
+                    <label class="label font-bold">
+                        Prasyarat {{ $i }}
+                    </label>
+
+                    <select class="select select-bordered w-full"
+                            name="prasyarat{{ $i }}">
 
                         <option value="-"
                             @selected(old("prasyarat$i", $mk->{'prasyarat'.$i}) == '-')>
@@ -86,8 +147,7 @@
 
                             @if($matkul->kodemk != $mk->kodemk)
 
-                                <option
-                                    value="{{ $matkul->kodemk }}"
+                                <option value="{{ $matkul->kodemk }}"
                                     @selected(old("prasyarat$i", $mk->{'prasyarat'.$i}) == $matkul->kodemk)>
 
                                     {{ $matkul->kodemk }} - {{ $matkul->nama }}
@@ -100,68 +160,88 @@
 
                     </select>
 
-                    <x-forms.error name="prasyarat{{ $i }}" />
+                    <x-forms.error name="prasyarat{{ $i }}"/>
+
                 </div>
+
             @endfor
+
         </div>
-            <div class="grid grid-cols-4 gap-4 mt-4">
 
-                <div>
-                    <label class="label font-bold">Prasyarat Grade</label>
 
-                    <select class="select select-bordered w-full" name="prasyaratgrade">
+        <div class="grid grid-cols-4 gap-4 mt-4">
 
-                        <option value="-"
-                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == '-')>
-                            -- Tidak Ada Prasyarat Grade --
-                        </option>
+            <div>
 
-                        <option value="A"
-                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'A')>
-                            A
-                        </option>
+                <label class="label font-bold">
+                    Prasyarat Grade
+                </label>
 
-                        <option value="AB"
-                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'AB')>
-                            AB
-                        </option>
+                <select class="select select-bordered w-full"
+                        name="prasyaratgrade">
 
-                        <option value="B"
-                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'B')>
-                            B
-                        </option>
+                    <option value="-"
+                        @selected(old('prasyaratgrade', $mk->prasyaratgrade) == '-')>
+                        -- Tidak Ada Prasyarat Grade --
+                    </option>
 
-                        <option value="BC"
-                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'BC')>
-                            BC
-                        </option>
+                    <option value="A"
+                        @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'A')>
+                        A
+                    </option>
 
-                        <option value="C"
-                            @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'C')>
-                            C
-                        </option>
+                    <option value="AB"
+                        @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'AB')>
+                        AB
+                    </option>
 
-                    </select>
+                    <option value="B"
+                        @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'B')>
+                        B
+                    </option>
 
-                    <x-forms.error name="prasyaratgrade"/>
+                    <option value="BC"
+                        @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'BC')>
+                        BC
+                    </option>
 
-                </div>
+                    <option value="C"
+                        @selected(old('prasyaratgrade', $mk->prasyaratgrade) == 'C')>
+                        C
+                    </option>
+
+                </select>
+
+                <x-forms.error name="prasyaratgrade"/>
 
             </div>
 
 
-                <div>
-                    <label class="label font-bold">Aktif</label>
-                    <input type="checkbox" class="checkbox" name="aktif"
-                        @checked(old('aktif', $mk->aktif)) />
-                    <x-forms.error name="aktif"/>
-                </div>
+            <div>
+
+                <label class="label font-bold">
+                    Aktif
+                </label>
+
+                <input type="checkbox"
+                       class="checkbox"
+                       name="aktif"
+                       value="1"
+                       @checked(old('aktif', $mk->aktif)) />
+
+                <x-forms.error name="aktif"/>
+
             </div>
 
-            <button class="btn btn-primary mt-4">
-                Edit Mata Kuliah
-            </button>
+        </div>
 
-        </fieldset>
-    </form>
+
+        <button class="btn btn-primary mt-4">
+            Edit Mata Kuliah
+        </button>
+
+    </fieldset>
+
+</form>
+
 </x-layout>

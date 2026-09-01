@@ -284,15 +284,15 @@ class KrsController extends Controller
         'semester' => $semester->id,
     ])
     ->with('success', 'Bobot nilai berhasil diperbarui.');    }
-
-
-    /**
-     * FORM EDIT NILAI MAHASISWA
-     */public function edit(
+/**
+ * FORM EDIT NILAI MAHASISWA
+ */
+public function edit(
     Mahasiswa $mahasiswa,
     Penawaran $penawaran
 ) {
     $registrasi = Registrasi::with([
+        'penawaran.mk',
         'penawaran.semester.periode'
     ])
         ->where('nrp', $mahasiswa->nrp)
@@ -301,11 +301,15 @@ class KrsController extends Controller
 
     $semester = $penawaran->semester;
     $periode = $semester->periode;
-    $jenis = $semester->jenis;
 
+    /*
+     * ==========================================================
+     * BOBOT NILAI
+     * ==========================================================
+     */
     $bobotnilai = BobotNilai::where('kodemk', $penawaran->kodemk)
         ->where('periode_id', $periode->id)
-        ->where('jenis', $jenis)
+        ->where('jenis', $semester->jenis)
         ->first();
 
     if (!$bobotnilai) {
@@ -315,8 +319,21 @@ class KrsController extends Controller
         );
     }
 
-    $periodeInputNilai = Metaperiode::first();
+    /*
+     * ==========================================================
+     * META PERIODE
+     * ==========================================================
+     */
+    $periodeInputNilai = Metaperiode::where(
+        'periode_id',
+        $periode->id
+    )->first();
 
+    /*
+     * ==========================================================
+     * KRS
+     * ==========================================================
+     */
     $krs = Krs::firstOrCreate(
         [
             'registrasi_id' => $registrasi->regkrs
@@ -327,6 +344,98 @@ class KrsController extends Controller
         ]
     );
 
+    /*
+     * ==========================================================
+     * CEK MK KHUSUS
+     * ==========================================================
+     */
+    $isKhusus = strtolower(
+        trim((string) $penawaran->mk->jenis)
+    ) === 'khusus';
+
+    /*
+     * ==========================================================
+     * CEK TOGGLE MK KHUSUS
+     * ==========================================================
+     *
+     * Toggle hanya berlaku untuk MK khusus.
+     *
+     * MK normal:
+     * tidak menggunakan toggle ini.
+     */
+    $mkKhususAktif = [];
+
+    if ($periodeInputNilai) {
+        $mkKhususAktif = $periodeInputNilai->mk_khusus ?? [];
+
+        if (!is_array($mkKhususAktif)) {
+            $mkKhususAktif = [];
+        }
+    }
+
+    $kodeMk = trim((string) $penawaran->kodemk);
+
+    $mkKhususDiizinkan = $isKhusus
+        && in_array(
+            $kodeMk,
+            $mkKhususAktif,
+            true
+        );
+
+    /*
+     * ==========================================================
+     * IZIN INPUT UTS
+     * ==========================================================
+     *
+     * MK KHUSUS:
+     *   mengikuti toggle.
+     *
+     * MK NORMAL:
+     *   mengikuti periode UTS.
+     */
+    if ($isKhusus) {
+
+        $bolehInputUts = $mkKhususDiizinkan;
+
+    } else {
+
+        $bolehInputUts =
+            $periodeInputNilai &&
+            $periodeInputNilai->input_nilai_uts_mulai &&
+            $periodeInputNilai->input_nilai_uts_selesai &&
+            now()->between(
+                $periodeInputNilai->input_nilai_uts_mulai,
+                $periodeInputNilai->input_nilai_uts_selesai
+            );
+    }
+
+    /*
+     * ==========================================================
+     * IZIN INPUT UAS
+     * ==========================================================
+     *
+     * MK KHUSUS:
+     *   mengikuti toggle.
+     *
+     * MK NORMAL:
+     *   mengikuti periode UAS.
+     */
+    if ($isKhusus) {
+
+        $bolehInputUas = $mkKhususDiizinkan;
+
+    } else {
+
+        $bolehInputUas =
+            $periodeInputNilai &&
+            $periodeInputNilai->input_nilai_uas_mulai &&
+            $periodeInputNilai->input_nilai_uas_selesai &&
+            now()->between(
+                $periodeInputNilai->input_nilai_uas_mulai,
+                $periodeInputNilai->input_nilai_uas_selesai
+            );
+    }
+
     return view('dosen.input_nilai.edit', [
         'krs' => $krs,
         'mahasiswa' => $mahasiswa,
@@ -335,10 +444,19 @@ class KrsController extends Controller
         'periode' => $periode,
         'semester' => $semester,
         'periodeInputNilai' => $periodeInputNilai,
+
+        /*
+         * Variabel baru untuk Blade.
+         */
+        'isKhusus' => $isKhusus,
+        'mkKhususDiizinkan' => $mkKhususDiizinkan,
+        'bolehInputUts' => $bolehInputUts,
+        'bolehInputUas' => $bolehInputUas,
     ]);
 }
 
-    /**
+
+/**
  * UPDATE NILAI MAHASISWA
  */
 public function update(
@@ -346,102 +464,236 @@ public function update(
     Mahasiswa $mahasiswa,
     Penawaran $penawaran
 ) {
+    /*
+     * ==========================================================
+     * REGISTRASI
+     * ==========================================================
+     */
     $registrasi = Registrasi::where('nrp', $mahasiswa->nrp)
         ->where('penawaran_id', $penawaran->recno)
         ->firstOrFail();
 
+    /*
+     * ==========================================================
+     * PERIODE / SEMESTER / MK
+     * ==========================================================
+     */
     $semester = $penawaran->semester;
     $periode = $semester->periode;
-    $jenis = $semester->jenis;
+    $jenisSemester = $semester->jenis;
+    $mk = $penawaran->mk;
 
+    /*
+     * ==========================================================
+     * BOBOT NILAI
+     * ==========================================================
+     */
     $bobotnilai = BobotNilai::where('kodemk', $penawaran->kodemk)
         ->where('periode_id', $periode->id)
-        ->where('jenis', $jenis)
+        ->where('jenis', $jenisSemester)
         ->firstOrFail();
 
+    /*
+     * ==========================================================
+     * VALIDASI
+     * ==========================================================
+     */
     $validated = $request->validate([
         'kelas' => 'required|string|size:1|in:A,B,C',
+
         'bu' => 'nullable|string|size:1|in:Y,N',
+
         'ttt1' => 'nullable|numeric|between:0,100',
+
         'ttt2' => 'nullable|numeric|between:0,100',
+
         'lain' => 'nullable|numeric|between:0,100',
+
         'uts' => 'nullable|numeric|between:0,100',
+
         'uas' => 'nullable|numeric|between:0,100',
+
         'survey' => 'required|boolean',
     ]);
 
-    $periodeInputNilai = Metaperiode::firstOrFail();
+    /*
+     * ==========================================================
+     * META PERIODE
+     * ==========================================================
+     */
+    $periodeInputNilai = Metaperiode::where(
+        'periode_id',
+        $periode->id
+    )->first();
+
+    if (!$periodeInputNilai) {
+        return back()
+            ->with(
+                'error',
+                'Pengaturan periode input nilai belum tersedia.'
+            )
+            ->withInput();
+    }
 
     /*
-    |--------------------------------------------------------------------------
-    | Ambil KRS lama jika ada
-    |--------------------------------------------------------------------------
-    */
-    $krsLama = Krs::where('registrasi_id', $registrasi->regkrs)
-        ->first();
+     * ==========================================================
+     * KRS LAMA
+     * ==========================================================
+     */
+    $krsLama = Krs::where(
+        'registrasi_id',
+        $registrasi->regkrs
+    )->first();
 
-    /*
-    |--------------------------------------------------------------------------
-    | Nilai lama
-    |--------------------------------------------------------------------------
-    */
     $utsLama = $krsLama?->uts;
     $uasLama = $krsLama?->uas;
 
     /*
-    |--------------------------------------------------------------------------
-    | Cek UTS
-    |--------------------------------------------------------------------------
-    | Kalau nilai UTS berubah, harus berada di periode input UTS.
-    |--------------------------------------------------------------------------
-    */
-    if (
-        ($validated['uts'] ?? null) != $utsLama &&
-        !now()->between(
-            $periodeInputNilai->input_nilai_uts_mulai,
-            $periodeInputNilai->input_nilai_uts_selesai
-        )
-    ) {
-        return back()
-            ->with('error', 'Nilai UTS hanya dapat diubah pada periode input UTS.')
-            ->withInput();
+     * ==========================================================
+     * CEK MK KHUSUS
+     * ==========================================================
+     */
+    $jenisMk = strtolower(
+        trim((string) $mk->jenis)
+    );
+
+    $isKhusus = $jenisMk === 'khusus';
+
+    /*
+     * Ambil daftar MK khusus yang toggle-nya ON.
+     */
+    $mkKhususAktif = $periodeInputNilai->mk_khusus ?? [];
+
+    if (!is_array($mkKhususAktif)) {
+        $mkKhususAktif = [];
+    }
+
+    $kodeMk = trim((string) $mk->kodemk);
+
+    $mkKhususDiizinkan = $isKhusus
+        && in_array(
+            $kodeMk,
+            $mkKhususAktif,
+            true
+        );
+
+    /*
+     * ==========================================================
+     * CEK UTS
+     * ==========================================================
+     *
+     * MK KHUSUS:
+     *   hanya boleh jika toggle ON.
+     *
+     * MK NORMAL:
+     *   hanya boleh ketika periode UTS aktif.
+     */
+    $utsBerubah = ($validated['uts'] ?? null) != $utsLama;
+
+    if ($utsBerubah) {
+
+        if ($isKhusus) {
+
+            /*
+             * MK khusus tidak memakai periode UTS umum.
+             */
+            if (!$mkKhususDiizinkan) {
+                return back()
+                    ->with(
+                        'error',
+                        'Nilai UTS mata kuliah khusus belum diaktifkan oleh Admin.'
+                    )
+                    ->withInput();
+            }
+
+        } else {
+
+            /*
+             * MK normal menggunakan periode UTS.
+             */
+            $utsMulai = $periodeInputNilai->input_nilai_uts_mulai;
+            $utsSelesai = $periodeInputNilai->input_nilai_uts_selesai;
+
+            if (
+                !$utsMulai ||
+                !$utsSelesai ||
+                !now()->between($utsMulai, $utsSelesai)
+            ) {
+                return back()
+                    ->with(
+                        'error',
+                        'Nilai UTS mata kuliah normal hanya dapat diinput pada periode input UTS.'
+                    )
+                    ->withInput();
+            }
+        }
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | Cek UAS
-    |--------------------------------------------------------------------------
-    | Kalau nilai UAS berubah, harus berada di periode input UAS.
-    |--------------------------------------------------------------------------
-    */
-    if (
-        ($validated['uas'] ?? null) != $uasLama &&
-        !now()->between(
-            $periodeInputNilai->input_nilai_uas_mulai,
-            $periodeInputNilai->input_nilai_uas_selesai
-        )
-    ) {
-        return back()
-            ->with('error', 'Nilai UAS hanya dapat diubah pada periode input UAS.')
-            ->withInput();
+     * ==========================================================
+     * CEK UAS
+     * ==========================================================
+     *
+     * MK KHUSUS:
+     *   hanya boleh jika toggle ON.
+     *
+     * MK NORMAL:
+     *   hanya boleh ketika periode UAS aktif.
+     */
+    $uasBerubah = ($validated['uas'] ?? null) != $uasLama;
+
+    if ($uasBerubah) {
+
+        if ($isKhusus) {
+
+            /*
+             * MK khusus tidak memakai periode UAS umum.
+             */
+            if (!$mkKhususDiizinkan) {
+                return back()
+                    ->with(
+                        'error',
+                        'Nilai UAS mata kuliah khusus belum diaktifkan oleh Admin.'
+                    )
+                    ->withInput();
+            }
+
+        } else {
+
+            /*
+             * MK normal menggunakan periode UAS.
+             */
+            $uasMulai = $periodeInputNilai->input_nilai_uas_mulai;
+            $uasSelesai = $periodeInputNilai->input_nilai_uas_selesai;
+
+            if (
+                !$uasMulai ||
+                !$uasSelesai ||
+                !now()->between($uasMulai, $uasSelesai)
+            ) {
+                return back()
+                    ->with(
+                        'error',
+                        'Nilai UAS mata kuliah normal hanya dapat diinput pada periode input UAS.'
+                    )
+                    ->withInput();
+            }
+        }
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | Tentukan nilai yang digunakan
-    |--------------------------------------------------------------------------
-    | Kalau sedang di luar periode UTS/UAS dan nilainya tidak berubah,
-    | gunakan nilai lama.
-    |--------------------------------------------------------------------------
-    */
+     * ==========================================================
+     * NILAI
+     * ==========================================================
+     */
     $uts = $validated['uts'] ?? null;
     $uas = $validated['uas'] ?? null;
 
     /*
-    |--------------------------------------------------------------------------
-    | Hitung nilai akhir
-    |--------------------------------------------------------------------------
-    */
+     * ==========================================================
+     * HITUNG NILAI AKHIR
+     * ==========================================================
+     */
     $nilaiAkhir =
         (($validated['ttt1'] ?? 0) * $bobotnilai->ttt1 / 100) +
         (($validated['ttt2'] ?? 0) * $bobotnilai->ttt2 / 100) +
@@ -449,6 +701,11 @@ public function update(
         (($uts ?? 0) * $bobotnilai->uts / 100) +
         (($uas ?? 0) * $bobotnilai->uas / 100);
 
+    /*
+     * ==========================================================
+     * KONVERSI NILAI
+     * ==========================================================
+     */
     $na = match (true) {
         $nilaiAkhir >= 80 => 'A',
         $nilaiAkhir >= 74 => 'AB',
@@ -460,24 +717,33 @@ public function update(
     };
 
     /*
-    |--------------------------------------------------------------------------
-    | CREATE atau UPDATE KRS
-    |--------------------------------------------------------------------------
-    */
+     * ==========================================================
+     * SIMPAN KRS
+     * ==========================================================
+     */
     Krs::updateOrCreate(
         [
             'registrasi_id' => $registrasi->regkrs,
         ],
         [
             'kelas' => $validated['kelas'],
+
             'bu' => $validated['bu'] ?? null,
+
             'ttt1' => $validated['ttt1'] ?? null,
+
             'ttt2' => $validated['ttt2'] ?? null,
+
             'lain' => $validated['lain'] ?? null,
+
             'uts' => $uts,
+
             'uas' => $uas,
+
             'na' => $na,
-            'sks' => $penawaran->mk->sks,
+
+            'sks' => $mk->sks,
+
             'survey' => $validated['survey'],
         ]
     );

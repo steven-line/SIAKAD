@@ -12,28 +12,73 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('mk', function (Blueprint $table) {
+
+            // =====================================================
+            // IDENTITAS MATA KULIAH
+            // =====================================================
+
             $table->string('kodemk', 8)->primary();
-            $table->string('nama',50)->default('');
-            $table->char('sks',3)->default('0');
+
+            $table->string('nama', 50)->default('');
+
+            $table->char('sks', 3)->default('0');
+
             $table->char('nm_jenj_didik', 2);
-           
+
+
+            // =====================================================
+            // PRASYARAT
+            // =====================================================
+
             $table->string('prasyaratsks', 3)->default('0');
 
-            $table->string('prasyarat1',8)->default('');
-            $table->string('prasyarat2',8)->default('');
-            $table->string('prasyarat3',8)->default('');
-            $table->string('prasyarat4',8)->default('');
-            $table->string('prasyarat5',8)->default('');
-            $table->string('prasyarat6',8)->default('');
-            $table->string('prasyarat7',8)->default('');
-            $table->string('prasyarat8',8)->default('');
-            $table->string('prasyarat9',8)->default('');
-            $table->string('prasyarat10',8)->default('');
-            $table->char('prasyaratgrade',1)->default('');
+            $table->string('prasyarat1', 8)->default('');
+            $table->string('prasyarat2', 8)->default('');
+            $table->string('prasyarat3', 8)->default('');
+            $table->string('prasyarat4', 8)->default('');
+            $table->string('prasyarat5', 8)->default('');
+            $table->string('prasyarat6', 8)->default('');
+            $table->string('prasyarat7', 8)->default('');
+            $table->string('prasyarat8', 8)->default('');
+            $table->string('prasyarat9', 8)->default('');
+            $table->string('prasyarat10', 8)->default('');
+
+            $table->char('prasyaratgrade', 1)->default('');
+
+
+            // =====================================================
+            // KURIKULUM
+            // =====================================================
+
             $table->string('kode_kurikulum', 15);
-            $table->foreign('kode_kurikulum')->references('kode_kurikulum')->on('kurikulum')->onDelete('cascade')->onUpdate('cascade');
-            $table->boolean("aktif")->default(false);
-          
+
+            $table->foreign('kode_kurikulum')
+                ->references('kode_kurikulum')
+                ->on('kurikulum')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+
+            // =====================================================
+            // STATUS
+            // =====================================================
+
+            $table->boolean('aktif')->default(false);
+
+
+            // =====================================================
+            // JENIS PJMK
+            // =====================================================
+            //
+            // normal = PJMK ditentukan oleh Kaprodi
+            // khusus = PJMK ditentukan oleh Admin
+            //
+
+            $table->enum('jenis', [
+                'normal',
+                'khusus',
+            ])->default('normal');
+
         });
     }
 
