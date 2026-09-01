@@ -28,23 +28,22 @@ class KeuanganImport implements ToCollection, WithHeadingRow, SkipsEmptyRows
                 throw new \Exception('NRP wajib diisi.');
             }
 
-            if (!$status) {
+            if ($status === '') {
                 throw new \Exception(
                     "Status blokir untuk NRP {$nrp} wajib diisi."
                 );
             }
 
+            // Status yang diperbolehkan
             $statusValid = [
-                'BLOKIR',
-                'BELUM_KRS',
-                'MENUNGGU_VALIDASI',
-                'DISETUJUI',
-                'TERKUNCI',
+                '1' => 'BELUM_KRS',
+                '0' => 'BLOKIR',
             ];
 
-            if (!in_array($status, $statusValid)) {
+            // Cek apakah angka valid
+            if (!isset($statusValid[$status])) {
                 throw new \Exception(
-                    "Status blokir '{$status}' untuk NRP {$nrp} tidak valid."
+                    "Status blokir '{$status}' untuk NRP {$nrp} tidak valid. Gunakan 0 untuk BELUM_KRS atau 1 untuk BLOKIR."
                 );
             }
 
@@ -57,7 +56,7 @@ class KeuanganImport implements ToCollection, WithHeadingRow, SkipsEmptyRows
             }
 
             $mahasiswa->update([
-                'status_blokir' => $status,
+                'status_blokir' => $statusValid[$status],
             ]);
         }
     }

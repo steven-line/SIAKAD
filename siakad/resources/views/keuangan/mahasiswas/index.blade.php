@@ -64,7 +64,9 @@
 
     <x-forms.error name="file"/>
 </form>
-<a href=" {{ asset('document/template_import_keuangan.xlsx') }}" download class="btn btn-success mb-5">Download Template</a>
+<a href="{{ route('keuangan.mahasiswa.export') }}" class="btn btn-success mb-5">
+    Download Template
+</a>
 </div>
     <table class="table">
     <thead class="bg-blue-500 text-white">

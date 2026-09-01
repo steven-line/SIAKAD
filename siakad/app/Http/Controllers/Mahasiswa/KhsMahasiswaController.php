@@ -64,10 +64,6 @@ class KhsMahasiswaController extends Controller
 
         $periodeKosong = null;
 
-        if (!$metaperiode) {
-            $periodeKosong = 'Anda belum memasuki periode yang aktif';
-        }
-
         $periodeAktif = Periode::where('aktif', 1)->first();
         $jenisSemester = $periodeAktif->semesters()->where('aktif', 1)->pluck('jenis')->first();
         $checkPeriode = $periodeAktif->tahun_ajaran . '|' . $jenisSemester;

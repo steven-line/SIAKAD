@@ -50,10 +50,6 @@ class NilaiKrsMahasiswaController extends Controller
 
     $periodeKosong = null;
 
-    if (!$metaperiode) {
-        $periodeKosong = 'Anda belum memasuki periode yang aktif';
-    }
-
     $pengumumanKrs = null;
 
     if (

@@ -9,6 +9,8 @@ use App\Models\Penawaran;
 use App\Models\Semester;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 
 class PenawaranAdminController extends Controller
 {
@@ -263,12 +265,13 @@ public function store(Request $request)
         $jamSlotsPagi = $this->generateJamSlotsPagi();
         $jamSlotsMalam = $this->generateJamSlotsMalam();
 
-        return view('admin.penawaran_admin.create', compact(
+        return view('admin.penawaran_admin.edit', compact(
             'matkuls',
             'dosens',
             'semesters',
             'jamSlotsPagi',
-            'jamSlotsMalam'
+            'jamSlotsMalam',
+            'penawaran'
         ));
     }
 
@@ -280,7 +283,111 @@ public function store(Request $request)
 
     public function update(Request $request, Penawaran $penawaran)
     {
-        // Salin dari PenawaranController Kaprodi.
+     $user = Auth::user();
+    $metaPeriode = Metaperiode::first();
+
+    if (
+        !$metaPeriode &&
+        !now()->between($metaPeriode->input_penawaran_mulai, $metaPeriode->input_penawaran_selesai)
+    ) {
+        return redirect()
+            ->route('admin.penawaran.index')
+            ->with('error', 'Periode input penawaran belum dibuka atau sudah berakhir.');
+    }
+        $request->validate([
+            'kodemk'     => 'required',
+            'semester_id'=> 'required|exists:semester,id',
+            'dosen'      => 'required',
+            'hari'       => 'required',
+            'mulaipukul' => 'required',
+            'pataum'     => 'required',
+            'sesi'       => 'required',
+            'pagu'       => 'required|integer|between:1,99',
+            'keterangan' => 'nullable',
+        ]);
+
+        $mk = Mk::with('kurikulum')
+            ->where('kodemk', $request->kodemk)
+            ->firstOrFail();
+
+        $durasiMenit = ((int) $mk->sks) * 50;
+
+        // Ambil prodi pemilik mata kuliah
+        $kodeProdi = $mk->kurikulum->kode_prodi;
+
+        $mulai = Carbon::createFromFormat('H:i', $request->mulaipukul);
+        $selesai = $mulai->copy()->addMinutes($durasiMenit);
+    
+        if ($request->sesi == '1') {
+            $batasAwal = Carbon::createFromTime(8, 0);
+            $batasAkhir = Carbon::createFromTime(17, 10);
+        } else {
+            $batasAwal = Carbon::createFromTime(18, 0);
+            $batasAkhir = Carbon::createFromTime(22, 0);
+        }
+
+        if ($mulai->lt($batasAwal)) {
+            return back()->withErrors([
+                'jam' => 'Jam mulai tidak sesuai sesi'
+            ])->withInput();
+        }
+
+        if ($selesai->gt($batasAkhir)) {
+            return back()->withErrors([
+                'jam' => 'Durasi mata kuliah melebihi batas sesi'
+            ])->withInput();
+        }
+        
+    $akses = ['A'];
+
+$bentrok = Penawaran::where('recno', '!=', $penawaran->recno)
+    ->where('semester_id', $request->semester_id)
+    ->where('hari', $request->hari)
+    ->whereHas('mk', function (Builder $query) use ($akses) {
+        foreach ($akses as $char) {
+            $query->orWhere('kodemk', 'LIKE', $char . '%');
+        }
+    })
+    ->where(function ($query) use ($mulai, $selesai) {
+        $query->whereBetween('mulaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+            ->orWhereBetween('selesaipukul', [
+                $mulai->format('H:i:s'),
+                $selesai->format('H:i:s')
+            ])
+            ->orWhere(function ($q2) use ($mulai, $selesai) {
+                $q2->where('mulaipukul', '<=', $mulai->format('H:i:s'))
+                   ->where('selesaipukul', '>=', $selesai->format('H:i:s'));
+            });
+    })
+    ->exists();
+
+                        
+    if ($bentrok) {
+        return back()->withErrors([
+            'jam' => 'Jadwal bentrok. Mata kuliah, dosen, atau semester sudah memiliki jadwal pada waktu tersebut.'
+        ])->withInput();
+    }
+
+        $penawaran->update([
+            'kodemk'       => $request->kodemk,
+            'semester_id'  => $request->semester_id,
+            'dosen'        => $request->dosen,
+            'hari'         => $request->hari,
+            'mulaipukul'   => $mulai->format('H:i:s'),
+            'selesaipukul' => $selesai->format('H:i:s'),
+            'pataum'       => $request->pataum,
+            'sesi'         => $request->sesi,
+            'keterangan'   => $request->keterangan,
+            'pagu'         => $request->pagu,
+            'MBKM'         => $request->has('MBKM'),
+        ]);
+
+        return redirect()
+            ->route('admin.penawaran.index')
+            ->with('success', 'Penawaran berhasil diperbarui');
     }
 
     /*
