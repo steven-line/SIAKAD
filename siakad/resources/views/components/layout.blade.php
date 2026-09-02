@@ -106,7 +106,10 @@
         @can('mahasiswa.manage')
         <li><a href="/mahasiswa-admin">Master Mahasiswa</a></li>
         @endcan
-
+        
+        @can('mahasiswa_transfer.manage')
+        <li><a href="/mahasiswa-transfer">Master Nilai Mahasiswa Transfer</a></li>
+        @endcan
         @can('biodata.manage')
           <li><a href="/biodata">Master Biodata</a></li>
         @endcan

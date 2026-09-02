@@ -31,6 +31,9 @@ return new class extends Migration
             'BLOKIR'
              ])->default('BELUM_KRS');
 
+            $table->boolean('transfer')->default(false);
+            $table->integer('semester_transfer')->default(1)->nullable();    
+        
         });
     }
 

@@ -20,9 +20,15 @@ class Mahasiswa extends Model
       'prodi',
       'dosen_wali',
       'tahun_masuk',
-      'status_blokir'
+      'status_blokir',
+      'transfer',
+      'semester_transfer'
      ];
- 
+    protected function casts(): array {
+        return [
+            'transfer' => 'boolean',
+        ];
+    }
 
      public function dosenWali() {
         return $this->belongsTo(Dosen::class, 'dosen_wali', 'nim_dosen');

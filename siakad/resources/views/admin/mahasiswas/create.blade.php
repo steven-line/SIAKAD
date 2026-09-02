@@ -144,8 +144,31 @@
                 </select>
 
                 <x-forms.error name="status_blokir"/>
+                 
+                <label class="label font-bold mt-4" for="transfer-checkbox">Transfer</label>
+                <input type="checkbox"  value="1" class="checkbox checkbox-primary" name="transfer" id="transfer-checkbox"/>
+                <x-forms.error name="transfer"/>
 
+                 <label class="label font-bold mt-4" for="semester_transfer">
+                    Semester Transfer
+                </label>
 
+                <input
+                    type="number"
+                    min="1"
+                    max="14"
+                    id="semester_transfer"
+                    name="semester_transfer"
+                    class="input w-full"
+                    value="{{ old('semester') }}"
+                    placeholder="Contoh: 1"
+                    required
+                    
+                />
+
+                <x-forms.error name="semester_transfer"/>
+
+                
                 <button class="btn btn-primary mt-6">
                     Buat Mahasiswa
                 </button>

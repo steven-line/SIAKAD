@@ -32,6 +32,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
                 : true,
             'firstlogin' => Carbon::now(),
             'lastlogin'  => Carbon::now(),
+            
         ]);
 
         // Assign role

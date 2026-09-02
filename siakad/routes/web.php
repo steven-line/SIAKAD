@@ -25,6 +25,7 @@ use App\Http\Controllers\{
     TranskripNilaiAnakWaliController,
     PenawaranAdminController,
     UbahPasswordController,
+    MahasiswaTransferController
 };
 
 use App\Http\Controllers\Admin\{
@@ -488,7 +489,15 @@ Route::prefix('perwalian')
                 Route::delete('/{mahasiswa}', [MahasiswaAdminController::class, 'destroy'])->name('destroy');
   
             });
-
+    Route::prefix('mahasiswa-transfer')
+        ->middleware('permission:mahasiswa_transfer.manage')
+        ->name('mahasiswa_transfer.')
+        ->group(function() {
+           Route::get('/', [MahasiswaTransferController::class, 'index'])->name('index');
+           Route::patch('/upload', [MahasiswaTransferController::class, 'upload'])->name('upload');
+           Route::get('/export', [MahasiswaTransferController::class, 'export'])->name('export');
+           Route::get('/{mahasiswa}/nilai-transfer', [MahasiswaTransferController::class, 'show'])->name('show');
+        });
     Route::prefix('periode')
         ->middleware('permission:periode.manage')
         ->name('periode.')

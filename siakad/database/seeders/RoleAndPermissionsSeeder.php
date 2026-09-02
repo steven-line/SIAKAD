@@ -67,6 +67,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'khs.view',
             'transkrip.view',
             'changepassword.manage',
+            'mahasiswa_transfer.manage',
 
             // DOSEN
             'nilai.input',
@@ -172,6 +173,7 @@ class RoleAndPermissionsSeeder extends Seeder
             'sks.manage',
             'penawaranumum.manage',
             'changepassword.manage',
+            'mahasiswa_transfer.manage'
         ]);
 
         // ======================

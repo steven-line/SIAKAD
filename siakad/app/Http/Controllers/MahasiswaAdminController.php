@@ -53,12 +53,15 @@ class MahasiswaAdminController extends Controller
      */
     public function store(Request $request)
     {
+    
         $request->validate([
             'nrp' => ['required', 'unique:mahasiswas'],
             'dosen_wali' => ['required'],
             'status_blokir' => ['required', Rule::enum(StatusBlokir::class)],
             'prodi' => ['required'],
             'tahun_masuk' => ['required', 'integer', 'digits:4'],
+            'transfer' => ['nullable', 'boolean'],
+            'semester_transfer' => ['integer', 'between:1,14']
 
         ]);
         $mahasiswa = Mahasiswa::create([
@@ -67,6 +70,8 @@ class MahasiswaAdminController extends Controller
             'status_blokir' => $request->status_blokir,
             'prodi' => $request->prodi,
             'tahun_masuk' => $request->tahun_masuk,
+            'transfer' => $request->boolean('transfer'),
+            'semester_transfer' => $request->semester_transfer
         ]);
 
         Ips::updateOrCreate(
@@ -114,19 +119,23 @@ class MahasiswaAdminController extends Controller
      */
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
+        
         $request->validate([
             'nrp' => ['required', 'min:8', 'max:191',Rule::unique('mahasiswas')->ignore($mahasiswa)],
             'dosen_wali' => ['required'],
             'status_blokir' => ['required', Rule::enum(StatusBlokir::class)],
-            'prodi' => ['required']
-
+            'prodi' => ['required'],
+            'transfer' => ['nullable', 'boolean'],
+            'semester_transfer' => ['integer', 'between:1,14']
         ]);
 
         $mahasiswa->update([
             'nrp' => $request->nrp,
             'dosen_wali' => $request->dosen_wali,
             'status_blokir' => $request->status_blokir,
-            'prodi' => $request->prodi
+            'prodi' => $request->prodi,
+            'transfer' => $request->boolean('transfer'),
+            'semester_transfer' => $request->semester_transfer
         ]);
         
         return redirect()

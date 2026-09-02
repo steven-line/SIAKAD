@@ -105,6 +105,31 @@
 
                 <x-forms.error name="prodi"/>
 
+                
+                <label class="label font-bold mt-4" for="transfer-checkbox">Transfer</label>
+                <input type="checkbox" class="checkbox checkbox-primary" name="transfer" id="transfer-checkbox" value="1" @checked(old('transfer', $mahasiswa->transfer))/>
+                <x-forms.error name="transfer"/>
+
+                   <label class="label font-bold mt-4" for="semester_transfer">
+                    Semester Transfer
+                </label>
+
+                <input
+                    type="number"
+                    min="1"
+                    max="14"
+                    id="semester_transfer"
+                    class="input"
+                    
+                    name="semester_transfer"
+                    value="{{ old('semester', $mahasiswa->semester_transfer) }}"
+                    placeholder="Contoh: 1"
+                    required
+                />
+
+                <x-forms.error name="semester_transfer"/>
+
+                
                 <button class="btn btn-primary mt-6">
                     Ubah Mahasiswa
                 </button>
