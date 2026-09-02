@@ -9,6 +9,7 @@ use App\Models\Periode;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class NilaiKhsAnakWaliController extends Controller
 {
@@ -24,7 +25,7 @@ class NilaiKhsAnakWaliController extends Controller
             'E'  => 0.0,
         ];
 
-        return $bobot[$grade] ?? 0.0;
+        return $bobot[strtoupper($grade)] ?? 0.0;
     }
 
     private function getMaxSks($ips)
@@ -62,78 +63,125 @@ class NilaiKhsAnakWaliController extends Controller
             abort(403);
         }
 
-        {
-        $nimDosen = Auth::user()->dosen->nim_dosen ?? null;        
-        
+        $datas = [];
+
+        // 1. AMBIL & PROSES DATA TRANSFER TERLEBIH DAHULU (Aman dengan DB::table & leftJoin)
+        if ($mahasiswa->transfer == true || $mahasiswa->transfer == 1 || $mahasiswa->transfer == '1') {
+            $nilaiTransfer = DB::table('nilai_transfer')
+                ->leftJoin('mk', 'nilai_transfer.kodemk', '=', 'mk.kodemk')
+                ->where('nilai_transfer.nrp', $mahasiswa->nrp)
+                ->select('nilai_transfer.kodemk', 'mk.nama', 'nilai_transfer.sks', 'nilai_transfer.na')
+                ->get();
+            
+            if ($nilaiTransfer->isNotEmpty()) {
+                $keyTransfer = 'MATA KULIAH TRANSFER|Asal SKS Pindahan';
+                $datas[$keyTransfer] = [
+                    'periode' => 'MATA KULIAH TRANSFER',
+                    'semester' => 'Asal SKS Pindahan',
+                    'is_transfer' => true,
+                    'items' => []
+                ];
+
+                foreach ($nilaiTransfer as $tIndex => $tf) {
+                    $sks = $tf->sks ?? 0;
+                    $datas[$keyTransfer]['items']['tf_' . $tIndex] = [
+                        'kode' => $tf->kodemk,
+                        'mata_kuliah' => $tf->nama ?? 'N/A',
+                        'sks' => $sks,
+                        'grade' => $tf->na,
+                        'mutu' => $sks * $this->getBobot($tf->na)
+                    ];
+                }
+            }
+        }
+
+        // 2. AMBIL & PROSES DATA KRS REGULER
         $krsMahasiswa = Krs::whereHas('registrasi', function (Builder $query) use ($mahasiswa) {
             $query->where('nrp', $mahasiswa->nrp);
-            
-        })->get();
-        $datas = [];
-        $ips = 0;
-        $periode = Periode::where('aktif','1')->first();
-        $semester = $periode->leftJoin('semester', 'periode.id', '=',  'semester.periode_id')
-                            ->where('semester.aktif', '1')
-                            ->select('semester.jenis')
-                            ->first();
+        })->with(['registrasi.penawaran.semester.periode', 'registrasi.penawaran.mk'])->get();
 
-        $metaperiode = Metaperiode::findOrFail(1);
         $periodeAktif = Periode::where('aktif', 1)->first();
         $jenisSemester = $periodeAktif->semesters()->where('aktif', 1)->pluck('jenis')->first();
         $checkPeriode = $periodeAktif->tahun_ajaran . '|' . $jenisSemester;
 
-      
+        try {
+            $metaperiode = Metaperiode::findOrFail(1);
+        } catch (ModelNotFoundException $e) {
+            $metaperiode = null;
+        }
+
+        $periodeKosong = null;
+        if (!$metaperiode) {
+            $periodeKosong = 'Anda belum memasuki periode yang aktif';
+        }
+
         $pengumumanKrs = null;
         if ($metaperiode && $metaperiode->pengumuman_nilai_final_mulai && $metaperiode->pengumuman_nilai_final_selesai && now()->between($metaperiode->pengumuman_nilai_final_mulai, $metaperiode->pengumuman_nilai_final_selesai)) {
                $pengumumanKrs = 'Anda memasuki periode pengumuman nilai final';         
         }
 
         foreach($krsMahasiswa as $index => $krs) {
-            $periode = $krs->registrasi->penawaran->semester->periode->tahun_ajaran;
-            $semester = $krs->registrasi->penawaran->semester->jenis;
+            $penawaran = $krs->registrasi->penawaran ?? null;
+            if (!$penawaran) continue;
 
+            $periode = $penawaran->semester->periode->tahun_ajaran;
+            $semester = $penawaran->semester->jenis;
             $key = $periode . '|' . $semester;
-            if($key != $checkPeriode) {
-                  $datas[$key]['periode'] = $periode;
-                  $datas[$key]['semester'] = $semester;
-                  $datas[$key]['items']['item'.$index+1] = [
-                                        'kode' => $krs->registrasi->penawaran->kodemk,
-                                        'mata_kuliah' => $krs->registrasi->penawaran->mk->nama,
-                                        'sks' => $krs->registrasi->penawaran->mk->sks,
-                                        'grade' => $krs->na,
-                                        'mutu' => $krs->registrasi->penawaran->mk->sks * $this->getBobot($krs->na)];    
+
+            if($key != $checkPeriode || $pengumumanKrs) {
+                if (!isset($datas[$key])) {
+                    $datas[$key] = [
+                        'periode' => $periode,
+                        'semester' => $semester,
+                        'is_transfer' => false,
+                        'items' => []
+                    ];
+                }
+
+                $sks = $penawaran->mk->sks ?? 0;
+                $datas[$key]['items']['item_'.$index] = [
+                    'kode' => $penawaran->kodemk,
+                    'mata_kuliah' => $penawaran->mk->nama ?? 'N/A',
+                    'sks' => $sks,
+                    'grade' => $krs->na,
+                    'mutu' => $sks * $this->getBobot($krs->na)
+                ];    
             }
-           
-                                
-
-
         }
-        $grouped = collect($datas)->map(function ($periode) {
-            $periode['total_mutu'] = collect($periode['items'])->sum('mutu');
-            $periode['total_sks'] = collect($periode['items'])->sum('sks');
-            $periode['ips'] = $periode['total_mutu'] / $periode['total_sks']; 
 
-            return $periode;
+        // 3. KALKULASI IPS PER SEMESTER & TOTAL AKUMULASI UNTUK IPK
+        $totalMutuIpk = 0;
+        $totalSksIpk = 0;
+
+        $grouped = collect($datas)->map(function ($value) use (&$totalMutuIpk, &$totalSksIpk) {
+            $value['total_mutu'] = collect($value['items'])->sum('mutu');
+            $value['total_sks'] = collect($value['items'])->sum('sks');
+            
+            if ($value['total_sks'] > 0) {
+                $value['ips'] = $value['total_mutu'] / $value['total_sks'];
+            } else {
+                $value['ips'] = 0.00;
+            }
+
+            $totalMutuIpk += $value['total_mutu'];
+            $totalSksIpk += $value['total_sks'];
+
+            return $value;
         })->all();
 
-        if (count($grouped) == 0) {
-            $ipk = 0;
-        } else {
-            $ipk = array_sum(array_column($grouped, 'ips'))/(count($grouped));
-               
-        }
+        // Penghitungan IPK Baku Institusi Nasional
+        $ipk = $totalSksIpk > 0 ? ($totalMutuIpk / $totalSksIpk) : 0.00;
         
         $informasiUmum = [
-                            'periode' => $periodeAktif->tahun_ajaran ?? null,
-                            'program_studi' => $mahasiswa->programStudi->nama_prodi,
-                            'semester' => $jenisSemester ?? null,
-                            'nrp' => $mahasiswa->nrp,
-                            'nama' => $mahasiswa->biodata->nama ?? null,
-                            'dosen_wali' => $mahasiswa->dosen_wali
+            'periode' => $periodeAktif->tahun_ajaran ?? null,
+            'program_studi' => $mahasiswa->programStudi->nama_prodi ?? null,
+            'semester' => $jenisSemester ?? null,
+            'nrp' => $mahasiswa->nrp,
+            'nama' => $mahasiswa->biodata->nama ?? null,
+            'dosen_wali' => $mahasiswa->dosen_wali,
+            'semester_transfer' => $mahasiswa->transfer ? (int) $mahasiswa->semester_transfer : 0
         ];     
 
-        return view('dosen_wali.nilai_khs_anak_wali.show', compact('grouped', 'informasiUmum', 'ipk', 'pengumumanKrs'));
-    
-    }
+        return view('dosen_wali.nilai_khs_anak_wali.show', compact('grouped', 'informasiUmum', 'ipk', 'pengumumanKrs', 'periodeKosong'));
     }
 }

@@ -22,14 +22,15 @@ class TranskripMahasiswaController extends Controller
             'E'  => 0.0,
         ];
 
-        return $bobot[$grade] ?? 0.0;
+        return $bobot[strtoupper($grade)] ?? 0.0;
     }
 
     public function index()
     {
         $user = Auth::user();
-        $nrp = $user->nrp ?? $user->username ?? null;
-        $statusBlokir = $user->mahasiswa->status_blokir;
+        $mahasiswa = $user->mahasiswa;
+        $nrp = $mahasiswa->nrp ?? $user->username ?? null;
+        $statusBlokir = $mahasiswa->status_blokir;
 
         /*
         |--------------------------------------------------------------------------
@@ -74,7 +75,32 @@ class TranskripMahasiswaController extends Controller
             ? $periodeAktif->tahun_ajaran . '|' . $semesterAktif
             : null;
 
-        $transkrip = DB::table('registrasi')
+        // Kontainer Utama Koleksi Transkrip
+        $allTranskripData = collect();
+
+        // 1. AMBIL DATA TRANSFER TERLEBIH DAHULU (Aman dengan leftJoin Query Builder)
+        if ($mahasiswa->transfer == true || $mahasiswa->transfer == 1 || $mahasiswa->transfer == '1') {
+            $transkripTransfer = DB::table('nilai_transfer')
+                ->leftJoin('mk', 'nilai_transfer.kodemk', '=', 'mk.kodemk')
+                ->where('nilai_transfer.nrp', $nrp)
+                ->select(
+                    'nilai_transfer.kodemk as kode',
+                    'mk.nama as nama_mk',
+                    'nilai_transfer.sks as sks', // Prioritaskan sks diakui di tabel transfer
+                    'nilai_transfer.na',
+                    DB::raw("'Asal SKS Pindahan' as jenis"),
+                    DB::raw("'MATA KULIAH TRANSFER' as tahun_ajaran")
+                )
+                ->orderBy('nilai_transfer.kodemk')
+                ->get();
+
+            if ($transkripTransfer->isNotEmpty()) {
+                $allTranskripData = $allTranskripData->concat($transkripTransfer);
+            }
+        }
+
+        // 2. AMBIL DATA KRS REGULER
+        $transkripReguler = DB::table('registrasi')
             ->leftJoin('penawaran', 'registrasi.penawaran_id', '=', 'penawaran.recno')
             ->leftJoin('semester', 'penawaran.semester_id', '=', 'semester.id')
             ->leftJoin('periode', 'semester.periode_id', '=', 'periode.id')
@@ -98,17 +124,24 @@ class TranskripMahasiswaController extends Controller
             ->orderBy('penawaran.kodemk')
             ->get();
 
-        // Sembunyikan nilai pada periode+semester yang sedang aktif
-        $transkrip = $transkrip->filter(function ($item) use ($checkPeriode) {
-            if (!$checkPeriode) {
-                return true;
-            }
+        // Sembunyikan nilai pada periode+semester yang sedang aktif jika bukan masa pengumuman
+        if (!$pengumumanKrs) {
+            $transkripReguler = $transkripReguler->filter(function ($item) use ($checkPeriode) {
+                if (!$checkPeriode) {
+                    return true;
+                }
+                $key = $item->tahun_ajaran . '|' . $item->jenis;
+                return $key !== $checkPeriode;
+            });
+        }
 
-            $key = $item->tahun_ajaran . '|' . $item->jenis;
-            return $key !== $checkPeriode;
-        })->values();
+        // Gabungkan data reguler di bawah data transfer menggunakan concat() agar indeks aman
+        if ($transkripReguler->isNotEmpty()) {
+            $allTranskripData = $allTranskripData->concat($transkripReguler);
+        }
 
-        $transkripWithMutu = $transkrip->map(function ($item) {
+        // 3. HITUNG NILAI MUTU KUMULATIF GABUNGAN
+        $transkripWithMutu = $allTranskripData->map(function ($item) {
             $item->mutu = $this->getBobot($item->na) * ($item->sks ?? 0);
             return $item;
         });
@@ -118,15 +151,17 @@ class TranskripMahasiswaController extends Controller
         $ipk = $total_sks > 0 ? $total_mutu / $total_sks : 0;
 
         $informasiUmum = [
-                            'periode' => $periodeAktif->tahun_ajaran ?? null,
-                            'program_studi' => $user->mahasiswa->programStudi->nama_prodi ?? null,
-                            'semester' => $semesterAktif ?? null,
-                            'nrp' => $user->mahasiswa->nrp ?? null,
-                            'nama' => $user->mahasiswa->biodata->nama ?? null,
-                            'dosen_wali' => $user->mahasiswa->dosen_wali ?? null
+            'periode' => $periodeAktif->tahun_ajaran ?? null,
+            'program_studi' => $mahasiswa->programStudi->nama_prodi ?? null,
+            'semester' => $semesterAktif ?? null,
+            'nrp' => $mahasiswa->nrp ?? null,
+            'nama' => $mahasiswa->biodata->nama ?? null,
+            'dosen_wali' => $mahasiswa->dosen_wali ?? null,
+            'semester_transfer' => $mahasiswa->transfer ? (int) $mahasiswa->semester_transfer : 0
         ];
 
-        return view('mahasiswa.Transkrip_nilai.index', compact('informasiUmum', 'transkripWithMutu', 'total_sks', 'total_mutu', 'ipk', 'statusBlokir', 'pengumumanKrs', 'pengumumanMulai', 'pengumumanSelesai'
+        return view('mahasiswa.Transkrip_nilai.index', compact(
+            'informasiUmum', 'transkripWithMutu', 'total_sks', 'total_mutu', 'ipk', 'statusBlokir', 'pengumumanKrs', 'pengumumanMulai', 'pengumumanSelesai'
         ));
     }
 }
