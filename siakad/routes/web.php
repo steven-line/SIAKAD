@@ -338,6 +338,8 @@ Route::prefix('admin/penawaran')
             ->name('password.store');
         Route::post('/keuangan/mahasiswa/upload', [KeuanganController::class, 'upload'])
             ->name('mahasiswa.upload');
+        Route::get('/keuangan/mahasiswa/export', [KeuanganController::class, 'export'])
+            ->name('mahasiswa.export');
         });
     });
     /*

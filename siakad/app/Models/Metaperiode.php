@@ -8,8 +8,6 @@ class Metaperiode extends Model
 {
     protected $table = 'metaperiode';
 
-    public $timestamps = false;
-
     protected $fillable = [
         'periode_id',
 
@@ -29,29 +27,40 @@ class Metaperiode extends Model
         'input_nilai_uas_mulai',
         'input_nilai_uas_selesai',
 
+        // Mata Kuliah Khusus
+        'mk_khusus',
+
         // Pengumuman Nilai Final
         'pengumuman_nilai_final_mulai',
         'pengumuman_nilai_final_selesai',
     ];
 
     protected $casts = [
-        // Periode Input Penawaran
         'input_penawaran_mulai' => 'datetime',
         'input_penawaran_selesai' => 'datetime',
 
-        // Periode KRS
         'krs_mulai' => 'datetime',
         'krs_selesai' => 'datetime',
 
-        // Periode Input Nilai UTS
         'input_nilai_uts_mulai' => 'datetime',
         'input_nilai_uts_selesai' => 'datetime',
 
-        // Periode Input Nilai UAS
         'input_nilai_uas_mulai' => 'datetime',
         'input_nilai_uas_selesai' => 'datetime',
 
-        // Pengumuman Nilai Final
+        /*
+        |--------------------------------------------------------------------------
+        | MK Khusus
+        |--------------------------------------------------------------------------
+        |
+        | Disimpan sebagai array ID MK.
+        |
+        | Contoh:
+        | [15, 18, 21]
+        |
+        */
+        'mk_khusus' => 'array',
+
         'pengumuman_nilai_final_mulai' => 'datetime',
         'pengumuman_nilai_final_selesai' => 'datetime',
     ];

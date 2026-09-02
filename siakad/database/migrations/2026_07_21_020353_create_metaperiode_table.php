@@ -1,3 +1,4 @@
+```php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -14,50 +15,107 @@ return new class extends Migration
         Schema::create('metaperiode', function (Blueprint $table) {
             $table->id();
 
+            /*
+            |--------------------------------------------------------------------------
+            | PERIODE
+            |--------------------------------------------------------------------------
+            */
             $table->foreignId('periode_id')
                 ->constrained('periode')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-            /*
-            |--------------------------------------------------------------------------
-            | Periode Input Penawaran (Kaprodi)
-            |--------------------------------------------------------------------------
-            */
-            $table->timestamp('input_penawaran_mulai')->nullable();
-            $table->timestamp('input_penawaran_selesai')->nullable();
 
             /*
             |--------------------------------------------------------------------------
-            | Periode KRS
+            | PERIODE INPUT PENAWARAN (KAPRODI)
             |--------------------------------------------------------------------------
             */
-            $table->timestamp('krs_mulai')->nullable();
-            $table->timestamp('krs_selesai')->nullable();
+            $table->timestamp('input_penawaran_mulai')
+                ->nullable();
+
+            $table->timestamp('input_penawaran_selesai')
+                ->nullable();
+
 
             /*
             |--------------------------------------------------------------------------
-            | Periode Input Nilai UTS
+            | PERIODE KRS
             |--------------------------------------------------------------------------
             */
-            $table->timestamp('input_nilai_uts_mulai')->nullable();
-            $table->timestamp('input_nilai_uts_selesai')->nullable();
+            $table->timestamp('krs_mulai')
+                ->nullable();
+
+            $table->timestamp('krs_selesai')
+                ->nullable();
+
 
             /*
             |--------------------------------------------------------------------------
-            | Periode Input Nilai UAS
+            | PERIODE INPUT NILAI UTS
             |--------------------------------------------------------------------------
             */
-            $table->timestamp('input_nilai_uas_mulai')->nullable();
-            $table->timestamp('input_nilai_uas_selesai')->nullable();
+            $table->timestamp('input_nilai_uts_mulai')
+                ->nullable();
+
+            $table->timestamp('input_nilai_uts_selesai')
+                ->nullable();
+
 
             /*
             |--------------------------------------------------------------------------
-            | Periode Pengumuman Nilai Final
+            | PERIODE INPUT NILAI UAS
             |--------------------------------------------------------------------------
             */
-            $table->timestamp('pengumuman_nilai_final_mulai')->nullable();
-            $table->timestamp('pengumuman_nilai_final_selesai')->nullable();
+            $table->timestamp('input_nilai_uas_mulai')
+                ->nullable();
+
+            $table->timestamp('input_nilai_uas_selesai')
+                ->nullable();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | INPUT NILAI MATA KULIAH KHUSUS
+            |--------------------------------------------------------------------------
+            |
+            | Menyimpan daftar kodemk yang diperbolehkan untuk input nilai
+            | di luar periode UTS/UAS.
+            |
+            | Contoh:
+            |
+            | {
+            |     "TA001": true,
+            |     "KKN01": false,
+            |     "MAG01": true
+            | }
+            |
+            | true  = boleh input nilai
+            | false = tidak boleh input nilai
+            |
+            */
+            $table->json('mk_khusus')
+                ->nullable();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | PERIODE PENGUMUMAN NILAI FINAL
+            |--------------------------------------------------------------------------
+            */
+            $table->timestamp('pengumuman_nilai_final_mulai')
+                ->nullable();
+
+            $table->timestamp('pengumuman_nilai_final_selesai')
+                ->nullable();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | TIMESTAMPS
+            |--------------------------------------------------------------------------
+            */
+            $table->timestamps();
         });
     }
 

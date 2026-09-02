@@ -7,9 +7,10 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Validators\Failure;
-class BiodatasImport implements ToModel, WithValidation, WithHeadingRow
+class BiodatasImport implements ToModel, WithValidation, WithHeadingRow, SkipsEmptyRows
 {
     /**
     * @param array $row
@@ -147,30 +148,30 @@ class BiodatasImport implements ToModel, WithValidation, WithHeadingRow
         'anak_ke' => 'Anak Ke',
         'jml_saudara' => 'Jumlah Saudara',
         'jml_saudara_tanggungan' => 'Jumlah Saudara Tanggungan',
-            'sumber_biaya' => 'Sumber Biaya',
-            'jenis_rmh' => 'Jenis Rumah',
-            'asal_smu' => 'Asal SMU',
-            'lulus_smu' => 'Lulus SMU',
-            'transportasi' => 'Transportasi',
-            'nama_ayah' => 'Nama Ayah',
-            'alamat_ayah' => 'Alamat Ayah',
-            'no_telp_ayah' => 'No Telp Ayah',
-            'kota_ayah' => 'Kota Ayah',
-            'kodepos_ayah' => 'Kodepos Ayah',
-            'handphone_ayah' => 'Handphone Ayah',
-            'agama_ayah' => 'Agama Ayah',
-            'pekerjaan_ayah' => 'Pekerjaan Ayah',
-            'pendidikan_ayah' => 'Pendidikan Ayah',
-            'warganegara_ayah' => 'Warganegara Ayah',
-            'nama_ibu' => 'Nama Ibu',
-            'alamat_ibu' => 'Alamat Ibu',
-            'kota_ibu' => 'Kota Ibu',
-            'kodepos_ibu' => 'Kodepos Ibu',
-            'no_telp_ibu' => 'No Telp Ibu',
-            'handphone_ibu' => 'Handphone Ibu',
-            'agama_ibu' => 'Agama Ibu',
-            'pekerjaan_ibu' => 'Pekerjaan Ibu',
-            'pendidikan_ibu' => 'Pendidikan Ibu',
+        'sumber_biaya' => 'Sumber Biaya',
+        'jenis_rmh' => 'Jenis Rumah',
+        'asal_smu' => 'Asal SMU',
+        'lulus_smu' => 'Lulus SMU',
+        'transportasi' => 'Transportasi',
+        'nama_ayah' => 'Nama Ayah',
+        'alamat_ayah' => 'Alamat Ayah',
+        'no_telp_ayah' => 'No Telp Ayah',
+        'kota_ayah' => 'Kota Ayah',
+        'kodepos_ayah' => 'Kodepos Ayah',
+        'handphone_ayah' => 'Handphone Ayah',
+        'agama_ayah' => 'Agama Ayah',
+        'pekerjaan_ayah' => 'Pekerjaan Ayah',
+        'pendidikan_ayah' => 'Pendidikan Ayah',
+        'warganegara_ayah' => 'Warganegara Ayah',
+        'nama_ibu' => 'Nama Ibu',
+        'alamat_ibu' => 'Alamat Ibu',
+        'kota_ibu' => 'Kota Ibu',
+        'kodepos_ibu' => 'Kodepos Ibu',
+        'no_telp_ibu' => 'No Telp Ibu',
+        'handphone_ibu' => 'Handphone Ibu',
+        'agama_ibu' => 'Agama Ibu',
+        'pekerjaan_ibu' => 'Pekerjaan Ibu',
+        'pendidikan_ibu' => 'Pendidikan Ibu',
             'warganegara_ibu' => 'Warganegara Ibu',
             'nama_wali' => 'Nama Wali',
             'alamat_wali' => 'Alamat Wali',
@@ -199,8 +200,8 @@ class BiodatasImport implements ToModel, WithValidation, WithHeadingRow
             'nrp' => 'required|max:8|unique:biodata,nrp',
             'nama' => 'required|max:50',
             'nik' => 'required|max:16',
-            'tempat_lahir' => 'nullable|max:25',
-            'tanggal_lahir' => 'nullable|date',
+            'tempat_lahir' => 'required|max:25',
+            'tanggal_lahir' => 'required|date',
             'tinggi' => 'required|integer',
             'berat' => 'required|integer',
             'alamat' => 'required|max:100',
@@ -263,7 +264,5 @@ class BiodatasImport implements ToModel, WithValidation, WithHeadingRow
             'jenis_kelamin' => 'required|in:L,P', // validasi nilai yang diterima
             'nisn' => 'required|max:25',
         ];
-           
-
     }
 }

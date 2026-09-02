@@ -77,12 +77,14 @@
                 <input
                     type="date"
                     name="tanggal_mulai"
+                    id="tanggal_mulai"
                     value="{{ old('tanggal_mulai', date('Y-m-d')) }}"
                     class="input input-bordered w-full"
                     required
                 />
 
                 <x-forms.error name="tanggal_mulai"/>
+
 
                 {{-- TANGGAL SELESAI --}}
                 <label class="label font-bold">
@@ -92,12 +94,18 @@
                 <input
                     type="date"
                     name="tanggal_selesai"
+                    id="tanggal_selesai"
                     value="{{ old('tanggal_selesai') }}"
                     class="input input-bordered w-full"
                     required
+                    readonly
                 />
 
                 <x-forms.error name="tanggal_selesai"/>
+
+                <p class="text-sm text-gray-500 mt-2">
+                    Tanggal selesai dihitung otomatis dari tanggal mulai.
+                </p>
 
                 <button class="btn btn-primary mt-6">
                     Buat Periode
@@ -111,7 +119,7 @@
 
 
     {{-- OTOMATIS TAHUN SELESAI --}}
-    <script>
+   <script>
 
         const tahunMulai = document.getElementById('tahun_mulai');
         const tahunSelesai = document.getElementById('tahun_selesai');
@@ -133,8 +141,35 @@
 
         tahunMulai.addEventListener('input', updateTahunSelesai);
 
-        // Jalankan saat halaman pertama kali dibuka
         updateTahunSelesai();
+
+        const tanggalMulai = document.getElementById('tanggal_mulai');
+        const tanggalSelesai = document.getElementById('tanggal_selesai');
+
+        function updateTanggalSelesai() {
+
+            if (!tanggalMulai.value) {
+                tanggalSelesai.value = '';
+                return;
+            }
+
+            const tanggal = new Date(tanggalMulai.value + 'T00:00:00');
+
+            // Tambahkan 11 bulan
+            tanggal.setMonth(tanggal.getMonth() + 12);
+
+            const tahun = tanggal.getFullYear();
+            const bulan = String(tanggal.getMonth() + 1).padStart(2, '0');
+            const hari = String(tanggal.getDate()).padStart(2, '0');
+
+            tanggalSelesai.value =
+                `${tahun}-${bulan}-${hari}`;
+        }
+
+        tanggalMulai.addEventListener('change', updateTanggalSelesai);
+
+        // Jalankan saat halaman dibuka
+        updateTanggalSelesai();
 
     </script>
 

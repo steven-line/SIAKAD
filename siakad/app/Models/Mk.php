@@ -16,14 +16,29 @@ class Mk extends Model
 
     public $timestamps = false;
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | MASS ASSIGNMENT
+    |--------------------------------------------------------------------------
+    */
+
     protected $fillable = [
         'kodemk',
         'nama',
         'sks',
         'nm_jenj_didik',
+
+        // Jenis MK:
+        // normal = PJMK diinput Kaprodi
+        // khusus = PJMK diinput Admin
+        'jenis',
+
         'kode_prodi_dikti',
         'kode_kurikulum',
+
         'prasyaratsks',
+
         'prasyarat1',
         'prasyarat2',
         'prasyarat3',
@@ -34,20 +49,63 @@ class Mk extends Model
         'prasyarat8',
         'prasyarat9',
         'prasyarat10',
+
         'prasyaratgrade',
+
         'aktif',
     ];
 
-        protected $casts = [
+
+    /*
+    |--------------------------------------------------------------------------
+    | CASTS
+    |--------------------------------------------------------------------------
+    */
+
+    protected $casts = [
         'aktif' => 'boolean',
     ];
-    public function bobotNilai(){   
-        return $this->hasOne(BobotNilai::class, 'kodemk', 'kodemk');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATIONSHIPS
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Relasi ke Bobot Nilai.
+     */
+    public function bobotNilai()
+    {
+        return $this->hasOne(
+            BobotNilai::class,
+            'kodemk',
+            'kodemk'
+        );
     }
 
-    public function penawarans() {
-        return $this->hasMany(Penawaran::class, 'recno','penawaran_id');
+
+    /**
+     * Relasi ke Penawaran.
+     *
+     * mk.kodemk
+     *      ↓
+     * penawaran.kodemk
+     */
+    public function penawarans()
+    {
+        return $this->hasMany(
+            Penawaran::class,
+            'kodemk',
+            'kodemk'
+        );
     }
+
+
+    /**
+     * Relasi ke Kurikulum.
+     */
     public function kurikulum()
     {
         return $this->belongsTo(
@@ -57,5 +115,33 @@ class Mk extends Model
         );
     }
 
-    
+
+    /*
+    |--------------------------------------------------------------------------
+    | HELPER
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Mengecek apakah MK merupakan MK khusus.
+     *
+     * true  = PJMK diatur Admin
+     * false = PJMK diatur Kaprodi
+     */
+    public function isKhusus(): bool
+    {
+        return $this->jenis === 'khusus';
+    }
+
+
+    /**
+     * Mengecek apakah MK merupakan MK normal.
+     *
+     * true = PJMK diatur Kaprodi
+     * false = PJMK diatur Admin
+     */
+    public function isNormal(): bool
+    {
+        return $this->jenis === 'normal';
+    }
 }

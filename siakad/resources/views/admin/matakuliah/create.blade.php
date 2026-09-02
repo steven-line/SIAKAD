@@ -1,140 +1,312 @@
 <x-layout>
 
-    <a class="btn btn-primary" href="{{ route('mk.index') }}">
-        ⮜ Previous page
-    </a>
+<a class="btn btn-primary" href="{{ route('mk.index') }}">
+    ⮜ Previous page
+</a>
 
-    <form class="flex h-screen" action="{{ route('mk.store') }}" method="POST">
-        @csrf
+<form class="flex h-screen" action="{{ route('mk.store') }}" method="POST">
+    @csrf
 
-        <fieldset class="fieldset bg-base-200 border-base-300 rounded-box h-100 border p-6 mx-auto mt-10">
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box h-100 border p-6 mx-auto mt-10">
 
-            <div class="grid grid-cols-3 gap-4">
-                <div>
-                
-                    <label class="label font-bold" for="kodemk">KodeMk</label>
-                    <input type="text" class="input" name="kodemk" value="{{old('kodemk')}}" placeholder="TF2028" maxlength="8"/>
-                    <x-forms.error name='kodemk'/>
-                </div>
+        <div class="grid grid-cols-3 gap-4">
 
-                <div>
-                    <label class="label font-bold" for="nama">Nama</label>
-                    <input type="text" class="input" name="nama" maxlength="50" placeholder="Aljabar Linear Matriks" value="{{old('nama')}}"/>
-                    <x-forms.error name='nama'/>
-                </div>
-
-                <div>
-                    <label class="label font-bold" for="sks">SKS</label>
-                    <input type="text" class="input" name="sks" maxlength="3" value="{{old('sks')}}"/>
-                    <x-forms.error name='sks'/>
-                </div>
+            <div>
+                <label class="label font-bold" for="kodemk">KodeMk</label>
+                <input type="text" class="input" name="kodemk"
+                       value="{{ old('kodemk') }}"
+                       placeholder="TF2028" maxlength="8"/>
+                <x-forms.error name="kodemk"/>
             </div>
 
-            <div class="grid grid-cols-4 mt-4">
-                <div>
-                    <label class="label font-bold" for="nm_jenj_didik">Nama Jenjang Didik</label>
-                    <input type="text" class="input" maxlength="2" name="nm_jenj_didik" value="{{old('nm_jenj_didik')}}"/>
-                    <x-forms.error name='nm_jenj_didik'/>
-                </div>
-
-                <div>
-                    <label class="label font-bold" for="kode_kurikulum">Kurikulum</label>
-                    <select class="select select-bordered w-full" name="kode_kurikulum" required>
-                        <option disabled selected>Select Kurikulum</option>
-                        @foreach ($kurikulums as $kurikulum)
-                            <option value="{{ $kurikulum->kode_kurikulum }}">
-                                {{ $kurikulum->kode_kurikulum }} - {{ $kurikulum->nama_kurikulum }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <x-forms.error name='kode_kurikulum'/>
-                </div>
-
-                <div>
-                    <label class="label font-bold" for="prasyaratsks">Prasyarat SKS</label>
-                    <input type="text" class="input" name="prasyaratsks" value="{{old('prasyaratsks')}}" maxlength="3"/>
-                    <x-forms.error name='prasyaratsks'/>
-                </div>
+            <div>
+                <label class="label font-bold" for="nama">Nama</label>
+                <input type="text" class="input" name="nama"
+                       maxlength="50"
+                       placeholder="Aljabar Linear Matriks"
+                       value="{{ old('nama') }}"/>
+                <x-forms.error name="nama"/>
             </div>
 
-            {{-- PRASYARAT --}}
-            <div class="grid grid-cols-4 gap-4 mt-4">
-                @for ($i = 1; $i <= 4; $i++)
+            <div>
+                <label class="label font-bold" for="sks">SKS</label>
+                <input type="text" class="input" name="sks"
+                       maxlength="3"
+                       value="{{ old('sks') }}"/>
+                <x-forms.error name="sks"/>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-4 gap-4 mt-4">
+
+            <div>
+                <label class="label font-bold" for="nm_jenj_didik">
+                    Nama Jenjang Didik
+                </label>
+
+                <input type="text" class="input"
+                       maxlength="2"
+                       name="nm_jenj_didik"
+                       value="{{ old('nm_jenj_didik') }}"/>
+
+                <x-forms.error name="nm_jenj_didik"/>
+            </div>
+
+            <div>
+                <label class="label font-bold" for="kode_kurikulum">
+                    Kurikulum
+                </label>
+
+                <select class="select select-bordered w-full"
+                        name="kode_kurikulum" required>
+
+                    <option disabled selected>Select Kurikulum</option>
+
+                    @foreach ($kurikulums as $kurikulum)
+
+                        <option value="{{ $kurikulum->kode_kurikulum }}"
+                            @selected(old('kode_kurikulum') == $kurikulum->kode_kurikulum)>
+
+                            {{ $kurikulum->kode_kurikulum }}
+                            - {{ $kurikulum->nama_kurikulum }}
+
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+                <x-forms.error name="kode_kurikulum"/>
+            </div>
+
+            <div>
+                <label class="label font-bold" for="prasyaratsks">
+                    Prasyarat SKS
+                </label>
+
+                <input type="text" class="input"
+                       name="prasyaratsks"
+                       value="{{ old('prasyaratsks') }}"
+                       maxlength="3"/>
+
+                <x-forms.error name="prasyaratsks"/>
+            </div>
+
+            <div>
+                <label class="label font-bold" for="jenis">
+                    Jenis Mata Kuliah
+                </label>
+
+                <select class="select select-bordered w-full"
+                        name="jenis" required>
+
+                    <option disabled selected>
+                        Select Jenis
+                    </option>
+
+                    <option value="normal"
+                        @selected(old('jenis', 'normal') == 'normal')>
+                        Normal
+                    </option>
+
+                    <option value="khusus"
+                        @selected(old('jenis') == 'khusus')>
+                        Khusus
+                    </option>
+
+                </select>
+
+                <x-forms.error name="jenis"/>
+            </div>
+
+        </div>
+
+
+        {{-- PRASYARAT --}}
+
+        <div class="grid grid-cols-4 gap-4 mt-4">
+
+            @for ($i = 1; $i <= 4; $i++)
+
                 <div>
-                    <label class="label font-bold">Prasyarat {{ $i }}</label>
-                    <select class="select select-bordered w-full" name="prasyarat{{$i}}">
-                        <option selected value="-">Select MK</option>
+
+                    <label class="label font-bold">
+                        Prasyarat {{ $i }}
+                    </label>
+
+                    <select class="select select-bordered w-full"
+                            name="prasyarat{{ $i }}">
+
+                        <option selected value="-">
+                            Select MK
+                        </option>
+
                         @foreach ($mks as $mk)
-                            <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i") == $mk->kodemk)>
-                                {{ $mk->kodemk }} - {{ $mk->nama }}
-                            </option>
-                        @endforeach
-                    </select>
-            
-                    <x-forms.error name="prasyarat{{ $i }}"/>
-                </div>
-                @endfor
-            </div>
 
-            <div class="grid grid-cols-4 gap-4 mt-4">
-                @for ($i = 5; $i <= 8; $i++)
+                            <option value="{{ $mk->kodemk }}"
+                                @selected(old("prasyarat$i") == $mk->kodemk)>
+
+                                {{ $mk->kodemk }} - {{ $mk->nama }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                    <x-forms.error name="prasyarat{{ $i }}"/>
+
+                </div>
+
+            @endfor
+
+        </div>
+
+
+        <div class="grid grid-cols-4 gap-4 mt-4">
+
+            @for ($i = 5; $i <= 8; $i++)
+
                 <div>
-                    <label class="label font-bold">Prasyarat {{ $i }}</label>
-                      <select class="select select-bordered w-full" name="prasyarat{{$i}}">
-                        <option disabled selected>Select MK</option>
+
+                    <label class="label font-bold">
+                        Prasyarat {{ $i }}
+                    </label>
+
+                    <select class="select select-bordered w-full"
+                            name="prasyarat{{ $i }}">
+
+                        <option selected value="-">
+                            Select MK
+                        </option>
+
                         @foreach ($mks as $mk)
-                            <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i") == $mk->kodemk)>
-                                {{ $mk->kodemk }} - {{ $mk->nama }}
-                            </option>
-                        @endforeach
-                    </select>
-            
-                    <x-forms.error name="prasyarat{{ $i }}"/>
-                </div>
-                @endfor
-            </div>
 
-            <div class="grid grid-cols-4 gap-4 mt-4">
-                @for ($i = 9; $i <= 10; $i++)
+                            <option value="{{ $mk->kodemk }}"
+                                @selected(old("prasyarat$i") == $mk->kodemk)>
+
+                                {{ $mk->kodemk }} - {{ $mk->nama }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                    <x-forms.error name="prasyarat{{ $i }}"/>
+
+                </div>
+
+            @endfor
+
+        </div>
+
+
+        <div class="grid grid-cols-4 gap-4 mt-4">
+
+            @for ($i = 9; $i <= 10; $i++)
+
                 <div>
-                    <label class="label font-bold">Prasyarat {{ $i }}</label>
-                    <select class="select select-bordered w-full" name="prasyarat{{$i}}">
-                        <option disabled selected>Select MK</option>
+
+                    <label class="label font-bold">
+                        Prasyarat {{ $i }}
+                    </label>
+
+                    <select class="select select-bordered w-full"
+                            name="prasyarat{{ $i }}">
+
+                        <option selected value="-">
+                            Select MK
+                        </option>
+
                         @foreach ($mks as $mk)
-                            <option value="{{ $mk->kodemk }}" @selected(old("prasyarat$i") == $mk->kodemk)>
+
+                            <option value="{{ $mk->kodemk }}"
+                                @selected(old("prasyarat$i") == $mk->kodemk)>
+
                                 {{ $mk->kodemk }} - {{ $mk->nama }}
+
                             </option>
+
                         @endforeach
+
                     </select>
-            
+
                     <x-forms.error name="prasyarat{{ $i }}"/>
-                </div>
-                @endfor
 
-                <div>
-                    <label class="label font-bold">Prasyarat Grade</label>
-                       <select class="select select-bordered w-full" name="prasyaratgrade" required>
-                        <option disabled selected>Select Prasyarat Grade</option>
-                        <option value="A">A</option>
-                        <option value="AB">AB</option>
-                        <option value="B">B</option>
-                        <option value="BC">BC</option>
-                        <option value="C">C</option>
-                    </select>
-                    <x-forms.error name='prasyaratgrade'/>
                 </div>
 
-                <div>
-                    <label class="label font-bold">Aktif</label>
-                    <input type="checkbox" class="checkbox" name="aktif" />
-                </div>
+            @endfor
+
+
+            <div>
+
+                <label class="label font-bold">
+                    Prasyarat Grade
+                </label>
+
+                <select class="select select-bordered w-full"
+                        name="prasyaratgrade" required>
+
+                    <option disabled selected>
+                        Select Prasyarat Grade
+                    </option>
+
+                    <option value="A"
+                        @selected(old('prasyaratgrade') == 'A')>
+                        A
+                    </option>
+
+                    <option value="AB"
+                        @selected(old('prasyaratgrade') == 'AB')>
+                        AB
+                    </option>
+
+                    <option value="B"
+                        @selected(old('prasyaratgrade') == 'B')>
+                        B
+                    </option>
+
+                    <option value="BC"
+                        @selected(old('prasyaratgrade') == 'BC')>
+                        BC
+                    </option>
+
+                    <option value="C"
+                        @selected(old('prasyaratgrade') == 'C')>
+                        C
+                    </option>
+
+                </select>
+
+                <x-forms.error name="prasyaratgrade"/>
+
             </div>
 
-            <button class="btn btn-primary mt-4">
-                Buat Mata Kuliah
-            </button>
 
-        </fieldset>
-    </form>
+            <div>
 
+                <label class="label font-bold">
+                    Aktif
+                </label>
+
+                <input type="checkbox"
+                       class="checkbox"
+                       name="aktif"
+                       value="1"
+                       @checked(old('aktif')) />
+
+            </div>
+
+        </div>
+
+
+        <button class="btn btn-primary mt-4">
+            Buat Mata Kuliah
+        </button>
+
+    </fieldset>
+
+</form>
 </x-layout>

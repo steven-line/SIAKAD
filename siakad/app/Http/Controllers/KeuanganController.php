@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mahasiswa;
 use App\Imports\KeuanganImport;
+use App\Exports\KeuanganExport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel as FacadesExcel;
 
@@ -64,21 +65,25 @@ class KeuanganController extends Controller
         } catch (\Throwable $e) {
 
             return back()->with(
-                'error',
-                'Import gagal: ' . $e->getMessage()
+                'error', 'Import gagal. Periksa kembali file yang diupload.'
             );
         }
     }
+
+    public function export()
+    {
+        return FacadesExcel::download(
+            new KeuanganExport,
+            'template_import_keuangan.xlsx'
+        );
+    }
+
     public function blokir(Mahasiswa $mahasiswa)
     {
         $mahasiswa->update(['status_blokir' => 'BLOKIR']);
 
         return redirect()->route('keuangan.mahasiswa.index')->with('success', 'Mahasiswa berhasil diblokir.');
     }
-    /**
-     * Show the form for creating a new resource.
-     */
-   
 
     /**
      * Display the specified resource.

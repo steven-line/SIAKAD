@@ -64,8 +64,10 @@ class BiodataAdminController extends Controller
             return back()->with('error', implode(', ', $errors));
 
         } catch (\Throwable $e) {
-            // Error umum
-            return back()->with('error', 'Import gagal: ' . $e->getMessage());
+
+            return back()->with(
+                'error', 'Import gagal. Periksa kembali data pada file Excel.'
+            );
         }
     }
         
