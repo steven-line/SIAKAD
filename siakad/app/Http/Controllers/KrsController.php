@@ -291,6 +291,11 @@ public function edit(
     Mahasiswa $mahasiswa,
     Penawaran $penawaran
 ) {
+    /*
+     * ==========================================================
+     * REGISTRASI
+     * ==========================================================
+     */
     $registrasi = Registrasi::with([
         'penawaran.mk',
         'penawaran.semester.periode'
@@ -299,17 +304,65 @@ public function edit(
         ->where('penawaran_id', $penawaran->recno)
         ->firstOrFail();
 
+    /*
+     * ==========================================================
+     * SEMESTER
+     * ==========================================================
+     */
     $semester = $penawaran->semester;
+
+    if (!$semester) {
+        return back()->with(
+            'error',
+            'Semester tidak ditemukan.'
+        );
+    }
+
+    /*
+     * ==========================================================
+     * PERIODE
+     * ==========================================================
+     */
     $periode = $semester->periode;
+
+    if (!$periode) {
+        return back()->with(
+            'error',
+            'Periode tidak ditemukan.'
+        );
+    }
+
+    /*
+     * ==========================================================
+     * MATA KULIAH
+     * ==========================================================
+     */
+    $mk = $penawaran->mk;
+
+    if (!$mk) {
+        return back()->with(
+            'error',
+            'Mata kuliah tidak ditemukan.'
+        );
+    }
 
     /*
      * ==========================================================
      * BOBOT NILAI
      * ==========================================================
      */
-    $bobotnilai = BobotNilai::where('kodemk', $penawaran->kodemk)
-        ->where('periode_id', $periode->id)
-        ->where('jenis', $semester->jenis)
+    $bobotnilai = BobotNilai::where(
+        'kodemk',
+        $mk->kodemk
+    )
+        ->where(
+            'periode_id',
+            $periode->id
+        )
+        ->where(
+            'jenis',
+            $semester->jenis
+        )
         ->first();
 
     if (!$bobotnilai) {
@@ -346,37 +399,148 @@ public function edit(
 
     /*
      * ==========================================================
-     * CEK MK KHUSUS
+     * CEK PERIODE INPUT MK
+     * ==========================================================
+     *
+     * PERHATIKAN:
+     *
+     * Yang digunakan adalah:
+     *
+     *     periode_input
+     *
+     * Nilainya hanya:
+     *
+     *     normal
+     *     khusus
+     *
+     * BUKAN jenis_mk.
+     */
+    $periodeInput = strtolower(
+        trim((string) $mk->periode_input)
+    );
+
+    $isKhusus = $periodeInput === 'khusus';
+    $isNormal = $periodeInput === 'normal';
+
+    /*
+     * ==========================================================
+     * VALIDASI PERIODE INPUT
      * ==========================================================
      */
-    $isKhusus = strtolower(
-        trim((string) $penawaran->mk->jenis)
-    ) === 'khusus';
+    if (!$isKhusus && !$isNormal) {
+        return back()->with(
+            'error',
+            'Periode input nilai mata kuliah tidak valid.'
+        );
+    }
+
+    /*
+     * ==========================================================
+     * AMBIL MK KHUSUS YANG DIAKTIFKAN ADMIN
+     * ==========================================================
+     */
+    $mkKhususAktif = [];
+
+    if ($periodeInputNilai) {
+
+        $mkKhususAktif =
+            $periodeInputNilai->mk_khusus ?? [];
+
+        /*
+         * Jika mk_khusus disimpan sebagai JSON string,
+         * ubah menjadi array.
+         *
+         * Contoh:
+         *
+         * ["AA26A703","AA26A704"]
+         */
+        if (is_string($mkKhususAktif)) {
+
+            $decoded = json_decode(
+                $mkKhususAktif,
+                true
+            );
+
+            $mkKhususAktif = is_array($decoded)
+                ? $decoded
+                : [];
+        }
+
+        /*
+         * Pastikan tetap array.
+         */
+        if (!is_array($mkKhususAktif)) {
+            $mkKhususAktif = [];
+        }
+    }
+
+    /*
+     * ==========================================================
+     * NORMALISASI MK KHUSUS
+     * ==========================================================
+     */
+    $mkKhususAktif = collect($mkKhususAktif)
+        ->map(function ($item) {
+
+            /*
+             * Format:
+             *
+             * "AA26A703"
+             */
+            if (is_scalar($item)) {
+                return strtoupper(
+                    trim((string) $item)
+                );
+            }
+
+            /*
+             * Format:
+             *
+             * [
+             *     'kodemk' => 'AA26A703'
+             * ]
+             */
+            if (is_array($item)) {
+
+                return strtoupper(
+                    trim((string) (
+                        $item['kodemk']
+                        ?? $item['kode']
+                        ?? $item['id']
+                        ?? ''
+                    ))
+                );
+            }
+
+            return null;
+        })
+        ->filter()
+        ->values()
+        ->toArray();
+
+    /*
+     * ==========================================================
+     * KODE MK
+     * ==========================================================
+     */
+    $kodeMk = strtoupper(
+        trim((string) $mk->kodemk)
+    );
 
     /*
      * ==========================================================
      * CEK TOGGLE MK KHUSUS
      * ==========================================================
      *
-     * Toggle hanya berlaku untuk MK khusus.
+     * MK khusus:
+     *     harus ada di daftar mk_khusus.
      *
      * MK normal:
-     * tidak menggunakan toggle ini.
+     *     tidak menggunakan toggle ini.
      */
-    $mkKhususAktif = [];
-
-    if ($periodeInputNilai) {
-        $mkKhususAktif = $periodeInputNilai->mk_khusus ?? [];
-
-        if (!is_array($mkKhususAktif)) {
-            $mkKhususAktif = [];
-        }
-    }
-
-    $kodeMk = trim((string) $penawaran->kodemk);
-
-    $mkKhususDiizinkan = $isKhusus
-        && in_array(
+    $mkKhususDiizinkan =
+        $isKhusus &&
+        in_array(
             $kodeMk,
             $mkKhususAktif,
             true
@@ -386,19 +550,23 @@ public function edit(
      * ==========================================================
      * IZIN INPUT UTS
      * ==========================================================
-     *
-     * MK KHUSUS:
-     *   mengikuti toggle.
-     *
-     * MK NORMAL:
-     *   mengikuti periode UTS.
      */
     if ($isKhusus) {
 
+        /*
+         * MK khusus:
+         * cukup diaktifkan Admin.
+         *
+         * Tidak peduli periode UTS umum.
+         */
         $bolehInputUts = $mkKhususDiizinkan;
 
     } else {
 
+        /*
+         * MK normal:
+         * mengikuti periode UTS.
+         */
         $bolehInputUts =
             $periodeInputNilai &&
             $periodeInputNilai->input_nilai_uts_mulai &&
@@ -413,19 +581,21 @@ public function edit(
      * ==========================================================
      * IZIN INPUT UAS
      * ==========================================================
-     *
-     * MK KHUSUS:
-     *   mengikuti toggle.
-     *
-     * MK NORMAL:
-     *   mengikuti periode UAS.
      */
     if ($isKhusus) {
 
+        /*
+         * MK khusus:
+         * cukup diaktifkan Admin.
+         */
         $bolehInputUas = $mkKhususDiizinkan;
 
     } else {
 
+        /*
+         * MK normal:
+         * mengikuti periode UAS.
+         */
         $bolehInputUas =
             $periodeInputNilai &&
             $periodeInputNilai->input_nilai_uas_mulai &&
@@ -436,25 +606,33 @@ public function edit(
             );
     }
 
+    /*
+     * ==========================================================
+     * RETURN VIEW
+     * ==========================================================
+     */
     return view('dosen.input_nilai.edit', [
         'krs' => $krs,
         'mahasiswa' => $mahasiswa,
-        'mk' => $penawaran->mk,
+        'mk' => $mk,
         'penawaran' => $penawaran,
         'periode' => $periode,
         'semester' => $semester,
         'periodeInputNilai' => $periodeInputNilai,
 
         /*
-         * Variabel baru untuk Blade.
+         * Informasi MK khusus
          */
         'isKhusus' => $isKhusus,
         'mkKhususDiizinkan' => $mkKhususDiizinkan,
+
+        /*
+         * Hak input nilai
+         */
         'bolehInputUts' => $bolehInputUts,
         'bolehInputUas' => $bolehInputUas,
     ]);
 }
-
 
 /**
  * UPDATE NILAI MAHASISWA
@@ -475,23 +653,63 @@ public function update(
 
     /*
      * ==========================================================
-     * PERIODE / SEMESTER / MK
+     * SEMESTER
      * ==========================================================
      */
     $semester = $penawaran->semester;
+
+    if (!$semester) {
+        return back()
+            ->with('error', 'Semester tidak ditemukan.')
+            ->withInput();
+    }
+
+    /*
+     * ==========================================================
+     * PERIODE
+     * ==========================================================
+     */
     $periode = $semester->periode;
-    $jenisSemester = $semester->jenis;
+
+    if (!$periode) {
+        return back()
+            ->with('error', 'Periode tidak ditemukan.')
+            ->withInput();
+    }
+
+    /*
+     * ==========================================================
+     * MATA KULIAH
+     * ==========================================================
+     */
     $mk = $penawaran->mk;
+
+    if (!$mk) {
+        return back()
+            ->with('error', 'Mata kuliah tidak ditemukan.')
+            ->withInput();
+    }
+
+    $jenisSemester = $semester->jenis;
 
     /*
      * ==========================================================
      * BOBOT NILAI
      * ==========================================================
      */
-    $bobotnilai = BobotNilai::where('kodemk', $penawaran->kodemk)
+    $bobotnilai = BobotNilai::where('kodemk', $mk->kodemk)
         ->where('periode_id', $periode->id)
         ->where('jenis', $jenisSemester)
-        ->firstOrFail();
+        ->first();
+
+    if (!$bobotnilai) {
+        return back()
+            ->with(
+                'error',
+                'Bobot nilai untuk mata kuliah ini belum diatur.'
+            )
+            ->withInput();
+    }
 
     /*
      * ==========================================================
@@ -499,21 +717,54 @@ public function update(
      * ==========================================================
      */
     $validated = $request->validate([
-        'kelas' => 'required|string|size:1|in:A,B,C',
+        'kelas' => [
+            'required',
+            'string',
+            'size:1',
+            'in:A,B,C'
+        ],
 
-        'bu' => 'nullable|string|size:1|in:Y,N',
+        'bu' => [
+            'nullable',
+            'string',
+            'size:1',
+            'in:Y,N'
+        ],
 
-        'ttt1' => 'nullable|numeric|between:0,100',
+        'ttt1' => [
+            'nullable',
+            'numeric',
+            'between:0,100'
+        ],
 
-        'ttt2' => 'nullable|numeric|between:0,100',
+        'ttt2' => [
+            'nullable',
+            'numeric',
+            'between:0,100'
+        ],
 
-        'lain' => 'nullable|numeric|between:0,100',
+        'lain' => [
+            'nullable',
+            'numeric',
+            'between:0,100'
+        ],
 
-        'uts' => 'nullable|numeric|between:0,100',
+        'uts' => [
+            'nullable',
+            'numeric',
+            'between:0,100'
+        ],
 
-        'uas' => 'nullable|numeric|between:0,100',
+        'uas' => [
+            'nullable',
+            'numeric',
+            'between:0,100'
+        ],
 
-        'survey' => 'required|boolean',
+        'survey' => [
+            'required',
+            'boolean'
+        ],
     ]);
 
     /*
@@ -550,28 +801,152 @@ public function update(
 
     /*
      * ==========================================================
-     * CEK MK KHUSUS
+     * CEK PERIODE INPUT MATA KULIAH
      * ==========================================================
+     *
+     * PERHATIKAN:
+     *
+     * Yang menentukan apakah MK menggunakan periode khusus
+     * adalah kolom:
+     *
+     *     periode_input
+     *
+     * BUKAN:
+     *
+     *     jenis_mk
+     *
+     * Nilai periode_input hanya:
+     *
+     *     normal
+     *     khusus
      */
-    $jenisMk = strtolower(
-        trim((string) $mk->jenis)
+    $periodeInput = strtolower(
+        trim((string) $mk->periode_input)
     );
 
-    $isKhusus = $jenisMk === 'khusus';
+    $isKhusus = $periodeInput === 'khusus';
+    $isNormal = $periodeInput === 'normal';
 
     /*
-     * Ambil daftar MK khusus yang toggle-nya ON.
+     * ==========================================================
+     * VALIDASI NILAI PERIODE_INPUT
+     * ==========================================================
      */
-    $mkKhususAktif = $periodeInputNilai->mk_khusus ?? [];
+    if (!$isKhusus && !$isNormal) {
+        return back()
+            ->with(
+                'error',
+                'Periode input nilai mata kuliah tidak valid.'
+            )
+            ->withInput();
+    }
 
+    /*
+     * ==========================================================
+     * AMBIL MK KHUSUS YANG DIAKTIFKAN ADMIN
+     * ==========================================================
+     *
+     * Contoh isi:
+     *
+     * ["AA26A703","AA26A704"]
+     *
+     * atau:
+     *
+     * [
+     *     ["kodemk" => "AA26A703"],
+     *     ["kodemk" => "AA26A704"]
+     * ]
+     */
+    $mkKhususAktif = $periodeInputNilai->mk_khusus;
+
+    /*
+     * Kalau data berupa JSON string
+     */
+    if (is_string($mkKhususAktif)) {
+
+        $decoded = json_decode(
+            $mkKhususAktif,
+            true
+        );
+
+        $mkKhususAktif = is_array($decoded)
+            ? $decoded
+            : [];
+    }
+
+    /*
+     * Kalau null / format lain
+     */
     if (!is_array($mkKhususAktif)) {
         $mkKhususAktif = [];
     }
 
-    $kodeMk = trim((string) $mk->kodemk);
+    /*
+     * ==========================================================
+     * NORMALISASI DAFTAR MK KHUSUS
+     * ==========================================================
+     */
+    $mkKhususAktif = collect($mkKhususAktif)
+        ->map(function ($item) {
 
-    $mkKhususDiizinkan = $isKhusus
-        && in_array(
+            /*
+             * Contoh:
+             *
+             * "AA26A703"
+             */
+            if (is_scalar($item)) {
+                return strtoupper(
+                    trim((string) $item)
+                );
+            }
+
+            /*
+             * Contoh:
+             *
+             * [
+             *     "kodemk" => "AA26A703"
+             * ]
+             */
+            if (is_array($item)) {
+
+                return strtoupper(
+                    trim((string) (
+                        $item['kodemk']
+                        ?? $item['kode']
+                        ?? $item['id']
+                        ?? ''
+                    ))
+                );
+            }
+
+            return null;
+        })
+        ->filter()
+        ->values()
+        ->toArray();
+
+    /*
+     * ==========================================================
+     * KODE MK YANG SEDANG DIINPUT
+     * ==========================================================
+     */
+    $kodeMk = strtoupper(
+        trim((string) $mk->kodemk)
+    );
+
+    /*
+     * ==========================================================
+     * CEK APAKAH MK KHUSUS DIAKTIFKAN ADMIN
+     * ==========================================================
+     *
+     * Hanya berlaku jika:
+     *
+     *     periode_input = khusus
+     *
+     */
+    $mkKhususDiizinkan =
+        $isKhusus &&
+        in_array(
             $kodeMk,
             $mkKhususAktif,
             true
@@ -581,44 +956,58 @@ public function update(
      * ==========================================================
      * CEK UTS
      * ==========================================================
-     *
-     * MK KHUSUS:
-     *   hanya boleh jika toggle ON.
-     *
-     * MK NORMAL:
-     *   hanya boleh ketika periode UTS aktif.
      */
-    $utsBerubah = ($validated['uts'] ?? null) != $utsLama;
+    $utsBaru = $validated['uts'] ?? null;
+
+    $utsBerubah = $utsBaru != $utsLama;
 
     if ($utsBerubah) {
 
+        /*
+         * ======================================================
+         * MK KHUSUS
+         * ======================================================
+         *
+         * Tidak menggunakan periode UTS umum.
+         *
+         * Cukup MK diaktifkan Admin.
+         */
         if ($isKhusus) {
 
-            /*
-             * MK khusus tidak memakai periode UTS umum.
-             */
             if (!$mkKhususDiizinkan) {
+
                 return back()
                     ->with(
                         'error',
-                        'Nilai UTS mata kuliah khusus belum diaktifkan oleh Admin.'
+                        "MK khusus {$kodeMk} belum diaktifkan Admin untuk input nilai."
                     )
                     ->withInput();
             }
 
+        /*
+         * ======================================================
+         * MK NORMAL
+         * ======================================================
+         *
+         * Mengikuti periode input nilai UTS.
+         */
         } else {
 
-            /*
-             * MK normal menggunakan periode UTS.
-             */
-            $utsMulai = $periodeInputNilai->input_nilai_uts_mulai;
-            $utsSelesai = $periodeInputNilai->input_nilai_uts_selesai;
+            $utsMulai =
+                $periodeInputNilai->input_nilai_uts_mulai;
+
+            $utsSelesai =
+                $periodeInputNilai->input_nilai_uts_selesai;
 
             if (
                 !$utsMulai ||
                 !$utsSelesai ||
-                !now()->between($utsMulai, $utsSelesai)
+                !now()->between(
+                    $utsMulai,
+                    $utsSelesai
+                )
             ) {
+
                 return back()
                     ->with(
                         'error',
@@ -633,44 +1022,52 @@ public function update(
      * ==========================================================
      * CEK UAS
      * ==========================================================
-     *
-     * MK KHUSUS:
-     *   hanya boleh jika toggle ON.
-     *
-     * MK NORMAL:
-     *   hanya boleh ketika periode UAS aktif.
      */
-    $uasBerubah = ($validated['uas'] ?? null) != $uasLama;
+    $uasBaru = $validated['uas'] ?? null;
+
+    $uasBerubah = $uasBaru != $uasLama;
 
     if ($uasBerubah) {
 
+        /*
+         * ======================================================
+         * MK KHUSUS
+         * ======================================================
+         */
         if ($isKhusus) {
 
-            /*
-             * MK khusus tidak memakai periode UAS umum.
-             */
             if (!$mkKhususDiizinkan) {
+
                 return back()
                     ->with(
                         'error',
-                        'Nilai UAS mata kuliah khusus belum diaktifkan oleh Admin.'
+                        "MK khusus {$kodeMk} belum diaktifkan Admin untuk input nilai."
                     )
                     ->withInput();
             }
 
+        /*
+         * ======================================================
+         * MK NORMAL
+         * ======================================================
+         */
         } else {
 
-            /*
-             * MK normal menggunakan periode UAS.
-             */
-            $uasMulai = $periodeInputNilai->input_nilai_uas_mulai;
-            $uasSelesai = $periodeInputNilai->input_nilai_uas_selesai;
+            $uasMulai =
+                $periodeInputNilai->input_nilai_uas_mulai;
+
+            $uasSelesai =
+                $periodeInputNilai->input_nilai_uas_selesai;
 
             if (
                 !$uasMulai ||
                 !$uasSelesai ||
-                !now()->between($uasMulai, $uasSelesai)
+                !now()->between(
+                    $uasMulai,
+                    $uasSelesai
+                )
             ) {
+
                 return back()
                     ->with(
                         'error',
@@ -686,8 +1083,8 @@ public function update(
      * NILAI
      * ==========================================================
      */
-    $uts = $validated['uts'] ?? null;
-    $uas = $validated['uas'] ?? null;
+    $uts = $utsBaru;
+    $uas = $uasBaru;
 
     /*
      * ==========================================================
@@ -748,6 +1145,11 @@ public function update(
         ]
     );
 
+    /*
+     * ==========================================================
+     * SELESAI
+     * ==========================================================
+     */
     return redirect()
         ->route('nilai.show', [
             'mahasiswa' => $mahasiswa->nrp,
@@ -758,6 +1160,7 @@ public function update(
             'Nilai berhasil disimpan. Nilai akhir: ' . $na
         );
 }
+
     public function destroy(Krs $krs)
     {
     }
