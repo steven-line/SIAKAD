@@ -41,10 +41,11 @@ class PjmkController extends Controller
                     'penawaran.kodemk',
                     'periode.id as periode_id'
                 )
+               
                 ->with('mk')
                 ->distinct()
                 ->paginate(10);
-
+      
             return view('kaprodi.pjmk.list_matkul', [
                 'penawarans' => $penawarans
             ]);
@@ -67,6 +68,8 @@ class PjmkController extends Controller
                     '=',
                     'periode.id'
                 )
+                ->leftJoin('mk', 'penawaran.kodemk', '=', 'mk.kodemk')
+                ->where('mk.jenis', '=', 'normal')
                 ->select(
                     'semester.jenis',
                     'periode.tahun_ajaran',
