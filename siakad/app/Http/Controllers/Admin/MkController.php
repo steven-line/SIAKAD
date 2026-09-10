@@ -13,7 +13,9 @@ use Maatwebsite\Excel\Facades\Excel;
 class MkController extends Controller
 {
     /**
-     * Menampilkan daftar mata kuliah.
+     * ==========================================================
+     * LIST MATA KULIAH
+     * ==========================================================
      */
     public function index(Request $request)
     {
@@ -22,11 +24,12 @@ class MkController extends Controller
         $mks = Mk::when($search, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('kodemk', 'like', '%' . $search . '%')
-                  ->orWhere('nama', 'like', '%' . $search . '%');
+                    ->orWhere('nama', 'like', '%' . $search . '%');
             });
         })
-        ->paginate(10)
-        ->withQueryString();
+            ->orderBy('nama')
+            ->paginate(10)
+            ->withQueryString();
 
         return view(
             'admin.matakuliah.index',
@@ -36,13 +39,17 @@ class MkController extends Controller
 
 
     /**
-     * Form tambah mata kuliah.
+     * ==========================================================
+     * FORM TAMBAH MATA KULIAH
+     * ==========================================================
      */
     public function create()
     {
         $kurikulums = Kurikulum::orderBy('kode_kurikulum')->get();
 
-        $mks = Mk::with('kurikulum')->get();
+        $mks = Mk::with('kurikulum')
+            ->orderBy('nama')
+            ->get();
 
         return view(
             'admin.matakuliah.create',
@@ -52,12 +59,17 @@ class MkController extends Controller
 
 
     /**
-     * Menyimpan mata kuliah baru.
+     * ==========================================================
+     * SIMPAN MATA KULIAH
+     * ==========================================================
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
 
+            /*
+             * IDENTITAS
+             */
             'kodemk' => [
                 'required',
                 'unique:mk,kodemk',
@@ -80,6 +92,9 @@ class MkController extends Controller
                 'max:2',
             ],
 
+            /*
+             * KURIKULUM
+             */
             'kode_kurikulum' => [
                 'required',
                 'max:15',
@@ -87,14 +102,44 @@ class MkController extends Controller
             ],
 
             /*
-             * normal  = PJMK ditentukan Kaprodi
-             * khusus  = PJMK ditentukan Admin
+             * ======================================================
+             * PERIODE INPUT
+             * ======================================================
+             *
+             * normal = mengikuti periode input nilai UTS/UAS
+             * khusus = tidak mengikuti periode input nilai UTS/UAS
              */
-            'jenis' => [
+            'periode_input' => [
                 'required',
-                'in:normal,khusus',
+                Rule::in([
+                    'normal',
+                    'khusus',
+                ]),
             ],
 
+            /*
+             * ======================================================
+             * JENIS MATA KULIAH
+             * ======================================================
+             *
+             * mk_fakultas = PJMK Admin
+             * mk_umum     = PJMK Admin
+             * mk_prodi    = PJMK Kaprodi
+             * mk_khusus   = PJMK Kaprodi
+             */
+            'jenis_mk' => [
+                'required',
+                Rule::in([
+                    'mk_fakultas',
+                    'mk_umum',
+                    'mk_prodi',
+                    'mk_khusus',
+                ]),
+            ],
+
+            /*
+             * PRASYARAT
+             */
             'prasyaratsks' => [
                 'required',
                 'max:3',
@@ -118,6 +163,11 @@ class MkController extends Controller
         ]);
 
 
+        /*
+         * ==========================================================
+         * SIMPAN
+         * ==========================================================
+         */
         Mk::create([
             'kodemk' => $validated['kodemk'],
             'nama' => $validated['nama'],
@@ -126,9 +176,19 @@ class MkController extends Controller
 
             'kode_kurikulum' => $validated['kode_kurikulum'],
 
-            // JENIS PJMK
-            'jenis' => $validated['jenis'],
+            /*
+             * PERIODE INPUT
+             */
+            'periode_input' => $validated['periode_input'],
 
+            /*
+             * JENIS MK
+             */
+            'jenis_mk' => $validated['jenis_mk'],
+
+            /*
+             * PRASYARAT
+             */
             'prasyaratsks' => $validated['prasyaratsks'],
 
             'prasyarat1' => $request->filled('prasyarat1')
@@ -179,12 +239,17 @@ class MkController extends Controller
 
         return redirect()
             ->route('mk.index')
-            ->with('success', 'Mata Kuliah berhasil ditambahkan.');
+            ->with(
+                'success',
+                'Mata Kuliah berhasil ditambahkan.'
+            );
     }
 
 
     /**
-     * Menampilkan detail mata kuliah.
+     * ==========================================================
+     * DETAIL MATA KULIAH
+     * ==========================================================
      */
     public function show(Mk $mk)
     {
@@ -196,28 +261,41 @@ class MkController extends Controller
 
 
     /**
-     * Form edit mata kuliah.
+     * ==========================================================
+     * FORM EDIT
+     * ==========================================================
      */
     public function edit(Mk $mk)
     {
         $kurikulums = Kurikulum::orderBy('kode_kurikulum')->get();
 
-        $mks = Mk::with('kurikulum')->get();
+        $mks = Mk::with('kurikulum')
+            ->orderBy('nama')
+            ->get();
 
         return view(
             'admin.matakuliah.edit',
-            compact('mk', 'kurikulums', 'mks')
+            compact(
+                'mk',
+                'kurikulums',
+                'mks'
+            )
         );
     }
 
 
     /**
-     * Update mata kuliah.
+     * ==========================================================
+     * UPDATE MATA KULIAH
+     * ==========================================================
      */
     public function update(Request $request, Mk $mk)
     {
         $validated = $request->validate([
 
+            /*
+             * IDENTITAS
+             */
             'kodemk' => [
                 'required',
                 'max:8',
@@ -243,6 +321,9 @@ class MkController extends Controller
                 'max:2',
             ],
 
+            /*
+             * KURIKULUM
+             */
             'kode_kurikulum' => [
                 'required',
                 'max:15',
@@ -250,14 +331,36 @@ class MkController extends Controller
             ],
 
             /*
-             * normal  = PJMK Kaprodi
-             * khusus  = PJMK Admin
+             * ======================================================
+             * PERIODE INPUT
+             * ======================================================
              */
-            'jenis' => [
+            'periode_input' => [
                 'required',
-                'in:normal,khusus',
+                Rule::in([
+                    'normal',
+                    'khusus',
+                ]),
             ],
 
+            /*
+             * ======================================================
+             * JENIS MATA KULIAH
+             * ======================================================
+             */
+            'jenis_mk' => [
+                'required',
+                Rule::in([
+                    'mk_fakultas',
+                    'mk_umum',
+                    'mk_prodi',
+                    'mk_khusus',
+                ]),
+            ],
+
+            /*
+             * PRASYARAT
+             */
             'prasyaratsks' => [
                 'required',
                 'max:3',
@@ -281,6 +384,11 @@ class MkController extends Controller
         ]);
 
 
+        /*
+         * ==========================================================
+         * UPDATE
+         * ==========================================================
+         */
         $mk->update([
             'kodemk' => $validated['kodemk'],
             'nama' => $validated['nama'],
@@ -289,9 +397,19 @@ class MkController extends Controller
 
             'kode_kurikulum' => $validated['kode_kurikulum'],
 
-            // JENIS PJMK
-            'jenis' => $validated['jenis'],
+            /*
+             * PERIODE INPUT
+             */
+            'periode_input' => $validated['periode_input'],
 
+            /*
+             * JENIS MK
+             */
+            'jenis_mk' => $validated['jenis_mk'],
+
+            /*
+             * PRASYARAT
+             */
             'prasyaratsks' => $validated['prasyaratsks'],
 
             'prasyarat1' => $request->filled('prasyarat1')
@@ -342,12 +460,17 @@ class MkController extends Controller
 
         return redirect()
             ->route('mk.index')
-            ->with('success', 'Mata Kuliah berhasil diperbarui.');
+            ->with(
+                'success',
+                'Mata Kuliah berhasil diperbarui.'
+            );
     }
 
 
     /**
-     * Hapus mata kuliah.
+     * ==========================================================
+     * HAPUS MATA KULIAH
+     * ==========================================================
      */
     public function destroy(Mk $mk)
     {
@@ -355,12 +478,17 @@ class MkController extends Controller
 
         return redirect()
             ->route('mk.index')
-            ->with('success', 'Mata Kuliah Dihapus');
+            ->with(
+                'success',
+                'Mata Kuliah Dihapus'
+            );
     }
 
 
     /**
-     * Import mata kuliah.
+     * ==========================================================
+     * IMPORT MATA KULIAH
+     * ==========================================================
      */
     public function upload(Request $request)
     {
@@ -377,26 +505,38 @@ class MkController extends Controller
 
             return redirect()
                 ->route('mk.index')
-                ->with('success', 'Import Berhasil!');
+                ->with(
+                    'success',
+                    'Import Berhasil!'
+                );
 
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        } catch (
+            \Maatwebsite\Excel\Validators\ValidationException $e
+        ) {
 
             $failures = $e->failures();
 
             $errors = [];
 
             foreach ($failures as $failure) {
+
                 $errors[] =
                     "Baris {$failure->row()} - {$failure->errors()[0]}";
             }
 
             return back()
-                ->with('error', implode(', ', $errors));
+                ->with(
+                    'error',
+                    implode(', ', $errors)
+                );
 
         } catch (\Throwable $e) {
 
             return back()
-                ->with('error', 'Import gagal: ' . $e->getMessage());
+                ->with(
+                    'error',
+                    'Import gagal: ' . $e->getMessage()
+                );
         }
     }
 }

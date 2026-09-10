@@ -42,48 +42,53 @@
         ⮜ Previous page
     </a>
 
+{{-- ========================================================= --}}
+{{-- INFO MK --}}
+{{-- ========================================================= --}}
 
-    {{-- ========================================================= --}}
-    {{-- INFO MK --}}
-    {{-- ========================================================= --}}
 
-    <div class="alert alert-info mb-4">
-        <div>
-            <div class="font-bold">
-                {{ $mk->nama }}
-            </div>
 
-            <div class="text-sm">
-                Kode MK:
-                <span class="font-medium">
-                    {{ $mk->kodemk }}
-                </span>
-
-                <span class="mx-1">•</span>
-
-                Jenis:
-                <span class="font-medium">
-                    {{ ucfirst($mk->jenis) }}
-                </span>
-            </div>
-
-            {{-- INFO KHUSUS --}}
-            @if ($isKhusus)
-
-                @if ($mkKhususDiizinkan)
-                    <div class="text-sm mt-2 text-success font-semibold">
-                        ✓ Input UTS dan UAS mata kuliah khusus sedang diaktifkan Admin.
-                    </div>
-                @else
-                    <div class="text-sm mt-2 text-error font-semibold">
-                        ✕ Input UTS dan UAS mata kuliah khusus belum diaktifkan Admin.
-                    </div>
-                @endif
-
-            @endif
+<div class="alert alert-info mb-4">
+    <div>
+        <div class="font-bold">
+            {{ $mk->nama }}
         </div>
-    </div>
 
+        <div class="text-sm">
+            Kode MK:
+            <span class="font-medium">
+                {{ $mk->kodemk }}
+            </span>
+
+            <span class="mx-1">•</span>
+
+            Jenis:
+            <span class="font-medium">
+                {{ ucfirst(str_replace('_', ' ', $mk->jenis_mk)) }}
+            </span>
+
+            <span class="mx-1">•</span>
+
+            Periode Input:
+            <span class="font-medium">
+                {{ ucfirst($mk->periode_input) }}
+            </span>
+        </div>
+
+        {{-- INFO KHUSUS --}}
+        @if ($isKhusus)
+            @if ($mkKhususDiizinkan)
+                <div class="text-sm mt-2 text-success font-semibold">
+                    ✓ Input UTS dan UAS mata kuliah khusus sedang diaktifkan Admin.
+                </div>
+            @else
+                <div class="text-sm mt-2 text-error font-semibold">
+                    ✕ Input UTS dan UAS mata kuliah khusus belum diaktifkan Admin.
+                </div>
+            @endif
+        @endif
+    </div>
+</div>
 
     {{-- ========================================================= --}}
     {{-- FORM --}}

@@ -29,14 +29,33 @@ class Mk extends Model
         'sks',
         'nm_jenj_didik',
 
-        // Jenis MK:
-        // normal = PJMK diinput Kaprodi
-        // khusus = PJMK diinput Admin
-        'jenis',
-
+        /*
+         * KURIKULUM
+         */
         'kode_prodi_dikti',
         'kode_kurikulum',
 
+        /*
+         * PERIODE INPUT NILAI
+         *
+         * normal = mengikuti periode input nilai UTS/UAS
+         * khusus = tidak mengikuti periode input nilai UTS/UAS
+         */
+        'periode_input',
+
+        /*
+         * JENIS MATA KULIAH
+         *
+         * mk_fakultas = PJMK Admin
+         * mk_umum     = PJMK Admin
+         * mk_prodi    = PJMK Kaprodi
+         * mk_khusus   = PJMK Kaprodi
+         */
+        'jenis_mk',
+
+        /*
+         * PRASYARAT
+         */
         'prasyaratsks',
 
         'prasyarat1',
@@ -52,6 +71,9 @@ class Mk extends Model
 
         'prasyaratgrade',
 
+        /*
+         * STATUS
+         */
         'aktif',
     ];
 
@@ -118,30 +140,68 @@ class Mk extends Model
 
     /*
     |--------------------------------------------------------------------------
-    | HELPER
+    | HELPER JENIS MATA KULIAH
     |--------------------------------------------------------------------------
     */
 
     /**
-     * Mengecek apakah MK merupakan MK khusus.
+     * Mengecek apakah MK merupakan MK Khusus.
      *
-     * true  = PJMK diatur Admin
-     * false = PJMK diatur Kaprodi
+     * mk_khusus = PJMK diatur Kaprodi
      */
     public function isKhusus(): bool
     {
-        return $this->jenis === 'khusus';
+        return $this->jenis_mk === 'mk_khusus';
     }
 
 
     /**
-     * Mengecek apakah MK merupakan MK normal.
-     *
-     * true = PJMK diatur Kaprodi
-     * false = PJMK diatur Admin
+     * Mengecek apakah MK merupakan MK Prodi.
      */
-    public function isNormal(): bool
+    public function isProdi(): bool
     {
-        return $this->jenis === 'normal';
+        return $this->jenis_mk === 'mk_prodi';
+    }
+
+
+    /**
+     * Mengecek apakah MK merupakan MK Fakultas.
+     */
+    public function isFakultas(): bool
+    {
+        return $this->jenis_mk === 'mk_fakultas';
+    }
+
+
+    /**
+     * Mengecek apakah MK merupakan MK Umum.
+     */
+    public function isUmum(): bool
+    {
+        return $this->jenis_mk === 'mk_umum';
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HELPER PERIODE INPUT
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Mengecek apakah MK mengikuti periode input normal.
+     */
+    public function isPeriodeNormal(): bool
+    {
+        return $this->periode_input === 'normal';
+    }
+
+
+    /**
+     * Mengecek apakah MK menggunakan periode input khusus.
+     */
+    public function isPeriodeKhusus(): bool
+    {
+        return $this->periode_input === 'khusus';
     }
 }

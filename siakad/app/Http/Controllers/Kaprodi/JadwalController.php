@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Penawaran;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 
 class JadwalController extends Controller
 {
@@ -46,7 +47,11 @@ class JadwalController extends Controller
 
             $query->whereHas('mk.kurikulum', function ($q) use ($prodiLogin) {
                 $q->where('kode_prodi', $prodiLogin);
+            })->orWhereHas('mk', function($x) {
+                $x->where('kodemk', 'like', 'A%');
             });
+            // mau muncul jika mk sesuai dengan kode prodi, hurufA
+  
         }
 
         return $query

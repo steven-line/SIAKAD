@@ -53,12 +53,12 @@ class MetaperiodeController extends Controller
          *
          * HANYA MK dengan:
          *
-         * mk.jenis = "khusus"
+         * jenis_mk = "mk_khusus"
          *
          * yang ditampilkan di Master Setting.
          */
         $mkKhusus = Mk::where('aktif', 1)
-            ->where('jenis', 'khusus')
+            ->where('jenis_mk', 'mk_khusus')
             ->orderBy('nama')
             ->get();
 
@@ -81,7 +81,9 @@ class MetaperiodeController extends Controller
 
 
         /*
-         * Pastikan selalu berupa array.
+         * ==========================================================
+         * PASTIKAN SELALU ARRAY
+         * ==========================================================
          */
         if (!is_array($mkKhususAktif)) {
             $mkKhususAktif = [];
@@ -230,8 +232,8 @@ class MetaperiodeController extends Controller
              * mk_khusus[] = AA26A702
              * mk_khusus[] = AA26A703
              *
-             * Hanya MK yang jenis-nya "khusus" yang boleh
-             * masuk ke array ini.
+             * Hanya MK yang jenis_mk-nya "mk_khusus"
+             * yang boleh masuk ke array ini.
              */
             'mk_khusus' => [
                 'nullable',
@@ -270,19 +272,23 @@ class MetaperiodeController extends Controller
         $mkKhususAktif = collect(
             $validated['mk_khusus'] ?? []
         )
-        ->map(function ($kodemk) {
-            return trim((string) $kodemk);
-        })
-        ->filter()
-        ->unique()
-        ->values()
-        ->toArray();
+            ->map(function ($kodemk) {
+                return trim((string) $kodemk);
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
 
 
         /*
          * ==========================================================
          * PENTING:
-         * PASTIKAN HANYA MK dengan jenis = "khusus"
+         *
+         * PASTIKAN HANYA MK dengan:
+         *
+         * jenis_mk = "mk_khusus"
+         *
          * YANG BOLEH DISIMPAN.
          * ==========================================================
          */
@@ -292,18 +298,20 @@ class MetaperiodeController extends Controller
                 'kodemk',
                 $mkKhususAktif
             )
-            ->where('jenis', 'khusus')
-            ->pluck('kodemk')
-            ->map(function ($kodemk) {
-                return trim((string) $kodemk);
-            })
-            ->values()
-            ->toArray();
+                ->where('jenis_mk', 'mk_khusus')
+                ->pluck('kodemk')
+                ->map(function ($kodemk) {
+                    return trim((string) $kodemk);
+                })
+                ->values()
+                ->toArray();
         }
 
 
         /*
-         * Masukkan array MK khusus ke data yang akan disimpan.
+         * ==========================================================
+         * MASUKKAN ARRAY MK KHUSUS KE DATA YANG DISIMPAN
+         * ==========================================================
          */
         $validated['mk_khusus'] = $mkKhususAktif;
 
@@ -416,6 +424,7 @@ class MetaperiodeController extends Controller
             $ips = 0;
 
             if ($totalSks > 0) {
+
                 $ips = round(
                     $totalMutu / $totalSks,
                     3

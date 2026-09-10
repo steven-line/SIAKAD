@@ -27,6 +27,49 @@ return new class extends Migration
 
 
             // =====================================================
+            // PERIODE INPUT NILAI
+            // =====================================================
+            //
+            // normal  = mengikuti periode input nilai UTS/UAS
+            // khusus  = tidak mengikuti periode input nilai UTS/UAS
+            //
+            // Catatan:
+            // Field ini digunakan untuk menentukan apakah dosen
+            // boleh menginput nilai UTS/UAS berdasarkan periode
+            // MetaPeriode atau tidak.
+            //
+
+            $table->enum('periode_input', [
+                'normal',
+                'khusus',
+            ])->default('normal');
+
+
+            // =====================================================
+            // JENIS MATA KULIAH
+            // =====================================================
+            //
+            // mk_fakultas = PJMK diatur oleh Admin
+            // mk_umum     = PJMK diatur oleh Admin
+            // mk_prodi    = PJMK diatur oleh Kaprodi
+            // mk_khusus   = PJMK diatur oleh Kaprodi
+            //
+            // MK khusus contoh:
+            // - Tugas Akhir
+            // - Magang
+            // - Publikasi
+            // - Proposal TA
+            //
+
+            $table->enum('jenis_mk', [
+                'mk_fakultas',
+                'mk_umum',
+                'mk_prodi',
+                'mk_khusus',
+            ])->default('mk_prodi');
+
+
+            // =====================================================
             // PRASYARAT
             // =====================================================
 
@@ -65,22 +108,9 @@ return new class extends Migration
 
             $table->boolean('aktif')->default(false);
 
-
-            // =====================================================
-            // JENIS PJMK
-            // =====================================================
-            //
-            // normal = PJMK ditentukan oleh Kaprodi
-            // khusus = PJMK ditentukan oleh Admin
-            //
-
-            $table->enum('jenis', [
-                'normal',
-                'khusus',
-            ])->default('normal');
-
         });
     }
+
 
     /**
      * Reverse the migrations.
